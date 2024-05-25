@@ -1,0 +1,233 @@
+/*
+body{font-family: Comic Sans MS;}
+*/
+
+@import url('//fonts.googleapis.com/css?family=Nunito');
+body {font-family:'Nunito' ;}
+.breadcrumb.active ,.breadcrumb-item.active{
+  font-weight:bold;
+}
+.overme {
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow: ellipsis;
+  max-width:300px;
+}
+.overme2 {
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow: ellipsis;
+  max-width:150px;
+}
+.searchfield{width:100px;}
+#headtable {background-color: #4fc1e9;color:white;font-weight: 600;}
+
+#mytable_filter input[type="search"]{ border: 1px solid #4fc1e9; color:black; font-weight: 600;}
+#mytable_filter label {color:#4fc1e9;font-weight: 600;}
+  /**
+   * alertifyjs 1.11.2 http://alertifyjs.com
+   * AlertifyJS is a javascript framework for developing pretty browser dialogs and notifications.
+   * Copyright 2018 Mohammad Younes <Mohammad@alertifyjs.com> (http://alertifyjs.com)
+   * Licensed under GPL 3 <https://opensource.org/licenses/gpl-3.0>*/
+.alertify .ajs-dimmer {
+  background-color: #000;
+  opacity: .5;
+}
+.alertify .ajs-dialog {
+  max-width: 600px;
+  min-height: 122px;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+}
+.alertify .ajs-header {
+  color: #333;
+  border-bottom: 1px solid #e5e5e5;
+  border-radius: 6px 6px 0 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+}
+.alertify .ajs-body {
+  font-family: 'Roboto', sans-serif;
+  color: black;
+}
+.alertify.ajs-resizable .ajs-content,
+.alertify.ajs-maximized:not(.ajs-resizable) .ajs-content {
+  top: 58px;
+  bottom: 68px;
+}
+.alertify .ajs-footer {
+  background-color: #fff;
+  padding: 15px;
+  border-top: 1px solid #e5e5e5;
+  border-radius: 0 0 6px 6px;
+}
+.alertify-notifier .ajs-message {
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  text-align: center;
+  border: solid 1px #ddd;
+  border-radius: 2px;
+}
+.alertify-notifier .ajs-message.ajs-success {
+  color: #fff;
+  background: rgba(91, 189, 114, 0.95);
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5);
+}
+.alertify-notifier .ajs-message.ajs-error {
+  color: #fff;
+  background: rgba(217, 92, 92, 0.95);
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.5);
+}
+.alertify-notifier .ajs-message.ajs-warning {
+  background: rgba(252, 248, 215, 0.95);
+  border-color: #999;
+}
+
+
+i{cursor:pointer;}
+
+.nav > li > a {font-size:14px!important;}
+
+
+
+
+
+
+.uper {
+  margin-top: 10px!important;
+}
+.email {background:#ececec; position:relative; margin-bottom:15px; padding:5px; border-style: solid!important; border-color: #cccccc; border-width: 1px!important;}
+.email-body{border:1px solid #bcbcbc; border-left:0; height:136px;}
+.email .subject{float:left; width:100%; font-size:15px;font-weight:normal; color:#00a7e2;}
+.email .subject small{display:block; font-size:14px; color:#232323;}
+.email .stats{float:left; width:100%; margin-top:10px;}
+.email .stats span{float:left; margin-right:10px; font-size:14px;}
+.email .stats span i{margin-right:7px; color:#7ecce7;}
+.email .fav-box{position:absolute; right:10px; font-size:15px; top:4px; color:#E74C3C;}
+.nav > li > a {font-size:14px!important;}
+
+
+.table td, .table th {vertical-align:middle!important;}
+#headtable{background-color:#e6d685;color:white;text-shadow:1px 1px lightgrey;} 
+.table{color:black!important;}
+.btn-primary{background-color:#e29d09;}
+.brn-success{background-color:#0054f3;}
+/*#headtable th{color:black;}*/
+
+ .form-control {display:inline!important;}
+.select2-container--default .select2-selection--single {    
+    height: 38px!important;
+    padding-top: 5px!important;
+}
+
+ #mytable_filter{right:30px!important;position:absolute!important;}
+     #swal2-content{font-size:15px;}
+	 .editor{width:800px;}
+	table, #mytable{display:table !important;/*width:100%!important;*/margin-top:10px !important;border:1px solid lightgrey;}
+ 	
+	.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+.pagination>li>a, .pagination>li>span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+	margin-top:12px;
+}
+#mytable_length select{margin-left:5px;margin-right:5px;}
+ .metal{height:50px;padding-top:15px;margin-bottom:10px;color:white;}
+ 
+ select:disabled ,  button:disabled ,.form-control:disabled{opacity:0.4!important; }
+ .searchfield{width:100px;}
+		 #mytable{width:100%!important;margin-top:10px !important;}
+
+
+     
+ 
+#gold {
+  border-radius:20px;
+  width:70px;
+  padding-top:8px;
+  height: 40px;
+  text-align:center;color:white;
+      background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #9f7928 40%, transparent 60%),
+                  radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #c49f4d 62.5%, #c49f4d 100%);
+  }
+  
+  
+  #silver {
+  border-radius:20px;
+  width:70px;
+  color:white;
+  text-align:center;
+    padding-top:8px;
+     height: 40px;
+    background: #9f7c3c;
+    
+    /* Safari and Google Chrome */
+    background: -webkit-repeating-linear-gradient(90deg, #8b8282 0%,#acacac 2%, #d5d5d5 23%, #c9c9c9 29%, #c9c9c9 33%, #c2c1c1 61%, #aca8a8 66%, #aca8a8 79%, #acacac 95%, #8b8282 100%);
+    
+    /* Firefox */
+    background: -moz-repeating-linear-gradient(90deg, #8b8282 0%,#acacac 2%, #d5d5d5 23%, #c9c9c9 29%, #c9c9c9 33%, #c2c1c1 61%, #aca8a8 66%, #aca8a8 79%, #acacac 95%, #8b8282 100%);
+    
+    /* Opera */
+    background: -o-repeating-linear-gradient(90deg, #8b8282 0%,#acacac 2%, #d5d5d5 23%, #c9c9c9 29%, #c9c9c9 33%, #c2c1c1 61%, #aca8a8 66%, #aca8a8 79%, #acacac 95%, #8b8282 100%);
+    
+    /* Internet Explorer */
+    background: -ms-repeating-linear-gradient(90deg, #8b8282 0%,#acacac 2%, #d5d5d5 23%, #c9c9c9 29%, #c9c9c9 33%, #c2c1c1 61%, #aca8a8 66%, #aca8a8 79%, #acacac 95%, #8b8282 100%);
+    
+    /* W3C Standard */
+    background: repeating-linear-gradient(90deg, #8b8282 0%,#acacac 2%, #d5d5d5 23%, #c9c9c9 29%, #c9c9c9 33%, #c2c1c1 61%, #aca8a8 66%, #aca8a8 79%, #acacac 95%, #8b8282 100%);
+  }
+  
+  #platine {
+  border-radius:20px;	
+  
+  width:70px;
+  padding-top:8px;
+  height: 40px;
+  text-align:center;color:white;
+      background: radial-gradient(ellipse farthest-corner at right bottom, #FFFFFF 0%, #e7e6e6 8%, #808080 30%, #acacac 40%, transparent 60%),
+                  radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #e7e6e6 8%, #808080 25%, #e7e6e6 62.5%, #e7e6e6 100%);
+  }
+   
+   
+  #pallad {
+  border-radius:20px;
+  font-size:13px;
+  width:70px;
+  color:black;
+  text-align:center;
+    padding-top:10px;
+    text-shadow:1px 1px lightgrey;
+     height: 40px;
+    background: #9f7c3c;
+    
+    /* Safari and Google Chrome */
+    background: -webkit-repeating-linear-gradient(90deg, #ffffff 0%,#ffffff 2%, #d5d5d5 23%, #f0eded 29%, #f0eded 33%, #c2c1c1 61%, #c9c7c7 66%, #c9c7c7 79%, #f0eeee 95%, #FFFFFF 100%);
+    
+    /* Firefox */
+    background: -moz-repeating-linear-gradient(90deg, #ffffff 0%,#ffffff 2%, #d5d5d5 23%, #f0eded 29%, #f0eded 33%, #c2c1c1 61%, #c9c7c7 66%, #c9c7c7 79%, #f0eeee 95%, #FFFFFF 100%);
+    
+    /* Opera */
+    background: -o-repeating-linear-gradient(90deg, #ffffff 0%,#ffffff 2%, #d5d5d5 23%, #f0eded 29%, #f0eded 33%, #c2c1c1 61%, #c9c7c7 66%, #c9c7c7 79%, #f0eeee 95%, #FFFFFF 100%);
+    
+    /* Internet Explorer */
+    background: -ms-repeating-linear-gradient(90deg, #ffffff 0%,#ffffff 2%, #d5d5d5 23%, #f0eded 29%, #f0eded 33%, #c2c1c1 61%, #c9c7c7 66%, #c9c7c7 79%, #f0eeee 95%, #FFFFFF 100%);
+    
+    /* W3C Standard */
+    background: repeating-linear-gradient(90deg, #ffffff 0%,#ffffff 2%, #d5d5d5 23%, #f0eded 29%, #f0eded 33%, #c2c1c1 61%, #c9c7c7 66%, #c9c7c7 79%, #f0eeee 95%, #FFFFFF 100%);
+  }

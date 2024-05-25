@@ -1,0 +1,294 @@
+@media screen and (min-width: 1900px) {
+	.cotation{
+		margin-left:-30%!important;
+	}
+
+	.taille1{
+		min-width:50px!important;
+	}
+	.taille2{
+		min-width:60px!important;
+	}
+	.taille3{
+		min-width:106px;
+	}
+	.taille4{
+		min-width:118px;
+	}
+
+}
+
+@media screen and (min-width: 1600px) {
+	.cotation{
+		margin-left:-30%!important;
+	}
+
+	.taille1{
+		min-width:50px!important;
+	}
+	.taille2{
+		min-width:60px!important;
+	}
+	.taille3{
+		min-width:106px;
+	}
+	.taille4{
+		min-width:118px;
+	}
+}
+
+@media screen and (min-width: 1400px) {
+	.cotation{
+		margin-left:-30%!important;
+	}
+
+	.taille1{
+		min-width:45px!important;
+		max-width:45px!important;
+	}
+	.taille2{
+		min-width:50px!important;
+		max-width:50px!important;
+	}
+	.taille3{
+		min-width:86px!important;
+		max-width:92px!important;
+
+	}
+	.taille4{
+		min-width:88px!important;
+		max-width:108px!important;
+	}
+
+}
+
+
+
+/*
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+
+@media (min-width: 1281px) {
+
+	.hidden{
+		display:none;
+	}
+	.cotation{
+		margin-left:5%!important;
+		font-size:12px!important;
+	}
+	.my-table{
+		font-size:11px!important;
+	}
+
+	.taille1{
+		min-width:45px!important;
+		max-width:45px!important;
+	}
+	.taille2{
+		min-width:50px!important;
+		max-width:50px!important;
+	}
+	.taille3{
+		width:76px!important;
+
+	}
+	.taille4{
+		width:95px!important;
+		max-width:95px!important;
+	}
+
+}
+
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+	.hidden{
+		display:none;
+	}
+
+	.mytable td,.mytable th{
+		font-size:10px!important;
+	}
+	.taille1{
+		width:40px!important;
+		max-width:40px!important;
+	}
+	.taille2{
+		width:45px!important;
+		max-width:45px!important;
+	}
+	.taille3 {
+		width: 63px!important;
+		max-width: 63px!important;
+	}
+	.taille4{
+		width:80px!important;
+		max-width:80px!important;
+	}
+
+	.dollars-table td ,.metals-table td{
+		padding:2px 2px 2px 2px!important;
+		font-size:12px!important;
+	}
+	.cotation-sidebar{
+		float:right;
+	}
+	.cotation{
+		margin-left:5%!important;
+		font-size:12px!important;
+	}
+}
+
+/*
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+  	.hidden{
+		display:none;
+	}
+  .taille3 {
+	width: 83px!important;
+	}
+	.dollars-table td ,.metals-table td{
+		padding:2px 2px 2px 2px!important;
+		font-size:12px!important;
+	}
+	.cotation-sidebar .cotation{
+		float:right;
+	}
+}
+
+
+
+
+
+
+
+
+
+/*
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+	.hidden{
+		display:none;
+	}
+
+  .hidemobile{display:none!important;}
+
+td,th{
+	padding-left:5px!important;
+	padding-right:5px!important;
+}
+
+.sidebar .sidebar-brand .sidebar-brand-text img {
+   width:70px!important;
+}
+
+#field-confirmation {
+	font-size:13px;
+}
+
+
+ #tabencours, #tabmetal{
+	 font-size:10px!important;
+	 margin-left:-15px;
+
+ }
+
+ #gold,#silver,#platine,#palladium{
+	 width:45px!important;
+ }
+
+ .h5,.solde{
+	font-size:13px!important;
+}
+.solde{
+	margin-top:0px!important;
+}
+
+}
+
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {
+	.hidden{
+		display:none;
+	}
+.hidemobile{display:none!important;}
+
+.sidebar .sidebar-brand .sidebar-brand-text img {
+   width:60px!important;
+}
+
+td,th{
+	padding-left:3px!important;
+	padding-right:3px!important;
+}
+
+
+ #tabencours, #tabmetal{
+	 font-size:10px!important;
+	 margin-left:-15px;
+
+ }
+
+ #gold,#silver,#platine,#palladium{
+	 width:45px!important;
+ }
+ .h5,.solde{
+	font-size:13px!important;
+}
+.solde{
+	margin-top:0px!important;
+}
+}
+
+/*
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {
+	.hidden{
+		display:none;
+	}
+.hidemobile{display:none!important;}
+td,th{
+	padding-left:3px!important;
+	padding-right:3px!important;
+}
+.sidebar .sidebar-brand .sidebar-brand-text img {
+   width:50px!important;
+}
+
+
+ #tabencours, #tabmetal{
+	 font-size:10px!important;
+	 margin-left:-15px;
+ }
+
+ #gold,#silver,#platine,#pallad{
+	 width:45px!important;
+ }
+ .h5,.solde{
+	font-size:13px!important;
+}
+.solde{
+	margin-top:0px!important;
+}
+
+}

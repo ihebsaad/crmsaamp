@@ -1,0 +1,208 @@
+.form-token-tags {
+  box-sizing: border-box;
+  padding: 19.2px;
+  display: block;
+  margin: 0;
+  width: 100%;
+  background: #fff;
+  background-clip: padding-box;
+  border: 1px solid #a8adaf;
+  /*border-radius: 3px;*/
+  color: #848689;
+  outline: 0;
+  font-family: inherit;
+  font-size: inherit;
+}
+.form-token-tags:hover,
+.form-token-tags:focus {
+  color: #464849;
+  border-color: #46aaff;
+}
+.form-token-tags *,
+.form-token-tags *:before,
+.form-token-tags *:after {
+  box-sizing: border-box;
+  font-family: 'Helvetica', 'Arial', san-serif;
+}
+.form-token-tags {
+  cursor: text;
+  position: relative;
+  width: 100%;
+}
+.form-token-tags:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+.form-token-tags input {
+  background-color: inherit;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+.form-token-tags .icon-tag,
+.form-token-tags .icon-location,
+.form-token-tags .icon-clock {
+  color: #848689;
+}
+.form-token-tags:hover .icon-tag,
+.form-token-tags .icon-location {
+  color: #464849;
+}
+.form-token-tags {
+  padding: .5em 1em;
+  overflow: hidden;
+}
+.form-token-tags:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+.form-token-tags:hover {
+  border-color: #46aaff;
+}
+.form-token-tags > input, .form-token-tags > textarea {
+  box-sizing: border-box;
+  background-color: inherit;
+  border: 0 none;
+  padding: 0;
+  width: 100%;
+  font-size: inherit;
+}
+.form-token-tags .icon-tag,
+.form-token-tags .icon-location,
+.form-token-tags .icon-clock {
+  color: #848689;
+}
+.form-token-tags:hover .icon-tag,
+.form-token-tags .icon-location {
+  color: #464849;
+}
+.tag-editor {
+  margin: 0;
+  padding: 0;
+  min-height: 2.7em;
+  background: transparent none;
+  font: normal 1em inherit;
+  list-style-type: none;
+  line-height: 1.5em;
+  color: #464849;
+  cursor: text;
+}
+.tag-editor li {
+  display: inline-block;
+  margin: 8px 0;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.tag-editor div {
+  float: left;
+}
+.tag-editor .placeholder {
+  padding: 0 8px;
+  color: #c0c4c7;
+}
+.tag-editor .tag-editor-spacer {
+  padding: 0;
+  width: 0;
+  overflow: hidden;
+  background: none;
+  color: transparent;
+}
+.tag-editor input {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  outline: none;
+  background: none;
+  font-family: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: inherit;
+  vertical-align: inherit;
+  color: #464849;
+  cursor: text;
+  box-shadow: none;
+}
+.tag-editor ::-ms-clear {
+  display: none;
+}
+.tag-editor .tag-editor-tag {
+  border: 1px solid #46aaff;
+  padding: 0 8px;
+  background: rgba(70, 170, 255, 0.2) none;
+  color: #848689;
+  cursor: text;
+  border-radius: .2em;
+}
+.tag-editor li:hover .tag-editor-tag {
+  color: #46aaff;
+}
+.tag-editor .tag-editor-delete {
+  position: relative;
+  left: -.65em;
+  top: -.65em;
+  margin-right: -4px;
+  visibility: hidden;
+  cursor: pointer;
+}
+.tag-editor .tag-editor-delete i {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  background: #ff4b60 none;
+  text-align: center;
+  line-height: 1.5em;
+  font-size: 1rem;
+  color: #fefefe;
+  border-radius: 50%;
+}
+.tag-editor li:hover .tag-editor-delete i {
+  visibility: visible;
+}
+.tag-editor .tag-editor-delete i:before {
+  content: 'X';
+  font-style: normal;
+}
+.tag-editor .tag-editor-tag.active + .tag-editor-delete,
+.tag-editor .tag-editor-tag.active + .tag-editor-delete i {
+  background-color: transparent;
+  color: transparent;
+  cursor: pointer;
+}
+.tag-editor .tag-editor-tag.active {
+  border: 0 none;
+  background: none !important;
+}
+.tag-editor .tag-editor-tag.active + .tag-editor-delete {
+  border: 0 none;
+}
+
+.ui-menu,
+.ui-menu li {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.ui-menu {
+  display: inline-block;
+  padding: .25em .5em;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: .5em;
+  box-shadow: 1px 1px 3px #ccc;
+}
+
+.ui-menu li {
+  border-top: 1px solid #ccc;
+}
+
+.ui-menu li:first-child {
+  border: 0 none;
+}
+
+.ui-helper-hidden-accessible {
+  position: absolute;
+  visibility: hidden;
+}
