@@ -25,8 +25,9 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
 
-          <!-- Page Heading -->
+          <!-- Page Heading
           <h1 class="h3 mb-4 text-gray-800"> </h1>
+          -->
  @if ($errors->any())
              <div class="alert alert-danger">
                  <ul>
@@ -87,7 +88,7 @@
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body text-center"  style="height:80px!important"><b style="font-size:18px:color:black">{{__('msg.Do you really want to log out?') }}</b></div>
+        <div class="modal-body text-center"  style="height:80px!important"><b style="font-size:18px;color:black">{{__('msg.Do you really want to log out?') }}</b></div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">{{__('msg.Cancel')}}</button>
           <a class="btn btn-primary" href="{{ route('logout') }}"    onclick="event.preventDefault();document.getElementById('logout-form').submit();">

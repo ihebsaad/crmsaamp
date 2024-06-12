@@ -35,11 +35,25 @@
    <link rel="stylesheet" href="{{ URL::asset('assets/css/alertify.css') }}">
    <link rel="stylesheet" href="{{ URL::asset('assets/css/alertify-bootstrap.css') }}">
 
+   <link rel="stylesheet" href="{{ URL::asset('css/custom_css/tables.css') }}">
+
 
    <link href="{{ asset('js/select2/css/select2.css') }}" rel="stylesheet" type="text/css" />
    <link href="{{ asset('js/select2/css/select2-bootstrap.css') }}" rel="stylesheet" type="text/css" />
 
-
+  <style>
+  .container-fluid {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 180px);
+  }
+  footer{
+      height:80px;
+  }
+  main {
+    flex: 1;
+  }
+  </style>
    <script>
      $(document).ready(function() {
        if (parseInt(window.screen.availWidth) < 1024) {

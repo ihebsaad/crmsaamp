@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ClientsController;
-
+use App\Http\Controllers\RetoursController;
+use App\Http\Controllers\ContactsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,7 +32,32 @@ Route::get('/refresh', 'App\Http\Controllers\Auth\LoginController@refresh')->nam
 Route::get('users/loginas/{id}', 'App\Http\Controllers\UsersController@loginas')->name('loginas');
 
 Route::get('/search', [ClientsController::class, 'search'])->name('search');
-Route::get('/clients/create', [ClientsController::class, 'create'])->name('create');
+Route::post('/search', [ClientsController::class, 'search']);
+Route::get('/clients/create', [ClientsController::class, 'create'])->name('compte_client.create');
+Route::get('/clients/fiche/{id}', [ClientsController::class, 'fiche'])->name('fiche');
+Route::get('/clients/finances/{id}', [ClientsController::class, 'finances'])->name('finances');
+Route::get('/clients/phone/{id}', [ClientsController::class, 'phone'])->name('phone');
+Route::post('/ajoutclient', [ClientsController::class, 'store'])->name('compte_client.store');
+#Route::post('/update', [ClientsController::class, 'update'])->name('compte_client.update');
+Route::put('/compte_client/{id}', [ClientsController::class, 'update'])->name('compte_client.update');
+Route::get('/clients/show/{id}', [ClientsController::class, 'show'])->name('compte_client.show');
+
+
+
+Route::get('/retours/show/{id}', [RetoursController::class, 'show'])->name('retours.show');
+Route::put('/retours/{id}', [RetoursController::class, 'update'])->name('retours.update');
+
+
+Route::get('/contacts/show/{id}', [ContactsController::class, 'show'])->name('contacts.show');
+Route::put('/contacts/{id}', [ContactsController::class, 'update'])->name('contacts.update');
+
+
+
+
+
+
+
+
 
 
 Route::get('/profile', 'App\Http\Controllers\UsersController@profile')->name('profile');

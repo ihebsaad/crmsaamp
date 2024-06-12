@@ -42,23 +42,23 @@ if (Auth::check()) {
 
   <li class="nav-item   ">
     <a class="nav-link" href="{{route('search')}}">
-      <i class="fas fa-fw fa-users" ></i>
+      <i class="fas fa-users" ></i>
       <span> Clients </span>
     </a>
       <hr class="sidebar-divider">
 
     <a class="nav-link" href="#">
-      <i class="fas fa-fw fa-tasks" ></i>
+      <i class="fas fa-tasks" ></i>
       <span> Tâches </span>
     </a>
     <hr class="sidebar-divider">
     <a class="nav-link" href="#">
-      <i class="fas fa-fw fa-file-invoice-dollar" ></i>
+      <i class="fas fa-file-invoice-dollar" ></i>
       <span> Offres commerciales </span>
     </a>
     <hr class="sidebar-divider">
     <a class="nav-link" href="#">
-    <i class="fas fa-fw fa-comments" ></i>
+    <i class="fas fa-comments" ></i>
       <span> Retour client </span>
     </a>
   </li>
