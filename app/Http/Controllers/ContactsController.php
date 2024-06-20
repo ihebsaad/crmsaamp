@@ -32,14 +32,15 @@ class ContactsController extends Controller
 
 
 
-	public function create()
+	public function create($id)
 	{
-		return view('contacts.create');
+		$client=CompteClient::find($id);
+		$contact=Contact::where('cl_ident',$client->id)->first();
+		return view('contacts.create',compact('contact','client'));
 	}
 
 	public function show($id)
 	{
-		//$contact=Contact::where('old_id',$id)->first();
 		$contact=Contact::find($id);
 		//Contact::updateWithSequentialIds();
 		return view('contacts.show',compact('contact'));
@@ -66,8 +67,8 @@ class ContactsController extends Controller
 
         ]);
 
-        $client=RetourClient::create($request->all());
-		return redirect()->route('show', $client->id)
+        $contact=Contact::create($request->all());
+		return redirect()->route('contacts.show', $contact->id)
 		->with('success',' Contact ajouté');
 	}
 

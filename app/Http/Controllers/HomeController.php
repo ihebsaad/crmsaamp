@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\User;
-
+use App\Models\CompteClient;
+use App\Services\PhoneService;
 use Illuminate\Support\Facades\App;
 use App\Services\SendMail;
 use  PDO;
@@ -117,5 +118,24 @@ class HomeController extends Controller
 		return json_encode($agence);
 	}
 
+
+	public function phone()
+	{
+
+		$client=CompteClient::where('cl_ident',auth()->user()->client_id)->first();
+
+		$token=$client->token_phone ?? 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1NTk4ODM2IiwiYXVkIjoiKiIsImlzcyI6InR2eCIsImlhdCI6MTcxNjU0NjU5MCwianRpIjoiMTg5OTQ0NjYifQ.4_0fCiH0KqsKHbtI3xnp1VkrRamENo_qf7Uecs_0b4WhczutEMUJZlHzhm4HZqHgKBbCxxyv3E8mX5nl-JQm4Q';
+		$appels=PhoneService::data($client->token_phone);
+/*
+		$tous_appels=$callData['incoming'] ?? array();
+		//dd($tous_appels);
+		$phone=$client->phone;
+		$appels = array_filter($tous_appels, function($appel) use ($phone) {
+			return $appel['number'] === $phone;
+		});
+*/
+		return view('clients.phone',compact('client','appels','token'));
+
+	}
 
 } // end class

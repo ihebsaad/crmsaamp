@@ -31,16 +31,23 @@ class RetoursController extends Controller
 	 */
 
 
-
-	public function create()
+	public function index()
 	{
-		return view('retours.create');
+		$retours=RetourClient::orderBy('id','desc')->get();
+		return view('retours.index',compact('retours'));
+	}
+
+	public function create($id)
+	{
+		$client=CompteClient::find($id);
+		$retour=RetourClient::where('cl_id',$client->cl_ident)->first();
+		$contact=Contact::where('cl_ident',$client->cl_ident)->first();
+		return view('retours.create',compact('retour','client','contact'));
 	}
 
 	public function show($id)
 	{
 		$retour=RetourClient::find($id);
-		//$retour=RetourClient::where('old_id',$id)->first();
 		$class='';
 		switch ( $retour->Type_retour ) {
 			case 'Négatif':

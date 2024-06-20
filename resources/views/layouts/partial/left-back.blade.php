@@ -47,19 +47,24 @@ if (Auth::check()) {
     </a>
       <hr class="sidebar-divider">
 
-    <a class="nav-link" href="#">
+    <a class="nav-link" href="{{route('taches.index')}}" >
       <i class="fas fa-tasks" ></i>
       <span> Tâches </span>
     </a>
     <hr class="sidebar-divider">
-    <a class="nav-link" href="#">
+    <a class="nav-link"  href="{{route('offres.index')}}">
       <i class="fas fa-file-invoice-dollar" ></i>
       <span> Offres commerciales </span>
     </a>
     <hr class="sidebar-divider">
-    <a class="nav-link" href="#">
+    <a class="nav-link" href="{{route('retours.index')}}" >
     <i class="fas fa-comments" ></i>
-      <span> Retour client </span>
+      <span> Réclamations </span>
+    </a>
+    <hr class="sidebar-divider">
+    <a class="nav-link" href="{{route('phone')}}">
+    <i class="fas fa-phone-alt" ></i>
+      <span> Télephonie </span>
     </a>
   </li>
 

@@ -103,21 +103,21 @@ function displayCalls($calls,$type) {
             <div class="card-body">
 
             <div class="calls-container">
-                <?php if ($callData): ?>
+                <?php if ($appels): ?>
                     <div>
                         <h6><img  src="{{  URL::asset('img/entring.png') }}"  width="40"/>Appels Entrants</h6>
-                        <?php displayCalls($callData['incoming'],'text-success'); ?>
+                        <?php displayCalls($appels['incoming'],'text-success'); ?>
                     </div>
                     <div>
                         <h6><img  src="{{  URL::asset('img/sorting.png') }}"  width="40"/>Appels Sortants</h6>
-                        <?php displayCalls($callData['outgoing'],'text-primary'); ?>
+                        <?php displayCalls($appels['outgoing'],'text-primary'); ?>
                     </div>
                     <div>
                         <h6><img  src="{{  URL::asset('img/missed.png') }}"  width="40"/>Appels Manqués</h6>
-                        <?php displayCalls($callData['missed'],'text-danger'); ?>
+                        <?php displayCalls($appels['missed'],'text-danger'); ?>
                     </div>
                 <?php else: ?>
-                    <p class="error">Erreur lors de la récupération des données ou données vides.</p>
+                    <p class="text-error">Erreur lors de la récupération des données ou données vides.</p>
                 <?php endif; ?>
             </div>
 

@@ -44,7 +44,7 @@ if (isset($_GET['call'])) {
                 <h6 class="m-0 font-weight-bold text-primary">Fiche du client {{$client->id}} - {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
-            <a href="{{route('compte_client.show',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a><a href="{{route('finances',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a> <!--<a href="{{route('phone',['id'=>$client->id])}}"  class="btn btn-primary mb-3 float-right"><i class="fas fa-phone-alt"></i> Télephonie</a>-->
+            <a href="{{route('compte_client.show',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a><a href="{{route('finances',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a> <a href="{{route('taches.client_list',['id'=>$client->id])}}"  class="btn btn-primary mb-3 float-right"><i class="fas fa-tasks"></i> Tâches</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}"  class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-gift"></i> Offres</a>
                     <div class="clearfix"></div>
                 <form id="">
                     <div class="row pt-1">
@@ -207,6 +207,8 @@ if (isset($_GET['call'])) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
+                <a href="{{route('retours.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+
                 <table class="table table-striped mb-40">
                     <thead >
                         <tr><th>Titre</th><th>Date</th></tr>
@@ -238,7 +240,7 @@ if (isset($_GET['call'])) {
                     <tbody>
                         @php $i=0; @endphp
                         @foreach($appels as $appel)
-                            @if($i<8)
+                            @if( str_replace(' ', '', $appel['number']) ==  str_replace(' ', '', $client->Phone ) )
                                 @php $i++; $date= htmlspecialchars(date('d/m/Y H:i', strtotime($appel['datetime']))); @endphp
                                 <tr><td>{{$date}}</td><td><i class="fas fa-phone-square-alt"></i> {{ htmlspecialchars($appel['number']) }}</td></tr>
                             @endif
@@ -260,6 +262,8 @@ if (isset($_GET['call'])) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
+                <a href="{{route('contacts.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+
                 <table class="table table-striped mb-40">
                     <thead >
                         <tr><th>Nom</th><th>Prénom</th><th>Tél</th></tr>

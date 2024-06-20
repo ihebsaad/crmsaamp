@@ -40,7 +40,7 @@
                                     <option></option>
                                     <option @selected($retour->Type_retour=="Information générale") value="Information générale">Information générale</option>
                                     <option @selected($retour->Type_retour=="Négatif") value="Négatif">Négatif</option>
-                                    <option @selected($retour->Type_retour=="Positif") value="">Positif</option>
+                                    <option @selected($retour->Type_retour=="Positif") value="Positif">Positif</option>
                                 </select><br><br>
                             </div>
                         </div>
@@ -48,7 +48,25 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Motif_retour">Motif de retour:</label>
-                                <input type="text" id="Motif_retour" class="form-control" name="Motif_retour"  value="{{$retour->Motif_retour}}"><br><br>
+                                <select    id="Motif_retour" class="  form-control" name="Motif_retour"   >
+                                    <option></option>
+                                    <option @selected($retour->Motif_retour=="Apprêts")   value="Apprêts">Apprêts</option>
+                                    <option @selected($retour->Motif_retour=="Autre")  value="Autre">Autre</option>
+                                    <option @selected($retour->Motif_retour=="Bijouterie") value="Bijouterie">Bijouterie</option>
+                                    <option @selected($retour->Motif_retour=="Concurrent") value="Concurrent">Concurrent</option>
+                                    <option @selected($retour->Motif_retour=="Contestation des titres") value="Contestation des titres">Contestation des titres</option>
+                                    <option @selected($retour->Motif_retour=="Délai de livraison produit/ service") value="Délai de livraison produit/ service">Délai de livraison produit/ service</option>
+                                    <option @selected($retour->Motif_retour=="Demi-produits") value="Demi-produits">Demi-produits</option>
+                                    <option @selected($retour->Motif_retour=="Erreur de modèle livré") value="Erreur de modèle livré">Erreur de modèle livré</option>
+                                    <option @selected($retour->Motif_retour=="Livraison") value="Livraison">Livraison</option>
+                                    <option @selected($retour->Motif_retour=="Marché") value="Marché">Marché</option>
+                                    <option @selected($retour->Motif_retour=="Problème administratif") value="Problème administratif">Problème administratif</option>
+                                    <option @selected($retour->Motif_retour=="Produit défectueux") value="Produit défectueux">Produit défectueux</option>
+                                    <option @selected($retour->Motif_retour=="Qualité de service") value="Qualité de service">Qualité de service</option>
+                                    <option @selected($retour->Motif_retour=="Réactivité") value="Réactivité">Réactivité</option>
+                                    <option @selected($retour->Motif_retour=="Service en agence") value="Service en agence">Service en agence</option>
+                                    <option @selected($retour->Motif_retour=="Traitement d'une réclamation") value="Traitement d'une réclamation">Traitement d'une réclamation</option>
+                                </select><br><br>
                             </div>
                         </div>
 
@@ -61,6 +79,31 @@
                     </div>
 
                     <div class="row pt-1">
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="Division">Division:</label>
+                                <select    id="Division" class="  form-control" name="Division"   >
+                                    <option></option>
+                                    <option  @selected($retour->Division=="accueil et relation client") value="accueil et relation client">accueil et relation client </option>
+                                    <option  @selected($retour->Division=="Affinage")  value="Affinage">Affinage</option>
+                                    <option  @selected($retour->Division=="Apprêts")  value="Apprêts">Apprêts</option>
+                                    <option  @selected($retour->Division=="Autre")  value="Autre">Autre</option>
+                                    <option  @selected($retour->Division=="bijouterie")  value="bijouterie">Bijouterie</option>
+                                    <option  @selected($retour->Division=="Concurrent")  value="Concurrent">Concurrent</option>
+                                    <option  @selected($retour->Division=="compte poids")  value="compte poids">Compte poids</option>
+                                    <option  @selected($retour->Division=="Demi-produits")  value="Demi-produits">Demi-produits</option>
+                                    <option  @selected($retour->Division=="facturation")  value="facturation">Facturation</option>
+                                    <option  @selected($retour->Division=="investissement")  value="investissement">Investissement</option>
+                                    <option  @selected($retour->Division=="laboratoire")  value="laboratoire">Laboratoire</option>
+                                    <option  @selected($retour->Division=="Marché")  value="Marché">Marché</option>
+                                    <option  @selected($retour->Division=="Qualité de service")  value="Qualité de service">Qualité de service</option>
+                                    <option  @selected($retour->Division=="Qualité des produits")  value="Qualité des produits">Qualité des produits</option>
+                                    <option  @selected($retour->Division=="Rachat métaux")  value="Rachat métaux">Rachat métaux</option>
+                                    <option  @selected($retour->Division=="règlement/virement")  value="règlement/virement">Règlement/virement</option>
+                                    <option  @selected($retour->Division=="Traitement d'une réclamation")  value="Traitement d'une réclamation">Traitement d'une réclamation</option>
+                                </select><br><br>
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Date_ouverture">Date d'ouverture:</label>

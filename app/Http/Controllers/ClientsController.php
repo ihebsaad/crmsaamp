@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\CompteClient;
 use App\Models\Contact;
 use App\Models\RetourClient;
+use App\Models\Tache;
 use App\Services\PhoneService;
 use Illuminate\Support\Facades\DB;
 
@@ -95,7 +96,11 @@ class ClientsController extends Controller
 		$client=CompteClient::find($id);
 		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
 		$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
-		/*
+
+		if($client->Id_Salesforce!='')
+			$taches=Tache::where('ID_Compte',$client->Id_Salesforce)->get();
+		else
+			$taches=Tache::where('ID_Compte',$client->id)->get();
 		//$appels=array();
 		$callData=PhoneService::data($client->token_phone);
 
@@ -104,11 +109,12 @@ class ClientsController extends Controller
 		$appels = array_filter($tous_appels, function($appel) use ($phone) {
 			return $appel['number'] === $phone;
 		});
-*/
+
+	/*
 		$callData=PhoneService::data($client->token_phone);
 		$appels=$callData['incoming'] ?? array();
-
-		return view('clients.fiche',compact('client','contacts','retours','appels'));
+*/
+		return view('clients.fiche',compact('client','contacts','retours','appels','taches'));
 	}
 
 	public function finances($id)
