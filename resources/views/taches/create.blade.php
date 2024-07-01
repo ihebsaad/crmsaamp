@@ -17,7 +17,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Créer une tâche </h6>
+                <h6 class="m-0 font-weight-bold text-primary">Créer une prise de contact </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -48,6 +48,9 @@
                                     <option></option>
                                     <option  value="Acompte / Demande de paiement">Acompte / Demande de paiement</option>
                                     <option  value="Appel téléphonique">Appel téléphonique</option>
+                                    <option  value="Envoyer email">Envoyer email</option>
+                                    <option  value="Envoyer courrier">Envoyer courrier</option>
+<!--
                                     <option  value="Avoir">Avoir</option>
                                     <option  value="Bordereau achat">Bordereau achat</option>
                                     <option  value="Call">Call</option>
@@ -64,7 +67,7 @@
                                     <option  value="Remise de commande">Remise de commande</option>
                                     <option  value="Suivi client">Suivi client</option>
                                     <option  value="Vérification comptable interne">Vérification comptable interne</option>
-                                    <option  value="Virement">Virement</option>
+                                    <option  value="Virement">Virement</option>-->
                                 </select><br><br>
                             </div>
                         </div>

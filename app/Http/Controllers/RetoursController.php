@@ -86,11 +86,13 @@ class RetoursController extends Controller
 	public function store(Request $request)
     {
         $request->validate([
-            'Name' => 'required',
+            'Type_retour' => 'required',
 
         ]);
 
         $retour=RetourClient::create($request->all());
+		$retour->name='RC-'.sprintf('%05d',$retour->id);
+		$retour->save();
 		return redirect()->route('retours.show', $retour->id)
 		->with('success','Retour ajouté');
 	}

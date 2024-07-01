@@ -11,10 +11,27 @@ $user = auth()->user();
    .bg-dark{
     background-color:#f6c23e30!important;
     }
+    .bg-dark{
+    background-color:#f6c23e30!important;
+    }
+    .table th{
+      font-size:12px!important;
+    }
+    .table td{
+      font-size:11px!important;
+    }
+    .row{
+      padding: 3px 3px !important;
+    }
+    .table-container {
+      max-height: 300px; /* Limitez la hauteur de la zone d'affichage */
+      overflow-y: auto; /* Activez le défilement vertical si le contenu dépasse la hauteur définie */
+      width:100%;
+    }
  </style>
 
  <!-- Topbar -->
- <nav class="navbar navbar-expand navbar-light bg-dark topbar mb-4 static-top shadow">
+ <nav class="navbar navbar-expand navbar-light bg-dark topbar mb-3 static-top shadow" style="height:60px!important">
 
    <!-- Sidebar Toggle (Topbar) -->
    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">

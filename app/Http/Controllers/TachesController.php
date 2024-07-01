@@ -34,7 +34,15 @@ class TachesController extends Controller
 
 	public function index()
 	{
-		$taches=Tache::where('id','<>',null)->limit(1000)->orderBy('id','desc')->get();
+		//$taches=Tache::where('id','<>',null)->limit(1000)->orderBy('id','desc')->get();
+
+
+		$taches=Tache::where(function ($query) {
+			$query->where('type', 'Appel téléphonique')
+				->orWhere('type', 'Envoyer email')
+				->orWhere('type', 'Envoyer courrier');
+		})->where('id','<>',null)
+		->limit(1000)->orderBy('id','desc')->get();
 		return view('taches.list',compact('taches'));
 	}
 

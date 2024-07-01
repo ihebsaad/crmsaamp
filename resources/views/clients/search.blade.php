@@ -18,7 +18,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Recherche des clients</h6>
             </div>
             <div class="card-body">
-                <a href="{{route('compte_client.create')}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter</a><div class="clearfix"></div>
+                <a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter</a><div class="clearfix"></div>
                 <form>
                     <div class="row pt-1">
                         <div class="col-md-6">

@@ -49,7 +49,7 @@ if (Auth::check()) {
 
     <a class="nav-link" href="{{route('taches.index')}}" >
       <i class="fas fa-tasks" ></i>
-      <span> Tâches </span>
+      <span> Prises de contact </span>
     </a>
     <hr class="sidebar-divider">
     <a class="nav-link"  href="{{route('offres.index')}}">
