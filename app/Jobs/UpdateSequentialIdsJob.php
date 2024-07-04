@@ -7,7 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Tache;
+use App\Models\RendezVous;
+use App\Models\CompteClient;
+use DB;
 
 class UpdateSequentialIdsJob implements ShouldQueue
 {
@@ -30,17 +32,29 @@ class UpdateSequentialIdsJob implements ShouldQueue
      */
     public function handle()
     {
-        /*
-        $count = Tache::count();
+/*
+        $count = RendezVous::count();
         for ($i = 1; $i <= $count; $i++) {
-            Tache::whereNull('id')->limit(1)->update(['id' => $i]);
+            RendezVous::whereNull('id')->limit(1)->update(['id' => $i]);
         }
 */
+/*
         $count = Tache::count();
         $start = Tache::where('id','<>',null)->count();
         $j=$start+1;
         for ($i = $j; $i <= $count; $i++) {
             Tache::where('id', null)->limit(1)->update(['id' => $i]);
         }
+        */
+        $adresses=DB::table('CRMClient_geocoded')->get();
+        foreach($adresses as $adresse){
+            CompteClient::where('Id_Salesforce', $adresse->Id_Salesforce)->update(
+                [
+                    'longitude' => $adresse->longitude,
+                    'latitude' => $adresse->latitude
+                ]
+        );
+        }
+
     }
 }

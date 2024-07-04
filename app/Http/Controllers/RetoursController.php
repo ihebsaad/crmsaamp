@@ -72,10 +72,11 @@ class RetoursController extends Controller
 
 	public function update(Request $request, $id)
     {
+		/*
         $request->validate([
             'Name' => 'required',
          ]);
-
+*/
 		$retour = RetourClient::find($id);
 		$retour->update($request->all());
 

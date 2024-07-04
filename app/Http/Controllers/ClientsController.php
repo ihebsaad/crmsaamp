@@ -50,8 +50,6 @@ class ClientsController extends Controller
     {
         $request->validate([
             'Nom' => 'required',
-            'cl_ident' => 'required',
-            'cl_ident' => 'required',
             'Rue' => 'required',
             'Client_Prospect' => 'required',
             'BillingAddress_city' => 'required',
@@ -97,12 +95,18 @@ class ClientsController extends Controller
 		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
 		$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
 
+		DB::select("SET @p0='$client->cl_ident'  ;");
+		$stats=  DB::select('call `sp_stats_mois_pleins`(@p0); ');
+
 		if($client->Id_Salesforce!='')
 			$taches=Tache::where('ID_Compte',$client->Id_Salesforce)->get();
 		else
 			$taches=Tache::where('ID_Compte',$client->id)->get();
 		//$appels=array();
 		$callData=PhoneService::data($client->token_phone);
+
+		DB::select("SET @p0='$client->cl_ident'  ;");
+		$commandes =  DB::select(" CALL `sp_accueil_liste_commandes`(@p0); ");
 
 		$tous_appels=$callData['incoming'] ?? array();
 		$phone=$client->phone;
@@ -114,7 +118,7 @@ class ClientsController extends Controller
 		$callData=PhoneService::data($client->token_phone);
 		$appels=$callData['incoming'] ?? array();
 */
-		return view('clients.fiche',compact('client','contacts','retours','appels','taches'));
+		return view('clients.fiche',compact('client','contacts','retours','appels','taches','stats','commandes'));
 	}
 
 	public function finances($id)
@@ -162,7 +166,7 @@ class ClientsController extends Controller
 		}
 
 		if ($request->has('Departement') && $request->Departement) {
-			$query->where('Departement', 'like', '%' . $request->Departement . '%');
+			$query->where('Departement',  intval($request->Departement) );
 		}
 
 		if ($request->has('Pays') && $request->Pays) {

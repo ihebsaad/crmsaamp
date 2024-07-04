@@ -91,7 +91,7 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="id">ID Client:</label>
-                                <input type="text" id="cl_ident" class="form-control" name="" value="{{$client->cl_ident}}" readonly ><br><br>
+                                <input type="text" id="cl_ident" class="form-control" name="cl_ident" value="{{$client->cl_ident}}" readonly ><br><br>
                             </div>
                         </div>
                     </div>

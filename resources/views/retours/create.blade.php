@@ -69,12 +69,20 @@
                                     <option  value="Traitement d'une réclamation">Traitement d'une réclamation</option>
                                 </select><br><br>
                             </div>
+
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Responsable_de_resolution">Responsable de résolution:</label>
                                 <input type="text" id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution"  value="{{old('Responsable_de_resolution')}}"><br><br>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="Nom_du_compte">Nom du client:</label>
+                                <input type="text" id="Nom_du_compte" class="form-control" name="Nom_du_compte" readonly value="{{$client->Nom}}"><br><br>
                             </div>
                         </div>
                     </div>
@@ -124,6 +132,33 @@
                                 <input type="text" id="Title" class="form-control" name="cl_id"  readonly value="{{$client->cl_ident}}"><br><br>
                             </div>
                         </div>
+                    </div>
+
+
+                    <div class="row pt-1">
+
+                        <div class="col-md-6">
+                            <div class="">
+                                <label for="Une_reponse_a_ete_apportee_au_client">Réponse au client:</label>
+                                <textarea  id="Une_reponse_a_ete_apportee_au_client" class="form-control" name="Une_reponse_a_ete_apportee_au_client"  style="min-height:150px">{{old('Une_reponse_a_ete_apportee_au_client')}}</textarea><br><br>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div >
+                                <label for="Type_retour">Référence du lot:</label>
+                                <input type="text" id="Ref_produit_lot_commande_facture" class="form-control" name="Ref_produit_lot_commande_facture"  value="{{old('Ref_produit_lot_commande_facture')}}"><br><br>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="Depot_concerne ">Dépôt concerné:</label>
+                                <input type="text" id="Depot_concerne" class="form-control" name="Depot_concerne"  value="{{old('Depot_concerne')}}"><br><br>
+                            </div>
+
+                        </div>
+
                     </div>
 
                     <div class="row pt-1">

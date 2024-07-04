@@ -28,12 +28,13 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Ajouter un client</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Ajouter un prospect</h6>
             </div>
             <div class="card-body">
 
                 <form action="{{ route('compte_client.store') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="Client_Prospect" value="COMPTE PROSPECT" />
                     <div class="row pt-1">
                         <div class="col-md-7">
                             <div id="map"></div>
@@ -87,7 +88,18 @@
                     </div>
 
                     <div class="row pt-1">
-                        <div class="col-md-3">
+
+                        <div class="col-md-2">
+                            <!--
+                            <div class="">
+                                <label for="id">ID Client:</label>
+                                <input type="text" id="cl_ident" class="form-control" name="cl_ident" value="" required><br><br>
+                            </div>-->
+                        </div>
+                    </div>
+
+                    <div class="row pt-1">
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="Nom">Nom:</label>
                                 <input type="text" id="Nom" class="form-control" name="Nom"  value="" required><br><br>
@@ -95,10 +107,23 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="id">ID Client:</label>
-                                <input type="text" id="cl_ident" class="form-control" name="cl_ident" value="" required><br><br>
+                                <label for="Phone">Télephone:</label>
+                                <input type="text" id="Phone" class="form-control" name="Phone" value=""><br><br>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="">Email:</label>
+                                <input type="email" id="email" class="form-control" name="email"><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="">Site Web:</label>
+                                <input type="url" id="site" class="form-control" name="url"><br><br>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="row pt-1">
@@ -134,13 +159,13 @@
                                 <input type="text" id="Commercial" class="form-control" name="Commercial" value=""><br><br>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="">
                                 <label for="ADV">ADV:</label>
                                 <input type="text" id="ADV" class="form-control" name="ADV" value=""><br><br>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="">
                                 <label for="Fidelite_du_client_c">Clientèle:</label>
                                 <input  id="Fidelite_du_client_c" class="form-control" name="Fidelite_du_client_c"  value="" required>
@@ -148,39 +173,21 @@
                             </div>
                         </div>
                         <div class="col-md-2">
+                            <!--
                             <div class="">
                                 <label for="Client_Prospect">Type:</label>
-                                <select  id="Client_Prospect" class="form-control" name="Client_Prospect" required>
+                                <select  id="Client_Prospect" class="form-control" name="Client_Prospect" required readonly>
                                     <option  value="" ></option>
                                     <option  value="CLIENT SAAMP">Client SAAMP</option>
-                                    <option  value="COMPTE PROSPECT">Prospect</option>
+                                    <option  selected="selected" value="COMPTE PROSPECT">Prospect</option>
                                     <option  value="ETABLISSEMENT FERME / COMPTE INACTIF">Fermé / Inactif</option>
                                     <option  value="CLIENT LFMP">Client LFMP</option>
                                 </select><br><br>
                             </div>
+                            -->
                         </div>
                     </div>
-                    <div class="row pt-1">
-                        <div class="col-md-2">
-                            <div class="">
-                                <label for="Phone">Télephone:</label>
-                                <input type="text" id="Phone" class="form-control" name="Phone" value=""><br><br>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="">
-                                <label for="">Email:</label>
-                                <input type="email" id="email" class="form-control" name="email"><br><br>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="">
-                                <label for="">Site Web:</label>
-                                <input type="url" id="site" class="form-control" name="url"><br><br>
-                            </div>
-                        </div>
 
-                    </div>
 
                     <div class="row pt-1">
                         <div class="col-md-12">

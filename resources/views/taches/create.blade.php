@@ -26,6 +26,7 @@
                     @csrf
                     <input type="hidden" name="ID_Compte" value="{{$client->id}}" >
                     <input type="hidden" name="ID_Contact" value="{{$contact->id}}" >
+                    <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
@@ -113,14 +114,13 @@
                         <div class="col-md-6">
                             <div class="">
                                 @if(isset($contact))
-                                <label for="Nom_contact">Nom de contact:</label>
-                                <input type="text" class="form-control" name="Nom_contact" value="{{$contact->Nom}} {{$contact->Prenom}}" >
-                                <table class="table table-bordered">
-                                    <tr><td colspan="2"><b>Titre:</b> {{$contact->Title}}</td></tr>
-                                    <tr><td  ><b>Mobile:</b> {{$contact->MobilePhone}}</td><td> <b>Tél:</b> {{$contact->Phone}}</td></tr>
-                                    <tr><td colspan="2"><b>Email:</b> {{$contact->Email}}</td></tr>
-                                    <tr><td colspan="2"><b>Compte:</b> {{$contact->Compte}}</td></tr>
-                                    <tr><td colspan="2"><b>Description:</b> {{$contact->Description}}</td></tr>
+                                <table class="table">
+                                <tr><td colspan="2"><i class="fas fa-user mr-2"></i>  {{$contact->Prenom}} {{$contact->Nom}} </td></tr>
+                                <tr><td colspan="2"><i class="fas fa-briefcase  mr-2"></i> {{$contact->Title}}</td></tr>
+                                <tr><td  ><i class="fas fa-mobile  mr-2"></i> {{$contact->MobilePhone}}</td><td> <i class="fas fa-phone mr-2"></i> {{$contact->Phone}}</td></tr>
+                                <tr><td colspan="2"><i class="fas fa-envelope  mr-2"></i> {{$contact->Email}}</td></tr>
+                                <tr><td colspan="2"><i class="fas fa-store mr-2"></i> {{$contact->Compte}}</td></tr>
+                                <tr><td colspan="2"><i class="fas fa-info  mr-2"></i> {{$contact->Description}}</td></tr>
                                 </table>
                                 @endif
                             </div>

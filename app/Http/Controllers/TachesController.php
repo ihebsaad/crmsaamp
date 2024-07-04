@@ -75,7 +75,11 @@ class TachesController extends Controller
 	public function show($id)
 	{
 		$tache=Tache::find($id);
-		return view('taches.show',compact('tache'));
+		//ID_Compte
+		$client=CompteClient::find($tache->ID_Compte);
+		$contact=Contact::where('cl_ident',$client->cl_ident)->first();
+
+		return view('taches.show',compact('tache','contact','contact','client'));
 	}
 
 

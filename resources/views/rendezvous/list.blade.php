@@ -17,14 +17,14 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Liste des offres @if(isset($client)) ( {{ $client->cl_ident}} - {{ $client->Nom}} ) @endif </h6>
+                <h6 class="m-0 font-weight-bold text-primary">Liste des rendez vous @if(isset($client)) ( {{ $client->cl_ident}} - {{ $client->Nom}} ) @endif </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
                 <div class="row">
                     @if(isset($client))
                         <div class="col-sm-12">
-                            <a href="{{route('offres.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                            <a href="{{route('rendezvous.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
                         </div>
                     @endif
                 </div>
@@ -32,26 +32,22 @@
                     <thead>
                         <tr id="headtable">
                             <th>ID </th>
-                            <th>Nom</th>
-                            <th>Compte</th>
-                            <th>Etape</th>
-                            <th>Motif</th>
-                            <th>Validée</th>
-                            <th>Création</th>
-                            <th>Clôture</th>
+                            <th>Client</th>
+                            <th>Contact</th>
+                            <th>Sujet</th>
+                            <th>Date</th>
+                            <th>Lieu</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($offres as $offre)
+                        @foreach ($rendezvous as $rv)
                             <tr>
-                                <td>{{ $offre->id }}</td>
-                                <td><a href="{{route('offres.show',['id'=>$offre->id])}}">{{ $offre->Nom_offre }}</a></td>
-                                <td>{{ $offre->nom_compte }}</td>
-                                <td>{{ $offre->Etape }}</td>
-                                <td>{{ $offre->Motif_perdu }}</td>
-                                <td>{{ $offre->Offre_validee ? 'Oui' : 'Non' }}</td>
-                                <td>{{ date('d/m/Y', strtotime($offre->Date_creation)) }}</td>
-                                <td>{{ date('d/m/Y', strtotime($offre->Date_cloture)) }}</td>
+                                <td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
+                                <td>{{ $rv->Account_Name }}</td>
+                                <td>{{ $rv->Nom }}</td>
+                                <td>{{ $rv->Subject }}</td>
+                                <td>{{ date('d/m/Y H:i', strtotime($rv->Started_at)) }}</td>
+                                <td>{{ $rv->location }}</td>
                             </tr>
                         @endforeach
                     </tbody>

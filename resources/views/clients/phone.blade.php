@@ -37,15 +37,17 @@ if (isset($_GET['call'])) {
 //////////////////////////////////////// FONCTION //////////////////////////////////
 
 function displayCalls($calls,$type) {
+    echo '<div class="table-container">';
     echo '<ul class="calls-list '.$type.'">';
-    foreach ($calls as $call) {
-        $date= htmlspecialchars(date('d/m/Y H:i', strtotime($call['datetime'])));
-        echo '<li>';
-        echo    '<span class="date">'.$date . '</span><br>';
-        echo '<i class="fas fa-phone-square-alt"></i> <b>' . htmlspecialchars($call['number']) . '</b><br>';
-        echo '</li>';
-    }
+        foreach ($calls as $call) {
+            $date= htmlspecialchars(date('d/m/Y H:i', strtotime($call['datetime'])));
+            echo '<li>';
+            echo    '<span class="date">'.$date . '</span><br>';
+            echo '<i class="fas fa-phone-square-alt"></i> <b>' . htmlspecialchars($call['number']) . '</b><br>';
+            echo '</li>';
+        }
     echo '</ul>';
+    echo '</div>';
 }
 
 ?>

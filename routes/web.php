@@ -10,6 +10,7 @@ use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TachesController;
 use App\Http\Controllers\OffresController;
+use App\Http\Controllers\RendezVousController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,9 +80,14 @@ Route::get('/offres/show/{id}', [OffresController::class, 'show'])->name('offres
 Route::post('/ajoutoffre', [OffresController::class, 'store'])->name('offres.store');
 Route::put('/offres/{id}', [OffresController::class, 'update'])->name('offres.update');
 Route::get('/offres/create/{id}', [OffresController::class, 'create'])->name('offres.create');
-Route::put('/offres/{id}', [OffresController::class, 'update'])->name('offres.update');
 Route::get('/offres/clientlist/{id}', [OffresController::class, 'client_list'])->name('offres.client_list');
 Route::get('/offres', [OffresController::class, 'index'])->name('offres.index');
+
+Route::get('/rendezvous/show/{id}', [RendezVousController::class, 'show'])->name('rendezvous.show');
+Route::post('/ajoutrv', [RendezVousController::class, 'store'])->name('rendezvous.store');
+Route::put('/rendezvous/{id}', [RendezVousController::class, 'update'])->name('rendezvous.update');
+Route::get('/rendezvous/create/{id}', [RendezVousController::class, 'create'])->name('rendezvous.create');
+Route::get('/rendezvous', [RendezVousController::class, 'index'])->name('rendezvous.index');
 
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.auth');
@@ -118,11 +124,9 @@ Route::post('/updateclient','App\Http\Controllers\UsersController@updateclient')
 
 
 
-/*
 use App\Jobs\UpdateSequentialIdsJob;
 
 Route::get('/update-ids', function () {
     UpdateSequentialIdsJob::dispatch();
     return 'Job lancé pour mettre à jour les IDs';
 });
-*/

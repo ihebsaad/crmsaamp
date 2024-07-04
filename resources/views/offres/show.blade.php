@@ -8,7 +8,10 @@
 
 <style>
 
-
+    h6{
+        color:black;
+        font-weight:bold;
+    }
 </style>
 <div class="row">
 
@@ -30,56 +33,31 @@
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Nom_offre">Nom:</label>
+                                <h6>{{$offre->Nom_offre}}</h6><!--
                                 <input type="text" id="Nom_offre" class="form-control" name="Nom_offre"  value="{{$offre->Nom_offre}}"><br><br>
+                                -->
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Date_creation">Date :</label>
+                                <h6>{{date('d/m/Y H:i', strtotime($offre->Date_creation))}}</h6>
+                                <!--
                                 <input type="text" id="Date_creation" class="form-control datepicker" name="Date_creation"  value="{{$offre->Date_creation}}"><br><br>
+                                -->
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div >
                                 <label for="Produit_Service">Produit Service:</label>
-                                <select    id="Produit_Service" class="  form-control" name="Produit_Service"   >
-                                    <option></option>
-                                    <option   @selected($offre->Produit_Service=="AFFINAGE - OFFRE GLOBALE") value="AFFINAGE - OFFRE GLOBALE">AFFINAGE - OFFRE GLOBALE</option>
-                                    <option   @selected($offre->Produit_Service=="AFFINAGE - OFFRE GLOBALE;BIJOUTERIE - OFFRE GLOBAL;DP - OFFRE GLOBALE") value="AFFINAGE - OFFRE GLOBALE;BIJOUTERIE - OFFRE GLOBAL;DP - OFFRE GLOBALE">AFFINAGE - OFFRE GLOBALE;BIJOUTERIE - OFFRE GLOBAL;DP - OFFRE GLOBALE</option>
-                                    <option   @selected($offre->Produit_Service=="AFFINAGE - Balayures et déchets Industriels;AFFINAGE - Broutilles;AFFINAGE - Limaille") value="AFFINAGE - Balayures et déchets Industriels;AFFINAGE - Broutilles;AFFINAGE - Limaille">AFFINAGE - Balayures et déchets Industriels;AFFINAGE - Broutilles;AFFINAGE - Limaille</option>
-                                    <option   @selected($offre->Produit_Service=="AFFINAGE - Balayures et déchets Industriels") value="AFFINAGE - Balayures et déchets Industriels">AFFINAGE - Balayures et déchets Industriels</option>
-                                    <option   @selected($offre->Produit_Service=="AFFINAGE - Broutilles") value="AFFINAGE - Broutilles">AFFINAGE - Broutilles</option>
-                                    <option   @selected($offre->Produit_Service=="AFFINAGE - Limaille") value="AFFINAGE - Limaille">AFFINAGE - Limaille</option>
-                                    <option   @selected($offre->Produit_Service=="APPRET - Tiges montées") value="APPRET - Tiges montées">APPRET - Tiges montées</option>
-                                    <option   @selected($offre->Produit_Service=="BIJOUTERIE - Chaînages terminés;BIJOUTERIE - Créoles;BIJOUTERIE - Joncs massifs;BIJOUTERIE - Mailles creuses classiques") value="BIJOUTERIE - Chaînages terminés;BIJOUTERIE - Créoles;BIJOUTERIE - Joncs massifs;BIJOUTERIE - Mailles creuses classiques">BIJOUTERIE - Chaînages terminés;BIJOUTERIE - Créoles;BIJOUTERIE - Joncs massifs;BIJOUTERIE - Mailles creuses classiques</option>
-                                    <option   @selected($offre->Produit_Service=="BIJOUTERIE - Chaînages terminés") value="BIJOUTERIE - Chaînages terminés">BIJOUTERIE - Chaînages terminés</option>
-                                    <option   @selected($offre->Produit_Service=="DP - Tube") value="DP - Tube">DP - Tube</option>
-                                    <option   @selected($offre->Produit_Service=="DP - Fil rond") value="DP - Fil rond">DP - Fil rond</option>
-                                    <option   @selected($offre->Produit_Service=="INVEST - Lingots titrés;INVEST - Pièces monétaire") value="INVEST - Lingots titrés;INVEST - Pièces monétaire">INVEST - Lingots titrés;INVEST - Pièces monétaire</option>
-                                    <option   @selected($offre->Produit_Service=="INVEST - Lingots titrés") value="INVEST - Lingots titrés;">INVEST - Lingots titrés</option>
-                                    <option   @selected($offre->Produit_Service=="INVEST - Pièces monétaire") value="INVEST - Pièces monétaire">INVEST - Pièces monétaire</option>
-                                </select><br><br>
+                                <h6>{{$offre->Produit_Service}}</h6>
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="row pt-1">
-
-                        <div class="col-md-2">
-                            <div class="">
-
-                            </div>
-                        </div>
-
-                        <div class="col-md-2">
-                            <div class="">
-
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="row pt-1">
                         <div class="col-md-6">

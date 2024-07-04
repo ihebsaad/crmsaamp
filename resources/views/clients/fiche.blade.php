@@ -26,17 +26,29 @@ if (isset($_GET['call'])) {
     }
 }
 
+function compare_func($a, $b)
+{
+    // CONVERT $a AND $b to DATE AND TIME using strtotime() function
+    $t1 = strtotime($a->date_cmde);
+    $t2 = strtotime($b->date_cmde);
+
+    return ($t2 - $t1);
+}
+
+if (is_array($commandes) || is_object($commandes)) {
+    usort($commandes, "compare_func");
+}
+
 ?>
 
 
-    <style>
-        h6{
-            color:black;
-            font-weight:bold;
-        }
-
-    </style>
-    <div class="row">
+<style>
+    h6 {
+        color: black;
+        font-weight: bold;
+    }
+</style>
+<div class="row">
 
     <!-- Content Column -->
     <div class="col-lg-12 col-sm-12 mb-4">
@@ -47,8 +59,8 @@ if (isset($_GET['call'])) {
                 <h6 class="m-0 font-weight-bold text-primary">Fiche du client {{$client->id}} - {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
-            <a href="{{route('compte_client.show',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a><a href="{{route('finances',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a> <a href="#"  class="btn btn-primary mb-3 float-right"><i class="fas fa-calendar-day"></i> Prise de rendez-vous</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}"  class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-gift"></i> Offres</a>
-                    <div class="clearfix"></div>
+                <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a> <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a><a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
+                <div class="clearfix"></div>
                 <form id="">
                     <div class="row pt-1">
                         <div class="col-md-2">
@@ -165,8 +177,7 @@ if (isset($_GET['call'])) {
         </div>
     </div>
 
-
-    <div class="col-lg-12 col-sm-12 mb-4">
+    <div class="col-lg-5 col-sm-12 mb-4">
 
         <!-- Project Card Example -->
         <div class="card shadow mb-1">
@@ -174,7 +185,169 @@ if (isset($_GET['call'])) {
                 <h6 class="m-0 font-weight-bold text-primary">Statistiques </h6>
             </div>
 
-            <div class="card-body" style="min-height:500px">
+            <div class="card-body" style="min-height:400px">
+                <div class="table-container">
+                    <table class="table table-bordered table-striped mb-40">
+                        <thead>
+                            <tr id="headtable">
+                                <th class="">Métier</th>
+                                <th class="">{{ date('Y')-3; }}</th>
+                                <th class="">{{ date('Y')-2; }}</th>
+                                <th class="">{{ date('Y')-1; }}</th>
+                                <th class="">{{ date('Y'); }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (is_array($stats) || is_object($stats)) {     ?>
+                                @foreach($stats as $stat)
+                                <tr>
+                                    <td>{{$stat->METIER}}</td>
+                                    <td>{{$stat->N_3}}</td>
+                                    <td>{{$stat->N_2}}</td>
+                                    <td>{{$stat->N_1}}</td>
+                                    <td>{{$stat->N}}</td>
+                                </tr>
+                                @endforeach
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-7 col-sm-12 mb-4">
+
+        <!-- Project Card Example -->
+        <div class="card shadow mb-1">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Commandes en cours </h6>
+            </div>
+
+            <div class="card-body" style="min-height:400px;margin-left:25px">
+
+                <a style="float:right;right:20px;background-color:#e6d685;color:black;font-weight:bold;padding:5px 10px 5px 10px;margin-top:15px;margin-bottom:15px;border-radius:10px;" href="#" data-toggle="modal" data-target="#Modal1">{{__('msg.Complete list')}}</a>
+                <div class="clearfix"></div>
+
+                <?php $i = 0;
+                if (is_array($commandes) || is_object($commandes)) {  ?>
+                    @foreach($commandes as $cmd)
+                    <?php
+                    $etat = trim(strtoupper($cmd->etat));
+                    if ($etat == 'ENCOURS' || $etat == 'EN COURS') {
+                        $i++;
+                        if ($i < 4) {
+                    ?>
+                            <span style="color:lightgrey;font-weight:bold;"><?php echo  date('d/m/Y', strtotime($cmd->date_cmde)); ?></span>
+                            <div class="row   pl-30" style="padding-bottom:3px;;margin-top:-4px">
+                                <div class="col-md-4" style="border-left:2px solid #e6d685">
+                                    <b style="color:black;">{{__('msg.Type')}}:</b> <?php echo $cmd->type_cmde; ?><div class="clearfix"></div>
+                                    <b style="color:black;">{{__('msg.Qty')}}:</b> <?php echo $cmd->qte; ?>
+                                </div>
+                                <div class="col-md-4" style="border-left:2px solid #e6d685">
+                                    <b style="color:black;">{{__('msg.Weight')}}:</b> <?php echo $cmd->poids; ?> g<div class="clearfix"></div>
+                                    <b style="color:black;">{{__('msg.Labour cost')}}:</b> <?php if ($cmd->facon > 0) {
+                                                                                                echo $cmd->facon . ' €';
+                                                                                            } ?>
+                                </div>
+                                <div class="col-md-2">
+                                    <?php
+                                    if (trim(strtoupper($cmd->type_cmde)) == 'AFFINAGE') {
+                                        $lien = URL("commande/" . $cmd->id);
+                                    }
+                                    if (trim(strtoupper($cmd->type_cmde)) == 'PRODUIT') {
+                                        $lien = URL("commandeprod/" . $cmd->id);
+                                    }
+                                    if (trim(strtoupper($cmd->type_cmde)) == 'LABORATOIRE') {
+                                        $lien = URL("commandelab/" . $cmd->id);
+                                    }
+                                    if (trim(strtoupper($cmd->type_cmde)) == 'RACHAT METAUX') {
+                                        $lien = URL("commandermp/" . $cmd->id);
+                                    }
+                                    ?>
+                                    <small><a href="<?php echo $lien; ?>">{{__('msg.More details')}}</a></small>
+                                </div>
+                            </div>
+
+
+                    <?php }
+                    }  ?>
+                    @endforeach
+                <?php } ?>
+
+
+
+                <!--   Modal 1 -->
+                <div class="modal fade" id="Modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document" style="width: 75%;margin: 0 auto;">
+                        <div class="modal-content" >
+                            <div class="modal-header">
+                                <h5 class="modal-title text-center">Commandes en cours</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="table-container">
+                                    <table class="table table-bordered table-striped mb-40" style="width:100%">
+                                        <thead>
+                                            <tr id="headtable">
+                                                <th class="text-center">ID</th>
+                                                <th class="text-center">{{__('msg.Date')}}</th>
+                                                <th class="text-center">{{__('msg.Qty')}}</th>
+                                                <th class="text-center">{{__('msg.Weight')}}</th>
+                                                <th class="text-center hidemobile">{{__('msg.Labour cost')}}</th>
+                                                <th class="text-center hidemobile">{{__('msg.Type')}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (is_array($commandes) || is_object($commandes)) {     ?>
+                                                @foreach($commandes as $cmd)
+                                                <?php
+                                                $etat = trim(strtoupper($cmd->etat));
+                                                if ($etat == 'ENCOURS' || $etat == 'EN COURS') { ?>
+                                                    <?php
+                                                    if (trim(strtoupper($cmd->type_cmde)) == 'AFFINAGE') {
+                                                        $lien = URL("commande/" . $cmd->id);
+                                                    }
+                                                    if (trim(strtoupper($cmd->type_cmde)) == 'PRODUIT') {
+                                                        $lien = URL("commandeprod/" . $cmd->id);
+                                                    }
+                                                    if (trim(strtoupper($cmd->type_cmde)) == 'LABORATOIRE') {
+                                                        $lien = URL("commandelab/" . $cmd->id);
+                                                    }
+                                                    if (trim(strtoupper($cmd->type_cmde)) == 'RACHAT METAUX') {
+                                                        $lien = URL("commandermp/" . $cmd->id);
+                                                    }
+                                                    ?>
+                                                    <tr>
+                                                        <td class="text-center"><a href="<?php echo $lien; ?>"><?php echo sprintf("%04d",  $cmd->id); ?></td>
+                                                        <td class="text-center"><?php echo  date('d/m/Y', strtotime($cmd->date_cmde)); ?></td>
+                                                        <td class="text-center"><?php echo $cmd->qte; ?></td>
+                                                        <td class="text-center"><?php echo $cmd->poids; ?>g</td>
+                                                        <td class="text-center  hidemobile"><?php if ($cmd->facon > 0) {
+                                                                                                echo $cmd->facon . '€';
+                                                                                            } ?></td>
+                                                        <td class="text-center  hidemobile"><?php echo $cmd->type_cmde; ?></td>
+                                                    </tr>
+                                                <?php }  ?>
+                                                @endforeach
+                                            <?php }  ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Fermer</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
         </div>
@@ -190,15 +363,21 @@ if (isset($_GET['call'])) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
-                <a href="{{route('retours.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
                 <div class="table-container">
-                    <table class="table table-striped mb-40">
-                        <thead >
-                            <tr><th>Titre</th><th>Date</th></tr>
+                    <table class="table table-bordered table-striped mb-40">
+                        <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Date</th>
+                            </tr>
                         </thead>
                         <tbody>
                             @foreach($retours as $retour)
-                                <tr><td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td><td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td></tr>
+                            <tr>
+                                <td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
+                                <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -218,17 +397,23 @@ if (isset($_GET['call'])) {
 
             <div class="card-body" style="min-height:400px;width:100%">
                 <div class="table-container">
-                    <table class="table table-striped mb-40">
-                        <thead >
-                            <tr><th>Date</th><th>Num</th></tr>
+                    <table class="table table-bordered table-striped mb-40">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Num</th>
+                            </tr>
                         </thead>
                         <tbody>
                             @php $i=0; @endphp
                             @foreach($appels as $appel)
-                                @if( str_replace(' ', '', $appel['number']) ==  str_replace(' ', '', $client->Phone ) )
-                                    @php $i++; $date= htmlspecialchars(date('d/m/Y H:i', strtotime($appel['datetime']))); @endphp
-                                    <tr><td>{{$date}}</td><td><i class="fas fa-phone-square-alt"></i> {{ htmlspecialchars($appel['number']) }}</td></tr>
-                                @endif
+                            @if( str_replace(' ', '', $appel['number']) == str_replace(' ', '', $client->Phone ) )
+                            @php $i++; $date= htmlspecialchars(date('d/m/Y H:i', strtotime($appel['datetime']))); @endphp
+                            <tr>
+                                <td>{{$date}}</td>
+                                <td><i class="fas fa-phone-square-alt"></i> {{ htmlspecialchars($appel['number']) }}</td>
+                            </tr>
+                            @endif
                             @endforeach
                         </tbody>
                     </table>
@@ -248,15 +433,23 @@ if (isset($_GET['call'])) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
-                <a href="{{route('contacts.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
                 <div class="table-container">
-                    <table class="table table-striped mb-40">
-                        <thead >
-                            <tr><th>Nom</th><th>Prénom</th><th>Tél</th></tr>
+                    <table class="table table-bordered table-striped mb-40">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Tél</th>
+                            </tr>
                         </thead>
                         <tbody>
                             @foreach($contacts as $contact)
-                                <tr><td><a href="{{route('contacts.show',['id'=>$contact->id])}}">{{$contact->Nom}}</td><td>{{$contact->Prenom}}</td><td>{{$contact->MobilePhone}}</td></tr>
+                            <tr>
+                                <td><a href="{{route('contacts.show',['id'=>$contact->id])}}">{{$contact->Nom}}</td>
+                                <td>{{$contact->Prenom}}</td>
+                                <td>{{$contact->MobilePhone}}</td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -268,4 +461,4 @@ if (isset($_GET['call'])) {
 
     <script>
     </script>
-@endsection
+    @endsection
