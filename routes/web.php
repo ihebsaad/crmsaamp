@@ -74,6 +74,7 @@ Route::get('/taches/create/{id}', [TachesController::class, 'create'])->name('ta
 Route::put('/taches/{id}', [TachesController::class, 'update'])->name('taches.update');
 Route::get('/clientlist/{id}', [TachesController::class, 'client_list'])->name('taches.client_list');
 Route::get('/contactlist/{id}', [TachesController::class, 'contact_list'])->name('taches.contact_list');
+Route::get('/mestaches', [TachesController::class, 'mestaches'])->name('mestaches');
 Route::get('/taches', [TachesController::class, 'index'])->name('taches.index');
 
 Route::get('/offres/show/{id}', [OffresController::class, 'show'])->name('offres.show');
@@ -123,10 +124,14 @@ Route::post('/updatecomp','App\Http\Controllers\UsersController@updatecomp')->na
 Route::post('/updateclient','App\Http\Controllers\UsersController@updateclient')->name('updateclient');
 
 
+Route::get('/commandeprod/{id}','App\Http\Controllers\HomeController@commande')->name('commande');
 
+
+/*
 use App\Jobs\UpdateSequentialIdsJob;
 
 Route::get('/update-ids', function () {
     UpdateSequentialIdsJob::dispatch();
     return 'Job lancé pour mettre à jour les IDs';
 });
+*/

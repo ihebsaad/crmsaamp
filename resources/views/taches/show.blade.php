@@ -109,6 +109,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="">
+                                <h4>Contact</h4>
                                 @if(isset($contact))
                                 <table class="table">
                                 <tr><td colspan="2"><i class="fas fa-user mr-2"></i>  {{$contact->Prenom}} {{$contact->Nom}} </td></tr>

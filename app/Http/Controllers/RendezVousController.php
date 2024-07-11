@@ -54,9 +54,9 @@ class RendezVousController extends Controller
 	public function create($id)
 	{
 		$client=CompteClient::find($id);
-		$contact=Contact::where('cl_ident',$client->cl_ident)->first();
+		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
 		$users=User::where('user_type','<>','')->get();
-		return view('rendezvous.create',compact('client','contact','users'));
+		return view('rendezvous.create',compact('client','contacts','users'));
 	}
 
 	public function show($id)
@@ -92,6 +92,13 @@ class RendezVousController extends Controller
         ]);
 
         $rendezvous=RendezVous::create($request->all());
+
+		$contact=Contact::where('old_id',$rendezvous->ID_Contact)
+		->orWhere('id',$rendezvous->ID_Contact)
+		->first();
+
+		$rendezvous->Nom= $contact->Prenom.' '.$contact->Nom;
+		$rendezvous->save();
 
 		return redirect()->route('rendezvous.show', $rendezvous->id)
 		->with('success','Rendez vous ajouté');

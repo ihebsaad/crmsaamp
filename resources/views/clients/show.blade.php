@@ -101,6 +101,7 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="agence">Agence:</label>
+                                <!--
                                 <select  type="text" id="Agence" class="form-control" name="Agence"  >
                                     <option @if($client->Agence=="") selected="selected" @endif value=""></option>
                                     <option @if($client->Agence=="Aubagne") selected="selected" @endif value="Aubagne" >Aubagne</option>
@@ -115,18 +116,25 @@
                                     <option @if($client->Agence=="Varsovie") selected="selected" @endif value="Varsovie">Varsovie</option>
                                     <option @if($client->Agence=="OUTRE MER") selected="selected" @endif value="OUTRE MER">Outre Mer</option>
                                 </select><br><br>
+    -->
+                                <select  type="text" id="agence_ident" class="form-control" name="agence_ident"  >
+                                    <option  value=""></option>
+                                    @foreach($agences as $agence)
+                                        <option @if($client->agence_ident=="$agence->agence_ident") selected="selected" @endif value="{{$agence->agence_ident}}">{{$agence->agence_lib}}</option>
+                                    @endforeach
+                                </select><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Proprietaire">Propriétaire:</label>
-                                <input type="text" id="Proprietaire" class="form-control" name="Proprietaire" value="{{$client->Proprietaire}}" required><br><br>
+                                <label for="Commercial">Propriétaire:</label>
+                                <input type="text" id="Commercial" class="form-control" name="Commercial" value="{{$client->Commercial}}" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Commercial">Commercial:</label>
-                                <input type="text" id="Commercial" class="form-control" name="Commercial" value="{{$client->Commercial}}"><br><br>
+                                <label for="Commercial_support">Commercial:</label>
+                                <input type="text" id="Commercial_support" class="form-control" name="Commercial_support" value="{{$client->Commercial_support}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">

@@ -25,7 +25,6 @@
                 <form action="{{ route('taches.store') }}" method="post">
                     @csrf
                     <input type="hidden" name="ID_Compte" value="{{$client->id}}" >
-                    <input type="hidden" name="ID_Contact" value="{{$contact->id}}" >
                     <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
                     <div class="row pt-1">
                         <div class="col-md-4">
@@ -113,17 +112,13 @@
                         </div>
                         <div class="col-md-6">
                             <div class="">
-                                @if(isset($contact))
-                                <table class="table">
-                                <tr><td colspan="2"><i class="fas fa-user mr-2"></i>  {{$contact->Prenom}} {{$contact->Nom}} </td></tr>
-                                <tr><td colspan="2"><i class="fas fa-briefcase  mr-2"></i> {{$contact->Title}}</td></tr>
-                                <tr><td  ><i class="fas fa-mobile  mr-2"></i> {{$contact->MobilePhone}}</td><td> <i class="fas fa-phone mr-2"></i> {{$contact->Phone}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-envelope  mr-2"></i> {{$contact->Email}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-store mr-2"></i> {{$contact->Compte}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-info  mr-2"></i> {{$contact->Description}}</td></tr>
-                                </table>
-                                @endif
-                            </div>
+                            <label for="ID_Contact">Contact:</label>
+                            <select  id="ID_Contact" class="form-control" name="ID_Contact" required  >
+                                @foreach($contacts as $contact)
+                                    <option value="{{$contact->id}}">{{$contact->Prenom}} {{$contact->Nom}} - {{$contact->Title}}</option>
+                                @endforeach
+                            </select>
+                             </div>
                         </div>
                     </div>
 

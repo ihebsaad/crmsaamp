@@ -41,8 +41,8 @@ class RetoursController extends Controller
 	{
 		$client=CompteClient::find($id);
 		$retour=RetourClient::where('cl_id',$client->cl_ident)->first();
-		$contact=Contact::where('cl_ident',$client->cl_ident)->first();
-		return view('retours.create',compact('retour','client','contact'));
+		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
+		return view('retours.create',compact('retour','client','contacts'));
 	}
 
 	public function show($id)
@@ -64,7 +64,8 @@ class RetoursController extends Controller
 				$class = '';
 			}
 
-		$contact=Contact::where('old_id',$retour->ID_Contact_Salesforce)->first();
+		$contact=Contact::where('old_id',$retour->ID_Contact_Salesforce)
+		->orWhere('id',$retour->ID_Contact_Salesforce)->first();
 
 		return view('retours.show',compact('retour','contact','class'));
 	}
@@ -92,6 +93,13 @@ class RetoursController extends Controller
         ]);
 
         $retour=RetourClient::create($request->all());
+
+		$contact=Contact::where('old_id',$retour->ID_Contact_Salesforce)
+		->orWhere('id',$retour->ID_Contact_Salesforce)
+		->first();
+
+		$retour->Nom_du_contact= $contact->Prenom.' '.$contact->Nom;
+
 		$retour->name='RC-'.sprintf('%05d',$retour->id);
 		$retour->save();
 		return redirect()->route('retours.show', $retour->id)

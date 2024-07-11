@@ -138,4 +138,23 @@ class HomeController extends Controller
 
 	}
 
+
+
+	public function commande($id)
+	{
+		$commande=self::detailscommandeprod($id);
+		$commandes=self::detailscommandeprod($id);
+		return view('products.commande',compact('commande','commandes'));
+	}
+
+	public static function detailscommandeprod($id_cmd)
+	{
+		DB::select("SET @p0='$id_cmd' ;");
+		$result =  DB::select("  CALL `sp_produit_cmde_detail`(@p0); ");
+		if ($result != null) {
+			return  $result;
+		}
+	}
+
+
 } // end class

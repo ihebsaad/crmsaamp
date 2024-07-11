@@ -47,7 +47,7 @@ if (Auth::check()) {
     </a>
       <hr class="sidebar-divider">
 
-    <a class="nav-link" href="{{route('taches.index')}}" >
+    <a class="nav-link" href="{{route('mestaches')}}" >
       <i class="fas fa-tasks" ></i>
       <span> Prises de contact </span>
     </a>

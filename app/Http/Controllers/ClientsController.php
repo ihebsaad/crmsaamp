@@ -35,14 +35,17 @@ class ClientsController extends Controller
 
 	public function create()
 	{
-		return view('clients.create');
+		$agences = DB::table('agence')->get();
+		return view('clients.create',compact('agences'));
+
 	}
 
 	public function show($id)
 	{
 		$client=CompteClient::find($id);
+		$agences = DB::table('agence')->get();
 
-		return view('clients.show',compact('client'));
+		return view('clients.show',compact('client','agences'));
 	}
 
 
@@ -95,9 +98,19 @@ class ClientsController extends Controller
 		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
 		$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
 
-		DB::select("SET @p0='$client->cl_ident'  ;");
-		$stats=  DB::select('call `sp_stats_mois_pleins`(@p0); ');
+		$agence_name='';
+		$agence = DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
 
+		if(isset($agence))
+			$agence_name=$agence->agence_lib;
+
+		$stats=null;
+		try{
+			DB::select("SET @p0='$client->cl_ident'  ;");
+			$stats=  DB::select('call `sp_stats_mois_pleins`(@p0); ');
+		}catch(\Exception $e){
+			\Log::error($e->getMessage());
+		}
 		if($client->Id_Salesforce!='')
 			$taches=Tache::where('ID_Compte',$client->Id_Salesforce)->get();
 		else
@@ -118,7 +131,7 @@ class ClientsController extends Controller
 		$callData=PhoneService::data($client->token_phone);
 		$appels=$callData['incoming'] ?? array();
 */
-		return view('clients.fiche',compact('client','contacts','retours','appels','taches','stats','commandes'));
+		return view('clients.fiche',compact('client','contacts','retours','appels','taches','stats','commandes','agence_name'));
 	}
 
 	public function finances($id)

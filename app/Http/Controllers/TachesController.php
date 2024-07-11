@@ -46,12 +46,19 @@ class TachesController extends Controller
 		return view('taches.list',compact('taches'));
 	}
 
+	public function mestaches()
+	{
+		$taches=Tache::where('user_id',auth()->user()->id)
+		->get();
+		return view('taches.list',compact('taches'));
+	}
+
 
 	public function create($id)
 	{
 		$client=CompteClient::find($id);
-		$contact=Contact::where('cl_ident',$client->cl_ident)->first();
-		return view('taches.create',compact('client','contact'));
+		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
+		return view('taches.create',compact('client','contacts'));
 	}
 
 	public function client_list($id)
@@ -103,8 +110,14 @@ class TachesController extends Controller
 
         ]);
 
-        $retour=Tache::create($request->all());
-		return redirect()->route('taches.show', $retour->id)
+        $tache=Tache::create($request->all());
+
+		$contact=Contact::where('id',$tache->ID_Contact)->first();
+
+		$tache->Nom_contact= $contact->Prenom.' '.$contact->Nom;
+		$tache->save();
+
+		return redirect()->route('taches.show', $tache->id)
 		->with('success','Tache ajoutée');
 	}
 

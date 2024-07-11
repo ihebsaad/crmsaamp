@@ -25,7 +25,7 @@
                 <form action="{{ route('rendezvous.store') }}" method="post">
                     @csrf
                     <input type="hidden" name="AccountId" value="{{$client->id}}" >
-                    <input type="hidden" name="ID_Contact" value="{{$contact->id}}" >
+                    <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
@@ -49,10 +49,12 @@
 
                     <div class="row pt-1">
                         <div class="col-md-4">
-                            <div class="">
-                                <label for="Nom">Nom du contact:</label>
-                                <input type="text" id="Nom" class="form-control" name="Nom"  value="{{$contact->Prenom}} {{$contact->Nom}}" readonly><br><br>
-                            </div>
+                            <label for="ID_Contact">Contact:</label>
+                            <select  id="ID_Contact" class="form-control" name="ID_Contact" required  >
+                                @foreach($contacts as $contact)
+                                    <option value="{{$contact->id}}">{{$contact->Prenom}} {{$contact->Nom}} - {{$contact->Title}}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="col-md-4">

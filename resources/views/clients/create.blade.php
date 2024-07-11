@@ -130,33 +130,25 @@
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="agence">Agence:</label>
-                                <select  type="text" id="Agence" class="form-control" name="Agence"  >
+                                <label for="agence_ident">Agence:</label>
+                                <select  type="text" id="agence_ident" class="form-control" name="agence_ident"  >
                                     <option  value=""></option>
-                                    <option  value="Aubagne" >Aubagne</option>
-                                    <option  value="BORDEAUX">Bordeaux</option>
-                                    <option  value="De Gaulle">De Gaulle</option>
-                                    <option  value="Galmot">Galmot</option>
-                                    <option  value="Lyon">Lyon</option>
-                                    <option  value="Marseille">Marseille</option>
-                                    <option  value="NICE">Nice</option>
-                                    <option  value="PARIS145">Paris</option>
-                                    <option  value="Toulouse">Toulouse</option>
-                                    <option  value="Varsovie">Varsovie</option>
-                                    <option  value="OUTRE MER">Outre Mer</option>
+                                    @foreach($agences as $agence)
+                                        <option  value="{{$agence->agence_ident}}">{{$agence->agence_lib}}</option>
+                                    @endforeach
                                 </select><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Proprietaire">Propriétaire:</label>
-                                <input type="text" id="Proprietaire" class="form-control" name="Proprietaire" value="" required><br><br>
+                                <label for="Commercial">Propriétaire:</label>
+                                <input type="text" id="Commercial" class="form-control" name="Commercial" value="" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Commercial">Commercial:</label>
-                                <input type="text" id="Commercial" class="form-control" name="Commercial" value=""><br><br>
+                                <label for="Commercial_support">Commercial:</label>
+                                <input type="text" id="Commercial_support" class="form-control" name="Commercial_support" value=""><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">

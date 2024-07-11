@@ -170,17 +170,12 @@
                         </div>
                         <div class="col-md-6">
                             <div class="">
-                                <h3>Contact</h3>
-                                @if(isset($contact))
-                                <table class="table">
-                                <tr><td colspan="2"><i class="fas fa-user mr-2"></i>  {{$contact->Prenom}} {{$contact->Nom}}  {{$contact->Prenom}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-briefcase  mr-2"></i> {{$contact->Title}}</td></tr>
-                                <tr><td  ><i class="fas fa-mobile  mr-2"></i> {{$contact->MobilePhone}}</td><td> <i class="fas fa-phone mr-2"></i> {{$contact->Phone}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-envelope  mr-2"></i> {{$contact->Email}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-store mr-2"></i> {{$contact->Compte}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-info  mr-2"></i> {{$contact->Description}}</td></tr>
-                                </table>
-                                @endif
+                                <label for="ID_Contact">Contact:</label>
+                                <select  id="ID_Contact_Salesforce" class="form-control" name="ID_Contact_Salesforce" required  >
+                                    @foreach($contacts as $contact)
+                                        <option value="{{$contact->id}}">{{$contact->Prenom}} {{$contact->Nom}} - {{$contact->Title}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
