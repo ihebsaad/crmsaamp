@@ -115,7 +115,7 @@
                             <label for="ID_Contact">Contact:</label>
                             <select  id="ID_Contact" class="form-control" name="ID_Contact" required  >
                                 @foreach($contacts as $contact)
-                                    <option value="{{$contact->id}}">{{$contact->Prenom}} {{$contact->Nom}} - {{$contact->Title}}</option>
+                                    <option value="{{$contact->id}}">{{$contact->Nom}} {{$contact->Prenom}}  @if($contact->Title!='') ( {{$contact->Title}} ) @endif</option>
                                 @endforeach
                             </select>
                              </div>

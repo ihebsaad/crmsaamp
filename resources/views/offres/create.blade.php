@@ -22,7 +22,7 @@
 
             <div class="card-body" style="min-height:500px">
 
-                <form action="{{ route('offres.store') }}" method="post">
+                <form action="{{ route('offres.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="cl_id" value="{{$client->cl_ident}}" >
                     <input type="hidden" name="" value="" >
@@ -82,10 +82,16 @@
                     </div>
 
                     <div class="row pt-1">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="Description">Description:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{old('Description')}}</textarea><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="">
+                                <label for="Nom_offre">Fichier(s):</label>
+                                <input type="file" id="fichier" class="form-control" name="fichier[]"  multiple  accept="application/pdf" /><br><br>
                             </div>
                         </div>
 

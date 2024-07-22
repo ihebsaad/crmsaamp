@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 #use DB;
-use App\Models\Client;
+use App\Models\RendezVous;
 use App\Models\CompteClient;
 use App\Models\Contact;
 use App\Models\RetourClient;
 use App\Models\Tache;
 use App\Services\PhoneService;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 
 class ClientsController extends Controller
@@ -106,8 +107,11 @@ class ClientsController extends Controller
 
 		$stats=null;
 		try{
-			DB::select("SET @p0='$client->cl_ident'  ;");
-			$stats=  DB::select('call `sp_stats_mois_pleins`(@p0); ');
+
+			DB::select("SET @p0=$client->cl_ident ;");
+			DB::select("SET @p1=1  ;");
+			$stats=  DB::select('call `sp_stats_client`(@p0,@p1); ');
+
 		}catch(\Exception $e){
 			\Log::error($e->getMessage());
 		}
@@ -120,19 +124,56 @@ class ClientsController extends Controller
 
 		DB::select("SET @p0='$client->cl_ident'  ;");
 		$commandes =  DB::select(" CALL `sp_accueil_liste_commandes`(@p0); ");
-
+/*
 		$tous_appels=$callData['incoming'] ?? array();
 		$phone=$client->phone;
 		$appels = array_filter($tous_appels, function($appel) use ($phone) {
 			return $appel['number'] === $phone;
 		});
-
+*/
 	/*
 		$callData=PhoneService::data($client->token_phone);
 		$appels=$callData['incoming'] ?? array();
+
+
+		view:
+		<!--
+                            @php $i=0; @endphp
+                            @foreach($appels as $appel)
+                            @if( str_replace(' ', '', $appel['number']) == str_replace(' ', '', $client->Phone ) )
+                            @php $i++; $date= htmlspecialchars(date('d/m/Y H:i', strtotime($appel['datetime']))); @endphp
+                            <tr>
+                                <td>{{$date}}</td>
+                                <td><i class="fas fa-phone-square-alt"></i> {{ htmlspecialchars($appel['number']) }}</td>
+                            </tr>
+                            @endif
+                            @endforeach-->
 */
-		return view('clients.fiche',compact('client','contacts','retours','appels','taches','stats','commandes','agence_name'));
+		$rendezvous=RendezVous::where('AccountId',$client->id)
+		->orWhere('AccountId',$client->Id_Salesforce)
+		->get();
+
+		$now = Carbon::now();
+
+		$Proch_rendezvous = RendezVous::where(function ($query) use ($client) {
+			$query->where('AccountId', $client->id)
+				->orWhere('AccountId', $client->Id_Salesforce);
+		})
+		->where('Started_at', '>=', $now)
+		->orderBy('Started_at', 'desc')
+		->get();
+
+		$Anc_rendezvous = RendezVous::where(function ($query) use ($client) {
+			$query->where('AccountId', $client->id)
+				->orWhere('AccountId', $client->Id_Salesforce);
+		})
+		->where('Started_at', '<', $now)
+		->orderBy('Started_at', 'desc')
+		->get();
+
+		return view('clients.fiche',compact('client','contacts','retours','Proch_rendezvous','Anc_rendezvous','taches','stats','commandes','agence_name'));
 	}
+
 
 	public function finances($id)
 	{
@@ -152,6 +193,12 @@ class ClientsController extends Controller
 	}
 
 
+	public function folder($id)
+	{
+		$client=CompteClient::find($id);
+		return view('clients.folder',compact('client'));
+
+	}
 
 	public function search(Request $request)
 	{
@@ -160,9 +207,11 @@ class ClientsController extends Controller
 		// Application du filtre pour le type de client/prospect
 		$type = $request->get('type');
 		if ($type == 1) {
-			$query->where('Client_Prospect', 'like', '%CLIENT%');
+			$query->where('Client_Prospect', 'like', '%CLIENT SAAMP%');
 		} elseif ($type == 2) {
 			$query->where('Client_Prospect', 'like', '%PROSPECT%');
+		}else{
+			$query->where('Client_Prospect', '<>', 'CLIENT LFMP');
 		}
 
 		// Application des filtres pour les autres champs

@@ -32,8 +32,8 @@
                     <thead>
                         <tr id="headtable">
                             <th>ID </th>
-                            <th>Contact</th>
                             <th>Sujet</th>
+                            <th>Contact</th>
                             <th>Type</th>
                             <th>Priorité</th>
                             <th>Statut</th>
@@ -44,8 +44,8 @@
                         @foreach ($taches as $tache)
                             <tr>
                                 <td>{{ $tache->id }}</td>
-                                <td><a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Nom_contact }}</a></td>
-                                <td>{{ $tache->Subject }}</td>
+                                <td><a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a></td>
+                                <td>{{ $tache->Nom_contact }}</td>
                                 <td>{{ $tache->Type }}</td>
                                 <td>{{ $tache->Priority }}</td>
                                 <td>{{ $tache->Status }}</td>

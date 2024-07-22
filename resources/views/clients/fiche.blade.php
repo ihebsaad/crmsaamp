@@ -43,23 +43,22 @@ if (is_array($commandes) || is_object($commandes)) {
 
 
 <style>
-    h6 {
+    h6,#stats {
         color: black;
         font-weight: bold;
     }
+
 </style>
 <div class="row">
 
-    <!-- Content Column -->
     <div class="col-lg-12 col-sm-12 mb-4">
 
-        <!-- Project Card Example -->
         <div class="card shadow mb-1">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Fiche du client {{$client->id}} - {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
-            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a> <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a><a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
+            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a> <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a><a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a><a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
                 <div class="clearfix"></div>
                 <form id="">
                     <div class="row pt-1">
@@ -179,7 +178,6 @@ if (is_array($commandes) || is_object($commandes)) {
 
     <div class="col-lg-5 col-sm-12 mb-4">
 
-        <!-- Project Card Example -->
         <div class="card shadow mb-1">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Statistiques </h6>
@@ -187,6 +185,9 @@ if (is_array($commandes) || is_object($commandes)) {
 
             <div class="card-body" style="min-height:400px">
                 <div class="table-container">
+                    <input id="mois" type="checkbox" value="1" onchange="show_stats('{{$client->cl_ident}}')"  >
+                    <label class="" for="mois">Afficher les années pleines</label>
+                    </input>
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
@@ -197,11 +198,11 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <th class="">{{ date('Y'); }}</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="stats">
                             <?php if (is_array($stats) || is_object($stats)) {     ?>
                                 @foreach($stats as $stat)
                                 <tr>
-                                    <td>{{$stat->METIER}}</td>
+                                    <td>{{$stat->metier}}</td>
                                     <td>{{$stat->N_3}}</td>
                                     <td>{{$stat->N_2}}</td>
                                     <td>{{$stat->N_1}}</td>
@@ -220,7 +221,6 @@ if (is_array($commandes) || is_object($commandes)) {
 
     <div class="col-lg-7 col-sm-12 mb-4">
 
-        <!-- Project Card Example -->
         <div class="card shadow mb-1">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Commandes en cours </h6>
@@ -278,8 +278,6 @@ if (is_array($commandes) || is_object($commandes)) {
                 <?php } ?>
 
 
-
-                <!--   Modal 1 -->
                 <div class="modal fade" id="Modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document" style="width: 75%;margin: 0 auto;">
                         <div class="modal-content" >
@@ -397,26 +395,46 @@ if (is_array($commandes) || is_object($commandes)) {
 
             <div class="card-body" style="min-height:400px;width:100%">
                 <div class="table-container">
-                    <table class="table table-bordered table-striped mb-40">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Num</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php $i=0; @endphp
-                            @foreach($appels as $appel)
-                            @if( str_replace(' ', '', $appel['number']) == str_replace(' ', '', $client->Phone ) )
-                            @php $i++; $date= htmlspecialchars(date('d/m/Y H:i', strtotime($appel['datetime']))); @endphp
-                            <tr>
-                                <td>{{$date}}</td>
-                                <td><i class="fas fa-phone-square-alt"></i> {{ htmlspecialchars($appel['number']) }}</td>
-                            </tr>
-                            @endif
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <h6 style="width:100%;cursor:pointer" class="black" onclick="$('#prochain').toggle();" >Prochains Rendez Vous</h6>
+                    <div id="prochain" style="width:100%">
+                        <table class="table table-bordered table-striped mb-40" style="min-height:120px">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Titre</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($Proch_rendezvous as $rv)
+                                <tr>
+                                    <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td>{{$rv->Subject}}</td>
+                                </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h6  style="width:100%;cursor:pointer" class="black"  onclick="$('#ancien').toggle();" >Anciens Rendez Vous</h6>
+                    <div id="ancien"  >
+                        <table class="table table-bordered table-striped mb-40" >
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Titre</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($Anc_rendezvous as $rv)
+                                <tr>
+                                    <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td>{{$rv->Subject}}</td>
+                                </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
 
             </div>
@@ -460,5 +478,26 @@ if (is_array($commandes) || is_object($commandes)) {
     </div>
 
     <script>
+        function show_stats(cl_id){
+            var _token = $('input[name="_token"]').val();
+            var mois = 1;
+		    if ($('#mois').is(':checked')){
+                mois = 0;
+            };
+            console.log('mois: '+mois);
+            $.ajax({
+                url: "{{ route('stats_client') }}",
+                method: "get",
+                data: {  _token: _token,cl_id:cl_id,mois:mois},
+                success:function(data){
+                    console.log(data);
+                    var html='';
+                    data.forEach(item => {
+                        html+='<tr><td>'+item.metier+'</td><td>'+item.N_3+'</td><td>'+item.N_2+'</td><td>'+item.N_1+'</td><td>'+item.N+'</td></tr>';
+                    });
+                    $("#stats").html(html);
+                }
+            });
+        }
     </script>
     @endsection

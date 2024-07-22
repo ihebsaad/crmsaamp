@@ -3,38 +3,38 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
-
-use Swift_Mailer;
-use Mail;
+#use Swift_Mailer;
+#use Mail;
+use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
 
 class SendMail
 {
 
-    public static function send($to,$sujet,$contenu)
+    public static function send($to, $sujet, $contenu)
     {
+        $transport = new EsmtpTransport(env('MAIL_HOST'), env('MAIL_PORT'));
+        $transport->setUsername(env('MAIL_USERNAME'));
+        $transport->setPassword(env('MAIL_PASSWORD'));
 
-        $swiftTransport =  new \Swift_SmtpTransport( env('MAIL_HOST'), env('MAIL_PORT'), env('MAIL_ENCRYPTION'));
-        $swiftTransport->setUsername( env('MAIL_USERNAME')); //adresse email
-        $swiftTransport->setPassword( env('MAIL_PASSWORD')); // mot de passe email
+        $mailer = new Mailer($transport);
+        $from = env('MAIL_FROM_ADDRESS');
+        $fromName = env('MAIL_FROM_NAME');
 
-        $swiftMailer = new Swift_Mailer($swiftTransport);
-        Mail::setSwiftMailer($swiftMailer);
-        $from= env('MAIL_FROM_ADDRESS');
-        $fromname= env('MAIL_FROM_NAME');
+        $email = (new Email())
+            ->from($from)
+            ->to($to)
+            ->subject($sujet)
+            ->html($contenu);
+        //    ->sender($fromName);
 
-        Mail::send([], [], function ($message) use ($to,$sujet, $contenu,$from,$fromname   ) {
-                $message
-                  ->to($to)
-                //->bcc($chunk ?: [])
-                    ->subject($sujet)
-                       ->setBody($contenu, 'text/html')
-                    ->setFrom([$from => $fromname]);
-
-        });
+        $mailer->send($email);
     }
 
 
-
+/*
     public static function send_pdf($to,$sujet,$contenu,$id,$type)
     {
         try{
@@ -84,5 +84,5 @@ class SendMail
         }
 
     }
-
+*/
 }

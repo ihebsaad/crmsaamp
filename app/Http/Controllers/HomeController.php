@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use App\Http\Controllers\StatsController;
+
 use App\Models\User;
 use App\Models\CompteClient;
 use App\Services\PhoneService;
@@ -42,7 +44,7 @@ class HomeController extends Controller
 		if (auth()->user()->user_type == 'admin' || auth()->user()->user_type == 'adv') {
 			return view('adminhome');
 		} else {
-			return view('home');
+			StatsController::stats();
 		}
 	}
 
@@ -51,9 +53,29 @@ class HomeController extends Controller
 		if (auth()->user()->user_type == 'visitor') {
 			return view('visitor');
 		} else {
-			return view('home');
+			//StatsController::stats();
+			$agences= DB::table('agence')->get();
+			$users= DB::table('users')->where('user_type','<>','')->get();
+			$representants= DB::table('representant')->orderBy('nom','asc')->get();
+
+			$commercial=false;
+			foreach($representants as $rep){
+				if(auth()->user()->id==$rep->ussers_id )
+				{
+					$commercial=true;break;
+				}
+			}
+
+			$stats = null;//self::stats_commercial($request);
+            $stats2 = null;//self::stats_commercial_client($request);
+            $stats3 = null;//self::stats_agence($request);
+            $stats4 = null;//self::stats_agence_client($request);
+            $stats5 = null;//self::stats_agences($request);
+			return view('home',compact('agences','users','stats','stats2','stats3','stats4','stats5','representants','commercial'));
 		}
 	}
+
+
 
 	public function send_demand(Request $request)
 	{

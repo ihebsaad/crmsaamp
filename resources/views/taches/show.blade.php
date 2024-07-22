@@ -112,7 +112,7 @@
                                 <h4>Contact</h4>
                                 @if(isset($contact))
                                 <table class="table">
-                                <tr><td colspan="2"><i class="fas fa-user mr-2"></i>  {{$contact->Prenom}} {{$contact->Nom}} </td></tr>
+                                <tr><td colspan="2"><i class="fas fa-user mr-2"></i>  {{$contact->Nom}} {{$contact->Prenom}}  </td></tr>
                                 <tr><td colspan="2"><i class="fas fa-briefcase  mr-2"></i> {{$contact->Title}}</td></tr>
                                 <tr><td  ><i class="fas fa-mobile  mr-2"></i> {{$contact->MobilePhone}}</td><td> <i class="fas fa-phone mr-2"></i> {{$contact->Phone}}</td></tr>
                                 <tr><td colspan="2"><i class="fas fa-envelope  mr-2"></i> {{$contact->Email}}</td></tr>

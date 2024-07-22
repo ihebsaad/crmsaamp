@@ -35,8 +35,15 @@ class OffresController extends Controller
 	public function index()
 	{
 		//$offres=Offre::where('id','<>',null)->limit(1000)->orderBy('id','desc')->get();
-		$offres=Offre::get();
-		return view('offres.list',compact('offres'));
+		$offres=Offre::limit(100)->orderBy('id','desc')->get();
+		//dd($offres);
+		return view('offres.index',compact('offres'));
+	}
+
+	public function test()
+	{
+		$offres = Offre::limit(100)->get();
+		return response()->json($offres);
 	}
 
 	public function client_list($id)
@@ -44,7 +51,7 @@ class OffresController extends Controller
 		$client=CompteClient::find($id);
 		$offres=Offre::where('cl_id',$client->cl_ident)->get();
 
-		return view('offres.list',compact('offres','client'));
+		return view('offres.index',compact('offres','client'));
 	}
 
 	public function create($id)
@@ -65,10 +72,11 @@ class OffresController extends Controller
 
 	public function update(Request $request, $id)
     {
+		/*
         $request->validate([
             'Subject' => 'required',
          ]);
-
+*/
 		$offre = Offre::find($id);
 		$offre->update($request->all());
 
@@ -79,12 +87,51 @@ class OffresController extends Controller
 	public function store(Request $request)
     {
         $request->validate([
-            'Subject' => 'required',
+            'Nom_offre' => 'required',
+			'fichier.*' => 'file|mimes:pdf|max:26000', // 26 Mo par fichier
 
         ]);
 
-        $retour=Offre::create($request->all());
-		return redirect()->route('offres.show', $retour->id)
+        //$offre=Offre::create($request->all());
+
+		$offre = Offre::create([
+			'cl_id' => $request->input('cl_id'),
+			'Nom_offre' => $request->input('Nom_offre'),
+			'Date_creation' => $request->input('Date_creation'),
+			'Produit_Service' => $request->input('Produit_Service'),
+			'Description' => $request->input('Description'),
+			// Other fields as necessary
+		]);
+
+
+/*
+		if($request->file('fichier')!=null)
+        {
+			$fichier=$request->file('fichier');
+         	$name =  $fichier->getClientOriginalName();
+            $path = public_path()."/offres";
+           	$fichier->move($path, $name);
+			$offre->fichier=$name;
+			$offre->save();
+        }
+*/
+		if ($request->hasFile('fichier')) {
+			$fichiers = $request->file('fichier');
+			$fileNames = [];
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path() . "/offres";
+				$fichier->move($path, $name);
+				$fileNames[] = $name;
+			}
+
+			// Serialize the filenames array
+			$offre->fichier = serialize($fileNames);
+			$offre->save();
+		}
+
+		return redirect()->route('offres.show', $offre->id)
 		->with('success','Offre ajoutée');
 	}
 

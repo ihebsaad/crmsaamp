@@ -12,6 +12,9 @@
         color:black;
         font-weight:bold;
     }
+    table{
+        border:none;
+    }
 </style>
 <div class="row">
 
@@ -20,7 +23,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Offre {{$offre->id}} </h6>
+                <h6 class="m-0 font-weight-bold text-primary">Offre {{$offre->id}}  -  Client : {{$offre->cl_id}} - {{$offre->nom_compte}}   </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -42,7 +45,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Date_creation">Date :</label>
-                                <h6>{{date('d/m/Y H:i', strtotime($offre->Date_creation))}}</h6>
+                                <h6>{{date('d/m/Y', strtotime($offre->Date_creation))}}</h6>
                                 <!--
                                 <input type="text" id="Date_creation" class="form-control datepicker" name="Date_creation"  value="{{$offre->Date_creation}}"><br><br>
                                 -->
@@ -60,11 +63,31 @@
 
 
                     <div class="row pt-1">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="Description">Description:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{$offre->Description}}</textarea><br><br>
                             </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            @if($offre->fichier!= null)
+                                @php $fileNames = unserialize($offre->fichier); @endphp
+                                <div class="">
+                                    <label for="Description">Fichier(s):</label><br>
+                                    <table>
+
+                                        @foreach ($fileNames as $fichier)
+                                        <tr>
+                                            <td><label><b class="black mr-2">{{$fichier}}</b></label></td>
+                                            <td><a href="https://crm.mysaamp.com/offres/{{$fichier}}" target="_blank" ><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png')}}"></a></td>
+                                            <td><a href="https://crm.mysaamp.com/offres/{{$fichier}}" download ><img class="download" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
+                                        </tr>
+                                        @endforeach
+
+                                    </table>
+                                </div>
+                            @endif
                         </div>
 
                     </div>

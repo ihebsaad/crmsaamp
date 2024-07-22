@@ -61,11 +61,13 @@ if (Auth::check()) {
     <i class="fas fa-comments" ></i>
       <span> Réclamations </span>
     </a>
+  <!--
     <hr class="sidebar-divider">
     <a class="nav-link" href="{{route('phone')}}">
     <i class="fas fa-phone-alt" ></i>
       <span> Télephonie </span>
     </a>
+-->
   </li>
 
 

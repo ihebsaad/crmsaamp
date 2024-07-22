@@ -57,7 +57,7 @@ class TachesController extends Controller
 	public function create($id)
 	{
 		$client=CompteClient::find($id);
-		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
+		$contacts=Contact::where('cl_ident',$client->cl_ident)->orderBy('Nom','asc')->get();
 		return view('taches.create',compact('client','contacts'));
 	}
 
@@ -84,7 +84,7 @@ class TachesController extends Controller
 		$tache=Tache::find($id);
 		//ID_Compte
 		$client=CompteClient::find($tache->ID_Compte);
-		$contact=Contact::where('cl_ident',$client->cl_ident)->first();
+		$contact=Contact::where('id',$tache->ID_Contact)->first();
 
 		return view('taches.show',compact('tache','contact','contact','client'));
 	}
@@ -114,7 +114,7 @@ class TachesController extends Controller
 
 		$contact=Contact::where('id',$tache->ID_Contact)->first();
 
-		$tache->Nom_contact= $contact->Prenom.' '.$contact->Nom;
+		$tache->Nom_contact= $contact->Nom.' '.$contact->Prenom;
 		$tache->save();
 
 		return redirect()->route('taches.show', $tache->id)

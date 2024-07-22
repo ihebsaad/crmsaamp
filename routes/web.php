@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TachesController;
 use App\Http\Controllers\OffresController;
 use App\Http\Controllers\RendezVousController;
+use App\Http\Controllers\StatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,7 @@ Route::post('/ajoutclient', [ClientsController::class, 'store'])->name('compte_c
 #Route::post('/update', [ClientsController::class, 'update'])->name('compte_client.update');
 Route::put('/compte_client/{id}', [ClientsController::class, 'update'])->name('compte_client.update');
 Route::get('/clients/show/{id}', [ClientsController::class, 'show'])->name('compte_client.show');
+Route::get('/clients/folder/{id}', [ClientsController::class, 'folder'])->name('compte_client.folder');
 
 
 
@@ -59,6 +61,7 @@ Route::post('/ajoutretour', [RetoursController::class, 'store'])->name('retours.
 Route::get('/retours/create/{id}', [RetoursController::class, 'create'])->name('retours.create');
 Route::put('/retours/{id}', [RetoursController::class, 'update'])->name('retours.update');
 Route::get('/retours', [RetoursController::class, 'index'])->name('retours.index');
+Route::get('/retours/destroy/{id}',[RetoursController::class,'destroy'])->name('retours.destroy');
 
 
 Route::get('/contacts/show/{id}', [ContactsController::class, 'show'])->name('contacts.show');
@@ -82,7 +85,8 @@ Route::post('/ajoutoffre', [OffresController::class, 'store'])->name('offres.sto
 Route::put('/offres/{id}', [OffresController::class, 'update'])->name('offres.update');
 Route::get('/offres/create/{id}', [OffresController::class, 'create'])->name('offres.create');
 Route::get('/offres/clientlist/{id}', [OffresController::class, 'client_list'])->name('offres.client_list');
-Route::get('/offres', [OffresController::class, 'index'])->name('offres.index');
+Route::get('/offres/list', [OffresController::class, 'index'])->name('offres.index');
+Route::get('/test', 'App\Http\Controllers\OffresController@test');
 
 Route::get('/rendezvous/show/{id}', [RendezVousController::class, 'show'])->name('rendezvous.show');
 Route::post('/ajoutrv', [RendezVousController::class, 'store'])->name('rendezvous.store');
@@ -125,6 +129,15 @@ Route::post('/updateclient','App\Http\Controllers\UsersController@updateclient')
 
 
 Route::get('/commandeprod/{id}','App\Http\Controllers\HomeController@commande')->name('commande');
+
+//STATS
+Route::get('/stats', [StatsController::class, 'stats'])->name('stats');
+Route::get('/clients/stats', [StatsController::class, 'stats_client'])->name('stats_client');
+Route::get('/stats_commercial', [StatsController::class, 'stats_commercial'])->name('stats_commercial');
+Route::get('/stats_commercial_client', [StatsController::class, 'stats_commercial_client'])->name('stats_commercial_client');
+Route::get('/stats_agence', [StatsController::class, 'stats_agence'])->name('stats_agence');
+Route::get('/stats_agence_client', [StatsController::class, 'stats_agence_client'])->name('stats_agence_client');
+Route::get('/stats_agences', [StatsController::class, 'stats_agences'])->name('stats_agences');
 
 
 /*

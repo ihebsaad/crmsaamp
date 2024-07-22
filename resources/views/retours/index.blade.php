@@ -34,6 +34,9 @@
                             <th>Contact</th>
                             <th>Motif</th>
                             <th>Type</th>
+                            @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                <th>Supp</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -61,6 +64,13 @@
                             <td>{{$retour->Nom_du_contact}}</td>
                             <td>{{$retour->Motif_retour}}</td>
                             <td style="color:white" class="bg-{{$class}}">{{$retour->Type_retour}}</td>
+                            @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                <td>
+                                    <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer" >
+                                        <span class="fa fa-fw fa-trash-alt"></span>
+                                    </a>
+                                </td>
+                            @endif
                         </tr>
                         @endforeach
                 </table>
