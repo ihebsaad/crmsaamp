@@ -96,9 +96,11 @@ class ClientsController extends Controller
 	public function fiche($id)
 	{
 		$client=CompteClient::find($id);
-		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
-		$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
-
+		$contacts=$retours=array();
+		if($client->Client_Prospect!='COMPTE PROSPECT'){
+			$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
+			$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
+		}
 		$agence_name='';
 		$agence = DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
 
@@ -149,12 +151,11 @@ class ClientsController extends Controller
                             @endif
                             @endforeach-->
 */
-		$rendezvous=RendezVous::where('AccountId',$client->id)
-		->orWhere('AccountId',$client->Id_Salesforce)
+		$rendezvous=RendezVous::where('Account_Name',$client->Nom)
 		->get();
 
 		$now = Carbon::now();
-
+/*
 		$Proch_rendezvous = RendezVous::where(function ($query) use ($client) {
 			$query->where('AccountId', $client->id)
 				->orWhere('AccountId', $client->Id_Salesforce);
@@ -170,7 +171,17 @@ class ClientsController extends Controller
 		->where('Started_at', '<', $now)
 		->orderBy('Started_at', 'desc')
 		->get();
+*/
 
+		$Proch_rendezvous = RendezVous::where('Account_Name', $client->Nom)
+		->where('Started_at', '>=', $now)
+		->orderBy('Started_at', 'desc')
+		->get();
+
+		$Anc_rendezvous = RendezVous::where('Account_Name', $client->Nom)
+		->where('Started_at', '<', $now)
+		->orderBy('Started_at', 'desc')
+		->get();
 		return view('clients.fiche',compact('client','contacts','retours','Proch_rendezvous','Anc_rendezvous','taches','stats','commandes','agence_name'));
 	}
 
@@ -216,7 +227,7 @@ class ClientsController extends Controller
 
 		// Application des filtres pour les autres champs
 		if ($request->has('Nom') && $request->Nom) {
-			$query->where('Nom', 'like', '%' . $request->Nom . '%');
+			$query->where('Nom', 'like',  $request->Nom . '%');
 		}
 
 		if ($request->has('Rue') && $request->Rue) {

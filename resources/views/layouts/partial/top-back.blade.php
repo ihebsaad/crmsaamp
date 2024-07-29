@@ -56,7 +56,7 @@ $user = auth()->user();
        <!-- Dropdown - User Information -->
        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
          <?php if ($user['user_type'] == 'admin' || $user['user_type'] == 'adv') { ?>
-           <a class="dropdown-item" href="{{route('adminhome')}}">
+           <a class="dropdown-item" href="{{route('dashboard')}}">
              <i class="fas fa-bars fa-sm fa-fw mr-2 text-gray-400"></i>
              Tableau de bord
            </a>

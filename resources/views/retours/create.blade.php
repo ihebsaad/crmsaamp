@@ -139,8 +139,8 @@
 
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Une_reponse_a_ete_apportee_au_client">Réponse au client:</label>
-                                <textarea  id="Une_reponse_a_ete_apportee_au_client" class="form-control" name="Une_reponse_a_ete_apportee_au_client"  style="min-height:150px">{{old('Une_reponse_a_ete_apportee_au_client')}}</textarea><br><br>
+                                <label for="Details_des_causes">Détails des causes:</label>
+                                <textarea  id="Details_des_causes" class="form-control" name="Details_des_causes"  style="min-height:150px">{{old('Details_des_causes')}}</textarea><br><br>
                             </div>
                         </div>
 
@@ -164,14 +164,14 @@
                     <div class="row pt-1">
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Details_des_causes">Détails des causes:</label>
-                                <textarea  id="Details_des_causes" class="form-control" name="Details_des_causes"  style="min-height:150px">{{old('Details_des_causes')}}</textarea><br><br>
+                                <label for="Une_reponse_a_ete_apportee_au_client">Réponse au client:</label>
+                                <textarea  id="Une_reponse_a_ete_apportee_au_client" class="form-control" name="Une_reponse_a_ete_apportee_au_client"  style="min-height:150px">{{old('Une_reponse_a_ete_apportee_au_client')}}</textarea><br><br>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="">
                                 <label for="ID_Contact">Contact:</label>
-                                <select  id="ID_Contact_Salesforce" class="form-control" name="ID_Contact_Salesforce" required  >
+                                <select  id="mycontact_id" class="form-control" name="mycontact_id" required  >
                                     @foreach($contacts as $contact)
                                         <option value="{{$contact->id}}">{{$contact->Prenom}} {{$contact->Nom}} - {{$contact->Title}}</option>
                                     @endforeach

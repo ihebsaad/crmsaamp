@@ -34,6 +34,7 @@ Route::get('/', function () {
 
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home')->middleware('verified');
 Route::get('/adminhome', 'App\Http\Controllers\HomeController@adminhome')->name('adminhome');
+Route::get('/dashboard', 'App\Http\Controllers\HomeController@dashboard')->name('dashboard');
 
 Route::get('/clients/phone', [HomeController::class, 'phone'])->name('phone');
 

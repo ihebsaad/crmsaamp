@@ -33,7 +33,7 @@ class RetoursController extends Controller
 
 	public function index()
 	{
-		$retours=RetourClient::orderBy('id','desc')->get();
+		$retours=RetourClient::orderBy('id','desc')->limit(100)->get();
 		return view('retours.index',compact('retours'));
 	}
 
@@ -64,8 +64,9 @@ class RetoursController extends Controller
 				$class = '';
 			}
 
-		$contact=Contact::where('old_id',$retour->ID_Contact_Salesforce)
-		->orWhere('id',$retour->ID_Contact_Salesforce)->first();
+			//orWhere
+			$contact=Contact::where('id',$retour->mycontact_id)->first();
+
 
 		return view('retours.show',compact('retour','contact','class'));
 	}
@@ -94,9 +95,8 @@ class RetoursController extends Controller
 
         $retour=RetourClient::create($request->all());
 
-		$contact=Contact::where('old_id',$retour->ID_Contact_Salesforce)
-		->orWhere('id',$retour->ID_Contact_Salesforce)
-		->first();
+		$contact=Contact::find($retour->mycontact_id);
+
 
 		$retour->Nom_du_contact= $contact->Prenom.' '.$contact->Nom;
 

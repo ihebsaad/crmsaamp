@@ -39,7 +39,7 @@ table td:first-child{
     <div class="col-lg-4">
         <span class=" mr-2">Commercial:</span><select class="form-control mb-20" id="user_id" onchange="update_stats();" style="max-width:300px">
             @foreach ($representants as $rp)
-            <option @selected(auth()->user()->id==$rp->id) value="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
+            <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
             @endforeach
         </select>
     </div>
@@ -223,6 +223,7 @@ table td:first-child{
         var _token = $('input[name="_token"]').val();
         var agence = $('#agence').val();
         var user = $('#user_id').val();
+        var representant = $('#user_id').find(':selected').data('id');
         var mois = 1;
 		    if ($('#mois').is(':checked')){
                 mois = 0;
@@ -235,7 +236,7 @@ table td:first-child{
                 _token: _token,
                 agence: agence,
                 mois: mois,
-                user: user,
+                user: representant,
             },
             success: function(data) {
                 console.log(data);
@@ -255,7 +256,7 @@ table td:first-child{
                 _token: _token,
                 agence: agence,
                 mois: mois,
-                user: user,
+                user: representant,
             },
             success: function(data) {
                 console.log(data);

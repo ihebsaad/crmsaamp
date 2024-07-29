@@ -97,7 +97,14 @@
                                     </thead>
                                     <tbody>
                                         @foreach($clients as $client)
-                                            <tr><td><a href="{{route('fiche',['id'=>$client->id])}}">{{$client->Nom}}</a></td><td>{{$client->BillingAddress_city}}</td><td>{{$client->Agence}}</td><td>{{$client->Client_Prospect}}</td></tr>
+                                            @php $color='gray';
+                                            switch ($client->Client_Prospect) {
+                                            case 'CLIENT SAAMP' :  $color='#2660c3'; break;
+                                            case 'COMPTE PROSPECT' : $color='#2ab62c'; break;
+                                            case 'ETABLISSEMENT FERME / COMPTE INACTIF' : $color='#ff2e36';  break;
+                                            }
+                                              @endphp
+                                            <tr><td><a href="{{route('fiche',['id'=>$client->id])}}">{{$client->Nom}}</a></td><td>{{$client->BillingAddress_city}}</td><td>{{$client->Agence}}</td><td style="color:{{$color}}">{{$client->Client_Prospect}}</td></tr>
                                         @endforeach
                                     <tbody>
                                 </table>
@@ -131,8 +138,29 @@
 
         var clients = {!! json_encode($clients) !!};
 
+        // Define different icons for each client type
+        var iconOptions = {
+            'CLIENT SAAMP': 'blue',
+            'COMPTE PROSPECT': 'green',
+            'ETABLISSEMENT FERME / COMPTE INACTIF': 'red'
+        };
+
+        // Helper function to create an icon
+        function createIcon(color) {
+            return new L.Icon({
+                iconUrl: 'https://crm.mysaamp.com/img/marker-'+color+'.png',
+
+                iconSize: [32, 32],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+        }
+
         clients.forEach(function (client) {
-            var marker = L.marker([client.latitude, client.longitude]).addTo(map);
+            var clientType = client.Client_Prospect;
+            var color = iconOptions[clientType] || 'gray'; // Default to gray if type is unknown
+            var marker = L.marker([client.latitude, client.longitude], { icon: createIcon(color) }).addTo(map);
             marker.bindPopup('<b>' + client.Nom + '</b><br>' + client.Rue);
         });
     });

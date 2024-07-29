@@ -20,7 +20,7 @@ if (Auth::check()) {
 <ul class="navbar-nav bg-dark sidebar sidebar-dark  accordion" id="accordionSidebar" style="background-color:#f3f3f3!important">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('home')}}">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dashboard')}}">
     <!--<div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div>-->
@@ -41,22 +41,34 @@ if (Auth::check()) {
   <hr class="sidebar-divider">
 
   <li class="nav-item   ">
+
+   <a class="nav-link" href="{{route('dashboard')}}">
+      <i class="fas fa-tachometer-alt"></i>
+      <span> Mon tableau de bord </span>
+    </a>
+
+    <a class="nav-link" href="{{route('home')}}">
+      <i class="fas fa-home" ></i>
+      <span> Mes statistiques </span>
+    </a>
+
+
     <a class="nav-link" href="{{route('search')}}">
       <i class="fas fa-users" ></i>
       <span> Clients </span>
     </a>
-      <hr class="sidebar-divider">
+      <!--<hr class="sidebar-divider">-->
 
     <a class="nav-link" href="{{route('mestaches')}}" >
       <i class="fas fa-tasks" ></i>
       <span> Prises de contact </span>
     </a>
-    <hr class="sidebar-divider">
+    <!--<hr class="sidebar-divider">-->
     <a class="nav-link"  href="{{route('offres.index')}}">
       <i class="fas fa-file-invoice-dollar" ></i>
       <span> Offres commerciales </span>
     </a>
-    <hr class="sidebar-divider">
+    <!--<hr class="sidebar-divider">-->
     <a class="nav-link" href="{{route('retours.index')}}" >
     <i class="fas fa-comments" ></i>
       <span> Réclamations </span>

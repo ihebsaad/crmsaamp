@@ -7,8 +7,36 @@
 ?>
 
 <style>
+    .task-header {
+        display: flex;
+        justify-content: space-between;
+        /*align-items: center;*/
+    }
 
+    .task-title {
+        font-weight: bold;
+    }
 
+    .task-date {
+        color: grey;
+    }
+
+    .task-details {
+        margin-top: 5px;
+        margin-left:15px;
+        padding-left:20px;
+        border-left:2px solid grey;
+    }
+
+    .task-actions {
+        margin-top: 10px;
+    }
+
+    .status {
+        padding: 5px 5px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
 </style>
 <div class="row">
 
@@ -23,11 +51,12 @@
             <div class="card-body" style="min-height:500px">
                 <div class="row">
                     @if(isset($client))
-                        <div class="col-sm-12">
-                            <a href="{{route('taches.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
-                        </div>
+                    <div class="col-sm-12">
+                        <a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                    </div>
                     @endif
                 </div>
+                <!--
                 <table id="mytable" class="table table-striped" style="width:100%">
                     <thead>
                         <tr id="headtable">
@@ -54,15 +83,125 @@
                         @endforeach
                     </tbody>
                 </table>
+-->
 
+                @php
+                $groupedTasks = $taches->groupBy(function($tache) {
+                return \Carbon\Carbon::parse($tache->DateTache)->translatedFormat('F Y');
+                });
+                @endphp
+
+                <div class="accordion" id="tasksAccordion">
+                    @foreach($groupedTasks as $month => $tasks)
+
+                    <div class="card">
+                        <div class="card-header" id="heading-{{ $loop->index }}">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-{{ $loop->index }}" aria-expanded="{{ $loop->first ? 'true' : 'false' }}" aria-controls="collapse-{{ $loop->index }}">
+                                    {{ $month }}
+                                </button>
+                            </h2>
+                        </div>
+
+                        <div id="collapse-{{ $loop->index }}" class="collapse {{ $loop->first ? 'show' : '' }}" aria-labelledby="heading-{{ $loop->index }}" data-parent="#tasksAccordion">
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    @foreach($tasks as $task)
+                                    @php
+                                    $color='';
+                                    switch ( $task->Status ) {
+                                    case 'Not Started':
+                                    $color = '#82e2e8';
+                                    break;
+                                    case 'Waiting on someone e':
+                                    $color = '#ea922b';
+                                    break;
+                                    case 'In Progress':
+                                    $color = '#5f9fff';
+                                    break;
+                                    case 'Deferred':
+                                    $color = '#a778c9';
+                                    break;
+                                    case 'Completed':
+                                    $color = '#40c157';
+                                    break;
+                                    default:
+                                    $color = '';
+                                    }
+
+                                    $class='';
+                                    switch ( $task->Priority ) {
+                                    case 'Normal':
+                                    $class = 'primary';
+                                    break;
+                                    case 'High':
+                                    $class = 'danger';
+                                    break;
+                                    case 'Low':
+                                    $class = 'info';
+                                    break;
+
+                                    default:
+                                    $class = '';
+                                    }
+
+                                    $icon='';
+                                    switch ( $task->Type ) {
+                                    case 'Acompte / Demande de paiement':
+                                    $icon = 'img/invoice.png';
+                                    break;
+                                    case 'Appel téléphonique':
+                                    $icon = 'img/call.png';
+                                    break;
+                                    case 'Envoyer email':
+                                    $icon = 'img/email.png';
+                                    break;
+
+                                    case 'Envoyer courrier':
+                                    $icon = 'img/mail.png';
+                                    break;
+
+
+                                    default:
+                                    $class = '';
+                                    }
+                                    @endphp
+                                    <li class="list-group-item">
+                                        <div class="task-header">
+                                            <span class="task-title" title="{{$task->Type}}"><img  src="{{  URL::asset($icon) }}"  width="25"/> {{ $task->Subject }}</span>
+                                            <span class="task-date">{{ \Carbon\Carbon::parse($task->DateTache)->translatedFormat(' d M') }}</span>
+                                        </div>
+                                        <div class="task-details">
+                                            @if($task->Nom_contact !='')<span><i class="fas fa-user-circle"></i> {{ $task->Nom_contact }}</span> <br>@endif
+                                            <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $task->Status }}</span>
+                                            <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $task->Priority }}</span>
+
+                                            {{ $task->Description }}
+
+                                        </div>
+                                        <div class="task-actions">
+                                                <!-- Place for any task actions like edit, delete -->
+                                            <a href="{{ route('taches.show',['id'=>$task->id]) }}" class="btn btn-primary btn-sm "><i class="fa fa-edit"></i></a>
+                                        </div>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
+
 
         </div>
 
     </div>
 
+</div>
 
-    @endsection
+
+@endsection
 
 
 

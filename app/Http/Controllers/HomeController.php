@@ -48,6 +48,12 @@ class HomeController extends Controller
 		}
 	}
 
+	public function dashboard()
+	{
+ 		return view('dashboard');
+	}
+
+
 	public function index()
 	{
 		if (auth()->user()->user_type == 'visitor') {
@@ -60,7 +66,7 @@ class HomeController extends Controller
 
 			$commercial=false;
 			foreach($representants as $rep){
-				if(auth()->user()->id==$rep->ussers_id )
+				if(auth()->user()->id==$rep->users_id )
 				{
 					$commercial=true;break;
 				}
@@ -178,5 +184,28 @@ class HomeController extends Controller
 		}
 	}
 
+	public static function adresse($client_id)
+	{
+		DB::select("SET @p0='$client_id' ;");
+		$result =  DB::select("  CALL `sp_liste_adresse_livraison`(@p0); ");
 
+		if ($result != null) {
+			return  $result;
+		} else {
+			return  'Error';
+		}
+	}
+
+	public static function adresse2($client_id)
+	{
+		DB::select("SET @p0='$client_id' ;");
+
+		$result =  DB::select("  CALL `sp_liste_adresse_livraison`(@p0); ");
+
+		if ($result != null) {
+			return  $result;
+		} else {
+			return  'Error';
+		}
+	}
 } // end class

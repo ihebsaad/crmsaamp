@@ -127,13 +127,13 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Commercial">Propriétaire:</label>
+                                <label for="Commercial">Commercial:</label>
                                 <input type="text" id="Commercial" class="form-control" name="Commercial" value="{{$client->Commercial}}" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Commercial_support">Commercial:</label>
+                                <label for="Commercial_support">Commercial support:</label>
                                 <input type="text" id="Commercial_support" class="form-control" name="Commercial_support" value="{{$client->Commercial_support}}"><br><br>
                             </div>
                         </div>

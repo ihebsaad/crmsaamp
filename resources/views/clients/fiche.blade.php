@@ -58,7 +58,7 @@ if (is_array($commandes) || is_object($commandes)) {
                 <h6 class="m-0 font-weight-bold text-primary">Fiche du client {{$client->id}} - {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
-            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a> <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a><a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a><a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
+            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a> @if($client->Client_Prospect!='CLIENT SAAMP') <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a> @endif<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a><a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
                 <div class="clearfix"></div>
                 <form id="">
                     <div class="row pt-1">
@@ -106,13 +106,13 @@ if (is_array($commandes) || is_object($commandes)) {
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Proprietaire">Propriétaire:</label>
+                                <label for="Commercial">Commercial:</label>
                                 <h6>{{$client->Commercial}}</h6>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Commercial">Commercial:</label>
+                                <label for="Commercial">Commercial support:</label>
                                 <h6>{{$client->Commercial_support}}</h6>
                             </div>
                         </div>
@@ -361,13 +361,16 @@ if (is_array($commandes) || is_object($commandes)) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
-                <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                @if($client->Client_Prospect=='CLIENT SAAMP')
+                    <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                @endif
                 <div class="table-container">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr>
                                 <th>Titre</th>
-                                <th>Date</th>
+                                <th>Date d'ouverture</th>
+                                <th>Date de clôture</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -375,6 +378,7 @@ if (is_array($commandes) || is_object($commandes)) {
                             <tr>
                                 <td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
                                 <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+                                <td> @if($retour->Date_cloture!='0000-00-00' && $retour->Date_cloture!='') {{date('d/m/Y', strtotime($retour->Date_cloture))}} @endif </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -451,7 +455,9 @@ if (is_array($commandes) || is_object($commandes)) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
-                <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                @if($client->Client_Prospect=='CLIENT SAAMP')
+                    <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                @endif
                 <div class="table-container">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>

@@ -16,7 +16,7 @@
 					<div class="row no-gutters align-items-center">
 						<div class="col mr-2">
 							<div style="font-size:22px;margin-bottom:25px" class="text-xs font-weight-bold text-primary text-uppercase mb-1">Client</div>
-							<div class=" "><a href="{{route('home')}}">Accueil</a> </div>
+							<div class=" "><a href="{{route('home')}}">Mes statistiques</a> </div>
 							<div class=" "><a href="{{route('search')}}">Recherche</a> </div>
 							<div class=" "><a   href="{{route('profile')}}">Mon profil</a> </div>
 						</div>
