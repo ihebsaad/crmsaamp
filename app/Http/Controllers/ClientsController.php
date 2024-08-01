@@ -223,6 +223,9 @@ class ClientsController extends Controller
 			$query->where('Client_Prospect', 'like', '%PROSPECT%');
 		}else{
 			$query->where('Client_Prospect', '<>', 'CLIENT LFMP');
+/*
+			$query->where('Client_Prospect','like', '%CLIENT SAAMP%')
+				->orWhere('Client_Prospect','like', '%PROSPECT%');*/
 		}
 
 		// Application des filtres pour les autres champs
@@ -255,7 +258,7 @@ class ClientsController extends Controller
 		}
 
 		// Exécution de la requête
-		$clients = $query->get()->take(50);
+		$clients = $query->get()->take(1000);
 
 		// Retourne la vue avec les résultats de la recherche
 		return view('clients.search', compact('clients','request'));

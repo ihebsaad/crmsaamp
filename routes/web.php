@@ -141,6 +141,11 @@ Route::get('/stats_agence_client', [StatsController::class, 'stats_agence_client
 Route::get('/stats_agences', [StatsController::class, 'stats_agences'])->name('stats_agences');
 
 
+Route::get('/folders', 'App\Http\Controllers\GEDController@folders')->name('folders');
+Route::get('/folders/{id}/{name}/{parent}', 'App\Http\Controllers\GEDController@folderContent')->name('folderContent');
+Route::get('/download/{id}', 'App\Http\Controllers\GEDController@download');
+Route::get('/viewpdf/{id}', 'App\Http\Controllers\GEDController@view')->name('showPdf');
+
 /*
 use App\Jobs\UpdateSequentialIdsJob;
 

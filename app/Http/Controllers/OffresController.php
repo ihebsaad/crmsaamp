@@ -11,6 +11,7 @@ use App\Models\Contact;
 use App\Models\Offre;
 use App\Services\PhoneService;
 use Illuminate\Support\Facades\DB;
+use App\Services\GEDService;
 
 
 class OffresController extends Controller
@@ -49,7 +50,11 @@ class OffresController extends Controller
 	public function client_list($id)
 	{
 		$client=CompteClient::find($id);
-		$offres=Offre::where('cl_id',$client->cl_ident)->get();
+
+		if($client->cl_ident!=0)
+			$offres=Offre::where('cl_id',$client->cl_ident)->get();
+		else
+			$offres=array();
 
 		return view('offres.index',compact('offres','client'));
 	}
@@ -61,12 +66,25 @@ class OffresController extends Controller
 		return view('offres.create',compact('client','contact'));
 	}
 
+
 	public function show($id)
 	{
 		$offre=Offre::find($id);
-		//$offre=Offre::where('old_id',$id)->first();
-		//Offre::updateWithSequentialIds();
-		return view('offres.show',compact('offre'));
+		$folders=array();
+		$files=false;
+		try{
+			$folderContent=GEDService::getFolderParent($offre->old_id);
+			//dd($folderContent);
+			//getFolderList
+			//$folderContent=GEDService::getFolderContent($offre->old_id);
+		} catch (\Exception $e) {
+			\Log::info(' erreur GED '.$e->getMessage());
+			return "Erreur : " . $e->getMessage();
+		}
+		finally {
+			\Log::info('GED folder show ' );
+		}
+		return view('offres.show',compact('offre','folders','files','folderContent'));
 	}
 
 

@@ -16,6 +16,72 @@
         border:none;
     }
 </style>
+
+<style>
+    .foldername{
+        width:100%;
+        margin-bottom:25px;
+    }
+
+    #folders-container {
+        display: flex;
+        gap: 40px;
+    }
+
+    .folder-btn {
+        background-image: url("{{ URL::asset('img/folder.png')}}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 150px;
+        height: 150px;
+        border: none;
+        font-size: 16px;
+        background-color: transparent;
+        text-align: center;
+        padding-top: 50px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        font-family: 'Roboto';
+        font-weight: bold;
+    }
+
+    .folder-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(21, 156, 228, 0.4);
+    }
+
+
+    .file-title{
+        font-weight:normal;
+        color:black;
+        font-size:13px;
+        margin-top:5px;
+        margin-bottom:5px;
+    }
+
+    .file {
+        background-image: url("{{ URL::asset('img/pdf.png')}}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 60px;
+        height: 60px;
+        border: none;
+        background-color: transparent;
+        text-align: center;
+        padding-top: 30px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .download, .view{
+        cursor:pointer;
+    }
+
+    .ged{
+        border:2px solid #f8f9fd;
+    }
+</style>
 <div class="row">
 
     <div class="col-lg-12 col-sm-12 mb-4">
@@ -26,7 +92,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Offre {{$offre->id}}  -  Client : {{$offre->cl_id}} - {{$offre->nom_compte}}   </h6>
             </div>
 
-            <div class="card-body" style="min-height:500px">
+            <div class="card-body" style="min-height:300px">
 
                 <form action="{{ route('offres.update', $offre->id) }}" method="post">
                     @csrf
@@ -101,6 +167,69 @@
                 </form>
 
             </div>
+
+            <h3 class="pl-5">Documents </h3>
+			<div class="ged pl-5 pr-5 pb-5 pt-3">
+
+
+			    <div class="pl-5" id="folders-container"></div>
+                <div class="row pl-5" id="files-container"></div>
+
+                <script>
+                     <?php
+                    if(isset($folderContent)){ ?>
+                        const apiResponseContent = {
+                            data: <?php echo json_encode($folderContent); ?>
+                        };
+
+                        // Sélectionner l'élément conteneur du contenu
+                        const contentContainer = document.getElementById('files-container');
+
+                        // Fonction pour créer un élément de contenu
+                        function createContentItem(item) {
+                            const div = document.createElement('div');
+                            let nom= item.name;
+                            let filename ;
+                            <?php if($offre->old_id!=''){?>
+                             filename = nom.substring(0, nom.length-21);
+                            <?php }else{?>
+                             filename=nom ;
+                            <?php } ?>
+                            div.className += 'col-sm-2 ';
+                            div.className += 'mb-3 ';
+                            div.className += 'content-item';
+                            div.innerHTML = `
+                                <div class="file" onclick="viewItem(${item.id})"></div>
+                                <div class="file-title"> ${filename}</div>
+                                <div>
+                                    <span onclick="viewItem(${item.id})"><img class="view mr-2" title="Visualiser" width="25" src="{{ URL::asset('img/view.png')}}"></span>
+                                    <span onclick="downloadItem('${item.id}')"><img class="download" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
+                                </div>
+                                `;
+                            return div;
+                        }
+
+                        // Générer les éléments de contenu à partir des données de l'API
+                        apiResponseContent.data.forEach(item => {
+                            const contentItem = createContentItem(item);
+                            contentContainer.appendChild(contentItem);
+                        });
+
+                        // Fonctions pour les boutons
+                        function viewItem(itemId) {
+                            //window.location.href =`https://mysaamp.com/view/${itemId}`;
+                            window.open(`https://crm.mysaamp.com/viewpdf/${itemId}`, '_blank');
+
+                        }
+
+                        function downloadItem(itemId) {
+                            //window.location.href = `downloadItem.php?id=${itemId}`;
+                            window.location.href =`https://crm.mysaamp.com/download/${itemId}`;
+                        }
+                    <?php } ?>
+                </script>
+
+			</div>
 
         </div>
 

@@ -30,7 +30,7 @@
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Account_Name">Nom du client:</label>
-                                <input type="text" id="Account_Name" class="form-control" name="Account_Name"  value="{{$client->Nom}}"><br><br>
+                                <input type="text" id="Account_Name" class="form-control" name="Account_Name"  readonly value="{{$client->Nom}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-4">

@@ -132,28 +132,15 @@ class GEDService
 			if ($responseArray !== null && $responseArray['success'] === true) {
 				$parFolderId = $responseArray['data']['id'];
 
-				$result=self::getFolderList($parFolderId);
+				$result=self::getFolderContent($parFolderId);
+				//$result=self::getFolderList($parFolderId);
 				return $result;
 
 			}
 		}
 
 	}
-/*
-	public static function getFolderList($folderId){
 
-		// URL de l'API pour récupérer les sous-dossiers
-		$apiUrl = "https://ged.maileva.com/api/folders/list/$folderId";
-		$response = self::curlExecute($apiUrl);
-
-		// Décodage de la réponse JSON
-		$data = json_decode($response, true);
-		\Log::info('getFolderList '.json_encode($response));
-		if ($data !== null && $data['success'] === true) {
-			return $data['data'];
-		}
-	}
-*/
 	public static function getFolderList($folderId) {
 		// URL de l'API pour récupérer les sous-dossiers
 		$apiUrl = "https://ged.maileva.com/api/folders/list/$folderId";

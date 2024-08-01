@@ -411,7 +411,7 @@ if (is_array($commandes) || is_object($commandes)) {
                             <tbody>
                                 @foreach($Proch_rendezvous as $rv)
                                 <tr>
-                                    <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td>{{$rv->Subject}}</td>
+                                    <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
                                 </tr>
                                 @endforeach
 
@@ -431,7 +431,7 @@ if (is_array($commandes) || is_object($commandes)) {
                             <tbody>
                                 @foreach($Anc_rendezvous as $rv)
                                 <tr>
-                                    <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td>{{$rv->Subject}}</td>
+                                    <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
                                 </tr>
                                 @endforeach
 
