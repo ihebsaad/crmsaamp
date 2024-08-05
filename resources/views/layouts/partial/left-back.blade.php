@@ -73,6 +73,10 @@ if (Auth::check()) {
     <i class="fas fa-comments" ></i>
       <span> Réclamations </span>
     </a>
+    <a class="nav-link" href="{{route('help')}}" >
+    <i class="fas fa-book" ></i>
+      <span> Guide d'utilisation </span>
+    </a>
   <!--
     <hr class="sidebar-divider">
     <a class="nav-link" href="{{route('phone')}}">

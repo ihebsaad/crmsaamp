@@ -32,21 +32,29 @@ table td:first-child{
 </style>
 @section('content')
 
-
 <div class="row">
 
-    @if(! $commercial && (auth()->user()->user_type=='admin') || (auth()->user()->user_type=='adv') )
-    <div class="col-lg-4">
-        <span class=" mr-2">Commercial:</span><select class="form-control mb-20" id="user_id" onchange="update_stats();" style="max-width:300px">
-            @foreach ($representants as $rp)
-            <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
-            @endforeach
-        </select>
-    </div>
+<input type="hidden" id="user_id" value="{{ auth()->user()->id }}" />
+
+    @if($commercial)
+        <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" />
     @else
-        <input type="hidden" id="user_id" value="{{auth()->user()->id}}" >
+        @if( auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv' )
+            <div class="col-lg-4">
+                <span class=" mr-2">Commercial:</span>
+                <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">
+                    @foreach ($representants as $rp)
+                    <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
+                    @endforeach
+                </select>
+            </div>
+
+        @else
+            <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" >
+        @endif
     @endif
-    <div class="col-lg-4">
+
+    <div class="col-lg-4 mt-4">
         <input id="mois" type="checkbox" value="1" onchange="update_stats();" >
         <label class="mt-2" for="mois">Afficher les années pleines</label>
         </input>
@@ -222,8 +230,11 @@ table td:first-child{
     function update_stats() {
         var _token = $('input[name="_token"]').val();
         var agence = $('#agence').val();
-        var user = $('#user_id').val();
-        var representant = $('#user_id').find(':selected').data('id');
+        var user = ($('#user_id').val());
+        var representant = ($('#commercial').find(':selected').data('id'));
+        if (typeof representant === 'undefined'){
+            representant = $('#commercial').val();
+        }
         var mois = 1;
 		    if ($('#mois').is(':checked')){
                 mois = 0;

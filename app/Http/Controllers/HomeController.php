@@ -41,16 +41,21 @@ class HomeController extends Controller
 
 	public function adminhome()
 	{
-		if (auth()->user()->user_type == 'admin' || auth()->user()->user_type == 'adv') {
+		if (auth()->user()->user_type == 'admin') {
 			return view('adminhome');
 		} else {
-			StatsController::stats();
+			return view('dashboard');
 		}
 	}
 
 	public function dashboard()
 	{
  		return view('dashboard');
+	}
+
+	public function help()
+	{
+ 		return view('help');
 	}
 
 
