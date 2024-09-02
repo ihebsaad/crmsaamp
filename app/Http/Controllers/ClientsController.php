@@ -75,14 +75,13 @@ class ClientsController extends Controller
     {
         $request->validate([
             'Nom' => 'required',
-            'cl_ident' => 'required',
-            'cl_ident' => 'required',
             'Rue' => 'required',
             'Client_Prospect' => 'required',
             'BillingAddress_city' => 'required',
             'Pays' => 'required',
             'CountryCode' => 'required',
             'postalCode' => 'required',
+            'Code_siret' => 'required',
         ]);
 
         $client=CompteClient::create($request->all());
@@ -230,7 +229,7 @@ class ClientsController extends Controller
 
 		// Application des filtres pour les autres champs
 		if ($request->has('Nom') && $request->Nom) {
-			$query->where('Nom', 'like',  $request->Nom . '%');
+			$query->where('Nom', 'like', '%'. $request->Nom . '%');
 		}
 
 		if ($request->has('Rue') && $request->Rue) {

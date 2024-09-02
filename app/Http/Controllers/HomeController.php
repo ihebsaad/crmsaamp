@@ -8,6 +8,7 @@ use App\Http\Controllers\StatsController;
 
 use App\Models\User;
 use App\Models\CompteClient;
+use App\Models\RendezVous;
 use App\Services\PhoneService;
 use Illuminate\Support\Facades\App;
 use App\Services\SendMail;
@@ -44,13 +45,52 @@ class HomeController extends Controller
 		if (auth()->user()->user_type == 'admin') {
 			return view('adminhome');
 		} else {
-			return view('dashboard');
+			$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
+			->orWhere('user_id',auth()->user()->id)
+			->orderBy('id','desc')->get();
+
+			$rendezvous=RendezVous::get();
+
+			return view('dashboard',compact('rendezvous'));
 		}
 	}
 
 	public function dashboard()
 	{
- 		return view('dashboard');
+		$rendezvous=RendezVous::get();
+
+		$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
+		->orWhere('user_id',auth()->user()->id)
+		->orderBy('id','desc')->get();
+
+ 		$rep=DB::table("representant")->where('users_id',auth()->user()->id)->first();
+		if(isset($rep)){
+			$rep_id=$rep->id;
+			//$rep_id=10;
+
+			DB::select("SET @p0='$rep_id' ;");
+			$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
+
+			$query = "
+			SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
+			FROM Statistiques s
+			WHERE
+				(s.Commercial = ? OR s.Commercial_support = ?)
+				AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
+				AND s.cl_ident <> 0
+		";
+
+			$result = DB::select($query, [$rep_id, $rep_id]);
+			$total_clients = $result[0]->total_clients;
+
+		}else{
+			$clients = array();
+			$total_clients=0;
+		}
+
+
+
+ 		return view('dashboard',compact('rendezvous','clients','total_clients'));
 	}
 
 	public function help()

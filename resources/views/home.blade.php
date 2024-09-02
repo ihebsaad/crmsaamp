@@ -29,7 +29,18 @@ table td:not(.text){
 table td:first-child{
     font-weight:bold;
 }
+
+
+/* Mobiles
+@media (max-width: 767px) {
+    .table td{
+        font-size:9px!important;
+    }
+}
+*/
 </style>
+
+
 @section('content')
 
 <div class="row">
@@ -224,8 +235,6 @@ table td:first-child{
 </div>
 
 
-
-
 <script>
     function update_stats() {
         var _token = $('input[name="_token"]').val();
@@ -340,5 +349,10 @@ table td:first-child{
     }
 
     update_stats();
+
+
+
+
+
 </script>
 @endsection

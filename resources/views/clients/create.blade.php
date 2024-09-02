@@ -90,11 +90,11 @@
                     <div class="row pt-1">
 
                         <div class="col-md-2">
-                            <!--
+
                             <div class="">
-                                <label for="id">ID Client:</label>
-                                <input type="text" id="cl_ident" class="form-control" name="cl_ident" value="" required><br><br>
-                            </div>-->
+                                <label for="siret">SIRET:</label>
+                                <input type="number" id="siret" class="form-control" name="Code_siret" value="" required><br><br>
+                            </div>
                         </div>
                     </div>
 
@@ -125,7 +125,7 @@
                         </div>
 
                     </div>
-
+<!--
                     <div class="row pt-1">
 
                         <div class="col-md-2">
@@ -165,21 +165,9 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <!--
-                            <div class="">
-                                <label for="Client_Prospect">Type:</label>
-                                <select  id="Client_Prospect" class="form-control" name="Client_Prospect" required readonly>
-                                    <option  value="" ></option>
-                                    <option  value="CLIENT SAAMP">Client SAAMP</option>
-                                    <option  selected="selected" value="COMPTE PROSPECT">Prospect</option>
-                                    <option  value="ETABLISSEMENT FERME / COMPTE INACTIF">Fermé / Inactif</option>
-                                    <option  value="CLIENT LFMP">Client LFMP</option>
-                                </select><br><br>
-                            </div>
-                            -->
                         </div>
                     </div>
-
+    -->
 
                     <div class="row pt-1">
                         <div class="col-md-12">

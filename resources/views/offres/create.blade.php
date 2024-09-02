@@ -25,7 +25,7 @@
                 <form action="{{ route('offres.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="cl_id" value="{{$client->cl_ident}}" >
-                    <input type="hidden" name="" value="" >
+                    <input type="hidden" name="nom_compte" value="{{$client->Nom}}" >
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">

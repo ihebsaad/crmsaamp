@@ -118,6 +118,7 @@ class OffresController extends Controller
 			'Date_creation' => $request->input('Date_creation'),
 			'Produit_Service' => $request->input('Produit_Service'),
 			'Description' => $request->input('Description'),
+			'nom_compte' => $request->input('nom_compte'),
 			// Other fields as necessary
 		]);
 
