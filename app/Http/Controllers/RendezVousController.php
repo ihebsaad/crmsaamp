@@ -62,15 +62,8 @@ class RendezVousController extends Controller
 	public function show($id)
 	{
 		$rendezvous=RendezVous::find($id);
-/*
-		$contact=Contact::where('old_id',$rendezvous->ID_Contact)
-		->orWhere('id',$rendezvous->ID_Contact)
-		->first();
-*/
-		$contact=Contact::where('id',$rendezvous->ID_Contact_Salesforce)->first();
+ 		$contact=Contact::where('id',$rendezvous->ID_Contact)->first();
 
-		if(! isset($contact))
-			$contact=Contact::where('old_id',$rendezvous->ID_Contact_Salesforce)->first();
 
 		return view('rendezvous.show',compact('rendezvous','contact'));
 	}
@@ -102,11 +95,8 @@ class RendezVousController extends Controller
 		->orWhere('id',$rendezvous->ID_Contact)
 		->first();*/
 
-		$contact=Contact::where('id',$rendezvous->ID_Contact_Salesforce)->first();
+		$contact=Contact::where('id',$rendezvous->ID_Contact)->first();
 		$client=CompteClient::find($rendezvous->AccountId);
-
-		if(! isset($contact))
-			$contact=Contact::where('old_id',$rendezvous->ID_Contact_Salesforce)->first();
 
 		$rendezvous->Nom= $contact->Prenom.' '.$contact->Nom;
 		$rendezvous->Account_Name=$client->Nom;

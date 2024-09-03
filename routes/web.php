@@ -54,6 +54,7 @@ Route::post('/ajoutclient', [ClientsController::class, 'store'])->name('compte_c
 Route::put('/compte_client/{id}', [ClientsController::class, 'update'])->name('compte_client.update');
 Route::get('/clients/show/{id}', [ClientsController::class, 'show'])->name('compte_client.show');
 Route::get('/clients/folder/{id}', [ClientsController::class, 'folder'])->name('compte_client.folder');
+Route::post('/ouverture', [ClientsController::class, 'ouverture'])->name('ouverture');
 
 
 

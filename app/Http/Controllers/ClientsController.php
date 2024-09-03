@@ -10,6 +10,7 @@ use App\Models\Contact;
 use App\Models\RetourClient;
 use App\Models\Tache;
 use App\Services\PhoneService;
+use App\Services\GEDService;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -261,6 +262,15 @@ class ClientsController extends Controller
 
 		// Retourne la vue avec les résultats de la recherche
 		return view('clients.search', compact('clients','request'));
+	}
+
+	public function ouverture(Request $request)
+	{
+		$type= $request->get('type');
+		$cl_ident= $request->get('cl_ident');
+
+		$c=GEDService::Account($cl_ident,$type);
+
 	}
 
 } // end class
