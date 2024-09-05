@@ -154,5 +154,29 @@ class OffresController extends Controller
 		->with('success','Offre ajoutée');
 	}
 
+	/** VIEW **/
+	public function edit_file($item,$id,$name)
+	{
+		$offre= Offre::find($id);
+		return view('offres.edit_file',compact('offre','item','id','name'));
+
+	}
+
+	// ici
+	public function editFile(Request $request)
+	{
+		$itemId= $request->get('item_id');
+		$attachment=$request->file('file');
+		$id=$request->get('id');
+
+		try{
+			$result = GEDService::editItem($itemId, $attachment, $id,'offre');
+			return $result ;
+		} catch (\Exception $e) {
+			\Log::info(' erreur GED replacement '.$e->getMessage());
+			return "Erreur modification de fichier : " . $e->getMessage();
+		}
+	}
+
 
 } // end class

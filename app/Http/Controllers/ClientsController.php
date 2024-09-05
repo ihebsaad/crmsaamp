@@ -204,13 +204,6 @@ class ClientsController extends Controller
 	}
 
 
-	public function folder($id)
-	{
-		$client=CompteClient::find($id);
-		return view('clients.folder',compact('client'));
-
-	}
-
 	public function search(Request $request)
 	{
 		$query = CompteClient::query();
@@ -268,9 +261,134 @@ class ClientsController extends Controller
 	{
 		$type= $request->get('type');
 		$cl_ident= $request->get('cl_ident');
+		$id= $request->get('id');
 
-		$c=GEDService::Account($cl_ident,$type);
+		$result=GEDService::Account($cl_ident,$type,$id);
+		return $result;
+	}
+
+
+
+
+
+	/** GED  **/
+
+
+	public function folder($id)
+	{
+		$client=CompteClient::find($id);
+
+		try{
+			$clientId=$client->cl_ident;
+
+			$files=false;
+			$parent=null;
+			if (isset($clientId)) {
+				$folders=GEDService::getFolders($clientId);
+				//dd($folders);
+
+			}
+			return view('clients.folder',compact('client','folders','files'));
+
+
+		} catch (\Exception $e) {
+			\Log::info(' erreur GED '.$e->getMessage());
+			return "Erreur : " . $e->getMessage();
+		}
+
+
 
 	}
+
+	public function folderContent($folderId,$folderName,$parent=null,$client_id)
+	{
+		try{
+			//$clientId=auth()->user()->client_id;
+
+			//if (isset($clientId)) {
+				$folders=GEDService::getFolderList($folderId);
+				$folderContent=GEDService::getFolderContent($folderId);
+				$files=false;
+				if(!$folders){
+					$folders=GEDService::getFolderList($parent);
+					$files=true;
+					//dd($parent);
+				}
+			//}
+
+		} catch (\Exception $e) {
+			\Log::info(' erreur GED '.$e->getMessage());
+			return "Erreur : " . $e->getMessage();
+		}
+		finally {
+			\Log::info('GED folder show ' );
+		}
+		return view('clients.folders',compact('folders','folderName','folderContent','parent','files','folderId','client_id'));
+	}
+
+	public function download($id)
+	{
+		try{
+			//$clientId=auth()->user()->client_id;
+
+			//if (isset($clientId)) {
+				GEDService::downloadItem($id);
+			//}
+
+		} catch (\Exception $e) {
+			\Log::info(' erreur GED '.$e->getMessage());
+			return "Erreur : " . $e->getMessage();
+		}
+	}
+
+	public function view($id)
+	{
+		try{
+			//$clientId=auth()->user()->client_id;
+
+			//if (isset($clientId)) {
+				$result = GEDService::getItem($id);
+
+				if ($result) {
+					return response($result, 200)
+						->header('Content-Type', 'application/pdf');
+				}
+			//}
+
+		} catch (\Exception $e) {
+			\Log::info(' erreur GED '.$e->getMessage());
+			return "Erreur : " . $e->getMessage();
+		}
+
+		return "Document not found or access denied.";
+
+	}
+
+	/** VIEW **/
+	public function edit_file($item,$id,$name)
+	{
+		$client= CompteClient::find($id);
+		return view('clients.edit_file',compact('client','item','id','name'));
+
+	}
+
+
+	public function editFile(Request $request)
+	{
+		$itemId= $request->get('item_id');
+		$attachment=$request->file('file');
+		$id=$request->get('id');
+
+		try{
+			$result = GEDService::editItem($itemId, $attachment, $id,'client');
+			return $result ;
+		} catch (\Exception $e) {
+			\Log::info(' erreur GED replacement '.$e->getMessage());
+			return "Erreur modification de fichier : " . $e->getMessage();
+		}
+	}
+
+
+
 
 } // end class

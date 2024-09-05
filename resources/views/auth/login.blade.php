@@ -65,7 +65,7 @@
                                         <a class="small" href="{{ route('password.request') }}">Mot de passe oublié?</a>
                                     </div>
                                     <div class="text-center">
-                                        <a class="small" href="{{ route('register') }}">Créer un compte!</a>
+                                        <!--<a class="small" href="#">Créer un compte!</a>-->
                                     </div>
                                 </div>
                             </div>

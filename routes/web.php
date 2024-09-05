@@ -89,6 +89,9 @@ Route::put('/offres/{id}', [OffresController::class, 'update'])->name('offres.up
 Route::get('/offres/create/{id}', [OffresController::class, 'create'])->name('offres.create');
 Route::get('/offres/clientlist/{id}', [OffresController::class, 'client_list'])->name('offres.client_list');
 Route::get('/offres/list', [OffresController::class, 'index'])->name('offres.index');
+Route::get('/offres/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\OffresController@edit_file');
+Route::post('/offres/editFile', 'App\Http\Controllers\OffresController@editFile')->name('offres.editFile');
+
 Route::get('/test', 'App\Http\Controllers\OffresController@test');
 
 Route::get('/rendezvous/show/{id}', [RendezVousController::class, 'show'])->name('rendezvous.show');
@@ -143,10 +146,12 @@ Route::get('/stats_agence_client', [StatsController::class, 'stats_agence_client
 Route::get('/stats_agences', [StatsController::class, 'stats_agences'])->name('stats_agences');
 
 
-Route::get('/folders', 'App\Http\Controllers\GEDController@folders')->name('folders');
-Route::get('/folders/{id}/{name}/{parent}', 'App\Http\Controllers\GEDController@folderContent')->name('folderContent');
-Route::get('/download/{id}', 'App\Http\Controllers\GEDController@download');
-Route::get('/viewpdf/{id}', 'App\Http\Controllers\GEDController@view')->name('showPdf');
+Route::get('/folders', 'App\Http\Controllers\ClientsController@folders')->name('folders');
+Route::get('/folders/{id}/{name}/{parent}/{client_id}', 'App\Http\Controllers\ClientsController@folderContent')->name('folderContent');
+Route::get('/download/{id}', 'App\Http\Controllers\ClientsController@download');
+Route::get('/viewpdf/{id}', 'App\Http\Controllers\ClientsController@view')->name('showPdf');
+Route::get('/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\ClientsController@edit_file');
+Route::post('/editFile', 'App\Http\Controllers\ClientsController@editFile')->name('editFile');
 
 /*
 use App\Jobs\UpdateSequentialIdsJob;

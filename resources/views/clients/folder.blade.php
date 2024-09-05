@@ -1,11 +1,72 @@
 @extends('layouts.back')
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 
 @section('content')
 
 <?php
 
 ?>
+<style>
+    .foldername{
+        width:100%;
+        margin-bottom:25px;
+    }
 
+    #folders-container {
+        display: flex;
+        gap: 40px;
+    }
+
+    .folder-btn {
+        background-image: url("{{ URL::asset('img/folder.png')}}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 150px;
+        height: 150px;
+        border: none;
+        font-size: 13px;
+        background-color: transparent;
+        text-align: center;
+        padding-top: 50px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        font-family: 'Roboto';
+        font-weight: bold;
+    }
+
+    .folder-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(21, 156, 228, 0.4);
+    }
+
+
+    .file-title{
+        font-weight:normal;
+        color:black;
+        font-size:13px;
+        margin-top:5px;
+        margin-bottom:5px;
+    }
+
+    .file {
+        background-image: url("{{ URL::asset('img/pdf.png')}}");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 60px;
+        height: 60px;
+        border: none;
+        background-color: transparent;
+        text-align: center;
+        padding-top: 30px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .download, .view, .replace{
+        cursor:pointer;
+    }
+</style>
 <div class="row">
 
     <div class="col-lg-12 mb-4">
@@ -14,26 +75,37 @@
                 <h6 class="m-0 font-weight-bold text-primary">Dossier du client {{$client->id}} - {{$client->Nom}}</h6>
             </div>
             <div class="card-body" style="min-height:300px">
-
-                <form action="{{route('ouverture')}}" method="post" enctype="multipart/form-data">
+            <h5 class="black">Ajouter des documents</h5>
+                <form action="{{route('ouverture')}}" method="post" enctype="multipart/form-data" style="margin:30px 0px 50px 50px">
                     {{ csrf_field() }}
+                    <input   type="hidden"   name="id" value="{{$client->id}}"  required>
+                    <input   type="hidden"   name="cl_ident" value="{{$client->cl_ident}}"  required>
+
                     <div class="row pt-1">
                         <div class="col-md-4">
-                            <label for="files">Sélectionnez des fichiers :</label>
-                            <input class="form-control" type="file" id="files" name="files[]" multiple required>
+                            <label for="files">Sélectionnez des fichiers : (obligatoirement PDF)</label>
+                            <input class="form-control" type="file" id="files" name="files[]" multiple required accept="application/pdf">
                         </div>
-
+                        @php
+                            $folderNames = is_array($folders) && !empty($folders) ? array_column($folders, 'name') : [];
+                        @endphp
                         <div class="col-md-4">
                             <label>Type de depôt :</label>
-                            <select  class="form-control" name="type">
-                                <option  value="1">DOCUMENTS OUVERTURE DE COMPTE POIDS</option>
-                                <option  value="2">PRINCIPES ET CODE DES PRATIQUES DU RJC ET DE SAAMP</option>
-                                <option  value="3">DECLARATION : DUE DILIGENCE</option>
-                                <option  value="4">CNI OU PASSEPORT</option>
-                                <option  value="5">KBIS DE MOINS DE 3 MOIS OU REPERTOIRE DES METIERS</option>
-                                <option  value="6">DECLARATION D'EXISTENCE AUPRES DE LA GARANTIE</option>
-                                <option  value="7">LETTRE DE FUSION</option>
-                                <option  value="8">RIB</option>
+                            <select class="form-control" name="type">
+                                @foreach([
+                                    1 => "DOCUMENTS OUVERTURE DE COMPTE POIDS",
+                                    2 => "PRINCIPES ET CODE DES PRATIQUES DU RJC ET DE SAAMP",
+                                    3 => "DECLARATION : DUE DILIGENCE",
+                                    4 => "CNI OU PASSEPORT",
+                                    5 => "KBIS DE MOINS DE 3 MOIS OU REPERTOIRE DES METIERS",
+                                    6 => "DECLARATION D'EXISTENCE AUPRES DE LA GARANTIE",
+                                    7 => "LETTRE DE FUSION",
+                                    8 => "RIB"
+                                ] as $value => $label)
+                                    @if(!in_array($label, $folderNames))
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @endif
+                                @endforeach
                             </select>
                         </div>
                             <div class="col-md-4">
@@ -45,6 +117,137 @@
 
 
                 </form>
+
+                @if(isset($folders) && isset($folders[0]))
+
+                <h5 class="black">Mon dossier</h5>
+
+                <!--
+                    <nav aria-label="breadcrumb" style="width:100%">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('folders') }}"><img  width="30" src="{{ URL::asset('img/shared-folder.png')}}"> Mes documents</a>
+                        </li>
+                        @php
+                            $pathComponents = explode('/', $folders[0]['virtualPath']);
+					        $idComponents = explode(',', $folders[0]['virtualPathIdList']);
+                            $i=0;
+                        @endphp
+                        @foreach($pathComponents as $index => $component)
+                            @php
+                                $id = $idComponents[$index];
+                                $i++;
+                            @endphp
+                            @php if($i>2){
+                                $parent = $idComponents[$index-1];
+
+                                @endphp
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('folderContent', ['id' => $id, 'name' => $component,'parent'=>$parent,'client_id'=>$client->id]) }}"><img  width="30" @if($id==$folderId) src="{{ URL::asset('img/open-folder.png')}}"   @else src="{{ URL::asset('img/folder.png')}}" @endif > {{ $component }}</a>
+                                </li>
+                            @php } @endphp
+                        @endforeach
+                        @if($files)
+                        <li class="breadcrumb-item">
+                            <span ><img  width="30" src="{{ URL::asset('img/open-folder.png')}}"> {{ $folderName }}</span>
+                        </li>
+                        @endif
+
+                    </ol>
+                </nav>-->
+                @endif
+
+                @if(isset($folderName) && $files)
+                    <!--<h3 class="foldername ml-3"><img  width="45" src="{{ URL::asset('img/open-folder.png')}}"> {{$folderName}}</h3><br>-->
+                @endif
+
+
+
+                <div class="pl-5" id="folders-container"></div>
+                <div class="row pl-5" id="files-container"></div>
+
+                <script>
+                    <?php if(isset($folders) && $files==false){ ?>
+
+                    const apiResponse = {
+                        data: <?php echo json_encode($folders); ?>
+                    };
+
+                    // Sélectionner l'élément conteneur des boutons
+                    const buttonsContainer = document.getElementById('folders-container');
+
+                    // Fonction pour créer un bouton avec redirection
+                    function createButton(id, name,pathList) {
+                        const button = document.createElement('button');
+
+                        const pathIds = pathList.split(',');
+                        const lastPathId = pathIds[pathIds.length - 1];
+
+                        button.textContent = name;
+                        button.className += 'folder-btn';
+                        button.onclick = function() {
+                           <?php if(isset($folderName)){ ?>
+                            window.location.href = `https://crm.mysaamp.com/folders/${id}/${encodeURIComponent(name)}/${lastPathId}/<?php echo $client->id?>`;
+                            <?php }else{ ?>
+                            window.location.href = `https://crm.mysaamp.com/folders/${id}/${encodeURIComponent(name)}/${lastPathId}/<?php echo $client->id?>`;
+                            <?php } ?>
+
+                        };
+                        return button;
+                    }
+                    // Générer les boutons à partir des données de l'API
+                    apiResponse.data.forEach(item => {
+                        const button = createButton(item.id, item.name,item.virtualPathIdList);
+                        buttonsContainer.appendChild(button);
+                    });
+
+
+                    <?php }
+                    if(isset($folderContent)){ ?>
+                        const apiResponseContent = {
+                            data: <?php echo json_encode($folderContent); ?>
+                        };
+
+                        // Sélectionner l'élément conteneur du contenu
+                        const contentContainer = document.getElementById('files-container');
+
+                        // Fonction pour créer un élément de contenu
+                        function createContentItem(item) {
+                            const div = document.createElement('div');
+                            div.className += 'col-sm-2 ';
+                            div.className += 'mb-3 ';
+                            div.className += 'content-item';
+                            div.innerHTML = `
+                                <div class="file" onclick="viewItem(${item.id})"></div>
+                                <div class="file-title"> ${item.name}</div>
+                                <div>
+                                    <span onclick="viewItem(${item.id})"><img class="view mr-2" title="Visualiser" width="25" src="{{ URL::asset('img/view.png')}}"></span>
+                                    <span onclick="downloadItem('${item.id}')"><img class="download" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
+                                </div>
+                                `;
+                            return div;
+                        }
+
+                        // Générer les éléments de contenu à partir des données de l'API
+                        apiResponseContent.data.forEach(item => {
+                            const contentItem = createContentItem(item);
+                            contentContainer.appendChild(contentItem);
+                        });
+
+                        // Fonctions pour les boutons
+                        function viewItem(itemId) {
+                            //window.location.href =`https://mysaamp.com/view/${itemId}`;
+                            window.open(`https://crm.mysaamp.com/viewpdf/${itemId}`, '_blank');
+
+                        }
+
+                        function downloadItem(itemId) {
+                            //window.location.href = `downloadItem.php?id=${itemId}`;
+                            window.location.href =`https://crm.mysaamp.com/download/${itemId}`;
+                        }
+                    <?php } ?>
+                </script>
+
 
             </div>
         </div>

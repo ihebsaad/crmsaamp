@@ -49,6 +49,30 @@
 	</div>
 
 
+	<!-- maintenance Modal-->
+	<div class="modal fade" id="maintenance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Développement en cours </h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body text-center"  style="">
+			<div style="font-size:16px;">
+				<h5>Bienvenue sur le CRM</h5><br>
+				<b style="color:red">
+				Certaines données ou certains modules peuvent être manquants ou présenter des bugs.<br>
+				Merci de nous en informer.</b><br>
+				</div>
+		</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.min.js" integrity="sha512-xCMh+IX6X2jqIgak2DBvsP6DNPne/t52lMbAUJSjr3+trFn14zlaryZlBcXbHKw8SbrpS0n3zlqSVmZPITRDSQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.global.js" integrity="sha512-3I+0zIxy2IkeeCvvhXUEu+AFT3zAGuHslHLDmM8JBv6FT7IW6WjhGpUZ55DyGXArYHD0NshixtmNUWJzt0K32w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -86,6 +110,14 @@
 		calendar.render();
     });
   </script>
+
+	<script>
+		$(document).ready(function() {
+			setTimeout(function() {
+				$('#maintenance').modal('show');
+			}, 5000); // 5000 millisecondes = 5 secondes
+		});
+	</script>
 
 </div>
 

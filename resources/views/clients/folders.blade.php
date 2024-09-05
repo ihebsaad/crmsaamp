@@ -25,7 +25,7 @@
         width: 150px;
         height: 150px;
         border: none;
-        font-size: 16px;
+        font-size: 13px;
         background-color: transparent;
         text-align: center;
         padding-top: 50px;
@@ -63,7 +63,7 @@
         cursor: pointer;
         transition: transform 0.3s, box-shadow 0.3s;
     }
-    .download, .view{
+    .download, .view,.replace{
         cursor:pointer;
     }
 </style>
@@ -80,7 +80,7 @@
                     <nav aria-label="breadcrumb" style="width:100%">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('folders') }}"><img  width="30" src="{{ URL::asset('img/shared-folder.png')}}"> Mes documents</a>
+                            <a href="{{route('compte_client.folder',['id'=>$client_id])}}"><img  width="30" src="{{ URL::asset('img/shared-folder.png')}}"> Mon dossier</a>
                         </li>
                         @php
                             $pathComponents = explode('/', $folders[0]['virtualPath']);
@@ -97,7 +97,7 @@
 
                                 @endphp
                                 <li class="breadcrumb-item">
-                                    <a href="{{ route('folderContent', ['id' => $id, 'name' => $component,'parent'=>$parent,'client_id'=>$client->id]) }}"><img  width="30" @if($id==$folderId) src="{{ URL::asset('img/open-folder.png')}}"   @else src="{{ URL::asset('img/folder.png')}}" @endif > {{ $component }}</a>
+                                    <a href="{{ route('folderContent', ['id' => $id, 'name' => $component,'parent'=>$parent,'client_id'=>$client_id]) }}"><img  width="30" @if($id==$folderId) src="{{ URL::asset('img/open-folder.png')}}"   @else src="{{ URL::asset('img/folder.png')}}" @endif > {{ $component }}</a>
                                 </li>
                             @php } @endphp
                         @endforeach
@@ -141,9 +141,9 @@
                         button.className += 'folder-btn';
                         button.onclick = function() {
                            <?php if(isset($folderName)){ ?>
-                            window.location.href = `https://crm.mysaamp.com/folders/${id}/${encodeURIComponent(name)}/${lastPathId}`;
+                            window.location.href = `https://crm.mysaamp.com/folders/${id}/${encodeURIComponent(name)}/${lastPathId}/<?php echo $client_id?>`;
                             <?php }else{ ?>
-                            window.location.href = `https://crm.mysaamp.com/folders/${id}/${encodeURIComponent(name)}/${lastPathId}`;
+                            window.location.href = `https://crm.mysaamp.com/folders/${id}/${encodeURIComponent(name)}/${lastPathId}/<?php echo $client_id?>`;
                             <?php } ?>
 
                         };
@@ -176,7 +176,8 @@
                                 <div class="file-title"> ${item.name}</div>
                                 <div>
                                     <span onclick="viewItem(${item.id})"><img class="view mr-2" title="Visualiser" width="25" src="{{ URL::asset('img/view.png')}}"></span>
-                                    <span onclick="downloadItem('${item.id}')"><img class="download" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
+                                    <span onclick="downloadItem('${item.id}')"><img class="download mr-2" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
+                                    <span onclick="editItem('${item.id}','${item.name}')"><img class="replace" title="Remplacer" width="28" src="{{ URL::asset('img/edit-file.png')}}"></span>
                                 </div>
                                 `;
                             return div;
@@ -192,7 +193,11 @@
                         function viewItem(itemId) {
                             //window.location.href =`https://mysaamp.com/view/${itemId}`;
                             window.open(`https://crm.mysaamp.com/viewpdf/${itemId}`, '_blank');
+                        }
 
+                        function editItem(itemId,name) {
+                            //window.location.href =`https://mysaamp.com/view/${itemId}`;
+                            window.open(`https://crm.mysaamp.com/edit_file/${itemId}/<?php echo $client_id;?>/${name}`, '_self');
                         }
 
                         function downloadItem(itemId) {

@@ -58,7 +58,7 @@ $user = auth()->user();
          <?php if ($user['user_type'] == 'admin' || $user['user_type'] == 'adv') { ?>
            <a class="dropdown-item" href="{{route('dashboard')}}">
              <i class="fas fa-bars fa-sm fa-fw mr-2 text-gray-400"></i>
-             Tableau de bord
+               Tableau de bord
            </a>
          <?php } ?>
           <!--
@@ -70,7 +70,7 @@ $user = auth()->user();
          <div class="dropdown-divider"></div>
          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-           {{__('msg.Logout')}}
+              {{__('msg.Logout')}}
          </a>
        </div>
      </li>

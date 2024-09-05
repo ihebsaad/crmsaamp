@@ -74,7 +74,7 @@
         cursor: pointer;
         transition: transform 0.3s, box-shadow 0.3s;
     }
-    .download, .view{
+    .download, .view,.replace{
         cursor:pointer;
     }
 
@@ -147,7 +147,7 @@
                                         <tr>
                                             <td><label><b class="black mr-2">{{$fichier}}</b></label></td>
                                             <td><a href="https://crm.mysaamp.com/offres/{{$fichier}}" target="_blank" ><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png')}}"></a></td>
-                                            <td><a href="https://crm.mysaamp.com/offres/{{$fichier}}" download ><img class="download" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
+                                            <td><a href="https://crm.mysaamp.com/offres/{{$fichier}}" download ><img class="download mr-2" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
                                         </tr>
                                         @endforeach
 
@@ -203,7 +203,8 @@
                                 <div class="file-title"> ${filename}</div>
                                 <div>
                                     <span onclick="viewItem(${item.id})"><img class="view mr-2" title="Visualiser" width="25" src="{{ URL::asset('img/view.png')}}"></span>
-                                    <span onclick="downloadItem('${item.id}')"><img class="download" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
+                                    <span onclick="downloadItem('${item.id}')"><img class="download mr-2" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
+                                    <span onclick="editItem('${item.id}','${item.name}')"><img class="replace" title="Remplacer" width="28" src="{{ URL::asset('img/edit-file.png')}}"></span>
                                 </div>
                                 `;
                             return div;
@@ -220,6 +221,11 @@
                             //window.location.href =`https://mysaamp.com/view/${itemId}`;
                             window.open(`https://crm.mysaamp.com/viewpdf/${itemId}`, '_blank');
 
+                        }
+
+                        function editItem(itemId,name) {
+                            //window.location.href =`https://mysaamp.com/view/${itemId}`;
+                            window.open(`https://crm.mysaamp.com/offres/edit_file/${itemId}/<?php echo $offre->id;?>/${name}`, '_self');
                         }
 
                         function downloadItem(itemId) {

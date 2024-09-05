@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use DB;
+use Illuminate\Support\Facades\Http;
 
 
 class GEDService
@@ -27,16 +28,18 @@ class GEDService
 		$curlAuth = curl_init();
 
 		// Configuration de cURL pour l'authentification
-		curl_setopt_array($curlAuth, array(
-			CURLOPT_CUSTOMREQUEST => 'POST',
-			CURLOPT_URL => $authUrl,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_POSTFIELDS => $authData,
-			CURLOPT_HTTPHEADER => array(
-				'Content-Type: application/json'
-			),
-			CURLOPT_SSL_VERIFYPEER => false
-		)
+		curl_setopt_array(
+			$curlAuth,
+			array(
+				CURLOPT_CUSTOMREQUEST => 'POST',
+				CURLOPT_URL => $authUrl,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_POSTFIELDS => $authData,
+				CURLOPT_HTTPHEADER => array(
+					'Content-Type: application/json'
+				),
+				CURLOPT_SSL_VERIFYPEER => false
+			)
 		);
 
 		// Exécution de la requête cURL pour l'authentification
@@ -61,11 +64,11 @@ class GEDService
 				\Log::error("Erreur GED : Authentification échouée, token non reçu.");
 			}
 		}
-
 	}
 
 
-	public static function curlExecute($apiUrl){
+	public static function curlExecute($apiUrl)
+	{
 		$headers = array(
 			'Content-Type: application/json',
 			'Auth-Token: ' . self::getToken()
@@ -75,13 +78,15 @@ class GEDService
 		$curl = curl_init();
 
 		// Configuration de cURL
-		curl_setopt_array($curl, array(
-			CURLOPT_CUSTOMREQUEST => 'GET',
-			CURLOPT_URL => $apiUrl,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HTTPHEADER => $headers,
-			CURLOPT_SSL_VERIFYPEER => false
-		)
+		curl_setopt_array(
+			$curl,
+			array(
+				CURLOPT_CUSTOMREQUEST => 'GET',
+				CURLOPT_URL => $apiUrl,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HTTPHEADER => $headers,
+				CURLOPT_SSL_VERIFYPEER => false
+			)
 		);
 
 		// Exécution de la requête cURL
@@ -95,36 +100,101 @@ class GEDService
 		if ($err) {
 			\Log::error("Erreur GED  : " . $err);
 		} else {
-			return $response ;
+			return $response;
 		}
-
 	}
 
 
-	public static function getItem($itemId){
+	public static function getItem($itemId)
+	{
 
 		// URL de l'API pour visualiser l'élément
 		$apiUrl = "https://ged.maileva.com/api/document/$itemId/stream";
 
- 		// Exécution de la requête cURL
+		// Exécution de la requête cURL
 		$response = self::curlExecute($apiUrl);
 
 		header('Content-Type: application/pdf');
 		return $response;
+	}
 
+	public static function editItem($itemId, $attachment, $id,$type)
+	{
+
+		// Récupérer le contenu du fichier et le nom du fichier
+		$fileName = $attachment->getClientOriginalName();
+
+		$headers = [
+			'Content-Type: multipart/form-data',
+			'Auth-Token: ' . self::getToken()
+		];
+
+		// URL de l'API pour remplacer l'élément
+		$apiUrl = "https://ged.maileva.com/api/document/{$itemId}/replace";
+
+		// Construction des données pour l'envoi de fichier
+		$postFields = [
+			'attachment' => new \CURLFile($attachment->getPathname(), $attachment->getMimeType(), $fileName)
+		];
+
+		// Initialisation de cURL
+		$curl = curl_init();
+
+		// Configuration de cURL
+		curl_setopt_array($curl, [
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_URL => $apiUrl,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POSTFIELDS => $postFields,
+			CURLOPT_HTTPHEADER => $headers,
+			CURLOPT_SSL_VERIFYPEER => false,
+		]);
+
+		// Exécution de la requête cURL
+		$response = curl_exec($curl);
+		$err = curl_error($curl);
+
+		// Fermeture de la session cURL
+		curl_close($curl);
+
+		// Vérification des erreurs cURL
+		if ($err) {
+			echo "Erreur cURL : " . $err;
+		} else {
+			// Traitement de la réponse de l'API
+			$data = json_decode($response, true);
+			if ($data && $data['success'] === true) {
+				if($type=='client')
+					return redirect()->route('compte_client.folder', ['id' => $id])->with(['success' => "Le document a été mis à jour avec succès. "]);
+				else
+					return redirect()->route('offres.show',$id)->with(['success' => "Le document a été mis à jour avec succès. "]);
+
+			} else {
+
+				if($type=='client')
+					return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Erreur lors de la mise à jour du document."]);
+				else
+					return redirect()->route('offres.show',$id)->withErrors(['msg' => "Erreur lors de la mise à jour du document."]);
+
+			}
+		}
 	}
 
 
-
-	public static function getFolderParent($clientDisplayName){
+	public static function getFolderParent($clientDisplayName)
+	{
 
 		// URL de l'API pour récupérer les sous-dossiers
 		$apiUrl = "https://ged.maileva.com/api/folder/name/" . $clientDisplayName;
+		//$apiUrl = "https://ged.maileva.com/api/folder/name/DOCUMENTS%20OUVERTURE%20DE%20COMPTE/". $clientDisplayName;
+
 		$response = self::curlExecute($apiUrl);
 
 		// Décodage de la réponse JSON
 		$data = json_decode($response, true);
+
 		if (empty($response)) {
+			//dd('Aucun dossier trouvé pour le client.');
 			return "<p class='aucun'>Aucun dossier trouvé pour le client.</p>";
 		} else {
 			$responseArray = json_decode($response, true);
@@ -132,16 +202,79 @@ class GEDService
 			if ($responseArray !== null && $responseArray['success'] === true) {
 				$parFolderId = $responseArray['data']['id'];
 
-				$result=self::getFolderContent($parFolderId);
+				$result = self::getFolderContent($parFolderId);
 				//$result=self::getFolderList($parFolderId);
+				return $result;
+			}
+		}
+	}
+
+	/*
+	public static function getFolders($clientDisplayName){
+
+		// URL de l'API pour récupérer les sous-dossiers
+		$apiUrl = "https://ged.maileva.com/api/folder/name/" . $clientDisplayName;
+		//$apiUrl = "https://ged.maileva.com/api/folder/name/DOCUMENTS%20OUVERTURE%20DE%20COMPTE/". $clientDisplayName;
+
+		$response = self::curlExecute($apiUrl);
+
+		// Décodage de la réponse JSON
+		$data = json_decode($response, true);
+
+		if (empty($response)) {
+			//dd('Aucun dossier trouvé pour le client.');
+			return "<p class='aucun'>Aucun dossier trouvé pour le client.</p>";
+		} else {
+			$responseArray = json_decode($response, true);
+			// Conversion JSON a réussi
+			if ($responseArray !== null && $responseArray['success'] === true) {
+				$parFolderId = $responseArray['data']['id'];
+
+				$result=self::getFolderList($parFolderId);
 				return $result;
 
 			}
 		}
 
 	}
+*/
 
-	public static function getFolderList($folderId) {
+
+	public static function getFolders($clientId)
+	{
+		// URL de l'API pour récupérer les sous-dossiers
+		//$apiUrl = "https://ged.maileva.com/api/folder/name/DOCUMENTS%20OUVERTURE%20DE%20COMPTE";
+		$apiUrl = "https://ged.maileva.com/api/folder/find?parentId=1304415&name=$clientId";
+
+		$response = self::curlExecute($apiUrl);
+		$compteFolderId = null;
+		$headers = array(
+			'Content-Type: application/json',
+			'Auth-Token: ' . self::getToken()
+		);
+		// Décodage de la réponse JSON
+		$data = json_decode($response, true);
+
+		$clientFolderId = null;
+
+		if ($data !== null && $data['success'] === true) {
+			$compteFolderId = $data['data']['id'];
+			//dd($data);
+			//Vérifier si un dossier pour ce client nommé $id_client existe déjà dans "DOCUMENTS OUVERTURE DE COMPTE" sinon on le créer
+			$apiUrl2 = "https://ged.maileva.com/api/folder/find?parent_id=$compteFolderId&name=$clientId";
+			$response = self::curlExecute($apiUrl2);
+
+			if ($data !== null && $data['success'] === true) {
+				$clientFolderId = $data['data']['id'];
+				$result = self::getFolderList($clientFolderId);
+				return $result;
+			}
+		}
+	}
+
+
+	public static function getFolderList($folderId)
+	{
 		// URL de l'API pour récupérer les sous-dossiers
 		$apiUrl = "https://ged.maileva.com/api/folders/list/$folderId";
 		$response = self::curlExecute($apiUrl);
@@ -167,7 +300,8 @@ class GEDService
 
 
 
-	public static function getFolderContent($folderId){
+	public static function getFolderContent($folderId)
+	{
 
 		// URL de l'API pour récupérer les sous-dossiers
 		$apiUrl = "https://ged.maileva.com/api/document/childrenOf/$folderId?p=$folderId";
@@ -176,13 +310,14 @@ class GEDService
 		// Décodage de la réponse JSON
 		$data = json_decode($response, true);
 		if ($data !== null && $data['success'] === true) {
-			\Log::info('getFolderContent '.json_encode($response));
+			\Log::info('getFolderContent ' . json_encode($response));
 
 			return $data['data'];
 		}
 	}
 
-	public static function downloadItem($itemId){
+	public static function downloadItem($itemId)
+	{
 		$headers = array(
 			'Content-Type: application/json',
 			'Auth-Token: ' . self::getToken()
@@ -194,14 +329,16 @@ class GEDService
 		// Initialisation de cURL
 		$curl = curl_init();
 
-		curl_setopt_array($curl, array(
-			CURLOPT_CUSTOMREQUEST => 'GET',
-			CURLOPT_URL => $apiUrl,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HTTPHEADER => $headers,
-			CURLOPT_SSL_VERIFYPEER => false,
-			CURLOPT_HEADER => true
-		)
+		curl_setopt_array(
+			$curl,
+			array(
+				CURLOPT_CUSTOMREQUEST => 'GET',
+				CURLOPT_URL => $apiUrl,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HTTPHEADER => $headers,
+				CURLOPT_SSL_VERIFYPEER => false,
+				CURLOPT_HEADER => true
+			)
 		);
 
 		// Exécution de la requête cURL
@@ -242,7 +379,8 @@ class GEDService
 
 
 
-	public static function Account($clientId,$type){
+	public static function Account($clientId, $type, $id)
+	{
 
 		// URL de l'API pour récupérer les sous-dossiers
 		$apiUrl = "https://ged.maileva.com/api/folder/name/DOCUMENTS%20OUVERTURE%20DE%20COMPTE";
@@ -259,8 +397,9 @@ class GEDService
 		if ($data !== null && $data['success'] === true) {
 			$compteFolderId = $data['data']['id'];
 		} else {
-			return back()->withErrors(['msg' => "Le dossier 'DOCUMENTS OUVERTURE DE COMPTE' n'existe pas ou n'a pas pu être trouvé."]);
 			\Log::error("Le dossier 'DOCUMENTS OUVERTURE DE COMPTE' n'existe pas ou n'a pas pu être trouvé.");
+			return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Le dossier 'DOCUMENTS OUVERTURE DE COMPTE' n'existe pas ou n'a pas pu être trouvé."]);
+
 			exit;
 		}
 
@@ -296,8 +435,7 @@ class GEDService
 			if ($err) {
 
 				\Log::error("Erreur cURL lors de la création du dossier client ");
-				return back()->withErrors(['msg' => "Erreur cURL lors de la création du dossier client: ".$err]);
-
+				return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Erreur cURL lors de la création du dossier client: " . $err]);
 				exit;
 			} else {
 				$data = json_decode($response, true);
@@ -305,14 +443,15 @@ class GEDService
 					$clientFolderId = $data['data']['id'];
 				} else {
 					\Log::error("Erreur lors de la création du dossier client ");
-					return back()->withErrors(['msg' => "Erreur lors de la création du dossier client"]);
+					//return back()->withErrors(['msg' => "Erreur lors de la création du dossier client"]);
+					return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Erreur lors de la création du dossier client"]);
+
 					exit;
 				}
 			}
-
 		}
 
-		$typeDoc='';
+		$typeDoc = '';
 
 		switch ($type) {
 			case 1:
@@ -362,16 +501,20 @@ class GEDService
 
 		if ($err) {
 			echo "Erreur cURL lors de la création du chemin de dossier : " . $err;
+			return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Erreur cURL lors de la création du chemin de dossier :" . $err]);
+
 			exit;
 		} else {
 			$data = json_decode($response, true);
 			if ($data !== null && $data['success'] === true) {
 				$newFolderId = $data['data']['id'];
 			} else {
-				echo "Erreur lors de la création du sous-dossier.";
-				return back()->withErrors(['msg' => "Erreur lors de la création du sous-dossier"]);
-
+				//echo "Erreur lors de la création du sous-dossier.";
+				//dd($clientId);
 				\Log::error("Erreur cURL lors de la création du sous-dossier");
+
+				return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Erreur lors de la création du sous-dossier "]);
+
 				exit;
 			}
 		}
@@ -396,7 +539,7 @@ class GEDService
 				CURLOPT_POST => true,
 				CURLOPT_POSTFIELDS => $postFields,
 				CURLOPT_HTTPHEADER => array(
-					'Auth-Token: ' .self::getToken()
+					'Auth-Token: ' . self::getToken()
 				),
 				CURLOPT_SSL_VERIFYPEER => false
 			));
@@ -408,21 +551,15 @@ class GEDService
 			if ($err) {
 				//echo "Erreur cURL : " . $err;
 				\Log::error("Erreur cURL de telechargement GED");
-				return back()->withErrors(['msg' => $err]);
-
-
+				//return back()->withErrors(['msg' => $err]);
+				return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Erreur cURL de telechargement GED"]);
 			} else {
 				//echo "Fichier téléchargé avec succès";
-				return back()->with('success', ' Fichier téléchargé avec succès');
-
+				//return back()->with('success', ' Fichier téléchargé avec succès');
 				\Log::info(" telechargement GED avec succes");
 
+				return redirect()->route('compte_client.folder', ['id' => $id])->with(['success' => "Fichier téléchargé avec succès "]);
 			}
 		}
-
-
-
-
 	}
-
 }
