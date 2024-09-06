@@ -98,7 +98,7 @@
                                     3 => "DECLARATION : DUE DILIGENCE",
                                     4 => "CNI OU PASSEPORT",
                                     5 => "KBIS DE MOINS DE 3 MOIS OU REPERTOIRE DES METIERS",
-                                    6 => "DECLARATION D'EXISTENCE AUPRES DE LA GARANTIE",
+                                    6 => "DECLARATION DEXISTENCE AUPRES DE LA GARANTIE",
                                     7 => "LETTRE DE FUSION",
                                     8 => "RIB"
                                 ] as $value => $label)
@@ -122,39 +122,6 @@
 
                 <h5 class="black">Mon dossier</h5>
 
-                <!--
-                    <nav aria-label="breadcrumb" style="width:100%">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('folders') }}"><img  width="30" src="{{ URL::asset('img/shared-folder.png')}}"> Mes documents</a>
-                        </li>
-                        @php
-                            $pathComponents = explode('/', $folders[0]['virtualPath']);
-					        $idComponents = explode(',', $folders[0]['virtualPathIdList']);
-                            $i=0;
-                        @endphp
-                        @foreach($pathComponents as $index => $component)
-                            @php
-                                $id = $idComponents[$index];
-                                $i++;
-                            @endphp
-                            @php if($i>2){
-                                $parent = $idComponents[$index-1];
-
-                                @endphp
-                                <li class="breadcrumb-item">
-                                    <a href="{{ route('folderContent', ['id' => $id, 'name' => $component,'parent'=>$parent,'client_id'=>$client->id]) }}"><img  width="30" @if($id==$folderId) src="{{ URL::asset('img/open-folder.png')}}"   @else src="{{ URL::asset('img/folder.png')}}" @endif > {{ $component }}</a>
-                                </li>
-                            @php } @endphp
-                        @endforeach
-                        @if($files)
-                        <li class="breadcrumb-item">
-                            <span ><img  width="30" src="{{ URL::asset('img/open-folder.png')}}"> {{ $folderName }}</span>
-                        </li>
-                        @endif
-
-                    </ol>
-                </nav>-->
                 @endif
 
                 @if(isset($folderName) && $files)
