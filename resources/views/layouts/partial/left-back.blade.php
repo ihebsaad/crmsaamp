@@ -63,15 +63,19 @@ if (Auth::check()) {
       <i class="fas fa-tasks" ></i>
       <span> Prises de contact </span>
     </a>
-    <!--<hr class="sidebar-divider">-->
+    <!--<hr class="sidebar-divider">
     <a class="nav-link"  href="{{route('offres.index')}}">
       <i class="fas fa-file-invoice-dollar" ></i>
       <span> Offres commerciales </span>
-    </a>
+    </a>-->
     <!--<hr class="sidebar-divider">-->
     <a class="nav-link" href="{{route('retours.index')}}" >
     <i class="fas fa-comments" ></i>
       <span> Réclamations </span>
+    </a>
+    <a class="nav-link" href="{{route('agenda')}}" >
+    <i class="fas fa-calendar" ></i>
+      <span> Mon Agenda </span>
     </a>
     <a class="nav-link" href="{{route('help')}}" >
     <i class="fas fa-book" ></i>

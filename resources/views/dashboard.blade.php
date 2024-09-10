@@ -13,25 +13,124 @@
 	h5{
 		color:black;
 	}
-	#calendar{
-		margin-left:5%;
-		margin-right:5%;
-		margin-bottom:2%;
-		margin-top:2%;
-	}
+	.circle {
+    padding:1%;
+    background-color:#2e3e4e;
+    width:150px;
+    height:150px;
+    border-radius:100%;
+
+    text-align:center;
+    font-size:50px;
+    line-height:1em;
+    color:white;
+	font-weight:100;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:5%;
+    margin-bottom:5%;
+  /*Want to add some cut-out lines? Uncomment to view.
+    border:2px #F2F2DF dashed; */
+}
+
+
 </style>
-<div class="" style="padding-left:5%;padding-right:5%;padding-top:2%">
-	<span style="color:black">Bienvenue  {{ auth()->user()->name }} {{ auth()->user()->lastname }} sur votre nouvel outil CRM !</span><br><br>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+			['Client', 'Chiffre d\'affaire'],
+			<?php
+			foreach($clients as $cl){
+                echo '[' . json_encode($cl->nom) . ', ' . intval($cl->CA) . '],';
+			}
+			?>
+
+        ]);
+
+        var options = {
+          //title: 'TOP CLIENTS',
+		  colors: ['#e5e7e6', '#EEE6D8', '#DAAB3A', '#B67332', '#93441A'],
+		  is3D: true,
+		  titleTextStyle: {
+                    color: 'black',
+                    fontName: 'Nunito',
+                    fontSize: 18
+                },
+                legendTextStyle: {
+                    color: 'black',
+                    fontName: 'Nunito'
+                },
+                pieSliceTextStyle: {
+                    color: 'black',
+                    fontName: 'Nunito'
+                },
+                backgroundColor: 'transparent',
+                //chartArea: {width: '90%', height: '90%'}
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+<div class="" style="padding-left:5%;padding-right:5%;padding-top:2%;padding-bottom:2%">
 
 	<div class="row">
-		<div class="col-md-4 col-lg-4 text-center">
-			<h4>Nombre de clients</h4> <h1><b>{{ $total_clients }}</b></h1>
+		<div class="col-md-12 text-center">
+			<span class="text-center mb-5" style="color:black">Bienvenue  <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b> sur votre nouvel outil CRM !</span><br><br><br>
 		</div>
-		<div class="col-md-8 col-lg-8">
-			<table id="" class="table table-striped" style="width:80%!important">
+	</div>
+
+	<div class="row">
+		<div class="col-md-6 col-lg-6 col-sm-12 text-center  mb-5">
+			<h4>Nombre de clients</h4>
+			<div class="circle">
+				<p style="margin-top:revert">{{ $total_clients }}</p>
+			</div>
+			<!--<h1><b>{{ $total_clients }}</b></h1>-->
+		</div>
+		<div class="col-md-6 col-lg-6 col-sm-12">
+			<h4 class="text-center">Top clients</h4>
+			<div id="piechart" style="width:100%!important; height: 300px;"></div>
+		</div>
+		<div class="col-md-6 col-lg-6 col-sm-12">
+			<h4 class="text-center">Prochains rendez vous</h4>
+			<table id="" class="table table-striped" style="width:100%!important">
                 <thead>
                     <tr style="background-color:#2e3e4e;color:white;" id="">
-                        <th>Nom</th>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Contact</th>
+                        <th>Sujet</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+            @foreach($rendezvous as $rv)
+	  					<tr>
+						<td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
+						<td>{{ $rv->Account_Name }}</td>
+						<td>{{ $rv->Nom }}</td>
+						<td>{{ $rv->Subject }}</td>
+						<td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
+						</tr>
+					  @endforeach
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-6 col-lg-6 col-sm-12 pl-5">
+
+			<table id="" class="table table-striped" style="width:100%!important">
+                <thead>
+                    <tr style="background-color:#2e3e4e;color:white;" id="">
+                        <th>Client</th>
                         <th>Chiffre d'affaire</th>
                     </tr>
                 </thead>
@@ -43,10 +142,9 @@
 			</table>
 
 		</div>
-		<div class="col-md-12">
-			<div id="calendar"></div><br>
-		</div>
 	</div>
+
+</div>
 
 
 	<!-- maintenance Modal-->
@@ -74,42 +172,6 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.min.js" integrity="sha512-xCMh+IX6X2jqIgak2DBvsP6DNPne/t52lMbAUJSjr3+trFn14zlaryZlBcXbHKw8SbrpS0n3zlqSVmZPITRDSQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.global.js" integrity="sha512-3I+0zIxy2IkeeCvvhXUEu+AFT3zAGuHslHLDmM8JBv6FT7IW6WjhGpUZ55DyGXArYHD0NshixtmNUWJzt0K32w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.global.min.js" integrity="sha512-PneTXNl1XRcU6n5B1PGTDe3rBXY04Ht+Eddn/NESwvyc+uV903kiyuXCWgL/OfSUgnr8HLSGqotxe6L8/fOvwA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.js" integrity="sha512-bBl4oHIOeYj6jgOLtaYQO99mCTSIb1HD0ImeXHZKqxDNC7UPWTywN2OQRp+uGi0kLurzgaA3fm4PX6e2Lnz9jQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script>
-        document.addEventListener('DOMContentLoaded', function() {
-      	var calendarEl = document.getElementById('calendar');
-
-		// Récupération des données des rendez-vous en PHP
-		var events = <?php echo json_encode(array_map(function($rv) {
-        return [
-          'title' => $rv['Nom'] . ' ' . $rv['Subject'],
-          'start' => date('c', strtotime($rv['Started_at'])),
-          'end' => date('c', strtotime($rv['End_at'])),
-		  //'url'=>  "{{route('rendezvous.show',['id'=>$rv['id']])}}"
-		  'url'=> "https://crm.mysaamp.com/rendezvous/show/".$rv['id']
-        ];
-      }, $rendezvous->toArray())); ?>;
-
-
-		var calendar = new FullCalendar.Calendar(calendarEl, {
-			themeSystem: 'bootstrap',
-			locale: 'fr', // Set locale to French
-			initialView: 'dayGridMonth',
-			headerToolbar: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'dayGridMonth,timeGridWeek,timeGridDay'
-			},
-			events: events,
-			eventColor: '#378006', // Optional: Customize event color
-		});
-
-		calendar.render();
-    });
-  </script>
 
 	<script>
 		$(document).ready(function() {
@@ -119,6 +181,5 @@
 		});
 	</script>
 
-</div>
 
 @endsection

@@ -13,4 +13,9 @@ class Client extends Model
 
     protected $guarded = [];
 
+    public function agence()
+    {
+        return $this->belongsTo(Agence::class, 'agence_ident', 'agence_ident');
+    }
+
 }

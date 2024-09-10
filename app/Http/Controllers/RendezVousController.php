@@ -62,19 +62,24 @@ class RendezVousController extends Controller
 	public function show($id)
 	{
 		$rendezvous=RendezVous::find($id);
+		$client=CompteClient::find($rendezvous->AccountId);
+
+		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
+
  		$contact=Contact::where('id',$rendezvous->ID_Contact)->first();
 
 
-		return view('rendezvous.show',compact('rendezvous','contact'));
+		return view('rendezvous.show',compact('rendezvous','contact','contacts'));
 	}
 
 
 	public function update(Request $request, $id)
     {
+		/*
         $request->validate([
             'Subject' => 'required',
          ]);
-
+*/
 		$rendezvous = RendezVous::find($id);
 		$rendezvous->update($request->all());
 
@@ -106,5 +111,12 @@ class RendezVousController extends Controller
 		->with('success','Rendez vous ajouté');
 	}
 
+	public function destroy($id)
+	{
+		$retour = RendezVous::find($id);
+		$retour->delete();
+
+		return back()->with('success', ' Supprimé avec succès');
+	}
 
 } // end class

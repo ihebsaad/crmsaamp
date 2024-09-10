@@ -9,7 +9,9 @@ class CompteClient extends Model
 {
     use HasFactory;
 
-    protected $table = "CRM_CompteCLient";
+    //protected $table = "CRM_CompteCLient";
+    protected $table = "client";
+    //protected $primaryKey = 'cl_ident';
 
     protected $guarded = [];
 

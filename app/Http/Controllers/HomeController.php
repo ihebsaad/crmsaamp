@@ -55,13 +55,27 @@ class HomeController extends Controller
 		}
 	}
 
+	public function agenda()
+	{
+		//$rendezvous=RendezVous::get();
+		$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
+		->orWhere('user_id',auth()->user()->id)
+		->orderBy('id','desc')
+		->get();
+
+		return view('agenda',compact('rendezvous'));
+
+	}
+
 	public function dashboard()
 	{
-		$rendezvous=RendezVous::get();
+		//$rendezvous=RendezVous::get();
 
 		$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
 		->orWhere('user_id',auth()->user()->id)
-		->orderBy('id','desc')->get();
+		->orderBy('id','desc')
+		->get()->take(5);
+
 
  		$rep=DB::table("representant")->where('users_id',auth()->user()->id)->first();
 		if(isset($rep)){

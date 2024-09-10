@@ -37,6 +37,9 @@
                             <th>Sujet</th>
                             <th>Date</th>
                             <th>Lieu</th>
+                            @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                <th>Supp</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -48,6 +51,13 @@
                                 <td>{{ $rv->Subject }}</td>
                                 <td>{{ date('d/m/Y H:i', strtotime($rv->Started_at)) }}</td>
                                 <td>{{ $rv->location }}</td>
+                                @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                    <td>
+                                        <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                            <span class="fa fa-fw fa-trash-alt"></span>
+                                        </a>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

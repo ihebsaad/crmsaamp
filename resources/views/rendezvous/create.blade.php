@@ -33,16 +33,28 @@
                                 <input type="text" id="Account_Name" class="form-control" name="Account_Name"  readonly value="{{$client->Nom}}"><br><br>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <div class="">
                                 <label for="Started_at">Date de début:</label>
                                 <input type="text" id="Started_at" class="form-control datepicker" name="Started_at"  value="{{old('Started_at')}}"><br><br>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="heure_debut">Heure de début:</label>
+                                <input type="time" id="heure_debut" class="form-control" name="heure_debut"  value="{{old('heure_debut')}}"><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="">
                                 <label for="End_AT">Date de fin:</label>
                                 <input type="text" id="End_AT" class="form-control datepicker" name="End_AT"  value="{{old('End_AT')}}"><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="heure_fin">Heure de fin:</label>
+                                <input type="time" id="heure_fin" class="form-control" name="heure_fin"  value="{{old('heure_fin')}}"><br><br>
                             </div>
                         </div>
                     </div>
@@ -149,7 +161,7 @@
                 buttonImage: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAATCAYAAAB2pebxAAABGUlEQVQ4jc2UP06EQBjFfyCN3ZR2yxHwBGBCYUIhN1hqGrWj03KsiM3Y7p7AI8CeQI/ATbBgiE+gMlvsS8jM+97jy5s/mQCFszFQAQN1c2AJZzMgA3rqpgcYx5FQDAb4Ah6AFmdfNxp0QAp0OJvMUii2BDDUzS3w7s2KOcGd5+UsRDhbAo+AWfyU4GwnPAYG4XucTYOPt1PkG2SsYTbq2iT2X3ZFkVeeTChyA9wDN5uNi/x62TzaMD5t1DTdy7rsbPfnJNan0i24ejOcHUPOgLM0CSTuyY+pzAH2wFG46jugupw9mZczSORl/BZ4Fq56ArTzPYn5vUA6h/XNVX03DZe0J59Maxsk7iCeBPgWrroB4sA/LiX/R/8DOHhi5y8Apx4AAAAASUVORK5CYII=",
                 firstDay: 1,
                 dateFormat: "yy-mm-dd",
-                minDate:0
+                //minDate:0
             });
         });
 

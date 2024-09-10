@@ -25,7 +25,7 @@ if (isset($_GET['call'])) {
         echo '<p class="text-danger">Échec de l\'initiation de l\'appel.</p>';
     }
 }
-
+/*
 function compare_func($a, $b)
 {
     // CONVERT $a AND $b to DATE AND TIME using strtotime() function
@@ -38,7 +38,7 @@ function compare_func($a, $b)
 if (is_array($commandes) || is_object($commandes)) {
     usort($commandes, "compare_func");
 }
-
+*/
 ?>
 
 
@@ -58,7 +58,7 @@ if (is_array($commandes) || is_object($commandes)) {
                 <h6 class="m-0 font-weight-bold text-primary">Fiche du client {{$client->id}} - {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
-            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a> @if($client->Client_Prospect!='CLIENT SAAMP') <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a> @endif @if(auth()->user()->user_type=="admin")<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
+            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a> @if($client->Client_Prospect!='CLIENT SAAMP') <!--<a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a>--> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
                 <div class="clearfix"></div>
                 <form id="">
                     <div class="row pt-1">
@@ -79,20 +79,20 @@ if (is_array($commandes) || is_object($commandes)) {
                         <div class="col-md-2">
                             <div class="">
                                 <label for="BillingAddress_city">Ville:</label>
-                                <h6>{{$client->BillingAddress_city}}</h6>
+                                <h6>{{$client->ville}}</h6>
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Pays">Pays:</label>
-                                <h6>{{$client->Pays}}</h6>
+                                <h6>{{$client->pays_code}}</h6>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Rue">Adresse:</label>
-                                <h6>{{$client->Rue}}</h6>
+                                <h6>{{$client->adresse1}}</h6>
                             </div>
                         </div>
                     </div>
@@ -107,13 +107,13 @@ if (is_array($commandes) || is_object($commandes)) {
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Commercial">Commercial:</label>
-                                <h6>{{$client->Commercial}}</h6>
+                                <h6>{{$client->commercial}}</h6>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Commercial">Commercial support:</label>
-                                <h6>{{$client->Commercial_support}}</h6>
+                                <h6>{{$client->commercial_support}}</h6>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -122,10 +122,18 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <h6>{{$client->ADV}}</h6>
                             </div>
                         </div>
+                        <!--
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Client_Prospect">Clientèle:</label>
                                 <h6>{{$client->Fidelite_du_client_c}}</h6>
+                            </div>
+                        </div>-->
+
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="Client_Prospect">Activité:</label>
+                                <h6>{{$client->activite}} - {{$client->sous_activite}} </h6>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -149,13 +157,14 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <input type="hidden" id="number" name="number" value="{{str_replace(' ', '', $client->Phone)}}">
                                 <button type="submit" name="call" class="btn btn-success" title="Appeler"><i class="fa-2x mt-2 fas fa-phone-square"></i></button>
                             </form>
-                        </div>-->
+                        </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="">Email:</label>
                                 <h6>{{$client->email}}</h6>
                             </div>
                         </div>
+                        -->
                         <div class="col-md-2">
                             <div class="">
                                 <label for="">Site Web:</label>
@@ -362,8 +371,10 @@ if (is_array($commandes) || is_object($commandes)) {
 
             <div class="card-body" style="min-height:400px;width:100%">
                 @if($client->Client_Prospect=='CLIENT SAAMP')
-                    <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
                 @endif
+
+                @if($client->cl_ident >0)
+                <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
                 <div class="table-container">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
@@ -384,6 +395,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         </tbody>
                     </table>
                 </div>
+                @endif
             </div>
         </div>
 
@@ -398,6 +410,7 @@ if (is_array($commandes) || is_object($commandes)) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
+
                 <div class="table-container">
                     <h6 style="width:100%;cursor:pointer" class="black" onclick="$('#prochain').toggle();" >Prochains Rendez Vous</h6>
                     <div id="prochain" style="width:100%">
@@ -406,12 +419,22 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <tr>
                                     <th>Date</th>
                                     <th>Titre</th>
+                                    @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                    <th>Supp</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($Proch_rendezvous as $rv)
                                 <tr>
                                     <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
+                                    @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                        <td>
+                                            <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                                <span class="fa fa-fw fa-trash-alt"></span>
+                                            </a>
+                                        </td>
+                                    @endif
                                 </tr>
                                 @endforeach
 
@@ -426,12 +449,22 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <tr>
                                     <th>Date</th>
                                     <th>Titre</th>
+                                    @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                    <th>Supp</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($Anc_rendezvous as $rv)
                                 <tr>
                                     <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
+                                        @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                            <td>
+                                                <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                                    <span class="fa fa-fw fa-trash-alt"></span>
+                                                </a>
+                                            </td>
+                                        @endif
                                 </tr>
                                 @endforeach
 
@@ -456,8 +489,10 @@ if (is_array($commandes) || is_object($commandes)) {
 
             <div class="card-body" style="min-height:400px;width:100%">
                 @if($client->Client_Prospect=='CLIENT SAAMP')
-                    <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
                 @endif
+                @if($client->cl_ident >0)
+                <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+
                 <div class="table-container">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
@@ -478,6 +513,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         </tbody>
                     </table>
                 </div>
+                @endif
             </div>
         </div>
 

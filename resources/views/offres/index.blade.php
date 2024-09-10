@@ -51,7 +51,7 @@
                                 <td>{{ $offre->Motif_perdu }}</td>
                                 <td>{{ $offre->Offre_validee ? 'Oui' : 'Non' }}</td>
                                 <td>{{ date('d/m/Y', strtotime($offre->Date_creation)) }}</td>
-                                <td>{{ date('d/m/Y', strtotime($offre->Date_cloture)) }}</td>
+                                <td>@if($offre->Date_cloture!=''){{ date('d/m/Y', strtotime($offre->Date_cloture)) }}@endif</td>
                             </tr>
                         @endforeach
                     </tbody>

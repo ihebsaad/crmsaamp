@@ -38,6 +38,7 @@ Route::get('/dashboard', 'App\Http\Controllers\HomeController@dashboard')->name(
 Route::get('/help', 'App\Http\Controllers\HomeController@help')->name('help');
 
 Route::get('/clients/phone', [HomeController::class, 'phone'])->name('phone');
+Route::get('/agenda', [HomeController::class, 'agenda'])->name('agenda');
 
 
 Route::get('/refresh', 'App\Http\Controllers\Auth\LoginController@refresh')->name('refresh');
@@ -99,6 +100,7 @@ Route::post('/ajoutrv', [RendezVousController::class, 'store'])->name('rendezvou
 Route::put('/rendezvous/{id}', [RendezVousController::class, 'update'])->name('rendezvous.update');
 Route::get('/rendezvous/create/{id}', [RendezVousController::class, 'create'])->name('rendezvous.create');
 Route::get('/rendezvous', [RendezVousController::class, 'index'])->name('rendezvous.index');
+Route::get('/rendezvous/destroy/{id}',[RendezVousController::class,'destroy'])->name('rendezvous.destroy');
 
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.auth');

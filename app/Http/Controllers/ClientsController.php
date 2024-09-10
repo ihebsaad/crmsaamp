@@ -9,6 +9,7 @@ use App\Models\CompteClient;
 use App\Models\Contact;
 use App\Models\RetourClient;
 use App\Models\Tache;
+use App\Models\Agence;
 use App\Services\PhoneService;
 use App\Services\GEDService;
 use Illuminate\Support\Facades\DB;
@@ -97,10 +98,10 @@ class ClientsController extends Controller
 	{
 		$client=CompteClient::find($id);
 		$contacts=$retours=array();
-		if($client->Client_Prospect!='COMPTE PROSPECT'){
+		//if($client->Client_Prospect!='COMPTE PROSPECT'){
 			$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
 			$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
-		}
+		//}
 		$agence_name='';
 		$agence = DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
 
@@ -117,10 +118,14 @@ class ClientsController extends Controller
 		}catch(\Exception $e){
 			\Log::error($e->getMessage());
 		}
+		/*
 		if($client->Id_Salesforce!='')
 			$taches=Tache::where('ID_Compte',$client->Id_Salesforce)->get();
 		else
 			$taches=Tache::where('ID_Compte',$client->id)->get();
+		*/
+			$taches=Tache::where('mycl_id',$client->cl_ident)->get();
+
 		//$appels=array();
 		$callData=PhoneService::data($client->token_phone);
 
@@ -207,7 +212,7 @@ class ClientsController extends Controller
 	public function search(Request $request)
 	{
 		$query = CompteClient::query();
-
+/*
 		// Application du filtre pour le type de client/prospect
 		$type = $request->get('type');
 		if ($type == 1) {
@@ -216,45 +221,46 @@ class ClientsController extends Controller
 			$query->where('Client_Prospect', 'like', '%PROSPECT%');
 		}else{
 			$query->where('Client_Prospect', '<>', 'CLIENT LFMP');
-/*
-			$query->where('Client_Prospect','like', '%CLIENT SAAMP%')
-				->orWhere('Client_Prospect','like', '%PROSPECT%');*/
 		}
-
+*/
 		// Application des filtres pour les autres champs
 		if ($request->has('Nom') && $request->Nom) {
 			$query->where('Nom', 'like', '%'. $request->Nom . '%');
 		}
 
-		if ($request->has('Rue') && $request->Rue) {
-			$query->where('Rue', 'like', '%' . $request->Rue . '%');
+		if ($request->has('adresse1') && $request->adresse1) {
+			$query->where('adresse1', 'like', '%' . $request->adresse1 . '%');
 		}
 
-		if ($request->has('BillingAddress_city') && $request->BillingAddress_city) {
-			$query->where('BillingAddress_city', 'like', '%' . $request->BillingAddress_city . '%');
+		if ($request->has('ville') && $request->ville) {
+			$query->where('ville', 'like', '%' . $request->ville . '%');
 		}
 
-		if ($request->has('Departement') && $request->Departement) {
-			$query->where('Departement',  intval($request->Departement) );
-		}
+		if ($request->has('zip') && $request->zip) {
+			//$query->where('Departement',  intval($request->Departement) );
+			$query->where('zip', 'like', '%' . $request->zip);
 
+		}
+/*
 		if ($request->has('Pays') && $request->Pays) {
 			$query->where('Pays', 'like', '%' . $request->Pays . '%');
 		}
-
+*/
 		// Application du tri
 		$tri = $request->get('tri');
 		if ($tri == 1) {
 			$query->orderBy('Nom');
 		} elseif ($tri == 2) {
-			$query->orderBy('Pays')->orderBy('BillingAddress_city');
+			$query->orderBy('pays_code')->orderBy('ville');
 		}
 
 		// Exécution de la requête
 		$clients = $query->get()->take(1000);
 
+		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
+
 		// Retourne la vue avec les résultats de la recherche
-		return view('clients.search', compact('clients','request'));
+		return view('clients.search', compact('clients','request','agences'));
 	}
 
 	public function ouverture(Request $request)

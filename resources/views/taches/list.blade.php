@@ -45,7 +45,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Liste des prises de contact </h6>
+                <h6 class="m-0 font-weight-bold text-primary">Activité de l'agence </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -92,6 +92,11 @@
                 @endphp
 
                 <div class="accordion" id="tasksAccordion">
+
+                    @if(count($taches)==0)
+                        <h2 class="text-center mt-5">Vous n’avez encore pris aucun contact</h2>
+                    @else
+
                     @foreach($groupedTasks as $month => $tasks)
 
                     <div class="card">
@@ -111,19 +116,19 @@
                                     $color='';
                                     switch ( $task->Status ) {
                                     case 'Not Started':
-                                    $color = '#82e2e8';
+                                    $color = '#82e2e8';$statut='Pas commencée';
                                     break;
                                     case 'Waiting on someone e':
-                                    $color = '#ea922b';
+                                    $color = '#ea922b';$statut='En attente  de quelqu\'un';
                                     break;
                                     case 'In Progress':
-                                    $color = '#5f9fff';
+                                    $color = '#5f9fff';$statut='En cours';
                                     break;
                                     case 'Deferred':
-                                    $color = '#a778c9';
+                                    $color = '#a778c9';$statut='Reportée';
                                     break;
                                     case 'Completed':
-                                    $color = '#40c157';
+                                    $color = '#40c157';$statut='Terminée';
                                     break;
                                     default:
                                     $color = '';
@@ -132,17 +137,17 @@
                                     $class='';
                                     switch ( $task->Priority ) {
                                     case 'Normal':
-                                    $class = 'primary';
+                                    $class = 'primary';$priority='Normale';
                                     break;
                                     case 'High':
-                                    $class = 'danger';
+                                    $class = 'danger';$priority='Haute';
                                     break;
                                     case 'Low':
-                                    $class = 'info';
+                                    $class = 'info';$priority='Basse';
                                     break;
 
                                     default:
-                                    $class = '';
+                                    $class = '';$priority='Normale';
                                     }
 
                                     $icon='';
@@ -173,10 +178,11 @@
                                         </div>
                                         <div class="task-details">
                                             @if($task->Nom_contact !='')<span><i class="fas fa-user-circle"></i> {{ $task->Nom_contact }}</span> <br>@endif
-                                            <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $task->Status }}</span>
-                                            <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $task->Priority }}</span>
+                                            <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $statut }}</span>
+                                            <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $priority }}</span>
 
-                                            {{ $task->Description }}
+                                            {{ $task->Description }}<br>
+                                            {{ $task->Agence }}
 
                                         </div>
                                         <div class="task-actions">
@@ -190,6 +196,7 @@
                         </div>
                     </div>
                     @endforeach
+                    @endif
                 </div>
             </div>
 

@@ -35,16 +35,29 @@ h6{
                                 <h6>{{$rendezvous->Account_Name}}</h6>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="">
                                 <label for="Started_at">Date de début:</label>
-                                <h6>{{date('d/m/Y', strtotime($rendezvous->Started_at))}}</h6>
+                                <input type="text" id="Started_at" class="form-control datepicker" name="Started_at"  value="{{date('Y-m-d', strtotime($rendezvous->Started_at))}}"><br><br>
+
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="heure_fin">Heure de début:</label>
+                                <input type="time" id="heure_debut" class="form-control" name="heure_debut"  value="{{$rendezvous->heure_debut}}"><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="">
                                 <label for="End_at">Date de fin:</label>
-                                <h6>{{date('d/m/Y', strtotime($rendezvous->End_at))}}</h6>
+                                <input type="text" id="End_at" class="form-control datepicker" name="End_at"  value="{{ $rendezvous->End_at !='' ? date('Y-m-d', strtotime($rendezvous->End_at)) : '' }}"><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="heure_fin">Heure de fin:</label>
+                                <input type="time" id="heure_fin" class="form-control" name="heure_fin"  value="{{$rendezvous->heure_fin}}"><br><br>
                             </div>
                         </div>
                     </div>
@@ -52,8 +65,12 @@ h6{
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Nom">Nom du contact:</label>
-                                <h6>{{$rendezvous->Nom}}</h6>
+                                <label for="Nom">Contact:</label>
+                                <select  id="ID_Contact" class="form-control" name="ID_Contact" required  >
+                                @foreach($contacts as $contact)
+                                    <option @if($rendezvous->ID_Contact==$contact->id) selected="selected" @endif value="{{$contact->id}}">{{$contact->Nom}} {{$contact->Prenom}}  @if($contact->Title!='') ( {{$contact->Title}} ) @endif</option>
+                                @endforeach
+                            </select>
                             </div>
                         </div>
 
@@ -77,7 +94,7 @@ h6{
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Subject">Sujet:</label>
-                                <h6>{{$rendezvous->Subject}}</h6>
+                                <input type="text" id="Subject" class="form-control" name="Subject"  value="{{$rendezvous->Subject}}"><br><br>
                             </div>
                         </div>
 
@@ -135,7 +152,7 @@ h6{
                 buttonImage: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAATCAYAAAB2pebxAAABGUlEQVQ4jc2UP06EQBjFfyCN3ZR2yxHwBGBCYUIhN1hqGrWj03KsiM3Y7p7AI8CeQI/ATbBgiE+gMlvsS8jM+97jy5s/mQCFszFQAQN1c2AJZzMgA3rqpgcYx5FQDAb4Ah6AFmdfNxp0QAp0OJvMUii2BDDUzS3w7s2KOcGd5+UsRDhbAo+AWfyU4GwnPAYG4XucTYOPt1PkG2SsYTbq2iT2X3ZFkVeeTChyA9wDN5uNi/x62TzaMD5t1DTdy7rsbPfnJNan0i24ejOcHUPOgLM0CSTuyY+pzAH2wFG46jugupw9mZczSORl/BZ4Fq56ArTzPYn5vUA6h/XNVX03DZe0J59Maxsk7iCeBPgWrroB4sA/LiX/R/8DOHhi5y8Apx4AAAAASUVORK5CYII=",
                 firstDay: 1,
                 dateFormat: "yy-mm-dd",
-                minDate:0
+                //minDate:0
             });
         });
 

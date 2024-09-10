@@ -34,14 +34,31 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="">
                                 <label for="DateTache">Date :</label>
                                 <input type="text" id="DateTache" class="form-control datepicker" name="DateTache"  value="{{date('Y-m-d', strtotime($tache->DateTache))}}"><br><br>
                             </div>
                         </div>
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="heure_debut">Heure :</label>
+                                <input type="text" id="heure_debut" class="form-control" name="heure_debut"  value="{{$tache->heure_debut}}"><br><br>
+                            </div>
+                        </div>
 
-                        <div class="col-md-3">
+
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="Subject">Client ID:</label>
+                                <input type="text" id="mycl_id" class="form-control" name="mycl_id" readonly value="{{$tache->mycl_id}}"><br><br>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row pt-1">
+                        <div class="col-md-4">
                             <div >
                                 <label for="Type">Type:</label>
                                 <select    id="Type" class="  form-control" name="Type"   >
@@ -65,22 +82,18 @@
                                     <option   @selected($tache->Type=="Suivi client") value="Suivi client">Suivi client</option>
                                     <option   @selected($tache->Type=="Vérification comptable interne") value="Vérification comptable interne">Vérification comptable interne</option>
                                     <option   @selected($tache->Type=="Virement") value="Virement">Virement</option>
+                                    <option   @selected($tache->Type=="Autre") value="Autre">Autre</option>
                                 </select><br><br>
                             </div>
                         </div>
-
-                    </div>
-
-                    <div class="row pt-1">
-
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Priority">Priorité:</label>
                                 <select    id="Priority" class="form-control" name="Priority"   >
                                     <option></option>
-                                    <option @selected($tache->Priority=="Normal")  value="Normal">Normal</option>
-                                    <option @selected($tache->Priority=="High")  value="High">High</option>
-                                    <option @selected($tache->Priority=="Low")  value="Low">Low</option>
+                                    <option @selected($tache->Priority=="Normal")  value="Normal">Normale</option>
+                                    <option @selected($tache->Priority=="High")  value="High">Haute</option>
+                                    <option @selected($tache->Priority=="Low")  value="Low">Basse</option>
                                 </select><br><br>
                             </div>
                         </div>
@@ -90,11 +103,11 @@
                                 <label for="Status">Status:</label>
                                 <select    id="Status" class="form-control" name="Status"   >
                                     <option></option>
-                                    <option  @selected($tache->Status=="Not Started") value="Not Started">Not Started</option>
-                                    <option  @selected($tache->Status=="Waiting on someone e") value="Waiting on someone e">Waiting on someone e</option>
-                                    <option  @selected($tache->Status=="In Progress") value="In Progress">In Progress</option>
-                                    <option  @selected($tache->Status=="Deferred") value="Deferred">Deferred</option>
-                                    <option  @selected($tache->Status=="Completed") value="Completed">Completed</option>
+                                    <option  @selected($tache->Status=="Not Started") value="Not Started">Pas commencée</option>
+                                    <option  @selected($tache->Status=="Waiting on someone e") value="Waiting on someone e">En attente de quelqu'un</option>
+                                    <option  @selected($tache->Status=="In Progress") value="In Progress">En cours</option>
+                                    <option  @selected($tache->Status=="Deferred") value="Deferred">Reportée</option>
+                                    <option  @selected($tache->Status=="Completed") value="Completed">Terminée</option>
                                 </select><br><br>
                             </div>
                         </div>
@@ -107,19 +120,14 @@
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{$tache->Description}}</textarea><br><br>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="">
-                                <h4>Contact</h4>
-                                @if(isset($contact))
-                                <table class="table">
-                                <tr><td colspan="2"><i class="fas fa-user mr-2"></i>  {{$contact->Nom}} {{$contact->Prenom}}  </td></tr>
-                                <tr><td colspan="2"><i class="fas fa-briefcase  mr-2"></i> {{$contact->Title}}</td></tr>
-                                <tr><td  ><i class="fas fa-mobile  mr-2"></i> {{$contact->MobilePhone}}</td><td> <i class="fas fa-phone mr-2"></i> {{$contact->Phone}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-envelope  mr-2"></i> {{$contact->Email}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-store mr-2"></i> {{$contact->Compte}}</td></tr>
-                                <tr><td colspan="2"><i class="fas fa-info  mr-2"></i> {{$contact->Description}}</td></tr>
-                                </table>
-                                @endif
+                                <label>Contact</label>
+                                <select  id="ID_Contact" class="form-control" name="ID_Contact" required  >
+                                @foreach($contacts as $contact)
+                                    <option @selected($tache->ID_Compte==$contact->id) value="{{$contact->id}}">{{$contact->Nom}} {{$contact->Prenom}}  @if($contact->Title!='') ( {{$contact->Title}} ) @endif</option>
+                                @endforeach
+                            </select>
                             </div>
                         </div>
                     </div>
@@ -156,7 +164,7 @@
                 buttonImage: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAATCAYAAAB2pebxAAABGUlEQVQ4jc2UP06EQBjFfyCN3ZR2yxHwBGBCYUIhN1hqGrWj03KsiM3Y7p7AI8CeQI/ATbBgiE+gMlvsS8jM+97jy5s/mQCFszFQAQN1c2AJZzMgA3rqpgcYx5FQDAb4Ah6AFmdfNxp0QAp0OJvMUii2BDDUzS3w7s2KOcGd5+UsRDhbAo+AWfyU4GwnPAYG4XucTYOPt1PkG2SsYTbq2iT2X3ZFkVeeTChyA9wDN5uNi/x62TzaMD5t1DTdy7rsbPfnJNan0i24ejOcHUPOgLM0CSTuyY+pzAH2wFG46jugupw9mZczSORl/BZ4Fq56ArTzPYn5vUA6h/XNVX03DZe0J59Maxsk7iCeBPgWrroB4sA/LiX/R/8DOHhi5y8Apx4AAAAASUVORK5CYII=",
                 firstDay: 1,
                 dateFormat: "yy-mm-dd",
-                minDate:0
+                //minDate:0
             });
         });
 

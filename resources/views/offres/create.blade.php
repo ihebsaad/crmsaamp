@@ -25,6 +25,7 @@
                 <form action="{{ route('offres.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="cl_id" value="{{$client->cl_ident}}" >
+                    <input type="hidden" name="id" value="{{$client->id}}" >
                     <input type="hidden" name="nom_compte" value="{{$client->Nom}}" >
                     <div class="row pt-1">
                         <div class="col-md-4">
@@ -46,6 +47,7 @@
                                 <label for="Produit_Service">Produit Service:</label>
                                 <select    id="Produit_Service" class="  form-control" name="Produit_Service"   >
                                     <option></option>
+<!--
                                     <option  value="AFFINAGE - OFFRE GLOBALE">AFFINAGE - OFFRE GLOBALE</option>
                                     <option  value="AFFINAGE - OFFRE GLOBALE;BIJOUTERIE - OFFRE GLOBAL;DP - OFFRE GLOBALE">AFFINAGE - OFFRE GLOBALE;BIJOUTERIE - OFFRE GLOBAL;DP - OFFRE GLOBALE</option>
                                     <option  value="AFFINAGE - Balayures et déchets Industriels;AFFINAGE - Broutilles;AFFINAGE - Limaille">AFFINAGE - Balayures et déchets Industriels;AFFINAGE - Broutilles;AFFINAGE - Limaille</option>
@@ -60,6 +62,12 @@
                                     <option  value="INVEST - Lingots titrés;INVEST - Pièces monétaire">INVEST - Lingots titrés;INVEST - Pièces monétaire</option>
                                     <option  value="INVEST - Lingots titrés;">INVEST - Lingots titrés</option>
                                     <option  value="INVEST - Pièces monétaire">INVEST - Pièces monétaire</option>
+-->
+                                    <option  value="AFFINAGE">AFFINAGE</option>
+                                    <option  value="APPRET">APPRET</option>
+                                    <option  value="BIJOUTERIE">BIJOUTERIE</option>
+                                    <option  value="DP">DP</option>
+                                    <option  value="INVEST">INVEST</option>
                                 </select><br><br>
                             </div>
                         </div>
@@ -91,7 +99,7 @@
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Nom_offre">Fichier(s):</label>
-                                <input type="file" id="fichier" class="form-control" name="fichier[]"  multiple  accept="application/pdf" /><br><br>
+                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple  accept="application/pdf" /><br><br>
                             </div>
                         </div>
 

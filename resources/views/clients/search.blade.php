@@ -18,7 +18,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Recherche des clients</h6>
             </div>
             <div class="card-body">
-                <a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter un prospect</a><div class="clearfix"></div>
+                <!--<a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter un prospect</a>--><div class="clearfix"></div>
                 <form>
                     <div class="row pt-1">
                         <div class="col-md-6">
@@ -27,7 +27,7 @@
                                 <input type="" class="form-control" id="" placeholder="" name="Nom" value="{{ $request->Nom ?? '' }}">
                             </div>
                         </div>
-
+<!--
                         <div class="col-md-6 pt-1">
                             <div class="form-check form-check-inline mb-3 mt-4">
                                 <input class="form-check-input mt-2" type="radio" id="clientsUniquement" value="0" name="type" @if($request->type==0 || $request->type=='' ) checked @endif  >
@@ -43,12 +43,13 @@
                                 <label class="form-check-label mt-2" for="prospectUniquement">Prospect uniquement</label>
                             </div>
                         </div>
+-->
                     </div>
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
                                 <label for="">Adresse</label>
-                                <input type="" class="form-control" id="" placeholder="" name="Rue" value="{{ $request->Rue ?? '' }}">
+                                <input type="" class="form-control" id="" placeholder="" name="adresse1" value="{{ $request->adresse1 ?? '' }}">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -67,21 +68,23 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="">Ville</label>
-                                <input type="" class="form-control" id="" placeholder="" name="BillingAddress_city" value="{{ $request->BillingAddress_city ?? '' }}">
+                                <input type="" class="form-control" id="" placeholder="" name="ville" value="{{ $request->ville ?? '' }}">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="">Département</label>
-                                <input type="number" class="form-control" id="" placeholder="" name="Departement" value="{{ $request->Departement ?? '' }}">
+                                <input type="text" class="form-control" id="" placeholder="" name="zip" value="{{ $request->zip ?? '' }}">
                             </div>
                         </div>
+                        <!--
                         <div class="col-md-2">
                             <div class="">
                                 <label for="">Pays</label>
                                 <input type="" class="form-control" id="" placeholder="" name="Pays" value="{{ $request->Pays ?? '' }}">
                             </div>
                         </div>
+                        -->
                         <div class="col-md-3 pt-1">
                             <button type="submit" class="btn btn-primary float-right mt-4">Recherche</button>
                         </div>
@@ -97,14 +100,21 @@
                                     </thead>
                                     <tbody>
                                         @foreach($clients as $client)
-                                            @php $color='gray';
-                                            switch ($client->Client_Prospect) {
-                                            case 'CLIENT SAAMP' :  $color='#2660c3'; break;
-                                            case 'COMPTE PROSPECT' : $color='#2ab62c'; break;
-                                            case 'ETABLISSEMENT FERME / COMPTE INACTIF' : $color='#ff2e36';  break;
+
+                                            @php $color='';
+                                            //$agenceLib = $client->agence ? $client->agence->agence_lib : '';
+                                            $agenceLib = $agences[$client->agence_ident] ?? '';
+
+                                            switch ($client->etat_id) {
+                                            case 2 :  $color='#2660c3'; $type_c='Client' ; break;
+                                            case 1 : $color='#2ab62c'; $type_c='Prospect' ;break;
+                                            case 3 : $color='#ff2e36'; $type_c='Fermé' ; break;
+                                            case 4 : $color='#ff2e36';  $type_c='Inactif' ; break;
+
                                             }
+
                                               @endphp
-                                            <tr><td><a href="{{route('fiche',['id'=>$client->id])}}">{{$client->Nom}}</a></td><td>{{$client->BillingAddress_city}}</td><td>{{$client->Agence}}</td><td style="color:{{$color}}">{{$client->Client_Prospect}}</td></tr>
+                                            <tr><td><a href="{{route('fiche',['id'=>$client->id])}}">{{$client->Nom}}</a></td><td>{{$client->ville}}</td><td>{{$agenceLib}}</td><td style="color:{{$color}}">{{$type_c}}</td></tr>
                                         @endforeach
                                     <tbody>
                                 </table>
@@ -140,9 +150,10 @@
 
         // Define different icons for each client type
         var iconOptions = {
-            'CLIENT SAAMP': 'blue',
-            'COMPTE PROSPECT': 'green',
-            'ETABLISSEMENT FERME / COMPTE INACTIF': 'red'
+            '2': 'blue',
+            '1': 'green',
+            '3': 'red',
+            '4': 'red'
         };
 
         // Helper function to create an icon
@@ -158,10 +169,10 @@
         }
 
         clients.forEach(function (client) {
-            var clientType = client.Client_Prospect;
+            var clientType = client.etat_id;
             var color = iconOptions[clientType] || 'gray'; // Default to gray if type is unknown
             var marker = L.marker([client.latitude, client.longitude], { icon: createIcon(color) }).addTo(map);
-            marker.bindPopup('<b>' + client.Nom + '</b><br>' + client.Rue);
+            marker.bindPopup('<b>' + client.Nom + '</b><br>' + client.adresse1);
         });
     });
 </script>

@@ -122,20 +122,12 @@ class OffresController extends Controller
 			// Other fields as necessary
 		]);
 
+		$offre->save();
+		$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('id'));
 
-/*
-		if($request->file('fichier')!=null)
-        {
-			$fichier=$request->file('fichier');
-         	$name =  $fichier->getClientOriginalName();
-            $path = public_path()."/offres";
-           	$fichier->move($path, $name);
-			$offre->fichier=$name;
-			$offre->save();
-        }
-*/
-		if ($request->hasFile('fichier')) {
-			$fichiers = $request->file('fichier');
+
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
 			$fileNames = [];
 
 			foreach ($fichiers as $fichier) {
@@ -149,6 +141,8 @@ class OffresController extends Controller
 			$offre->fichier = serialize($fileNames);
 			$offre->save();
 		}
+
+
 
 		return redirect()->route('offres.show', $offre->id)
 		->with('success','Offre ajoutée');
