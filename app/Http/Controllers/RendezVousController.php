@@ -113,8 +113,8 @@ class RendezVousController extends Controller
 
 	public function destroy($id)
 	{
-		$retour = RendezVous::find($id);
-		$retour->delete();
+		$rv = RendezVous::find($id);
+		$rv->delete();
 
 		return back()->with('success', ' Supprimé avec succès');
 	}

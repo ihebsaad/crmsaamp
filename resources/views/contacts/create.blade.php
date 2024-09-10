@@ -24,6 +24,9 @@
 
 
                 <form action="{{ route('contacts.store') }}" method="post">
+
+                <input type="hidden" id="mycl_ident"   name="mycl_ident"  value="{{$client->id}}">
+
                     @csrf
 
                     <div class="row pt-1">
@@ -84,7 +87,7 @@
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Description">Compte:</label>
-                                <input type="text" id="Compte" class="form-control" name="Compte"  value="{{old('Compte')}}"><br><br>
+                                <input type="text" id="Compte" class="form-control" name="Compte" readonly value="{{ $client->Nom }}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-4">

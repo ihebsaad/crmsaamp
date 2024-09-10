@@ -73,4 +73,12 @@ class ContactsController extends Controller
 	}
 
 
+	public function destroy($id)
+	{
+		$contact = Contact::find($id);
+		$contact->delete();
+
+		return back()->with('success', ' Supprimée avec succès');
+	}
+
 } // end class

@@ -173,4 +173,13 @@ class OffresController extends Controller
 	}
 
 
+	public function destroy($id)
+	{
+		$offre = Offre::find($id);
+		$offre->delete();
+
+		return back()->with('success', ' Supprimée avec succès');
+	}
+
+
 } // end class

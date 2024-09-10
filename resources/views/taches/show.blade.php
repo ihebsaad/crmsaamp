@@ -111,6 +111,10 @@
                                 </select><br><br>
                             </div>
                         </div>
+                        <div class="col-md-2">
+                            <label for="Status">Agence:</label>
+                            <h6 style="color:black">{{$tache->Agence}}</h6>
+                        </div>
                     </div>
 
                     <div class="row pt-1">
@@ -135,6 +139,11 @@
                     <div class="row pt-1">
                         <div class="col-md-12">
                             <button type="submit" class="btn-primary btn float-right">Modifier</button>
+                            @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('taches.destroy', $tache->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                    <span class="fa fa-fw fa-trash-alt"></span> Supprimer
+                                </a>
+                            @endif
                         </div>
                     </div>
 

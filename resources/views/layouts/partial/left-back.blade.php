@@ -61,7 +61,7 @@ if (Auth::check()) {
 
     <a class="nav-link" href="{{route('mestaches')}}" >
       <i class="fas fa-tasks" ></i>
-      <span> Prises de contact </span>
+      <span> Activités de l'Agence  </span>
     </a>
     <!--<hr class="sidebar-divider">
     <a class="nav-link"  href="{{route('offres.index')}}">

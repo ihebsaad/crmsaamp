@@ -73,6 +73,7 @@ Route::post('/ajoutcontact', [ContactsController::class, 'store'])->name('contac
 Route::put('/contacts/{id}', [ContactsController::class, 'update'])->name('contacts.update');
 Route::get('/contacts/create/{id}', [ContactsController::class, 'create'])->name('contacts.create');
 Route::put('/contacts/{id}', [ContactsController::class, 'update'])->name('contacts.update');
+Route::get('/contacts/destroy/{id}',[ContactsController::class,'destroy'])->name('contacts.destroy');
 
 Route::get('/taches/show/{id}', [TachesController::class, 'show'])->name('taches.show');
 Route::post('/ajouttache', [TachesController::class, 'store'])->name('taches.store');
@@ -83,6 +84,7 @@ Route::get('/clientlist/{id}', [TachesController::class, 'client_list'])->name('
 Route::get('/contactlist/{id}', [TachesController::class, 'contact_list'])->name('taches.contact_list');
 Route::get('/mestaches', [TachesController::class, 'mestaches'])->name('mestaches');
 Route::get('/taches', [TachesController::class, 'index'])->name('taches.index');
+Route::get('/taches/destroy/{id}',[TachesController::class,'taches'])->name('taches.destroy');
 
 Route::get('/offres/show/{id}', [OffresController::class, 'show'])->name('offres.show');
 Route::post('/ajoutoffre', [OffresController::class, 'store'])->name('offres.store');
@@ -92,6 +94,7 @@ Route::get('/offres/clientlist/{id}', [OffresController::class, 'client_list'])-
 Route::get('/offres/list', [OffresController::class, 'index'])->name('offres.index');
 Route::get('/offres/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\OffresController@edit_file');
 Route::post('/offres/editFile', 'App\Http\Controllers\OffresController@editFile')->name('offres.editFile');
+Route::get('/offres/destroy/{id}',[OffresController::class,'destroy'])->name('offres.destroy');
 
 Route::get('/test', 'App\Http\Controllers\OffresController@test');
 

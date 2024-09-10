@@ -34,7 +34,7 @@
 
                 <form action="{{ route('compte_client.store') }}" method="POST">
                     @csrf
-                    <input type="hidden" name="Client_Prospect" value="COMPTE PROSPECT" />
+                    <input type="hidden" name="etat_id" value="1" />
                     <div class="row pt-1">
                         <div class="col-md-7">
                             <div id="map"></div>
@@ -42,7 +42,7 @@
                         <div class="col-md-5">
                             <div class="">
                                 <label for="Rue">Adresse:</label>
-                                <input type="text" id="Rue" class="form-control" name="Rue" required><br><br>
+                                <input type="text" id="adresse1" class="form-control" name="adresse1" required><br><br>
                             </div>
                         </div>
                     </div>
@@ -51,25 +51,25 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Pays">Pays:</label>
-                                <input type="text" id="Pays" class="form-control" name="Pays" value="" required><br><br>
+                                <input type="text" id="Pays" class="form-control" name="Pays" value="France" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="pays_code">Code Pays:</label>
-                                <input type="text" id="pays_code" class="form-control" name="CountryCode" maxlength="2" required><br><br>
+                                <input type="text" id="pays_code" class="form-control" name="pays_code" value="FR" maxlength="2" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="zip">Code Postal:</label>
-                                <input type="text" id="zip" class="form-control" name="postalCode" required><br><br>
+                                <input type="text" id="zip" class="form-control" name="zip" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="ville">Ville:</label>
-                                <input type="text" id="ville" class="form-control" name="BillingAddress_city" required><br><br>
+                                <input type="text" id="ville" class="form-control" name="ville" required><br><br>
                             </div>
                         </div>
 
@@ -93,7 +93,7 @@
 
                             <div class="">
                                 <label for="siret">SIRET:</label>
-                                <input type="number" id="siret" class="form-control" name="Code_siret" value="" required><br><br>
+                                <input type="number" id="siret" class="form-control" name="siret" value="" required><br><br>
                             </div>
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Phone">Télephone:</label>
-                                <input type="text" id="Phone" class="form-control" name="Phone" value=""><br><br>
+                                <input type="text" id="Phone" class="form-control" name="Tel" value=""><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -120,7 +120,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="">Site Web:</label>
-                                <input type="url" id="site" class="form-control" name="url"><br><br>
+                                <input type="url" id="url" class="form-control" name="url"><br><br>
                             </div>
                         </div>
 

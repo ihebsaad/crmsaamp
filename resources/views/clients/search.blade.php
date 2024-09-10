@@ -18,7 +18,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Recherche des clients</h6>
             </div>
             <div class="card-body">
-                <!--<a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter un prospect</a>--><div class="clearfix"></div>
+                <a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter un prospect</a><div class="clearfix"></div>
                 <form>
                     <div class="row pt-1">
                         <div class="col-md-6">
@@ -27,23 +27,23 @@
                                 <input type="" class="form-control" id="" placeholder="" name="Nom" value="{{ $request->Nom ?? '' }}">
                             </div>
                         </div>
-<!--
+
                         <div class="col-md-6 pt-1">
                             <div class="form-check form-check-inline mb-3 mt-4">
-                                <input class="form-check-input mt-2" type="radio" id="clientsUniquement" value="0" name="type" @if($request->type==0 || $request->type=='' ) checked @endif  >
-                                <label class="form-check-label mt-2" for="clientsUniquement">Tous</label>
+                                <input class="form-check-input mt-2" type="radio" id="tous" value="0" name="type" @if($request->type==0 || $request->type=='' ) checked @endif  >
+                                <label class="form-check-label mt-2" for="tous">Tous</label>
                             </div>
                             <div class="form-check form-check-inline mb-3 mt-4">
-                                <input class="form-check-input mt-2" type="radio" id="clientsUniquement" value="1" name="type" @if($request->type==1) checked @endif  >
+                                <input class="form-check-input mt-2" type="radio" id="clientsUniquement" value="2" name="type" @if($request->type==2) checked @endif  >
                                 <label class="form-check-label mt-2" for="clientsUniquement">Clients uniquement</label>
                             </div>
 
                             <div class="form-check form-check-inline mb-3 mt-4">
-                                <input class="form-check-input mt-2" type="radio" id="prospectUniquement" value="2" name="type" @if($request->type==2) checked @endif >
+                                <input class="form-check-input mt-2" type="radio" id="prospectUniquement" value="1" name="type" @if($request->type==1) checked @endif >
                                 <label class="form-check-label mt-2" for="prospectUniquement">Prospect uniquement</label>
                             </div>
                         </div>
--->
+
                     </div>
                     <div class="row pt-1">
                         <div class="col-md-3">
@@ -104,7 +104,7 @@
                                             @php $color='';
                                             //$agenceLib = $client->agence ? $client->agence->agence_lib : '';
                                             $agenceLib = $agences[$client->agence_ident] ?? '';
-
+                                            $type_c='';
                                             switch ($client->etat_id) {
                                             case 2 :  $color='#2660c3'; $type_c='Client' ; break;
                                             case 1 : $color='#2ab62c'; $type_c='Prospect' ;break;
@@ -169,10 +169,14 @@
         }
 
         clients.forEach(function (client) {
-            var clientType = client.etat_id;
-            var color = iconOptions[clientType] || 'gray'; // Default to gray if type is unknown
-            var marker = L.marker([client.latitude, client.longitude], { icon: createIcon(color) }).addTo(map);
-            marker.bindPopup('<b>' + client.Nom + '</b><br>' + client.adresse1);
+            if (client.latitude && client.longitude) {
+                var clientType = client.etat_id;
+                var color = iconOptions[clientType] || 'gray'; // Default to gray if type is unknown
+                var marker = L.marker([client.latitude, client.longitude], { icon: createIcon(color) }).addTo(map);
+                marker.bindPopup('<b>' + client.Nom + '</b><br>' + client.adresse1);
+            } else {
+                console.warn('Client without valid coordinates:', client);
+            }
         });
     });
 </script>

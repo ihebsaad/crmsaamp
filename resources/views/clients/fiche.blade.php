@@ -47,7 +47,12 @@ if (is_array($commandes) || is_object($commandes)) {
         color: black;
         font-weight: bold;
     }
-
+    .status {
+        padding: 2px 2px;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        font-size:8px
+    }
 </style>
 <div class="row">
 
@@ -58,7 +63,7 @@ if (is_array($commandes) || is_object($commandes)) {
                 <h6 class="m-0 font-weight-bold text-primary">Fiche du client {{$client->id}} - {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
-            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a> @if($client->Client_Prospect!='CLIENT SAAMP') <!--<a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a>--> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
+            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a> @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
                 <div class="clearfix"></div>
                 <form id="">
                     <div class="row pt-1">
@@ -107,13 +112,13 @@ if (is_array($commandes) || is_object($commandes)) {
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Commercial">Commercial:</label>
-                                <h6>{{$client->commercial}}</h6>
+                                <h6>{{$commercial}}</h6>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Commercial">Commercial support:</label>
-                                <h6>{{$client->commercial_support}}</h6>
+                                <h6>{{$support}}</h6>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -139,7 +144,15 @@ if (is_array($commandes) || is_object($commandes)) {
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Client_Prospect">Type:</label>
-                                <h6>{{$client->Client_Prospect}}</h6>
+                                @php $color='';$type_c='';
+                                    switch ($client->etat_id) {
+                                    case 2 :  $color='#2660c3'; $type_c='Client' ; break;
+                                    case 1 : $color='#2ab62c'; $type_c='Prospect' ;break;
+                                    case 3 : $color='#ff2e36'; $type_c='Fermé' ; break;
+                                    case 4 : $color='#ff2e36';  $type_c='Inactif' ; break;
+                                    }
+                                @endphp
+                                <h6 style="color:{{$color}}">{{$type_c}}</h6>
                             </div>
                         </div>
                     </div>
@@ -185,7 +198,7 @@ if (is_array($commandes) || is_object($commandes)) {
         </div>
     </div>
 
-    <div class="col-lg-5 col-sm-12 mb-4">
+    <div class="col-lg-4 col-sm-12 mb-4">
 
         <div class="card shadow mb-1">
             <div class="card-header py-3">
@@ -227,8 +240,115 @@ if (is_array($commandes) || is_object($commandes)) {
 
     </div>
 
+    <div class="col-lg-4 col-sm-12 mb-4">
 
-    <div class="col-lg-7 col-sm-12 mb-4">
+        <div class="card shadow mb-1">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Prises de contact </h6>
+            </div>
+
+            <div class="card-body" style="min-height:400px">
+                <div class="table-container">
+                    <table class="table table-bordered table-striped mb-40">
+                        <thead>
+                            <tr id="headtable">
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Sujet</th>
+                                <!--<th>Contact</th>-->
+                                <th>Statut</th>
+                                @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                    <th>Supp</th>
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($taches as $tache)
+                            @php
+                                    $color='';
+                                    switch ( $tache->Status ) {
+                                    case 'Not Started':
+                                    $color = '#82e2e8';$statut='Pas commencée';
+                                    break;
+                                    case 'Waiting on someone e':
+                                    $color = '#ea922b';$statut='En attente  de quelqu\'un';
+                                    break;
+                                    case 'In Progress':
+                                    $color = '#5f9fff';$statut='En cours';
+                                    break;
+                                    case 'Deferred':
+                                    $color = '#a778c9';$statut='Reportée';
+                                    break;
+                                    case 'Completed':
+                                    $color = '#40c157';$statut='Terminée';
+                                    break;
+                                    default:
+                                    $color = '';
+                                    }
+
+                                    $class='';
+                                    switch ( $tache->Priority ) {
+                                    case 'Normal':
+                                    $class = 'primary';$priority='Normale';
+                                    break;
+                                    case 'High':
+                                    $class = 'danger';$priority='Haute';
+                                    break;
+                                    case 'Low':
+                                    $class = 'info';$priority='Basse';
+                                    break;
+
+                                    default:
+                                    $class = '';$priority='Normale';
+                                    }
+
+                                    $icon='';
+                                    switch ( $tache->Type ) {
+                                    case 'Acompte / Demande de paiement':
+                                    $icon = 'img/invoice.png';
+                                    break;
+                                    case 'Appel téléphonique':
+                                    $icon = 'img/call.png';
+                                    break;
+                                    case 'Envoyer email':
+                                    $icon = 'img/email.png';
+                                    break;
+
+                                    case 'Envoyer courrier':
+                                    $icon = 'img/mail.png';
+                                    break;
+
+
+                                    default:
+                                    $class = '';
+                                    }
+                                    @endphp
+                                <tr>
+                                    <td><img  src="{{  URL::asset($icon) }}"  width="20"/></td>
+                                    <td>{{ date('d/m/Y', strtotime($tache->DateTache)) }} {{$tache->heure_debut}}</td>
+                                    <td><a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a></td>
+                                    <!--<td>{{ $tache->Nom_contact }}</td>-->
+                                    <td style="padding-left:2px!important">
+                                    <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $statut }}</span>
+                                    <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $priority }}</span>
+                                    </td>
+                                    @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                        <td>
+                                            <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('taches.destroy', $tache->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                                <span class="fa fa-fw fa-trash-alt"></span>
+                                            </a>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-lg-4 col-sm-12 mb-4">
 
         <div class="card shadow mb-1">
             <div class="card-header py-3">
@@ -261,7 +381,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                                                                                 echo $cmd->facon . ' €';
                                                                                             } ?>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <?php
                                     if (trim(strtoupper($cmd->type_cmde)) == 'AFFINAGE') {
                                         $lien = URL("commande/" . $cmd->id);
@@ -382,6 +502,9 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <th>Titre</th>
                                 <th>Date d'ouverture</th>
                                 <th>Date de clôture</th>
+                                @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                    <th>Supp</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -390,6 +513,13 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
                                 <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
                                 <td> @if($retour->Date_cloture!='0000-00-00' && $retour->Date_cloture!='') {{date('d/m/Y', strtotime($retour->Date_cloture))}} @endif </td>
+                                    @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                        <td>
+                                            <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                                <span class="fa fa-fw fa-trash-alt"></span>
+                                            </a>
+                                        </td>
+                                    @endif
                             </tr>
                             @endforeach
                         </tbody>
@@ -488,10 +618,10 @@ if (is_array($commandes) || is_object($commandes)) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
-                @if($client->Client_Prospect=='CLIENT SAAMP')
+                @if($client->cl_ident==0  )
+                    <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
                 @endif
                 @if($client->cl_ident >0)
-                <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
 
                 <div class="table-container">
                     <table class="table table-bordered table-striped mb-40">
@@ -500,6 +630,9 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <th>Nom</th>
                                 <th>Prénom</th>
                                 <th>Tél</th>
+                                @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                    <th>Supp</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -508,6 +641,13 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <td><a href="{{route('contacts.show',['id'=>$contact->id])}}">{{$contact->Nom}}</td>
                                 <td>{{$contact->Prenom}}</td>
                                 <td>{{$contact->MobilePhone}}</td>
+                                    @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                        <td>
+                                            <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('contacts.destroy', $contact->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                                <span class="fa fa-fw fa-trash-alt"></span>
+                                            </a>
+                                        </td>
+                                    @endif
                             </tr>
                             @endforeach
                         </tbody>

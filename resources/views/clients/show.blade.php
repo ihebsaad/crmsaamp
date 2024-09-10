@@ -36,7 +36,7 @@
                         <div class="col-md-5">
                             <div class="">
                                 <label for="Rue">Adresse:</label>
-                                <input type="text" id="Rue" class="form-control" name="Rue" required value="{{$client->Rue}}"><br><br>
+                                <input type="text" id="adresse1" class="form-control" name="adresse1" required value="{{$client->adresse1}}"><br><br>
                             </div>
                         </div>
                     </div>
@@ -51,19 +51,19 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="pays_code">Code Pays:</label>
-                                <input type="text" id="pays_code" class="form-control" name="CountryCode" maxlength="2" required value="{{$client->CountryCode}}"><br><br>
+                                <input type="text" id="pays_code" class="form-control" name="pays_code" maxlength="2" required value="{{$client->pays_code}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="zip">Code Postal:</label>
-                                <input type="text" id="zip" class="form-control" name="postalCode" required value="{{$client->postalCode}}"><br><br>
+                                <input type="text" id="zip" class="form-control" name="zip" required value="{{$client->zip}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="ville">Ville:</label>
-                                <input type="text" id="ville" class="form-control" name="BillingAddress_city" required value="{{$client->BillingAddress_city}}"><br><br>
+                                <input type="text" id="ville" class="form-control" name="ville" required value="{{$client->ville}}"><br><br>
                             </div>
                         </div>
 
@@ -127,14 +127,24 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Commercial">Commercial:</label>
-                                <input type="text" id="Commercial" class="form-control" name="Commercial" value="{{$client->Commercial}}" required><br><br>
+                                <label for="commercial">Commercial:</label>
+                                <select   id="commercial" class="form-control" name="commercial" value="{{$client->Commercial}}" >
+                                    <option></option>
+                                    @foreach($representants as $rep )
+                                    <option  @if($client->commercial==$rep->id) selected="selected" @endif value="{{$rep->id}}" >{{$rep->prenom}} {{$rep->nom}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Commercial_support">Commercial support:</label>
-                                <input type="text" id="Commercial_support" class="form-control" name="Commercial_support" value="{{$client->Commercial_support}}"><br><br>
+                                <label for="commercial_support">Commercial support:</label>
+                                <select   id="commercial_support" class="form-control" name="commercial_support" value="{{$client->commercial_support}}" >
+                                    <option></option>
+                                    @foreach($representants as $rep )
+                                    <option  @if($client->commercial_support==$rep->id) selected="selected" @endif value="{{$rep->id}}" >{{$rep->prenom}} {{$rep->nom}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -146,19 +156,18 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Fidelite_du_client_c">Clientèle:</label>
-                                <input  id="Fidelite_du_client_c" class="form-control" name="Fidelite_du_client_c"  value="{{$client->Fidelite_du_client_c}}" required>
+                                <input  id="Fidelite_du_client_c" class="form-control" name="Fidelite_du_client_c"  value="{{$client->Fidelite_du_client_c}}" >
                                    <br><br>
                             </div>
                         </div>
+
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Client_Prospect">Type:</label>
-                                <select  id="Client_Prospect" class="form-control" name="Client_Prospect">
-                                    <option  @if($client->Client_Prospect=="") selected="selected" @endif value="" ></option>
-                                    <option  @if($client->Client_Prospect=="CLIENT SAAMP") selected="selected" @endif value="CLIENT SAAMP">Client SAAMP</option>
-                                    <option  @if($client->Client_Prospect=="COMPTE PROSPECT") selected="selected" @endif value="COMPTE PROSPECT">Prospect</option>
-                                    <option  @if($client->Client_Prospect=="ETABLISSEMENT FERME / COMPTE INACTIF") selected="selected" @endif value="ETABLISSEMENT FERME / COMPTE INACTIF">Fermé / Inactif</option>
-                                    <option  @if($client->Client_Prospect=="CLIENT LFMP") selected="selected" @endif value="CLIENT LFMP">Client LFMP</option>
+                                <label for="etat_id">Type:</label>
+                                <select  id="etat_id" class="form-control" name="etat_id">
+                                    @foreach($etats as $etat )
+                                    <option  @if($client->etat_id==$etat->id) selected="selected" @endif value="{{$etat->id}}" >{{$etat->etat}}</option>
+                                    @endforeach
                                 </select><br><br>
                             </div>
                         </div>
@@ -167,7 +176,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Phone">Télephone:</label>
-                                <input type="text" id="Phone" class="form-control" name="Phone" value="{{$client->Phone}}"><br><br>
+                                <input type="text" id="Tel" class="form-control" name="Phone" value="{{$client->Tel}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -179,7 +188,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="">Site Web:</label>
-                                <input type="url" id="site" class="form-control" name="url" value="{{$client->url}}"><br><br>
+                                <input type="url" id="url" class="form-control" name="url" value="{{$client->url}}"><br><br>
                             </div>
                         </div>
 
@@ -217,7 +226,7 @@
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.lat}&lon=${position.lng}`)
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('Rue').value = data.display_name || '';
+                        document.getElementById('adresse1').value = data.display_name || '';
                         document.getElementById('zip').value = data.address.postcode || '';
                         document.getElementById('ville').value = data.address.city || data.address.town || data.address.village || '';
                         document.getElementById('pays_code').value = data.address.country_code ? data.address.country_code.toUpperCase() : '';
@@ -226,7 +235,7 @@
                     .catch(error => console.error('Erreur:', error));
             });
 
-            var adresse1Input = document.getElementById('Rue');
+            var adresse1Input = document.getElementById('adresse1');
             adresse1Input.addEventListener('input', function() {
                 var query = adresse1Input.value;
                 if (query.length > 2) {

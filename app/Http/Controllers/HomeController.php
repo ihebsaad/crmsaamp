@@ -13,6 +13,7 @@ use App\Services\PhoneService;
 use Illuminate\Support\Facades\App;
 use App\Services\SendMail;
 use  PDO;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -70,9 +71,12 @@ class HomeController extends Controller
 	public function dashboard()
 	{
 		//$rendezvous=RendezVous::get();
+		$now = Carbon::now();
 
-		$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
-		->orWhere('user_id',auth()->user()->id)
+		$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
+		where('user_id',auth()->user()->id)
+		->where('Started_at', '>=', $now)
+		->orderBy('Started_at', 'desc')
 		->orderBy('id','desc')
 		->get()->take(5);
 

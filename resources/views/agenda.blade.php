@@ -39,9 +39,9 @@
 				<h6 class="m-0 font-weight-bold text-primary">Mon calendrier</h6>
 			</div>
 			<div class="card-body">
-			
-				<div id="calendar"></div>	
-				
+
+				<div id="calendar"></div>
+
 			</div>
 		</div>
 
@@ -56,16 +56,28 @@
         document.addEventListener('DOMContentLoaded', function() {
       	var calendarEl = document.getElementById('calendar');
 
-		// Récupération des données des rendez-vous en PHP
-		var events = <?php echo json_encode(array_map(function($rv) {
+		  var events = <?php echo json_encode(array_map(function($rv) {
+        // Récupération de la date de début et de fin
+        $start_date = date('Y-m-d', strtotime($rv['Started_at']));
+        $end_date = date('Y-m-d', strtotime($rv['End_at']));
+
+        // Récupération des heures de début et de fin
+        $start_time = $rv['heure_debut']; // Format: 'HH:mm'
+        $end_time = $rv['heure_fin'];     // Format: 'HH:mm'
+
+        // Combinaison des dates et heures
+        $startDateTime = $start_date . ' ' . $start_time;
+        $endDateTime = $end_date . ' ' . $end_time;
+
+        // Retourne l'événement pour FullCalendar
         return [
           'title' => $rv['Nom'] . ' ' . $rv['Subject'],
-          'start' => date('c', strtotime($rv['Started_at'])),
-          'end' => date('c', strtotime($rv['End_at'])),
-		  //'url'=>  "{{route('rendezvous.show',['id'=>$rv['id']])}}"
-		  'url'=> "https://crm.mysaamp.com/rendezvous/show/".$rv['id']
+          'start' => date('c', strtotime($startDateTime)), // Combinaison de la date et heure de début
+          'end' => date('c', strtotime($endDateTime)),     // Combinaison de la date et heure de fin
+          'url' => "https://crm.mysaamp.com/rendezvous/show/".$rv['id']
         ];
-      }, $rendezvous->toArray())); ?>;
+    }, $rendezvous->toArray())); ?>;
+
 
 
 		var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -75,9 +87,10 @@
 			headerToolbar: {
 			left: 'prev,next today',
 			center: 'title',
-			right: 'dayGridMonth,timeGridWeek,timeGridDay'
+			right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
 			},
 			events: events,
+
 			eventColor: '#378006', // Optional: Customize event color
 		});
 

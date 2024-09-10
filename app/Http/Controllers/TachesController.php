@@ -134,4 +134,13 @@ class TachesController extends Controller
 	}
 
 
+	public function destroy($id)
+	{
+		$tache = Tache::find($id);
+		$tache->delete();
+
+		return back()->with('success', ' Supprimée avec succès');
+	}
+
+
 } // end class

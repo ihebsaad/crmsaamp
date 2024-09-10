@@ -47,8 +47,10 @@ class ClientsController extends Controller
 	{
 		$client=CompteClient::find($id);
 		$agences = DB::table('agence')->get();
+		$representants = DB::table('representant')->get();
+		$etats = DB::table('etat_client')->get();
 
-		return view('clients.show',compact('client','agences'));
+		return view('clients.show',compact('client','agences','representants','etats'));
 	}
 
 
@@ -56,12 +58,9 @@ class ClientsController extends Controller
     {
         $request->validate([
             'Nom' => 'required',
-            'Rue' => 'required',
-            'Client_Prospect' => 'required',
-            'BillingAddress_city' => 'required',
-            'Pays' => 'required',
-            'CountryCode' => 'required',
-            'postalCode' => 'required',
+            'adresse1' => 'required',
+            'ville' => 'required',
+            'zip' => 'required',
         ]);
 
 		$client = CompteClient::find($id);
@@ -77,13 +76,9 @@ class ClientsController extends Controller
     {
         $request->validate([
             'Nom' => 'required',
-            'Rue' => 'required',
-            'Client_Prospect' => 'required',
-            'BillingAddress_city' => 'required',
-            'Pays' => 'required',
-            'CountryCode' => 'required',
-            'postalCode' => 'required',
-            'Code_siret' => 'required',
+            'adresse1' => 'required',
+            'ville' => 'required',
+            'zip' => 'required',
         ]);
 
         $client=CompteClient::create($request->all());
@@ -97,9 +92,23 @@ class ClientsController extends Controller
 	public function fiche($id)
 	{
 		$client=CompteClient::find($id);
-		$contacts=$retours=array();
+		$contacts=$retours =$taches=array();
+		$representants = DB::table('representant')->get();
+
+		$commercial=$support='';
+		$rep_comm= DB::table('representant')->find($client->commercial);
+		if(isset($rep_comm))
+			$commercial=$rep_comm->prenom .' '. $rep_comm->nom;
+
+		$rep_supp= DB::table('representant')->find($client->commercial_support);
+		if(isset($rep_supp))
+			$support=$rep_supp->prenom .' '. $rep_supp->nom;
+
 		//if($client->Client_Prospect!='COMPTE PROSPECT'){
-			$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
+			$contacts=Contact::where('cl_ident',$client->cl_ident)
+			->orWhere('mycl_ident',$client->id)
+			->get();
+
 			$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
 		//}
 		$agence_name='';
@@ -124,7 +133,10 @@ class ClientsController extends Controller
 		else
 			$taches=Tache::where('ID_Compte',$client->id)->get();
 		*/
-			$taches=Tache::where('mycl_id',$client->cl_ident)->get();
+		if($client->cl_ident>0)
+			$taches=Tache::where('ID_Compte',$client->cl_ident)->limit(50)->get();
+
+		//$taches=Tache::where('mycl_id',$client->cl_ident)->get();
 
 		//$appels=array();
 		$callData=PhoneService::data($client->token_phone);
@@ -187,7 +199,7 @@ class ClientsController extends Controller
 		->where('Started_at', '<', $now)
 		->orderBy('Started_at', 'desc')
 		->get();
-		return view('clients.fiche',compact('client','contacts','retours','Proch_rendezvous','Anc_rendezvous','taches','stats','commandes','agence_name'));
+		return view('clients.fiche',compact('client','contacts','retours','Proch_rendezvous','Anc_rendezvous','taches','stats','commandes','agence_name','commercial','support'));
 	}
 
 
@@ -212,17 +224,16 @@ class ClientsController extends Controller
 	public function search(Request $request)
 	{
 		$query = CompteClient::query();
-/*
+
 		// Application du filtre pour le type de client/prospect
 		$type = $request->get('type');
-		if ($type == 1) {
-			$query->where('Client_Prospect', 'like', '%CLIENT SAAMP%');
-		} elseif ($type == 2) {
-			$query->where('Client_Prospect', 'like', '%PROSPECT%');
-		}else{
-			$query->where('Client_Prospect', '<>', 'CLIENT LFMP');
+		if ($type == 2) {
+			$query->where('etat_id',2);
+		} elseif ($type == 1) {
+			$query->where('etat_id',  1);
 		}
-*/
+
+
 		// Application des filtres pour les autres champs
 		if ($request->has('Nom') && $request->Nom) {
 			$query->where('Nom', 'like', '%'. $request->Nom . '%');
@@ -238,7 +249,7 @@ class ClientsController extends Controller
 
 		if ($request->has('zip') && $request->zip) {
 			//$query->where('Departement',  intval($request->Departement) );
-			$query->where('zip', 'like', '%' . $request->zip);
+			$query->where('zip', 'like', $request->zip. '%' );
 
 		}
 /*
