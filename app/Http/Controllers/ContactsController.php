@@ -73,12 +73,26 @@ class ContactsController extends Controller
 	}
 
 
+
 	public function destroy($id)
 	{
-		$contact = Contact::find($id);
-		$contact->delete();
+ 		$contact = Contact::find($id);
 
-		return back()->with('success', ' Supprimée avec succès');
+		if ($contact) {
+			$cl_id=$contact->cl_ident;
+			$client=Client::where('cl_ident',$cl_id)->first();
+			$contact->delete();
+
+			$previousUrl = url()->previous();
+
+			if (str_contains($previousUrl, '/show/' . $id)) {
+				return redirect()->route('fiche',$client->id)->with('success', 'Supprimé avec succès');
+			}
+		}
+
+		return back()->with('success', 'Supprimé avec succès');
 	}
+
+
 
 } // end class

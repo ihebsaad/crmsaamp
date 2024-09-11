@@ -502,7 +502,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <th>Titre</th>
                                 <th>Date d'ouverture</th>
                                 <th>Date de clôture</th>
-                                @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com')
                                     <th>Supp</th>
                                 @endif
                             </tr>
@@ -513,7 +513,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
                                 <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
                                 <td> @if($retour->Date_cloture!='0000-00-00' && $retour->Date_cloture!='') {{date('d/m/Y', strtotime($retour->Date_cloture))}} @endif </td>
-                                    @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                    @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com')
                                         <td>
                                             <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                                 <span class="fa fa-fw fa-trash-alt"></span>

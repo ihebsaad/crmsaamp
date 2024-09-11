@@ -136,10 +136,24 @@ class TachesController extends Controller
 
 	public function destroy($id)
 	{
-		$tache = Tache::find($id);
-		$tache->delete();
+ 		$tache = Tache::find($id);
 
-		return back()->with('success', ' Supprimée avec succès');
+		if ($tache) {
+			if(intval($tache->ID_Compte)>0)
+				$client_id=$tache->ID_Compte;
+			else
+				$client_id=Client::where('cl_ident',$tache->mycl_id)->first();
+
+			$tache->delete();
+
+			$previousUrl = url()->previous();
+
+			if (str_contains($previousUrl, '/show/' . $id)) {
+				return redirect()->route('fiche',$client_id)->with('success', 'Supprimée avec succès');
+			}
+		}
+
+		return back()->with('success', 'Supprimée avec succès');
 	}
 
 

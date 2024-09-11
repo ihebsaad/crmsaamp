@@ -84,7 +84,7 @@ Route::get('/clientlist/{id}', [TachesController::class, 'client_list'])->name('
 Route::get('/contactlist/{id}', [TachesController::class, 'contact_list'])->name('taches.contact_list');
 Route::get('/mestaches', [TachesController::class, 'mestaches'])->name('mestaches');
 Route::get('/taches', [TachesController::class, 'index'])->name('taches.index');
-Route::get('/taches/destroy/{id}',[TachesController::class,'taches'])->name('taches.destroy');
+Route::get('/taches/destroy/{id}',[TachesController::class,'destroy'])->name('taches.destroy');
 
 Route::get('/offres/show/{id}', [OffresController::class, 'show'])->name('offres.show');
 Route::post('/ajoutoffre', [OffresController::class, 'store'])->name('offres.store');

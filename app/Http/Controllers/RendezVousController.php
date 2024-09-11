@@ -111,12 +111,22 @@ class RendezVousController extends Controller
 		->with('success','Rendez vous ajouté');
 	}
 
+
 	public function destroy($id)
 	{
-		$rv = RendezVous::find($id);
-		$rv->delete();
+ 		$rv = RendezVous::find($id);
 
-		return back()->with('success', ' Supprimé avec succès');
+		if ($rv) {
+			$client_id=$rv->AccountId;
+			$rv->delete();
+
+			$previousUrl = url()->previous();
+
+			if (str_contains($previousUrl, '/show/' . $id)) {
+				return redirect()->route('fiche',$client_id)->with('success', 'Supprimé avec succès');
+			}
+		}
+
+		return back()->with('success', 'Supprimé avec succès');
 	}
-
 } // end class

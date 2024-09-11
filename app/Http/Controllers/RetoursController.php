@@ -141,13 +141,32 @@ class RetoursController extends Controller
 		->with('success','Retour ajouté');
 	}
 
-
+/*
 	public function destroy($id)
 	{
 		$retour = RetourClient::find($id);
 		$retour->delete();
 
 		return back()->with('success', ' Supprimé avec succès');
+	}
+*/
+	public function destroy($id)
+	{
+ 		$retour = RetourClient::find($id);
+
+		if ($retour) {
+			$cl_id=$retour->cl_id;
+			$client=Client::where('cl_ident',$cl_id)->first();
+			$retour->delete();
+
+			$previousUrl = url()->previous();
+
+			if (str_contains($previousUrl, '/show/' . $id)) {
+				return redirect()->route('fiche',$client->id)->with('success', 'Supprimée avec succès');
+			}
+		}
+
+		return back()->with('success', 'Supprimée avec succès');
 	}
 
 } // end class

@@ -99,7 +99,7 @@
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Nom_offre">Fichier(s):</label>
-                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple  accept="application/pdf" /><br><br>
+                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple required  accept="application/pdf" /><br><br>
                             </div>
                         </div>
 

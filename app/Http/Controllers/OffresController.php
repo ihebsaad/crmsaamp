@@ -173,13 +173,27 @@ class OffresController extends Controller
 	}
 
 
+
 	public function destroy($id)
 	{
-		$offre = Offre::find($id);
-		$offre->delete();
+ 		$offre = Offre::find($id);
 
-		return back()->with('success', ' Supprimée avec succès');
+		if ($offre) {
+			$cl_id=$offre->cl_id;
+			if($cl_id>0){
+				$client=Client::where('cl_ident',$cl_id)->first();
+			}
+
+			$offre->delete();
+
+			$previousUrl = url()->previous();
+
+			if (str_contains($previousUrl, '/show/' . $id)) {
+				return redirect()->route('fiche',$client->id)->with('success', 'Supprimée avec succès');
+			}
+		}
+
+		return back()->with('success', 'Supprimée avec succès');
 	}
-
 
 } // end class
