@@ -33,7 +33,6 @@
                         <tr id="headtable">
                             <th>ID </th>
                             <th>Client</th>
-                            <th>Contact</th>
                             <th>Sujet</th>
                             <th>Date</th>
                             <th>Lieu</th>
@@ -47,7 +46,6 @@
                             <tr>
                                 <td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
                                 <td>{{ $rv->Account_Name }}</td>
-                                <td>{{ $rv->Nom }}</td>
                                 <td>{{ $rv->Subject }}</td>
                                 <td>{{ date('d/m/Y H:i', strtotime($rv->Started_at)) }}</td>
                                 <td>{{ $rv->location }}</td>

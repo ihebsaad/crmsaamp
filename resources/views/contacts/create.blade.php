@@ -26,6 +26,7 @@
                 <form action="{{ route('contacts.store') }}" method="post">
 
                 <input type="hidden" id="mycl_ident"   name="mycl_ident"  value="{{$client->id}}">
+                <input type="hidden" id="cl_ident"   name="cl_ident"  value="{{$client->cl_ident}}">
 
                     @csrf
 
@@ -62,7 +63,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="MobilePhone">Mobile:</label>
-                                <input type="text" id="MobilePhone" class="form-control" name="MobilePhone"  value="{{old('MobilePhone')}}"><br><br>
+                                <input type="text" id="Phone" class="form-control" name="Phone"  value="{{old('MobilePhone')}}"><br><br>
                             </div>
                         </div>
 
@@ -76,7 +77,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Email">Email:</label>
-                                <input type="text" id="Email" class="form-control" name="Email"  value="{{old('Email')}}"><br><br>
+                                <input type="text" id="Email" class="form-control" name="email"  value="{{old('email')}}"><br><br>
                             </div>
                         </div>
 
@@ -87,7 +88,7 @@
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Description">Compte:</label>
-                                <input type="text" id="Compte" class="form-control" name="Compte" readonly value="{{ $client->Nom }}"><br><br>
+                                <input type="text" id="Compte" class="form-control" name="" readonly value="{{ $client->Nom }}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-4">

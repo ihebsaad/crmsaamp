@@ -9,7 +9,7 @@ class Contact extends Model
 {
     use HasFactory;
 
-    protected $table = "CRM_Contact";
+    protected $table = "contact";
 
     protected $guarded = [];
 

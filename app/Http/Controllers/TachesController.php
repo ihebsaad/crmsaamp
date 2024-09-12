@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\CompteClient;
 use App\Models\RetourClient;
-use App\Models\Contact;
 use App\Models\Tache;
 use App\Models\Agence;
 use App\Services\PhoneService;
@@ -58,36 +57,21 @@ class TachesController extends Controller
 	public function create($id)
 	{
 		$client=CompteClient::find($id);
-		$contacts=Contact::where('cl_ident',$client->cl_ident)->orderBy('Nom','asc')->get();
-		return view('taches.create',compact('client','contacts'));
+		return view('taches.create',compact('client'));
 	}
 
 	public function client_list($id)
 	{
 		$client=CompteClient::find($id);
-
 		$taches=Tache::where('mycl_id',$client->cl_ident)->get();
-
 		return view('taches.list',compact('taches','client'));
-	}
-
-	public function contact_list($id)
-	{
-		$contact=Contact::find($id);
-		$taches=Tache::where('ID_Contact',$id)->get();
-		return view('taches.list',compact('taches','contact'));
 	}
 
 	public function show($id)
 	{
 		$tache=Tache::find($id);
-		//ID_Compte
 		$client=CompteClient::find($tache->ID_Compte);
-		$contacts=Contact::where('cl_ident',$client->cl_ident)->orderBy('Nom','asc')->get();
-
-		$contact=Contact::where('id',$tache->ID_Contact)->first();
-
-		return view('taches.show',compact('tache','contacts','contact','client'));
+		return view('taches.show',compact('tache','client'));
 	}
 
 
@@ -116,9 +100,6 @@ class TachesController extends Controller
 
         $tache=Tache::create($request->all());
 
-		$contact=Contact::where('id',$tache->ID_Contact)->first();
-
-		$tache->Nom_contact= $contact->Nom.' '.$contact->Prenom;
 
 		$client=CompteClient::find($tache->ID_Compte);
 		$agence_id=$client->agence_ident;

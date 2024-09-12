@@ -23,7 +23,6 @@
             <div class="card-body" style="min-height:500px">
                 <div class="row">
                     <div class="col-sm-12">
-                        <a href="{{route('taches.contact_list',['id'=>$contact->id])}}"  class="btn btn-primary mb-3 float-right"><i class="fas fa-tasks"></i> Tâches</a>
                     </div>
                 </div>
                 <form action="{{ route('contacts.update', $contact->id) }}" method="post">
@@ -77,7 +76,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Email">Email:</label>
-                                <input type="text" id="Email" class="form-control" name="Email"  value="{{$contact->Email}}"><br><br>
+                                <input type="text" id="Email" class="form-control" name="Email"  value="{{$contact->email}}"><br><br>
                             </div>
                         </div>
 
@@ -88,7 +87,7 @@
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Description">Compte:</label>
-                                <input type="text" id="Compte" class="form-control" name="Compte"  value="{{$contact->Compte}}"><br><br>
+                                <input type="text" id="Compte" class="form-control" name="Compte"  value="{{$client->Nom}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -102,7 +101,9 @@
 
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right">Modifier</button>
+                            @if($client->etat_id==1 )
+                                <button type="submit" class="btn-primary btn float-right">Modifier</button>
+                            @endif
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                 <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('contacts.destroy', $contact->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                     <span class="fa fa-fw fa-trash-alt"></span> Supprimer

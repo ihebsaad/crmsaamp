@@ -121,11 +121,8 @@ class RetoursController extends Controller
 		SendMail::send('remy.reverbel@saamp.com', $sujet, $contenu);
 		SendMail::send('reyad.bouzeboudja@saamp.com', $sujet, $contenu);
 
-
-		/*
 		// email qualité
 		SendMail::send('directeur.qualite@saamp.com', $sujet, $contenu);
-
 
 		// email agence
 		$agence= DB::table('agence')->where('agence_lib',trim($retour->Depot_concerne))->first();
@@ -135,7 +132,6 @@ class RetoursController extends Controller
 		if(isset($agence) && isset($agence->mail2))
 			SendMail::send($agence->mail2, $sujet, $contenu);
 
-*/
 
 		return redirect()->route('retours.show', $retour->id)
 		->with('success','Retour ajouté');

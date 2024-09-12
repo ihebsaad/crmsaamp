@@ -43,7 +43,14 @@ class ContactsController extends Controller
 	{
 		$contact=Contact::find($id);
 		//Contact::updateWithSequentialIds();
-		return view('contacts.show',compact('contact'));
+		if($contact->cl_ident >0)
+			$client=Client::where('cl_ident',$contact->cl_ident)
+			->first();
+		else
+ 			$client=Client::where('id',$contact->mycl_ident)
+			->first();
+
+		return view('contacts.show',compact('contact','client'));
 	}
 
 

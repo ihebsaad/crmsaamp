@@ -201,7 +201,7 @@
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.lat}&lon=${position.lng}`)
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('Rue').value = data.display_name || '';
+                        document.getElementById('adresse1').value = data.display_name || '';
                         document.getElementById('zip').value = data.address.postcode || '';
                         document.getElementById('ville').value = data.address.city || data.address.town || data.address.village || '';
                         document.getElementById('pays_code').value = data.address.country_code ? data.address.country_code.toUpperCase() : '';
@@ -210,7 +210,7 @@
                     .catch(error => console.error('Erreur:', error));
             });
 
-            var adresse1Input = document.getElementById('Rue');
+            var adresse1Input = document.getElementById('adresse1');
             adresse1Input.addEventListener('input', function() {
                 var query = adresse1Input.value;
                 if (query.length > 2) {

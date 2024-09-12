@@ -124,16 +124,6 @@
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{$tache->Description}}</textarea><br><br>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="">
-                                <label>Contact</label>
-                                <select  id="ID_Contact" class="form-control" name="ID_Contact" required  >
-                                @foreach($contacts as $contact)
-                                    <option @selected($tache->ID_Compte==$contact->id) value="{{$contact->id}}">{{$contact->Nom}} {{$contact->Prenom}}  @if($contact->Title!='') ( {{$contact->Title}} ) @endif</option>
-                                @endforeach
-                            </select>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="row pt-1">

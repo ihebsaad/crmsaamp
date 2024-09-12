@@ -60,14 +60,6 @@
                     </div>
 
                     <div class="row pt-1">
-                        <div class="col-md-4">
-                            <label for="ID_Contact">Contact:</label>
-                            <select  id="ID_Contact" class="form-control" name="ID_Contact" required  >
-                                @foreach($contacts as $contact)
-                                    <option value="{{$contact->id}}">{{$contact->Prenom}} {{$contact->Nom}} - {{$contact->Title}}</option>
-                                @endforeach
-                            </select>
-                        </div>
 
                         <div class="col-md-4">
                             <div class="">

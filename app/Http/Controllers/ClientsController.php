@@ -105,9 +105,12 @@ class ClientsController extends Controller
 			$support=$rep_supp->prenom .' '. $rep_supp->nom;
 
 		//if($client->Client_Prospect!='COMPTE PROSPECT'){
-			$contacts=Contact::where('cl_ident',$client->cl_ident)
-			->orWhere('mycl_ident',$client->id)
-			->get();
+			if($client->cl_ident >0)
+				$contacts=Contact::where('cl_ident',$client->cl_ident)
+				->get();
+			else
+				$contacts=Contact::where('mycl_ident',$client->id)
+				->get();
 
 			$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
 		//}
@@ -133,8 +136,11 @@ class ClientsController extends Controller
 		else
 			$taches=Tache::where('ID_Compte',$client->id)->get();
 		*/
-		if($client->cl_ident>0)
-			$taches=Tache::where('ID_Compte',$client->cl_ident)->limit(50)->get();
+
+		//$taches=Tache::where('ID_Compte',$client->id)->get();
+		$taches=Tache::where('mycl_id',$client->cl_ident)->get();
+
+
 
 		//$taches=Tache::where('mycl_id',$client->cl_ident)->get();
 
@@ -225,16 +231,14 @@ class ClientsController extends Controller
 	{
 		$query = CompteClient::query();
 
-		// Application du filtre pour le type de client/prospect
 		$type = $request->get('type');
+		$print = $request->get('print');
 		if ($type == 2) {
 			$query->where('etat_id',2);
 		} elseif ($type == 1) {
 			$query->where('etat_id',  1);
 		}
 
-
-		// Application des filtres pour les autres champs
 		if ($request->has('Nom') && $request->Nom) {
 			$query->where('Nom', 'like', '%'. $request->Nom . '%');
 		}
@@ -248,16 +252,9 @@ class ClientsController extends Controller
 		}
 
 		if ($request->has('zip') && $request->zip) {
-			//$query->where('Departement',  intval($request->Departement) );
 			$query->where('zip', 'like', $request->zip. '%' );
+		}
 
-		}
-/*
-		if ($request->has('Pays') && $request->Pays) {
-			$query->where('Pays', 'like', '%' . $request->Pays . '%');
-		}
-*/
-		// Application du tri
 		$tri = $request->get('tri');
 		if ($tri == 1) {
 			$query->orderBy('Nom');
@@ -265,13 +262,14 @@ class ClientsController extends Controller
 			$query->orderBy('pays_code')->orderBy('ville');
 		}
 
-		// Exécution de la requête
 		$clients = $query->get()->take(1000);
 
 		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
+		if($print)
+			return view('clients.print', compact('clients','request','agences'));
+		else
+			return view('clients.search', compact('clients','request','agences'));
 
-		// Retourne la vue avec les résultats de la recherche
-		return view('clients.search', compact('clients','request','agences'));
 	}
 
 	public function ouverture(Request $request)

@@ -19,7 +19,7 @@
             </div>
             <div class="card-body">
                 <a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter un prospect</a><div class="clearfix"></div>
-                <form>
+                <form action="{{route('search')}}">
                     <div class="row pt-1">
                         <div class="col-md-6">
                             <div class="">
@@ -86,7 +86,10 @@
                         </div>
                         -->
                         <div class="col-md-3 pt-1">
-                            <button type="submit" class="btn btn-primary float-right mt-4">Recherche</button>
+                            <button type="submit" class="btn btn-primary float-right mt-4"><i class="fa fa-search"></i> Recherche</button>
+                        </div>
+                        <div class="col-md-3 pt-1">
+                            <button type="submit" name="print" value="true" class="btn btn-secondary float-right mt-4"  ><i class="fa fa-print"></i> Imprimer</button>
                         </div>
                     </div>
 

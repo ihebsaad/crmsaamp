@@ -71,7 +71,7 @@
 
         // Retourne l'événement pour FullCalendar
         return [
-          'title' => $rv['Nom'] . ' ' . $rv['Subject'],
+          'title' => $rv['Account_Name'] . ' ' . $rv['Subject'],
           'start' => date('c', strtotime($startDateTime)), // Combinaison de la date et heure de début
           'end' => date('c', strtotime($endDateTime)),     // Combinaison de la date et heure de fin
           'url' => "https://crm.mysaamp.com/rendezvous/show/".$rv['id']

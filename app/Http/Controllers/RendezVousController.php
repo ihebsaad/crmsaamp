@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\CompteClient;
 use App\Models\RendezVous;
-use App\Models\Contact;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -54,9 +53,8 @@ class RendezVousController extends Controller
 	public function create($id)
 	{
 		$client=CompteClient::find($id);
-		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
 		$users=User::where('user_type','<>','')->get();
-		return view('rendezvous.create',compact('client','contacts','users'));
+		return view('rendezvous.create',compact('client','users'));
 	}
 
 	public function show($id)
@@ -64,12 +62,15 @@ class RendezVousController extends Controller
 		$rendezvous=RendezVous::find($id);
 		$client=CompteClient::find($rendezvous->AccountId);
 
-		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
+		return view('rendezvous.show',compact('rendezvous','client'));
+	}
 
- 		$contact=Contact::where('id',$rendezvous->ID_Contact)->first();
+	public function print($id)
+	{
+		$rendezvous=RendezVous::find($id);
+		$client=CompteClient::find($rendezvous->AccountId);
 
-
-		return view('rendezvous.show',compact('rendezvous','contact','contacts'));
+		return view('rendezvous.print',compact('rendezvous','client'));
 	}
 
 
@@ -95,15 +96,9 @@ class RendezVousController extends Controller
         ]);
 
         $rendezvous=RendezVous::create($request->all());
-/*
-		$contact=Contact::where('old_id',$rendezvous->ID_Contact)
-		->orWhere('id',$rendezvous->ID_Contact)
-		->first();*/
 
-		$contact=Contact::where('id',$rendezvous->ID_Contact)->first();
 		$client=CompteClient::find($rendezvous->AccountId);
 
-		$rendezvous->Nom= $contact->Prenom.' '.$contact->Nom;
 		$rendezvous->Account_Name=$client->Nom;
 		$rendezvous->save();
 

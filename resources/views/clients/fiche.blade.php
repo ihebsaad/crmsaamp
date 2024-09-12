@@ -324,7 +324,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                     }
                                     @endphp
                                 <tr>
-                                    <td><img  src="{{  URL::asset($icon) }}"  width="20"/></td>
+                                    <td>{{$tache->Type}}</td>
                                     <td>{{ date('d/m/Y', strtotime($tache->DateTache)) }} {{$tache->heure_debut}}</td>
                                     <td><a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a></td>
                                     <!--<td>{{ $tache->Nom_contact }}</td>-->
@@ -618,18 +618,17 @@ if (is_array($commandes) || is_object($commandes)) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
-                @if($client->cl_ident==0  )
+                @if($client->etat_id==1  )
                     <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
                 @endif
-                @if($client->cl_ident >0)
 
                 <div class="table-container">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr>
+                                <th>Email</th>
                                 <th>Nom</th>
-                                <th>Prénom</th>
-                                <th>Tél</th>
+                                <!--<th>Tél</th>-->
                                 @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                     <th>Supp</th>
                                 @endif
@@ -638,9 +637,9 @@ if (is_array($commandes) || is_object($commandes)) {
                         <tbody>
                             @foreach($contacts as $contact)
                             <tr>
-                                <td><a href="{{route('contacts.show',['id'=>$contact->id])}}">{{$contact->Nom}}</td>
-                                <td>{{$contact->Prenom}}</td>
-                                <td>{{$contact->MobilePhone}}</td>
+                                <td><a href="{{route('contacts.show',['id'=>$contact->id])}}">{{$contact->email}}</td>
+                                <td><a href="{{route('contacts.show',['id'=>$contact->id])}}">{{$contact->Prenom}} {{$contact->Nom}}</a></td>
+                                <!--<td>{{$contact->Phone}}</td>-->
                                     @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                         <td>
                                             <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('contacts.destroy', $contact->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
@@ -653,7 +652,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         </tbody>
                     </table>
                 </div>
-                @endif
+
             </div>
         </div>
 

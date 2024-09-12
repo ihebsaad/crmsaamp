@@ -107,7 +107,6 @@
                     <tr style="background-color:#2e3e4e;color:white;" id="">
                         <th>ID</th>
                         <th>Client</th>
-                        <th>Contact</th>
                         <th>Sujet</th>
                         <th>Date</th>
                     </tr>
@@ -117,7 +116,6 @@
 	  					<tr>
 						<td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
 						<td>{{ $rv->Account_Name }}</td>
-						<td>{{ $rv->Nom }}</td>
 						<td>{{ $rv->Subject }}</td>
 						<td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
 						</tr>
@@ -135,9 +133,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($clients as $cl)
-						<tr><td>{{$cl->nom}}</td><td>{{$cl->CA}}</td></tr>
-					@endforeach
+                @foreach($clients as $cl)
+                  <tr><td>{{$cl->nom}}</td><td>{{$cl->CA}}</td></tr>
+                @endforeach
 				</tbody>
 			</table>
 
@@ -152,17 +150,18 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Développement en cours </h5>
+          <h6 class="modal-title" id="exampleModalLabel">Développement en cours </h6>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body text-center"  style="">
+        <div class="modal-body text-center"  >
 			<div style="font-size:16px;">
 				<h5>Bienvenue sur le CRM</h5><br>
-				<b style="color:red">
+				<b style="color:red;font-size:13px">
 				Certaines données ou certains modules peuvent être manquants ou présenter des bugs.<br>
-				Merci de nous en informer.</b><br>
+				Merci de nous en informer.<br><br>
+        Les données Salesforce (RDV, prise de contact, offre de prix) des mois de mai, juin et juillet, ne sont pas encore disponibles.</b><br>
 				</div>
 		</div>
         <div class="modal-footer">

@@ -208,87 +208,116 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var map = L.map('map').setView([<?php echo $client->latitude; ?>, <?php echo $client->longitude; ?>], 6); // Centrer sur la France
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var defaultLat = 46.603354; // Latitude de la France
+        var defaultLng = 1.888334;  // Longitude de la France
+        var lat = <?php echo $client->latitude ?? 'null'; ?>;
+        var lng = <?php echo $client->longitude ?? 'null'; ?>;
+        var mapCenterLat = lat !== null ? lat : defaultLat;
+        var mapCenterLng = lng !== null ? lng : defaultLng;
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
+        var map = L.map('map').setView([mapCenterLat, mapCenterLng], 6);
 
-            var marker = L.marker([<?php echo $client->latitude; ?> ,<?php echo $client->longitude; ?>], {draggable: true}).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
-            marker.on('dragend', function(e) {
-                var position = marker.getLatLng();
-                document.getElementById('latitude').value = position.lat;
-                document.getElementById('longitude').value = position.lng;
+        var marker = L.marker([mapCenterLat, mapCenterLng], {draggable: true}).addTo(map);
 
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.lat}&lon=${position.lng}`)
+        // Si la latitude et la longitude sont nulles, rechercher par l'adresse
+        if (lat === null || lng === null) {
+            var adresse = '<?php echo $client->adresse1; ?>';
+            if (adresse) {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(adresse)}&limit=1`)
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('adresse1').value = data.display_name || '';
-                        document.getElementById('zip').value = data.address.postcode || '';
-                        document.getElementById('ville').value = data.address.city || data.address.town || data.address.village || '';
-                        document.getElementById('pays_code').value = data.address.country_code ? data.address.country_code.toUpperCase() : '';
-                        document.getElementById('Pays').value = data.address.country ? data.address.country : '';
+                        if (data && data.length > 0) {
+                            var result = data[0];
+                            map.setView([result.lat, result.lon], 13);
+                            marker.setLatLng([result.lat, result.lon]);
+                            document.getElementById('latitude').value = result.lat;
+                            document.getElementById('longitude').value = result.lon;
+                            document.getElementById('zip').value = result.address.postcode || '';
+                            document.getElementById('ville').value = result.address.city || result.address.town || result.address.village || '';
+                            document.getElementById('pays_code').value = result.address.country_code ? result.address.country_code.toUpperCase() : '';
+                            document.getElementById('Pays').value = result.address.country ? result.address.country : '';
+                        }
+                    })
+                    .catch(error => console.error('Erreur lors de la recherche de l\'adresse:', error));
+            }
+        }
+
+        marker.on('dragend', function(e) {
+            var position = marker.getLatLng();
+            document.getElementById('latitude').value = position.lat;
+            document.getElementById('longitude').value = position.lng;
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.lat}&lon=${position.lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('adresse1').value = data.display_name || '';
+                    document.getElementById('zip').value = data.address.postcode || '';
+                    document.getElementById('ville').value = data.address.city || data.address.town || data.address.village || '';
+                    document.getElementById('pays_code').value = data.address.country_code ? data.address.country_code.toUpperCase() : '';
+                    document.getElementById('Pays').value = data.address.country ? data.address.country : '';
+                })
+                .catch(error => console.error('Erreur:', error));
+        });
+
+        var adresse1Input = document.getElementById('adresse1');
+        adresse1Input.addEventListener('input', function() {
+            var query = adresse1Input.value;
+            if (query.length > 2) {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(query)}&limit=10`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            var suggestions = data.map(result => ({
+                                display_name: result.display_name,
+                                lat: result.lat,
+                                lon: result.lon,
+                                address: result.address
+                            }));
+
+                            let suggestionsContainer = document.getElementById('suggestions');
+                            if (!suggestionsContainer) {
+                                suggestionsContainer = document.createElement('div');
+                                suggestionsContainer.id = 'suggestions';
+                                adresse1Input.parentNode.appendChild(suggestionsContainer);
+                            }
+                            suggestionsContainer.innerHTML = '';
+
+                            suggestions.forEach(suggestion => {
+                                let suggestionItem = document.createElement('div');
+                                suggestionItem.innerText = suggestion.display_name;
+                                suggestionItem.classList.add('suggestion-item');
+                                suggestionItem.style.cursor = 'pointer';
+                                suggestionItem.addEventListener('click', () => {
+                                    adresse1Input.value = suggestion.display_name;
+                                    document.getElementById('latitude').value = suggestion.lat;
+                                    document.getElementById('longitude').value = suggestion.lon;
+                                    document.getElementById('zip').value = suggestion.address.postcode || '';
+                                    document.getElementById('ville').value = suggestion.address.city || suggestion.address.town || suggestion.address.village || '';
+                                    document.getElementById('pays_code').value = suggestion.address.country_code ? suggestion.address.country_code.toUpperCase() : '';
+                                    document.getElementById('Pays').value = suggestion.address.country ? suggestion.address.country : '';
+
+                                    marker.setLatLng([suggestion.lat, suggestion.lon]);
+                                    map.setView([suggestion.lat, suggestion.lon], 13);
+                                });
+                                suggestionsContainer.appendChild(suggestionItem);
+                            });
+                        } else {
+                            let suggestionsContainer = document.getElementById('suggestions');
+                            if (suggestionsContainer) {
+                                suggestionsContainer.innerHTML = '<div class="suggestion-item">Aucune adresse trouvée</div>';
+                            }
+                        }
                     })
                     .catch(error => console.error('Erreur:', error));
-            });
-
-            var adresse1Input = document.getElementById('adresse1');
-            adresse1Input.addEventListener('input', function() {
-                var query = adresse1Input.value;
-                if (query.length > 2) {
-                    fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(query)}&limit=10`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data && data.length > 0) {
-                                var suggestions = data.map(result => ({
-                                    display_name: result.display_name,
-                                    lat: result.lat,
-                                    lon: result.lon,
-                                    address: result.address
-                                }));
-
-                                // Suppression des anciennes suggestions
-                                let suggestionsContainer = document.getElementById('suggestions');
-                                if (!suggestionsContainer) {
-                                    suggestionsContainer = document.createElement('div');
-                                    suggestionsContainer.id = 'suggestions';
-                                    adresse1Input.parentNode.appendChild(suggestionsContainer);
-                                }
-                                suggestionsContainer.innerHTML = '';
-
-                                suggestions.forEach(suggestion => {
-                                    let suggestionItem = document.createElement('div');
-                                    suggestionItem.innerText = suggestion.display_name;
-                                    suggestionItem.classList.add('suggestion-item');
-                                    suggestionItem.style.cursor = 'pointer';
-                                    suggestionItem.addEventListener('click', () => {
-                                        adresse1Input.value = suggestion.display_name;
-                                        document.getElementById('latitude').value = suggestion.lat;
-                                        document.getElementById('longitude').value = suggestion.lon;
-                                        document.getElementById('zip').value = suggestion.address.postcode || '';
-                                        document.getElementById('ville').value = suggestion.address.city || suggestion.address.town || suggestion.address.village || '';
-                                        document.getElementById('pays_code').value = suggestion.address.country_code ? suggestion.address.country_code.toUpperCase() : '';
-                                        document.getElementById('Pays').value = suggestion.address.country ? suggestion.address.country : '';
-
-                                        marker.setLatLng([suggestion.lat, suggestion.lon]);
-                                        map.setView([suggestion.lat, suggestion.lon], 13);
-                                    });
-                                    suggestionsContainer.appendChild(suggestionItem);
-                                });
-                            } else {
-                                // Cas où aucune suggestion n'est trouvée
-                                let suggestionsContainer = document.getElementById('suggestions');
-                                if (suggestionsContainer) {
-                                    suggestionsContainer.innerHTML = '<div class="suggestion-item">Aucune adresse trouvée</div>';
-                                }
-                            }
-                        })
-                        .catch(error => console.error('Erreur:', error));
-                }
-            });
+            }
         });
-    </script>
+    });
+</script>
+
 @endsection

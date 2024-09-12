@@ -31,8 +31,9 @@ h6{
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Account_Name">Nom du client:</label>
+                                <label for="Account_Name">Client:</label>
                                 <h6>{{$rendezvous->Account_Name}}</h6>
+                                <h6><small>{{$client->adresse1}}</small></h6>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -63,17 +64,6 @@ h6{
                     </div>
 
                     <div class="row pt-1">
-                        <div class="col-md-3">
-                            <div class="">
-                                <label for="Nom">Contact:</label>
-                                <select  id="ID_Contact" class="form-control" name="ID_Contact" required  >
-                                @foreach($contacts as $contact)
-                                    <option @if($rendezvous->ID_Contact==$contact->id) selected="selected" @endif value="{{$contact->id}}">{{$contact->Nom}} {{$contact->Prenom}}  @if($contact->Title!='') ( {{$contact->Title}} ) @endif</option>
-                                @endforeach
-                            </select>
-                            </div>
-                        </div>
-
                         <div class="col-md-3">
                             <div class="">
                             <label for="Type">Type:</label>
@@ -130,7 +120,11 @@ h6{
                             @endif
                         </div>
                     </div>
-
+                    <div class="row pt-1">
+                        <div class="col-md-12">
+                            <a  href="{{route('rendezvous.print',['id'=>$rendezvous->id])}}" target="_blank" class="btn btn-secondary" ><i class="fa fa-print"></i> Imprimer</a>
+                        </div>
+                    </div>
                 </form>
 
             </div>

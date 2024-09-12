@@ -177,7 +177,7 @@
                                             <span class="task-date">{{ \Carbon\Carbon::parse($task->DateTache)->translatedFormat(' d M') }}</span>
                                         </div>
                                         <div class="task-details">
-                                            @if($task->Nom_contact !='')<span><i class="fas fa-user-circle"></i> {{ $task->Nom_contact }}</span> <br>@endif
+                                            @if($task->Nom_de_compte !='')<span><i class="fas fa-user-circle"></i> {{ $task->Nom_de_compte }}</span> <br>@endif
                                             <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $statut }}</span>
                                             <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $priority }}</span>
 

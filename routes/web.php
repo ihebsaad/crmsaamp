@@ -81,7 +81,6 @@ Route::put('/taches/{id}', [TachesController::class, 'update'])->name('taches.up
 Route::get('/taches/create/{id}', [TachesController::class, 'create'])->name('taches.create');
 Route::put('/taches/{id}', [TachesController::class, 'update'])->name('taches.update');
 Route::get('/clientlist/{id}', [TachesController::class, 'client_list'])->name('taches.client_list');
-Route::get('/contactlist/{id}', [TachesController::class, 'contact_list'])->name('taches.contact_list');
 Route::get('/mestaches', [TachesController::class, 'mestaches'])->name('mestaches');
 Route::get('/taches', [TachesController::class, 'index'])->name('taches.index');
 Route::get('/taches/destroy/{id}',[TachesController::class,'destroy'])->name('taches.destroy');
@@ -99,6 +98,7 @@ Route::get('/offres/destroy/{id}',[OffresController::class,'destroy'])->name('of
 Route::get('/test', 'App\Http\Controllers\OffresController@test');
 
 Route::get('/rendezvous/show/{id}', [RendezVousController::class, 'show'])->name('rendezvous.show');
+Route::get('/rendezvous/print/{id}', [RendezVousController::class, 'print'])->name('rendezvous.print');
 Route::post('/ajoutrv', [RendezVousController::class, 'store'])->name('rendezvous.store');
 Route::put('/rendezvous/{id}', [RendezVousController::class, 'update'])->name('rendezvous.update');
 Route::get('/rendezvous/create/{id}', [RendezVousController::class, 'create'])->name('rendezvous.create');
