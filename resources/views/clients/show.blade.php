@@ -164,11 +164,10 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="etat_id">Type:</label>
-                                <select  id="etat_id" class="form-control" name="etat_id">
                                     @foreach($etats as $etat )
-                                    <option  @if($client->etat_id==$etat->id) selected="selected" @endif value="{{$etat->id}}" >{{$etat->etat}}</option>
+                                        @if($client->etat_id==$etat->id)<h6 style="color:black"> {{$etat->etat}}</h6> @endif
                                     @endforeach
-                                </select><br><br>
+                                <br><br>
                             </div>
                         </div>
                     </div>

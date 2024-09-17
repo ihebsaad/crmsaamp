@@ -9,6 +9,8 @@ use App\Http\Controllers\StatsController;
 use App\Models\User;
 use App\Models\CompteClient;
 use App\Models\RendezVous;
+use App\Models\RetourClient;
+use App\Models\Tache;
 use App\Services\PhoneService;
 use Illuminate\Support\Facades\App;
 use App\Services\SendMail;
@@ -44,7 +46,53 @@ class HomeController extends Controller
 	public function adminhome()
 	{
 		if (auth()->user()->user_type == 'admin') {
-			return view('adminhome');
+
+			$now = Carbon::now();
+
+			$rendezvous=RendezVous::where('Started_at', '>=', $now)
+			->orderBy('Started_at', 'asc')
+			->orderBy('heure_debut','asc')
+			->get();
+
+			$retours=RetourClient::where('Date_cloture','0000-00-00')
+			->orWhere('Date_cloture','')
+			//->limit(20)
+			->orderBy('id','desc')->get();
+
+			$taches=Tache::where('DateTache','like',date('Y-m-d').'%' )->orderBy('heure_debut','asc')->get();
+			$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
+
+			$total_clients_1= CompteClient::where('etat_id',2)->where('agence_ident',40)->count(); //Paris
+			$total1 = DB::select($query, [40]);
+			$total_1=$total1[0]->total;
+			$total_clients_2= CompteClient::where('etat_id',2)->where('agence_ident',42)->count(); // Lyon
+			$total2 = DB::select($query, [42]);
+			$total_2=$total2[0]->total;
+			$total_clients_3= CompteClient::where('etat_id',2)->where('agence_ident',43)->count(); //Marseille
+			$total3 = DB::select($query, [43]);
+			$total_3=$total3[0]->total;
+			$total_clients_4= CompteClient::where('etat_id',2)->where('agence_ident',10)->count(); //AUBAGNE
+			$total4 = DB::select($query, [10]);
+			$total_4=$total4[0]->total;
+			$total_clients_5= CompteClient::where('etat_id',2)->where('agence_ident',200)->count(); //
+			$total5 = DB::select($query, [200]);
+			$total_5=$total5[0]->total;
+			$total_clients_6= CompteClient::where('etat_id',2)->where('agence_ident',100)->count(); //
+			$total6 = DB::select($query, [100]);
+			$total_6=$total6[0]->total;
+			$total_clients_7= CompteClient::where('etat_id',2)->where('agence_ident',201)->count(); //
+			$total7 = DB::select($query, [201]);
+			$total_7=$total7[0]->total;
+			$total_clients_8= CompteClient::where('etat_id',2)->where('agence_ident',202)->count(); //
+			$total8 = DB::select($query, [202]);
+			$total_8=$total8[0]->total;
+			$total_clients_9= CompteClient::where('etat_id',2)->where('agence_ident',203)->count(); //
+			$total9 = DB::select($query, [203]);
+			$total_9=$total9[0]->total;
+			return view('adminhome',compact('retours','rendezvous','taches',
+			'total_clients_1','total_clients_2','total_clients_3','total_clients_4','total_clients_5','total_clients_6','total_clients_7','total_clients_8','total_clients_9',
+			'total_1','total_2','total_3','total_4','total_5','total_6','total_7','total_8','total_9'));
+
 		} else {
 			$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
 			->orWhere('user_id',auth()->user()->id)

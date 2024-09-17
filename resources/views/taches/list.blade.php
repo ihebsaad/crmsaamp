@@ -23,9 +23,9 @@
 
     .task-details {
         margin-top: 5px;
-        margin-left:15px;
-        padding-left:20px;
-        border-left:2px solid grey;
+        margin-left: 15px;
+        padding-left: 20px;
+        border-left: 2px solid grey;
     }
 
     .task-actions {
@@ -49,6 +49,25 @@
             </div>
 
             <div class="card-body" style="min-height:500px">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label for="agence" class="mr-2">Agence:</label>
+                        <select class="  form-control" id="agence" onchange="filter()" style="width:250px">
+                            <option value="agence">Tous</option>
+                            @foreach ($agences as $agence)
+                            <option @selected(auth()->user()->agence_ident==$agence->agence_ident) value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        @if( request()->is('mestaches'))
+                        <a href="{{route('taches.index')}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-tasks"></i> Activités de l'agence</a>
+                        @else
+                        <a href="{{route('mestaches')}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-tasks"></i> Mes Activités</a>
+                        @endif
+                    </div>
+                </div>
                 <div class="row">
                     @if(isset($client))
                     <div class="col-sm-12">
@@ -83,18 +102,26 @@
                         @endforeach
                     </tbody>
                 </table>
--->
 
-                @php
+
+                @php /*
                 $groupedTasks = $taches->groupBy(function($tache) {
                 return \Carbon\Carbon::parse($tache->DateTache)->translatedFormat('F Y');
+                }); */
+                @endphp
+-->
+                @php
+                $groupedTasks = $taches->sortByDesc(function($tache) {
+                    return \Carbon\Carbon::parse($tache->DateTache)->format('Y-m-d') . ' ' . $tache->heure_debut; // Sort by DateTache and heure_debut
+                })->groupBy(function($tache) {
+                    return \Carbon\Carbon::parse($tache->DateTache)->translatedFormat('F Y'); // Group by 'Month Year'
                 });
                 @endphp
 
-                <div class="accordion" id="tasksAccordion">
+                <div class="accordion" id="tasksAccordion" style="border-bottom:1px solid lightgray">
 
                     @if(count($taches)==0)
-                        <h2 class="text-center mt-5">Vous n’avez encore pris aucun contact</h2>
+                    <h2 class="text-center mt-5">Vous n’avez encore pris aucun contact</h2>
                     @else
 
                     @foreach($groupedTasks as $month => $tasks)
@@ -113,13 +140,14 @@
                                 <ul class="list-group">
                                     @foreach($tasks as $task)
                                     @php
+                                    $client=\App\Models\CompteClient::where('id',$task->ID_Compte)->first();
                                     $color='';
                                     switch ( $task->Status ) {
                                     case 'Not Started':
                                     $color = '#82e2e8';$statut='Pas commencée';
                                     break;
                                     case 'Waiting on someone e':
-                                    $color = '#ea922b';$statut='En attente  de quelqu\'un';
+                                    $color = '#ea922b';$statut='En attente de quelqu\'un';
                                     break;
                                     case 'In Progress':
                                     $color = '#5f9fff';$statut='En cours';
@@ -168,25 +196,25 @@
 
 
                                     default:
-                                    $class = '';
+                                    $icon = 'img/task.png';
                                     }
                                     @endphp
-                                    <li class="list-group-item">
+                                    <li class="list-group-item agence {{ $task->Agence }}">
                                         <div class="task-header">
-                                            <span class="task-title" title="{{$task->Type}}"><img  src="{{  URL::asset($icon) }}"  width="25"/> {{ $task->Subject }}</span>
-                                            <span class="task-date">{{ \Carbon\Carbon::parse($task->DateTache)->translatedFormat(' d M') }}</span>
+                                            <span class="task-title" title="{{$task->Type}}"><img src="{{  URL::asset($icon) }}" width="25" /> {{ $task->Subject }}</span>
+                                            <span class="task-date">{{ \Carbon\Carbon::parse($task->DateTache)->translatedFormat(' d M') }} {{$task->heure_debut}}</span>
                                         </div>
                                         <div class="task-details">
-                                            @if($task->Nom_de_compte !='')<span><i class="fas fa-user-circle"></i> {{ $task->Nom_de_compte }}</span> <br>@endif
+                                            <span style="color:black"><i class="fas fa-user-circle"></i>@if($task->Nom_de_compte !='') {{ $task->Nom_de_compte }} @else {{$client->Nom ?? ''}}  @endif - Client ID : {{ $task->mycl_id }} </span><br>
                                             <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $statut }}</span>
                                             <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $priority }}</span>
 
                                             {{ $task->Description }}<br>
-                                            {{ $task->Agence }}
+                                            <i>{{ $task->Agence }}</i>
 
                                         </div>
                                         <div class="task-actions">
-                                                <!-- Place for any task actions like edit, delete -->
+                                            <!-- Place for any task actions like edit, delete -->
                                             <a href="{{ route('taches.show',['id'=>$task->id]) }}" class="btn btn-primary btn-sm "><i class="fa fa-edit"></i></a>
                                         </div>
                                     </li>
@@ -242,6 +270,22 @@
 
 
 <script type="text/javascript">
+    filter();
+
+    function filter() {
+        //var classname = $(elm).is(":checked") ? 1 : 0;
+        var classname = $('#agence').val();
+        toggle('agence', 'none');
+        toggle(classname, 'block');
+    }
+
+    function toggle(className, displayState) {
+        var elements = document.getElementsByClassName(className);
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.display = displayState;
+        }
+    }
+
     $(document).ready(function() {
 
 

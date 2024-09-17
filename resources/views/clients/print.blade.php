@@ -6,6 +6,7 @@
     <thead>
         <tr>
             <th>Nom</th>
+            <th>Adresse</th>
             <th>Ville</th>
             <th>Agence</th>
             <th>Type</th>
@@ -29,6 +30,7 @@
         @endphp
         <tr>
             <td><a href="{{route('fiche',['id'=>$client->id])}}">{{$client->Nom}}</a></td>
+            <td>{{$client->adresse1}}</td>
             <td>{{$client->ville}}</td>
             <td>{{$agenceLib}}</td>
             <td style="color:{{$color}}">{{$type_c}}</td>

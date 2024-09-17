@@ -67,6 +67,7 @@
                                     <option   @selected($tache->Type=="Appel téléphonique") value="Appel téléphonique">Appel téléphonique</option>
                                     <option   @selected($tache->Type=="Avoir") value="Avoir">Avoir</option>
                                     <option   @selected($tache->Type=="Bordereau achat") value="Bordereau achat">Bordereau achat</option>
+                                    <option   @selected($tache->Type=="Bon de réception") value="Bon de réception">Bon de réception</option>
                                     <option   @selected($tache->Type=="Call") value="Call">Call</option>
                                     <option   @selected($tache->Type=="Compte poids") value="Compte poids">Compte poids</option>
                                     <option   @selected($tache->Type=="Création compte AS400") value="Création compte AS400">Création compte AS400</option>
@@ -75,9 +76,10 @@
                                     <option   @selected($tache->Type=="Envoyer email") value="Envoyer email">Envoyer email</option>
                                     <option   @selected($tache->Type=="Envoyer courrier") value="Envoyer courrier">Envoyer courrier</option>
                                     <option   @selected($tache->Type=="Facture") value="Facture">Facture</option>
+                                    <option   @selected($tache->Type=="Fonte") value="Fonte">Fonte</option>
                                     <option   @selected($tache->Type=="Offre de prix") value="Offre de prix">Offre de prix</option>
                                     <option   @selected($tache->Type=="Ordre de Bourse sur le Fixin") value="Ordre de Bourse sur le Fixing">Ordre de Bourse sur le Fixing</option>
-                                    <option   @selected($tache->Type=="Prise de command") value="Prise de commande">Prise de commande</option>
+                                    <option   @selected($tache->Type=="Prise de commande") value="Prise de commande">Prise de commande</option>
                                     <option   @selected($tache->Type=="Remise de commande") value="Remise de commande">Remise de commande</option>
                                     <option   @selected($tache->Type=="Suivi client") value="Suivi client">Suivi client</option>
                                     <option   @selected($tache->Type=="Vérification comptable interne") value="Vérification comptable interne">Vérification comptable interne</option>
@@ -111,9 +113,16 @@
                                 </select><br><br>
                             </div>
                         </div>
+
                         <div class="col-md-2">
-                            <label for="Status">Agence:</label>
-                            <h6 style="color:black">{{$tache->Agence}}</h6>
+                            <div class="">
+                                <label for="Agence">Agence:</label>
+                                <select    id="Agence" class="form-control" name="Agence" required  >
+                                    @foreach($agences as $agence)
+                                        <option @selected($tache->Agence==$agence->agence_lib) value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                                    @endforeach
+                                </select><br><br>
+                            </div>
                         </div>
                     </div>
 
@@ -144,6 +153,7 @@
         </div>
 
     </div>
+</div>
     <script>
         $(function () {
 

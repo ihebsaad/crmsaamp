@@ -299,7 +299,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                     break;
 
                                     default:
-                                    $class = '';$priority='Normale';
+                                    $class = 'primary';$priority='Normale';
                                     }
 
                                     $icon='';
@@ -490,8 +490,6 @@ if (is_array($commandes) || is_object($commandes)) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
-                @if($client->Client_Prospect=='CLIENT SAAMP')
-                @endif
 
                 @if($client->cl_ident >0)
                 <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
@@ -628,10 +626,11 @@ if (is_array($commandes) || is_object($commandes)) {
                             <tr>
                                 <th>Email</th>
                                 <th>Nom</th>
-                                <!--<th>Tél</th>-->
+                                <!--<th>Tél</th
                                 @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                     <th>Supp</th>
                                 @endif
+                                >-->
                             </tr>
                         </thead>
                         <tbody>
@@ -639,7 +638,7 @@ if (is_array($commandes) || is_object($commandes)) {
                             <tr>
                                 <td><a href="{{route('contacts.show',['id'=>$contact->id])}}">{{$contact->email}}</td>
                                 <td><a href="{{route('contacts.show',['id'=>$contact->id])}}">{{$contact->Prenom}} {{$contact->Nom}}</a></td>
-                                <!--<td>{{$contact->Phone}}</td>-->
+                                <!--<td>{{$contact->Phone}}</td>
                                     @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                         <td>
                                             <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('contacts.destroy', $contact->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
@@ -647,6 +646,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                             </a>
                                         </td>
                                     @endif
+                                -->
                             </tr>
                             @endforeach
                         </tbody>

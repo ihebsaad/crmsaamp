@@ -41,11 +41,18 @@ if (Auth::check()) {
   <hr class="sidebar-divider">
 
   <li class="nav-item   ">
-
-   <a class="nav-link" href="{{route('dashboard')}}">
+  @if($user_type=='admin')
+   <a class="nav-link" href="{{route('adminhome')}}">
       <i class="fas fa-tachometer-alt"></i>
       <span> Mon tableau de bord </span>
     </a>
+  @else
+  <a class="nav-link" href="{{route('dashboard')}}">
+      <i class="fas fa-tachometer-alt"></i>
+      <span> Mon tableau de bord </span>
+    </a>
+  @endif
+
 
     <a class="nav-link" href="{{route('home')}}">
       <i class="fas fa-home" ></i>
@@ -59,7 +66,7 @@ if (Auth::check()) {
     </a>
       <!--<hr class="sidebar-divider">-->
 
-    <a class="nav-link" href="{{route('mestaches')}}" >
+    <a class="nav-link" href="{{route('taches.index')}}" >
       <i class="fas fa-tasks" ></i>
       <span> Activités de l'Agence  </span>
     </a>

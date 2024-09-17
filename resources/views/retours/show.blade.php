@@ -54,13 +54,19 @@
                                 <h6>{{$retour->Motif_retour}}</h6>
                             </div>
                         </div>
-
+                        @if(auth()->user()->user_type=='admin')
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Responsable_de_resolution">Responsable de résolution:</label>
-                                <h6>{{$retour->Responsable_de_resolution}}</h6>
+                                <label for="Responsable_de_resolution">Agence assignée:</label>
+                                <select    id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution" required  >
+                                    <option></option>
+                                    @foreach($agences as $agence)
+                                        <option @selected($retour->Responsable_de_resolution==$agence->agence_lib) value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                                    @endforeach
+                                </select><br><br>
                             </div>
                         </div>
+                        @endif
                     </div>
 
                     <div class="row pt-1">
@@ -126,8 +132,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mt-2">
-                                <h4>Contact</h4>
                                 @if(isset($contact))
+                                <h4>Contact</h4>
                                 <table class="table">
                                 <tr><td colspan="2"><i class="fas fa-user mr-2"></i>  {{$contact->Prenom}} {{$contact->Nom}} </td></tr>
                                 <tr><td colspan="2"><i class="fas fa-briefcase  mr-2"></i> {{$contact->Title}}</td></tr>
@@ -144,7 +150,7 @@
                     <div class="row pt-1">
                         <div class="col-md-12">
                             <button type="submit" class="btn-primary btn float-right">Modifier</button>
-                            @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                            @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com')
                                 <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                     <span class="fa fa-fw fa-trash-alt"></span> Supprimer
                                 </a>

@@ -42,11 +42,14 @@ class RetoursController extends Controller
 		$client=CompteClient::find($id);
 		$retour=RetourClient::where('cl_id',$client->cl_ident)->first();
 		$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
-		return view('retours.create',compact('retour','client','contacts'));
+		$agences = DB::table('agence')->get();
+
+		return view('retours.create',compact('retour','client','contacts','agences'));
 	}
 
 	public function show($id)
 	{
+		$agences = DB::table('agence')->get();
 		$retour=RetourClient::find($id);
 		$class='';
 		switch ( $retour->Type_retour ) {
@@ -68,7 +71,7 @@ class RetoursController extends Controller
 			$contact=Contact::where('id',$retour->mycontact_id)->first();
 
 
-		return view('retours.show',compact('retour','contact','class'));
+		return view('retours.show',compact('retour','contact','class','agences'));
 	}
 
 
@@ -90,7 +93,6 @@ class RetoursController extends Controller
     {
         $request->validate([
             'Type_retour' => 'required',
-
         ]);
 
         $retour=RetourClient::create($request->all());
@@ -109,7 +111,7 @@ class RetoursController extends Controller
 		<b>Client:</b> '. $retour->cl_id.'  -  '. $retour->Nom_du_compte .'<br>
 		<b>Type de retour:</b> '. $retour->Type_retour.'<br>
 		<b>Motif de retour:</b> '. $retour->Motif_retour.'<br>
-		<b>Responsable de résolution:</b> '. $retour->Responsable_de_resolution.'<br>
+		<b>Agence assignée:</b> '. $retour->Responsable_de_resolution.'<br>
 		<b>Division:</b> '. $retour->Division.'<br>
 		<b>Details des causes:</b> '. $retour->Details_des_causes.'<br><br>
 
@@ -117,15 +119,16 @@ class RetoursController extends Controller
 		<i><b>CRM SAAMP</b></i>' ;
 
 
-		SendMail::send('ihebsaad@gmail.com', $sujet, $contenu);
 		SendMail::send('remy.reverbel@saamp.com', $sujet, $contenu);
 		SendMail::send('reyad.bouzeboudja@saamp.com', $sujet, $contenu);
+
+		SendMail::send('said.el-marouani@saamp.com', $sujet, $contenu);
 
 		// email qualité
 		SendMail::send('directeur.qualite@saamp.com', $sujet, $contenu);
 
 		// email agence
-		$agence= DB::table('agence')->where('agence_lib',trim($retour->Depot_concerne))->first();
+		$agence= DB::table('agence')->where('agence_lib',trim($retour->Responsable_de_resolution))->first();
 		if(isset($agence))
 			SendMail::send($agence->mail, $sujet, $contenu);
 

@@ -120,15 +120,25 @@ class ClientsController extends Controller
 		if(isset($agence))
 			$agence_name=$agence->agence_lib;
 
-		$stats=null;
-		try{
+		$stats=$commandes=null;
 
-			DB::select("SET @p0=$client->cl_ident ;");
-			DB::select("SET @p1=1  ;");
-			$stats=  DB::select('call `sp_stats_client`(@p0,@p1); ');
+		if($client->cl_ident!=''){
+			$taches=Tache::where('mycl_id',$client->cl_ident)->get();
 
-		}catch(\Exception $e){
-			\Log::error($e->getMessage());
+			try{
+
+				DB::select("SET @p0=$client->cl_ident ;");
+				DB::select("SET @p1=1  ;");
+				$stats=  DB::select('call `sp_stats_client`(@p0,@p1); ');
+
+
+				DB::select("SET @p0='$client->cl_ident'  ;");
+				$commandes =  DB::select(" CALL `sp_accueil_liste_commandes`(@p0); ");
+
+			}catch(\Exception $e){
+				\Log::error($e->getMessage());
+			}
+
 		}
 		/*
 		if($client->Id_Salesforce!='')
@@ -138,17 +148,15 @@ class ClientsController extends Controller
 		*/
 
 		//$taches=Tache::where('ID_Compte',$client->id)->get();
-		$taches=Tache::where('mycl_id',$client->cl_ident)->get();
 
 
 
 		//$taches=Tache::where('mycl_id',$client->cl_ident)->get();
 
 		//$appels=array();
-		$callData=PhoneService::data($client->token_phone);
+		//$callData=PhoneService::data($client->token_phone);
 
-		DB::select("SET @p0='$client->cl_ident'  ;");
-		$commandes =  DB::select(" CALL `sp_accueil_liste_commandes`(@p0); ");
+
 /*
 		$tous_appels=$callData['incoming'] ?? array();
 		$phone=$client->phone;

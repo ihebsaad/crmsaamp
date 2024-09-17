@@ -74,8 +74,13 @@
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Responsable_de_resolution">Responsable de résolution:</label>
-                                <input type="text" id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution"  value="{{old('Responsable_de_resolution')}}"><br><br>
+                                <label for="Responsable_de_resolution">Agence assignée:</label>
+                                <select    id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution" required  >
+                                    <option></option>
+                                    @foreach($agences as $agence)
+                                        <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                                    @endforeach
+                                </select><br><br>
                             </div>
                         </div>
 
@@ -168,6 +173,7 @@
                                 <textarea  id="Une_reponse_a_ete_apportee_au_client" class="form-control" name="Une_reponse_a_ete_apportee_au_client"  style="min-height:150px">{{old('Une_reponse_a_ete_apportee_au_client')}}</textarea><br><br>
                             </div>
                         </div>
+                        <!--
                         <div class="col-md-6">
                             <div class="">
                                 <label for="ID_Contact">Contact:</label>
@@ -178,6 +184,7 @@
                                 </select>
                             </div>
                         </div>
+                        -->
                     </div>
 
                     <div class="row pt-1">

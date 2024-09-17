@@ -36,28 +36,39 @@ class TachesController extends Controller
 	{
 		//$taches=Tache::where('id','<>',null)->limit(1000)->orderBy('id','desc')->get();
 
-
+/*
 		$taches=Tache::where(function ($query) {
 			$query->where('type', 'Appel téléphonique')
 				->orWhere('type', 'Envoyer email')
 				->orWhere('type', 'Envoyer courrier');
 		})->where('id','<>',null)
 		->limit(1000)->orderBy('id','desc')->get();
-		return view('taches.list',compact('taches'));
+		*/
+
+		$taches=Tache::limit(1000)->orderBy('id','desc')->get();
+
+		$agences = DB::table('agence')->get();
+
+		return view('taches.list',compact('taches','agences'));
 	}
 
 	public function mestaches()
 	{
 		$taches=Tache::where('user_id',auth()->user()->id)
+		->orderBy('id','desc')
 		->get();
-		return view('taches.list',compact('taches'));
+		$agences = DB::table('agence')->get();
+
+		return view('taches.list',compact('taches','agences'));
 	}
 
 
 	public function create($id)
 	{
 		$client=CompteClient::find($id);
-		return view('taches.create',compact('client'));
+		$agences = DB::table('agence')->get();
+
+		return view('taches.create',compact('client','agences'));
 	}
 
 	public function client_list($id)
@@ -71,7 +82,9 @@ class TachesController extends Controller
 	{
 		$tache=Tache::find($id);
 		$client=CompteClient::find($tache->ID_Compte);
-		return view('taches.show',compact('tache','client'));
+		$agences = DB::table('agence')->get();
+
+		return view('taches.show',compact('tache','client','agences'));
 	}
 
 
@@ -100,13 +113,13 @@ class TachesController extends Controller
 
         $tache=Tache::create($request->all());
 
-
+/*
 		$client=CompteClient::find($tache->ID_Compte);
 		$agence_id=$client->agence_ident;
 		$agence_name=Agence::where('agence_ident',$agence_id)->first()->agence_lib ?? '';
 		$tache->Nom_de_compte=$client->Nom;
 		$tache->Agence=$agence_name;
-
+*/
 
 		$tache->save();
 

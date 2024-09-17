@@ -25,6 +25,8 @@
                 <form action="{{ route('taches.store') }}" method="post">
                     @csrf
                     <input type="hidden" name="ID_Compte" value="{{$client->id}}" >
+                    <input type="hidden" name="ID_Compte" value="{{$client->id}}" >
+
                     <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
                     <div class="row pt-1">
                         <div class="col-md-4">
@@ -64,10 +66,9 @@
                                     <option></option>
                                     <option  value="Acompte / Demande de paiement">Acompte / Demande de paiement</option>
                                     <option  value="Appel téléphonique">Appel téléphonique</option>
-                                    <option  value="Envoyer email">Envoyer email</option>
-                                    <option  value="Envoyer courrier">Envoyer courrier</option>
                                     <option  value="Avoir">Avoir</option>
                                     <option  value="Bordereau achat">Bordereau achat</option>
+                                    <option  value="Bon de réception">Bon de réception</option>
                                     <option  value="Call">Call</option>
                                     <option  value="Compte poids">Compte poids</option>
                                     <option  value="Création compte AS400">Création compte AS400</option>
@@ -76,6 +77,7 @@
                                     <option  value="Envoyer email">Envoyer email</option>
                                     <option  value="Envoyer courrier">Envoyer courrier</option>
                                     <option  value="Facture">Facture</option>
+                                    <option  value="Fonte">Fonte</option>
                                     <option  value="Offre de prix">Offre de prix</option>
                                     <option  value="Ordre de Bourse sur le Fixing">Ordre de Bourse sur le Fixing</option>
                                     <option  value="Prise de commande">Prise de commande</option>
@@ -109,6 +111,18 @@
                                     <option  value="In Progress">En cours</option>
                                     <option  value="Deferred">Reportée</option>
                                     <option  value="Completed">Terminée</option>
+                                </select><br><br>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="Agence">Agence:</label>
+                                <select    id="Agence" class="form-control" name="Agence" required  >
+                                    <option></option>
+                                    @foreach($agences as $agence)
+                                        <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                                    @endforeach
                                 </select><br><br>
                             </div>
                         </div>

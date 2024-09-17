@@ -113,7 +113,7 @@ table td:first-child{
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">Métier</th>
+                                <th class="">Client</th>
                                 <th class="text-center">{{ date('Y'); }}</th>
                                 <th class=""></th>
                                 <th class="text-center">{{ date('Y')-1; }}</th>
@@ -185,7 +185,7 @@ table td:first-child{
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">Métier</th>
+                                <th class="">Client</th>
                                 <th class="text-center">{{ date('Y'); }}</th>
                                 <th class=""></th>
                                 <th class="text-center">{{ date('Y')-1; }}</th>

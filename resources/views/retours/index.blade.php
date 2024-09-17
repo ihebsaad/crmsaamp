@@ -33,6 +33,7 @@
                             <th>Date</th>
                             <th>Contact</th>
                             <th>Motif</th>
+                            <th>Agence</th>
                             <th>Date de clôture</th>
                             <th>Type</th>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
@@ -65,6 +66,7 @@
                             <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
                             <td>{{$retour->Nom_du_contact}}</td>
                             <td>{{$retour->Motif_retour}}</td>
+                            <td>{{$retour->Responsable_de_resolution}}</td>
                             <td> @if($retour->Date_cloture!='0000-00-00' && $retour->Date_cloture!='') {{date('d/m/Y', strtotime($retour->Date_cloture))}} @endif </td>
                             <td style="color:white" class="bg-{{$class}}">{{$retour->Type_retour}}</td>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')

@@ -98,7 +98,7 @@
                         </div>
 
                     </div>
-
+<!--
                     <div class="row pt-1">
                         <div class="col-md-12">
                             @if($client->etat_id==1 )
@@ -111,7 +111,7 @@
                             @endif
                         </div>
                     </div>
-
+-->
 
                 </form>
 

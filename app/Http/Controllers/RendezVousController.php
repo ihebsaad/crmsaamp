@@ -60,9 +60,17 @@ class RendezVousController extends Controller
 	public function show($id)
 	{
 		$rendezvous=RendezVous::find($id);
-		$client=CompteClient::find($rendezvous->AccountId);
 
-		return view('rendezvous.show',compact('rendezvous','client'));
+		$client=CompteClient::where('id',$rendezvous->AccountId)->first();
+		$adresse=$client->adresse1.' - '.$client->zip;
+
+		if($client->id==1 && $id!=1){
+			$client=DB::table('CRM_CompteCLient')->where('Id_Salesforce',$rendezvous->AccountId)->first();
+			$adresse=$client->Rue.' - '.$client->postalCode;
+		}
+
+
+		return view('rendezvous.show',compact('rendezvous','client','adresse'));
 	}
 
 	public function print($id)
