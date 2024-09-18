@@ -71,7 +71,7 @@
                             </div>
 
                         </div>
-
+                        <!--
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Responsable_de_resolution">Agence assignée:</label>
@@ -82,7 +82,7 @@
                                     @endforeach
                                 </select><br><br>
                             </div>
-                        </div>
+                        </div>-->
 
                         <div class="col-md-3">
                             <div class="">

@@ -85,6 +85,14 @@ class RetoursController extends Controller
 		$retour = RetourClient::find($id);
 		$retour->update($request->all());
 
+		// email agence
+		$agence= DB::table('agence')->where('agence_lib',trim($retour->Responsable_de_resolution))->first();
+		if(isset($agence))
+			self::send_mail($retour,$agence->mail);
+
+		if(isset($agence) && isset($agence->mail2))
+			self::send_mail($retour,$agence->mail2);
+
 		return redirect()->route('retours.show', $id)
 				->with('success', 'Retour modifié');
 	}
@@ -99,26 +107,16 @@ class RetoursController extends Controller
 
 		$contact=Contact::find($retour->mycontact_id);
 
-
 		$retour->Nom_du_contact= $contact->Prenom.' '.$contact->Nom;
 
 		$retour->name='RC-'.sprintf('%05d',$retour->id);
 		$retour->save();
 
-		// envoi de mail
-		$sujet='Réclamation '. $retour->id.' - '.$retour->name;
-		$contenu='Bonjour,<br><br>Réclamation: <a href="https://crm.mysaamp.com/retours/show/'.$retour->id.'" target="_blank">'.$retour->id.'</a> - '.$retour->name.' par '.$retour->Nom_du_contact.'<br><br>
-		<b>Client:</b> '. $retour->cl_id.'  -  '. $retour->Nom_du_compte .'<br>
-		<b>Type de retour:</b> '. $retour->Type_retour.'<br>
-		<b>Motif de retour:</b> '. $retour->Motif_retour.'<br>
-		<b>Agence assignée:</b> '. $retour->Responsable_de_resolution.'<br>
-		<b>Division:</b> '. $retour->Division.'<br>
-		<b>Details des causes:</b> '. $retour->Details_des_causes.'<br><br>
-
-		<i>Cordialement</i><br>
-		<i><b>CRM SAAMP</b></i>' ;
-
-
+		self::send_mail($retour,'remy.reverbel@saamp.com');
+		self::send_mail($retour,'reyad.bouzeboudja@saamp.com');
+		self::send_mail($retour,'said.el-marouani@saamp.com');
+		self::send_mail($retour,'ihebsaad@gmail.com');
+/*
 		SendMail::send('remy.reverbel@saamp.com', $sujet, $contenu);
 		SendMail::send('reyad.bouzeboudja@saamp.com', $sujet, $contenu);
 
@@ -134,13 +132,30 @@ class RetoursController extends Controller
 
 		if(isset($agence) && isset($agence->mail2))
 			SendMail::send($agence->mail2, $sujet, $contenu);
-
+*/
 
 		return redirect()->route('retours.show', $retour->id)
 		->with('success','Retour ajouté');
 	}
 
+	public static function send_mail($retour,$email){
+		// envoi de mail
+		$sujet='Réclamation '. $retour->id.' - '.$retour->name;
+		$contenu='Bonjour,<br><br>Réclamation: <a href="https://crm.mysaamp.com/retours/show/'.$retour->id.'" target="_blank">'.$retour->id.'</a> - '.$retour->name.' par '.$retour->Nom_du_contact.'<br><br>
+		<b>Client:</b> '. $retour->cl_id.'  -  '. $retour->Nom_du_compte .'<br>
+		<b>Type de retour:</b> '. $retour->Type_retour.'<br>
+		<b>Motif de retour:</b> '. $retour->Motif_retour.'<br>
+		<b>Division:</b> '. $retour->Division.'<br>
+		<b>Details des causes:</b> '. $retour->Details_des_causes.'<br><br>
+
+		<i>Cordialement</i><br>
+		<i><b>CRM SAAMP</b></i>' ;
+
+		SendMail::send($email, $sujet, $contenu);
+	}
 /*
+		<b>Agence assignée:</b> '. $retour->Responsable_de_resolution.'<br>
+
 	public function destroy($id)
 	{
 		$retour = RetourClient::find($id);

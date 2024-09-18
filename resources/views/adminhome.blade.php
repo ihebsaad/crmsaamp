@@ -236,7 +236,7 @@
 						<tr style="background-color:#2e3e4e;color:white;" id="">
 							<th>Heure</th>
 							<th>Sujet</th>
-							<th>Client</th>
+							<th>Agence</th>
 							<th>Type</th>
 							<th>Statut</th>
 						</tr>
@@ -246,7 +246,7 @@
 						<tr>
 							<td>{{ $tache->heure_debut }}</td>
 							<td><a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a></td>
-							<td>{{ $tache->Nom_de_compte }}</td>
+							<td>{{ $tache->Agence }}<small>{{$tache->Nom_de_compte}}</small></td>
 							<td>{{ $tache->Type }}</td>
 							<td>{{ $tache->Status }} - {{ $tache->Priority }}</td>
 						</tr>

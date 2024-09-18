@@ -55,7 +55,7 @@ class HomeController extends Controller
 			->get();
 
 			$retours=RetourClient::where('Date_cloture','0000-00-00')
-			->orWhere('Date_cloture','')
+			->orWhere('Date_cloture',null)
 			//->limit(20)
 			->orderBy('id','desc')->get();
 
