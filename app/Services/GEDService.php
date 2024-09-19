@@ -528,12 +528,13 @@ class GEDService
 			$fileType = $_FILES['files']['type'][$key];
 			$filePath = $_FILES['files']['tmp_name'][$key];
 
-			$file = new \CURLFile($filePath, $fileType, $fileName);
-			$postFields = array(
-				'file' => $file,
-				'path' => $Path
-			);
-
+			if ($fileType == 'application/pdf') {
+				$file = new \CURLFile($filePath, $fileType, $fileName);
+				$postFields = array(
+					'file' => $file,
+					'path' => $Path
+				);
+			}
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
 				CURLOPT_URL => 'https://ged.maileva.com/api/document/',

@@ -15,6 +15,21 @@ if (Auth::check()) {
     color:#505050!important;
     padding-left:15px;
   }
+  .hidemobile{
+    display:contents;
+  }
+
+	@media (min-width: 481px) and (max-width: 767px) {
+    .fas{
+      margin-left:-15px!important;
+    }
+  }
+	@media (min-width: 320px) and (max-width: 480px) {
+    .fas{
+      margin-left:-15px!important;
+    }
+  }
+
 </style>
 <!-- Sidebar -->
 <ul class="navbar-nav bg-dark sidebar sidebar-dark  accordion" id="accordionSidebar" style="background-color:#f3f3f3!important">
@@ -44,19 +59,19 @@ if (Auth::check()) {
   @if($user_type=='admin')
    <a class="nav-link" href="{{route('adminhome')}}">
       <i class="fas fa-tachometer-alt"></i>
-      <span> Mon tableau de bord </span>
+      <span><div class="hidemobile">Mon </div>Tableau<div class="hidemobile"> de bord</div></span>
     </a>
   @else
   <a class="nav-link" href="{{route('dashboard')}}">
       <i class="fas fa-tachometer-alt"></i>
-      <span> Mon tableau de bord </span>
+      <span><div class="hidemobile"> Mon </div>Tableau<div class="hidemobile"> de bord</div></span>
     </a>
   @endif
 
 
     <a class="nav-link" href="{{route('home')}}">
       <i class="fas fa-home" ></i>
-      <span> Mes statistiques </span>
+      <span><div class="hidemobile"> Mes </div>Statistiques</span>
     </a>
 
 
@@ -68,7 +83,7 @@ if (Auth::check()) {
 
     <a class="nav-link" href="{{route('taches.index')}}" >
       <i class="fas fa-tasks" ></i>
-      <span> Activités de l'Agence  </span>
+      <span> Activités<div class="hidemobile"> de l'Agence</div></span>
     </a>
     <!--<hr class="sidebar-divider">
     <a class="nav-link"  href="{{route('offres.index')}}">
@@ -84,11 +99,11 @@ if (Auth::check()) {
     @endif
     <a class="nav-link" href="{{route('agenda')}}" >
     <i class="fas fa-calendar" ></i>
-      <span> Mon Agenda </span>
+      <span><div class="hidemobile"> Mon </div>Agenda</span>
     </a>
     <a class="nav-link" href="{{route('help')}}" >
     <i class="fas fa-book" ></i>
-      <span> Guide d'utilisation </span>
+      <span> Guide <div class="hidemobile">d'utilisation</div></span>
     </a>
   <!--
     <hr class="sidebar-divider">

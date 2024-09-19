@@ -25,6 +25,8 @@
             <div class="card-body" style="min-height:500px">
 
                 <form action="{{ route('retours.store') }}" method="post">
+                <input type="hidden" name="Nom_du_compte" value="{{$client->Nom}}" >
+
                     @csrf
                     <div class="row pt-1">
                         <!--

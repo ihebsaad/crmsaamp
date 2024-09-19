@@ -83,14 +83,17 @@ class RetoursController extends Controller
          ]);
 */
 		$retour = RetourClient::find($id);
+		$agence_lib=$retour->Responsable_de_resolution;
 		$retour->update($request->all());
 
 		// email agence
 		$agence= DB::table('agence')->where('agence_lib',trim($retour->Responsable_de_resolution))->first();
+		/*
 		if(isset($agence))
 			self::send_mail($retour,$agence->mail);
+		*/
 
-		if(isset($agence) && isset($agence->mail2))
+		if(isset($agence) && isset($agence->mail2) && $agence_lib != $request->get('Responsable_de_resolution') )
 			self::send_mail($retour,$agence->mail2);
 
 		return redirect()->route('retours.show', $id)
@@ -107,7 +110,9 @@ class RetoursController extends Controller
 
 		$contact=Contact::find($retour->mycontact_id);
 
-		$retour->Nom_du_contact= $contact->Prenom.' '.$contact->Nom;
+		$prenom = $contact->Prenom ?? '';
+		$nom = $contact->Nom ?? '';
+		$retour->Nom_du_contact= $prenom  .' '.$nom;
 
 		$retour->name='RC-'.sprintf('%05d',$retour->id);
 		$retour->save();

@@ -106,7 +106,6 @@
                                 <select    id="Status" class="form-control" name="Status"   >
                                     <option></option>
                                     <option  @selected($tache->Status=="Not Started") value="Not Started">Pas commencée</option>
-                                    <option  @selected($tache->Status=="Waiting on someone e") value="Waiting on someone e">En attente de quelqu'un</option>
                                     <option  @selected($tache->Status=="In Progress") value="In Progress">En cours</option>
                                     <option  @selected($tache->Status=="Deferred") value="Deferred">Reportée</option>
                                     <option  @selected($tache->Status=="Completed") value="Completed">Terminée</option>

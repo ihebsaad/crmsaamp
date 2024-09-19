@@ -25,7 +25,7 @@
                 <form action="{{ route('taches.store') }}" method="post">
                     @csrf
                     <input type="hidden" name="ID_Compte" value="{{$client->id}}" >
-                    <input type="hidden" name="ID_Compte" value="{{$client->id}}" >
+                    <input type="hidden" name="Nom_de_compte" value="{{$client->Nom}}" >
 
                     <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
                     <div class="row pt-1">
@@ -107,7 +107,6 @@
                                 <select    id="Status" class="form-control" name="Status"   >
                                     <option></option>
                                     <option  value="Not Started">Pas commencée</option>
-                                    <option  value="Waiting on someone e">En attente de quelqu'un</option>
                                     <option  value="In Progress">En cours</option>
                                     <option  value="Deferred">Reportée</option>
                                     <option  value="Completed">Terminée</option>

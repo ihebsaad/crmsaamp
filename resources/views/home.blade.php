@@ -1,37 +1,42 @@
 @extends('layouts.back')
 <style>
-table td:not(.text){
-    text-align:right;
-}
-.mn5{
-    min-height:500px!important;
-}
+    table td:not(.text) {
+        text-align: right;
+    }
 
-.table-container {
-    position: relative;
-    height: 400px; /* Ajustez cette hauteur selon vos besoins */
-    overflow-y: auto;
-}
+    .mn5 {
+        min-height: 500px !important;
+    }
 
-.table-container thead th {
-    position: sticky;
-    top: 0;
-    background-color: #e6d685; /* Couleur de fond pour l'en-tête */
-    z-index: 10; /* S'assurer que l'en-tête reste au-dessus des autres éléments */
-}
-#stats tr:first-child,
-#stats2 tr:first-child,
-#stats3 tr:first-child,
-#stats4 tr:first-child,
-#stats5 tr:first-child{
-    background-color: cornsilk;
-}
-table td:first-child{
-    font-weight:bold;
-}
+    .table-container {
+        position: relative;
+        height: 400px;
+        /* Ajustez cette hauteur selon vos besoins */
+        overflow-y: auto;
+    }
 
+    .table-container thead th {
+        position: sticky;
+        top: 0;
+        background-color: #e6d685;
+        /* Couleur de fond pour l'en-tête */
+        z-index: 10;
+        /* S'assurer que l'en-tête reste au-dessus des autres éléments */
+    }
 
-/* Mobiles
+    #stats tr:first-child,
+    #stats2 tr:first-child,
+    #stats3 tr:first-child,
+    #stats4 tr:first-child,
+    #stats5 tr:first-child {
+        background-color: cornsilk;
+    }
+
+    table td:first-child {
+        font-weight: bold;
+    }
+
+    /* Mobiles
 @media (max-width: 767px) {
     .table td{
         font-size:9px!important;
@@ -45,28 +50,28 @@ table td:first-child{
 
 <div class="row">
 
-<input type="hidden" id="user_id" value="{{ auth()->user()->id }}" />
+    <input type="hidden" id="user_id" value="{{ auth()->user()->id }}" />
 
     @if($commercial)
-        <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" />
+    <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" />
     @else
-        @if( auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv' )
-            <div class="col-lg-4">
-                <span class=" mr-2">Commercial:</span>
-                <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">
-                    @foreach ($representants as $rp)
-                    <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
-                    @endforeach
-                </select>
-            </div>
+    @if( auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv' )
+    <div class="col-lg-4">
+        <span class=" mr-2">Commercial:</span>
+        <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">
+            @foreach ($representants as $rp)
+            <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
+            @endforeach
+        </select>
+    </div>
 
-        @else
-            <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" >
-        @endif
+    @else
+    <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}">
+    @endif
     @endif
 
     <div class="col-lg-4 mt-4">
-        <input id="mois" type="checkbox" value="1" onchange="update_stats();" >
+        <input id="mois" type="checkbox" value="1" onchange="update_stats();">
         <label class="mt-2" for="mois">Afficher les années pleines</label>
         </input>
     </div>
@@ -138,7 +143,7 @@ table td:first-child{
         <span class=" mr-2">Agence:</span><select class="form-control mb-20" id="agence" onchange="update_stats();" style="max-width:300px">
             <option></option>
             @foreach ($agences as $agence)
-                <option @selected(auth()->user()->agence_ident==$agence->agence_ident) value="{{$agence->agence_ident}}">{{$agence->agence_lib}}    |  <small>{{$agence->adresse1}}</small></option>
+            <option @selected(auth()->user()->agence_ident==$agence->agence_ident) value="{{$agence->agence_ident}}">{{$agence->agence_lib}}    |  <small>{{$agence->adresse1}}</small></option>
             @endforeach
         </select>
     </div>
@@ -241,13 +246,13 @@ table td:first-child{
         var agence = $('#agence').val();
         var user = ($('#user_id').val());
         var representant = ($('#commercial').find(':selected').data('id'));
-        if (typeof representant === 'undefined'){
+        if (typeof representant === 'undefined') {
             representant = $('#commercial').val();
         }
         var mois = 1;
-		    if ($('#mois').is(':checked')){
-                mois = 0;
-            };
+        if ($('#mois').is(':checked')) {
+            mois = 0;
+        };
 
         $.ajax({
             url: "{{ route('stats_commercial') }}",
@@ -261,8 +266,17 @@ table td:first-child{
             success: function(data) {
                 console.log(data);
                 var html = '';
+                var class1 = class2 = class3 = '';
                 data.forEach(item => {
-                    html += '<tr><td class="text">' + item.metier + '</td><td>' + item.N + '</td><td>' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td>' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td>' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+
+                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
+                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
+                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
+                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+
+                    html += '<tr><td class="text">' + item.metier + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
                 });
                 $("#stats").html(html);
             }
@@ -281,8 +295,16 @@ table td:first-child{
             success: function(data) {
                 console.log(data);
                 var html = '';
+                var class1 = class2 = class3 = '';
                 data.forEach(item => {
-                    html += '<tr><td class="text">' + item.nom + '</td><td>' + item.N + '</td><td>' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td>' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td>' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
+                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
+                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
+                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/'+item.id : '#'
+                    html += '<tr><td class="text"><a href='+link+'>' + item.nom + '</a></td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
                 });
                 $("#stats2").html(html);
             }
@@ -300,8 +322,15 @@ table td:first-child{
             success: function(data) {
                 console.log(data);
                 var html = '';
+                var class1 = class2 = class3 = '';
                 data.forEach(item => {
-                    html += '<tr><td class="text">' + item.metier + '</td><td>' + item.N + '</td><td>' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td>' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td>' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
+                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
+                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
+                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+                    html += '<tr><td class="text">' + item.metier + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
                 });
                 $("#stats3").html(html);
             }
@@ -319,8 +348,16 @@ table td:first-child{
             success: function(data) {
                 console.log(data);
                 var html = '';
+                var class1 = class2 = class3 = '';
                 data.forEach(item => {
-                    html += '<tr><td class="text">' + item.nom + '</td><td>' + item.N + '</td><td>' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td>' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td>' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
+                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
+                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
+                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/'+item.id : '#'
+                    html += '<tr><td class="text"><a href='+link+'>' + item.nom + '</a></td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
                 });
                 $("#stats4").html(html);
             }
@@ -339,8 +376,15 @@ table td:first-child{
             success: function(data) {
                 console.log(data);
                 var html = '';
+                var class1 = class2 = class3 = '';
                 data.forEach(item => {
-                    html += '<tr><td class="text">' + item.Agence + '</td><td>' + item.N + '</td><td>' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td>' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td>' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
+                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
+                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
+                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+                    html += '<tr><td class="text">' + item.Agence + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
                 });
                 $("#stats5").html(html);
             }
@@ -349,10 +393,5 @@ table td:first-child{
     }
 
     update_stats();
-
-
-
-
-
 </script>
 @endsection

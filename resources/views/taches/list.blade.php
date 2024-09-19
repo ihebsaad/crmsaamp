@@ -146,9 +146,6 @@
                                     case 'Not Started':
                                     $color = '#82e2e8';$statut='Pas commencée';
                                     break;
-                                    case 'Waiting on someone e':
-                                    $color = '#ea922b';$statut='En attente de quelqu\'un';
-                                    break;
                                     case 'In Progress':
                                     $color = '#5f9fff';$statut='En cours';
                                     break;

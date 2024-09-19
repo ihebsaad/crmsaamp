@@ -210,6 +210,7 @@
 						<tr style="background-color:#2e3e4e;color:white;" id="">
 							<th>Titre</th>
 							<th>Ouverture</th>
+							<th>Client</th>
 							<th>Contact</th>
 							<th>Motif</th>
 						</tr>
@@ -219,6 +220,7 @@
 						<tr>
 							<td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
 							<td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+							<td>{{$retour->Nom_du_compte}}</td>
 							<td>{{$retour->Nom_du_contact}}</td>
 							<td>{{$retour->Motif_retour}}</td>
 						</tr>
@@ -236,8 +238,8 @@
 						<tr style="background-color:#2e3e4e;color:white;" id="">
 							<th>Heure</th>
 							<th>Sujet</th>
+							<th>Client</th>
 							<th>Agence</th>
-							<th>Type</th>
 							<th>Statut</th>
 						</tr>
 					</thead>
@@ -246,8 +248,8 @@
 						<tr>
 							<td>{{ $tache->heure_debut }}</td>
 							<td><a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a></td>
-							<td>{{ $tache->Agence }}<small>{{$tache->Nom_de_compte}}</small></td>
-							<td>{{ $tache->Type }}</td>
+							<td>{{ $tache->Nom_de_compte }}</td>
+							<td>{{ $tache->Agence }}</td>
 							<td>{{ $tache->Status }} - {{ $tache->Priority }}</td>
 						</tr>
 						@endforeach
@@ -259,7 +261,7 @@
 
 		<div class="col-md-4 col-lg-4 col-sm-12">
 			<h4 class="text-center">Prochains rendez vous</h4>
-			<!--<div class="table-container">-->
+			<div class="table-container">
 			<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
 				<thead>
 					<tr style="background-color:#2e3e4e;color:white;" id="">
@@ -289,7 +291,7 @@
 					@endforeach
 				</tbody>
 			</table>
-			<!--</div>-->
+			</div>
 		</div>
 
 	</div>

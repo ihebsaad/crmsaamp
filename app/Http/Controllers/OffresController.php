@@ -54,7 +54,7 @@ class OffresController extends Controller
 		if($client->cl_ident!=0)
 			$offres=Offre::where('cl_id',$client->cl_ident)->get();
 		else
-			$offres=array();
+			$offres=Offre::where('nom_compte',trim($client->Nom))->get();
 
 		return view('offres.index',compact('offres','client'));
 	}
@@ -113,12 +113,12 @@ class OffresController extends Controller
         //$offre=Offre::create($request->all());
 
 		$offre = Offre::create([
-			'cl_id' => $request->input('cl_id'),
+			'cl_id' => $request->input('cl_id') ?? 0,
 			'Nom_offre' => $request->input('Nom_offre'),
 			'Date_creation' => $request->input('Date_creation'),
 			'Produit_Service' => $request->input('Produit_Service'),
 			'Description' => $request->input('Description'),
-			'nom_compte' => $request->input('nom_compte'),
+			'nom_compte' => $request->input('nom_compte') ?? '',
 			// Other fields as necessary
 		]);
 
@@ -182,6 +182,8 @@ class OffresController extends Controller
 			$cl_id=$offre->cl_id;
 			if($cl_id>0){
 				$client=Client::where('cl_ident',$cl_id)->first();
+			}else{
+				$client=Client::where('Nom',$offre->nom_compte)->first();
 			}
 
 			$offre->delete();
