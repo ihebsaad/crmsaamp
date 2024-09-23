@@ -110,6 +110,9 @@ class RendezVousController extends Controller
 		$rendezvous->Account_Name=$client->Nom;
 		$rendezvous->save();
 
+		if($rendezvous->AccountId >0)
+			return redirect()->route('fiche', ['id' => $rendezvous->AccountId])->with(['success' => "Rendez Vous ajouté "]);
+
 		return redirect()->route('rendezvous.show', $rendezvous->id)
 		->with('success','Rendez vous ajouté');
 	}

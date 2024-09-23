@@ -48,6 +48,7 @@ class HomeController extends Controller
 		if (auth()->user()->user_type == 'admin') {
 
 			$now = Carbon::now();
+			$representants=DB::table("representant")->get();
 
 			$rendezvous=RendezVous::where('Started_at', '>=', $now)
 			->orderBy('Started_at', 'asc')
@@ -57,7 +58,7 @@ class HomeController extends Controller
 			$retours=RetourClient::where('Date_cloture','0000-00-00')
 			->orWhere('Date_cloture',null)
 			//->limit(20)
-			->orderBy('id','desc')->get();
+			->orderBy('name','desc')->get();
 
 			$taches=Tache::where('DateTache','like',date('Y-m-d').'%' )->orderBy('heure_debut','asc')->get();
 			$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
@@ -89,7 +90,7 @@ class HomeController extends Controller
 			$total_clients_9= CompteClient::where('etat_id',2)->where('agence_ident',203)->count(); //
 			$total9 = DB::select($query, [203]);
 			$total_9=$total9[0]->total;
-			return view('adminhome',compact('retours','rendezvous','taches',
+			return view('adminhome',compact('retours','rendezvous','taches','representants',
 			'total_clients_1','total_clients_2','total_clients_3','total_clients_4','total_clients_5','total_clients_6','total_clients_7','total_clients_8','total_clients_9',
 			'total_1','total_2','total_3','total_4','total_5','total_6','total_7','total_8','total_9'));
 

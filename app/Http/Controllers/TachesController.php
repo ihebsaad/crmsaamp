@@ -123,6 +123,9 @@ class TachesController extends Controller
 
 		$tache->save();
 
+		if($tache->ID_Compte >0)
+			return redirect()->route('fiche', ['id' => $tache->ID_Compte])->with(['success' => "Tâche ajoutée "]);
+
 		return redirect()->route('taches.show', $tache->id)
 		->with('success','Tache ajoutée');
 	}

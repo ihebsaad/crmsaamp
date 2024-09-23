@@ -25,6 +25,7 @@
                 <form action="{{ route('taches.update', $tache->id) }}" method="post">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="edited_by" value="{{auth()->user()->id}}" >
 
                     <div class="row pt-1">
                         <div class="col-md-4">
@@ -133,7 +134,22 @@
                             </div>
                         </div>
                     </div>
-
+                    @if($tache->user_id > 0)
+                        <div class="row pt-1">
+                            <div class="col-md-12">
+                                <?php $creator=\App\Models\User::find($tache->user_id); ?>
+                                <b><i>Créée par : {{$creator->name}} {{$creator->lastname}}</i></b>
+                            </div>
+                        </div>
+                    @endif
+                    @if($tache->edited_by > 0)
+                        <div class="row pt-1">
+                            <div class="col-md-12">
+                                <?php $User=\App\Models\User::find($tache->edited_by); ?>
+                                <b><i>Dernière modification par : {{$User->name}} {{$User->lastname}}</i></b>
+                            </div>
+                        </div>
+                    @endif
                     <div class="row pt-1">
                         <div class="col-md-12">
                             <button type="submit" class="btn-primary btn float-right">Modifier</button>

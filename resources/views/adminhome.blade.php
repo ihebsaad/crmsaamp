@@ -98,6 +98,7 @@
 	[data-title] {
 		position: relative;
 	}
+	#commercial{width:160px;font-size:13px;padding: 3px 6px 3px 6px;margin-left:10px;}
 </style>
 
 
@@ -204,7 +205,7 @@
 	<div class="row">
 		<div class="col-md-4 col-lg-4 col-sm-12">
 			<h4 class="text-center">Réclamations non clôturées </h4>
-			<div class="table-container">
+			<div class="table-container"  style="margin-top:36px">
 				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
 					<thead>
 						<tr style="background-color:#2e3e4e;color:white;" id="">
@@ -232,7 +233,7 @@
 
 		<div class="col-md-4 col-lg-4 col-sm-12">
 			<h4 class="text-center">Prises de contact d'aujourd'hui</h4>
-			<div class="table-container">
+			<div class="table-container" style="margin-top:36px">
 				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
 					<thead>
 						<tr style="background-color:#2e3e4e;color:white;" id="">
@@ -261,10 +262,17 @@
 
 		<div class="col-md-4 col-lg-4 col-sm-12">
 			<h4 class="text-center">Prochains rendez vous</h4>
+
+			<div class="text-center" style="color:#2e3e4e">Commercial <select id="commercial" onchange="filter_comm()" class="form-control"  ></div>
+			<option>Tous</option>
+			@foreach( $representants as $rep )
+			<option value="{{$rep->users_id}}">{{$rep->prenom}} {{$rep->nom}}</option>
+			@endforeach
+			</select>
 			<div class="table-container">
 			<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
 				<thead>
-					<tr style="background-color:#2e3e4e;color:white;" id="">
+					<tr  style="background-color:#2e3e4e;color:white;" id="">
 						<th>ID</th>
 						<th>Client</th>
 						<th>Sujet</th>
@@ -274,7 +282,7 @@
 				</thead>
 				<tbody>
 					@foreach($rendezvous as $rv)
-					<tr>
+					<tr class="users user-{{$rv->user_id}}">
 						<td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
 						<td>{{ $rv->Account_Name }}</td>
 						<td>{{ $rv->Subject }}</td>
@@ -297,4 +305,31 @@
 	</div>
 
 </div>
+
+
+<script>
+		$(document).ready(function() {
+			setTimeout(function() {
+				$('#maintenance').modal('show');
+			}, 5000); // 5000 millisecondes = 5 secondes
+		});
+
+      function filter_comm() {
+        var user = $('#commercial').find(":selected").val();
+            if (user>0) {
+              toggle('users', 'none');
+              toggle('user-'+user, 'table-row');
+            } else {
+              toggle('users', 'table-row');
+            }
+        }
+
+        function toggle(className, displayState) {
+            var elements = document.getElementsByClassName(className);
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].style.display = displayState;
+            }
+        }
+	</script>
+
 @endsection

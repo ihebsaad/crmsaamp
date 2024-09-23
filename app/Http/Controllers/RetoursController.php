@@ -107,6 +107,7 @@ class RetoursController extends Controller
         ]);
 
         $retour=RetourClient::create($request->all());
+		$retour->save();
 
 		$contact=Contact::find($retour->mycontact_id);
 
@@ -138,9 +139,13 @@ class RetoursController extends Controller
 		if(isset($agence) && isset($agence->mail2))
 			SendMail::send($agence->mail2, $sujet, $contenu);
 */
+		if($retour->idclient >0)
+		return redirect()->route('fiche', ['id' => $retour->idclient])->with(['success' => "Réclamation ajoutée "]);
 
 		return redirect()->route('retours.show', $retour->id)
 		->with('success','Retour ajouté');
+
+
 	}
 
 	public static function send_mail($retour,$email){

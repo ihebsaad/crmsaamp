@@ -25,7 +25,8 @@
             <div class="card-body" style="min-height:500px">
 
                 <form action="{{ route('retours.store') }}" method="post">
-                <input type="hidden" name="Nom_du_compte" value="{{$client->Nom}}" >
+                <input type="hidden" name="idclient" value="{{$client->id}}" >
+                <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
 
                     @csrf
                     <div class="row pt-1">
@@ -89,7 +90,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Nom_du_compte">Nom du client:</label>
-                                <input type="text" id="Nom_du_compte" class="form-control" name="Nom_du_compte" readonly value="{{$client->Nom}}"><br><br>
+                                <input type="text" id="Nom_du_compte" class="form-control" name="Nom_du_compte" readonly value="{{trim($client->Nom)}}"><br><br>
                             </div>
                         </div>
                     </div>
@@ -173,6 +174,12 @@
                             <div class="">
                                 <label for="Une_reponse_a_ete_apportee_au_client">Réponse au client:</label>
                                 <textarea  id="Une_reponse_a_ete_apportee_au_client" class="form-control" name="Une_reponse_a_ete_apportee_au_client"  style="min-height:150px">{{old('Une_reponse_a_ete_apportee_au_client')}}</textarea><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="">
+                                <label for="Description_c">Description:</label>
+                                <textarea  id="Description_c" class="form-control" name="Description_c"  style="min-height:150px">{{old('Description_c')}}</textarea><br><br>
                             </div>
                         </div>
                         <!--

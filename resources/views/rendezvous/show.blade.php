@@ -27,6 +27,7 @@ h6{
                 <form action="{{ route('rendezvous.update', $rendezvous->id) }}" method="post">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="edited_by" value="{{auth()->user()->id}}" >
 
                     <div class="row pt-1">
                         <div class="col-md-3">
@@ -120,6 +121,22 @@ h6{
                             @endif
                         </div>
                     </div>
+                    @if($rendezvous->user_id > 0)
+                        <div class="row pt-1">
+                            <div class="col-md-12">
+                                <?php $creator=\App\Models\User::find($rendezvous->user_id); ?>
+                                <b><i>Créé par : {{$creator->name}} {{$creator->lastname}}</i></b>
+                            </div>
+                        </div>
+                    @endif
+                    @if($rendezvous->edited_by > 0)
+                        <div class="row pt-1">
+                            <div class="col-md-12">
+                                <?php $User=\App\Models\User::find($rendezvous->edited_by); ?>
+                                <b><i>Dernière modification par : {{$User->name}} {{$User->lastname}}</i></b>
+                            </div>
+                        </div>
+                    @endif
                     <div class="row pt-1">
                         <div class="col-md-12">
                             <a  href="{{route('rendezvous.print',['id'=>$rendezvous->id])}}" target="_blank" class="btn btn-secondary" ><i class="fa fa-print"></i> Imprimer</a>
