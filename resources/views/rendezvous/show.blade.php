@@ -110,10 +110,38 @@ h6{
                         </div>
 
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            @if($rendezvous->fichier!= null)
+                                @php $fileNames = unserialize($rendezvous->fichier); @endphp
+                                <div class="">
+                                    <label for="Description">Fichier(s):</label><br>
+                                    <table style="border:none">
 
-                    <div class="row pt-1">
+                                        @foreach ($fileNames as $fichier)
+                                        <tr style="border:none">
+                                            <td><label><b class="black mr-4">{{$fichier}}</b></label></td>
+                                            <td><a href="https://crm.mysaamp.com/fichiers/{{$fichier}}" target="_blank" ><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png')}}"></a></td>
+                                            <td><a href="https://crm.mysaamp.com/fichiers/{{$fichier}}" download ><img class="download mr-2" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
+                                            <td>
+                                                <form method="POST" class="delete-file-form" action="{{ route('fichier.delete', $rendezvous->id) }}">
+                                                    @csrf
+                                                    <input type="hidden" name="file_name" value="{{ $fichier }}">
+                                                    <button type="submit" class="btn btn-danger" title="Supprimer ce fichier"  style="line-height: 18px;font-size: 15px;padding: 5px;" onclick="return confirm('Êtes-vous sûrs ?')"><i class="fa fa-fw fa-trash-alt"></i></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+
+                                    </table>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="row pt-3">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right">Modifier</button>
+                            <button type="submit" class="btn-primary btn float-right" >Modifier</button>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                 <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rendezvous->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                     <span class="fa fa-fw fa-trash-alt"></span> Supprimer
@@ -121,7 +149,14 @@ h6{
                             @endif
                         </div>
                     </div>
-                    @if($rendezvous->user_id > 0)
+                    @if($rendezvous->created_by > 0)
+                        <div class="row pt-1">
+                            <div class="col-md-12">
+                                <?php $creator=\App\Models\User::find($rendezvous->user_id); ?>
+                                <b><i>Créé par : {{$creator->name}} {{$creator->lastname}}</i></b>
+                            </div>
+                        </div>
+                    @elseif($rendezvous->user_id > 0)
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $creator=\App\Models\User::find($rendezvous->user_id); ?>

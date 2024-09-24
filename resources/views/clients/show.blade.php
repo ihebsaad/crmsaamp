@@ -21,7 +21,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Modifier le client</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Modifier le @if($client->etat_id==2) client @else prospect @endif</h6>
             </div>
             <div class="card-body">
 
@@ -82,16 +82,47 @@
                     </div>
 
                     <div class="row pt-1">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="Nom">Nom:</label>
                                 <input type="text" id="Nom" class="form-control" name="Nom"   required value="{{$client->Nom}}"><br><br>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        @if($client->etat_id==2)
+                            <div class="col-md-2">
+                                <div class="">
+                                    <label for="id">ID Client:</label>
+                                    <input type="text" id="cl_ident" class="form-control" name="cl_ident" value="{{$client->cl_ident}}" readonly  ><br><br>
+                                </div>
+                            </div>
+                        @endif
+                        <div class="col-md-3 ">
                             <div class="">
-                                <label for="id">ID Client:</label>
-                                <input type="text" id="cl_ident" class="form-control" name="cl_ident" value="{{$client->cl_ident}}" readonly ><br><br>
+                                <label for="id">Activité:</label>
+                                <select  type="text" id="activite" class="form-control" name="activite"  >
+                                    <option @if($client->activite=="") selected="selected" @endif value=""></option>
+                                    <option @if($client->activite=="Affineurs et Traders") selected="selected" @endif value="Affineurs et Traders">Affineurs et Traders</option>
+                                    <option @if($client->activite=="Certifications") selected="selected" @endif value="Certifications">Certifications</option>
+                                    <option @if($client->activite=="Divers") selected="selected" @endif value="Divers">Divers</option>
+                                    <option @if($client->activite=="Fabricant") selected="selected" @endif value="Fabricant">Fabricant</option>
+                                    <option @if($client->activite=="Frais Generaux") selected="selected" @endif value="Frais Generaux">Frais Generaux</option>
+                                    <option @if($client->activite=="Immobilier") selected="selected" @endif value="Immobilier">Immobilier</option>
+                                    <option @if($client->activite=="Industrie et Mine") selected="selected" @endif value="Industrie et Mine">Industrie et Mine</option>
+                                    <option @if($client->activite=="Labo") selected="selected" @endif value="Labo">Labo</option>
+                                    <option @if($client->activite=="Marketing") selected="selected" @endif value="Marketing">Marketing</option>
+                                    <option @if($client->activite=="Particulier") selected="selected" @endif value="Particulier">Particulier</option>
+                                    <option @if($client->activite=="Production") selected="selected" @endif value="Production">Production</option>
+                                    <option @if($client->activite=="Récupération") selected="selected" @endif value="Récupération">Récupération</option>
+                                    <option @if($client->activite=="Transport") selected="selected" @endif value="Transport">Transport</option>
+                                    <option @if($client->activite=="Vendeur bijoux") selected="selected" @endif value="Vendeur bijoux" >Vendeur bijoux</option>
+                                </select><br><br>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="sous_activite">Sous activité:</label>
+                                <input type="text" id="sous_activite" class="form-control" name="sous_activite"     value="{{$client->sous_activite}}"><br><br>
                             </div>
                         </div>
                     </div>
@@ -153,13 +184,7 @@
                                 <input type="text" id="ADV" class="form-control" name="ADV" value="{{$client->ADV}}"><br><br>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="">
-                                <label for="Fidelite_du_client_c">Clientèle:</label>
-                                <input  id="Fidelite_du_client_c" class="form-control" name="Fidelite_du_client_c"  value="{{$client->Fidelite_du_client_c}}" >
-                                   <br><br>
-                            </div>
-                        </div>
+
 
                         <div class="col-md-2">
                             <div class="">
@@ -178,12 +203,13 @@
                                 <input type="text" id="Tel" class="form-control" name="Phone" value="{{$client->Tel}}"><br><br>
                             </div>
                         </div>
+                        <!--
                         <div class="col-md-3">
                             <div class="">
                                 <label for="">Email:</label>
                                 <input type="email" id="email" class="form-control" name="email" value="{{$client->email}}"><br><br>
                             </div>
-                        </div>
+                        </div>-->
                         <div class="col-md-3">
                             <div class="">
                                 <label for="">Site Web:</label>

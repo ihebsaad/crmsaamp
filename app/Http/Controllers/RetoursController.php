@@ -97,7 +97,7 @@ class RetoursController extends Controller
 			self::send_mail($retour,$agence->mail2);
 
 		return redirect()->route('retours.show', $id)
-				->with('success', 'Retour modifié');
+				->with('success', 'Réclamation modifiée');
 	}
 
 	public function store(Request $request)
@@ -122,6 +122,7 @@ class RetoursController extends Controller
 		self::send_mail($retour,'reyad.bouzeboudja@saamp.com');
 		self::send_mail($retour,'said.el-marouani@saamp.com');
 		self::send_mail($retour,'ihebsaad@gmail.com');
+
 /*
 		SendMail::send('remy.reverbel@saamp.com', $sujet, $contenu);
 		SendMail::send('reyad.bouzeboudja@saamp.com', $sujet, $contenu);
@@ -143,7 +144,7 @@ class RetoursController extends Controller
 		return redirect()->route('fiche', ['id' => $retour->idclient])->with(['success' => "Réclamation ajoutée "]);
 
 		return redirect()->route('retours.show', $retour->id)
-		->with('success','Retour ajouté');
+		->with('success','Réclamtion ajoutée');
 
 
 	}

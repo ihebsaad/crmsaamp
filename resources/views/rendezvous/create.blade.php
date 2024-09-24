@@ -22,10 +22,10 @@
 
             <div class="card-body" style="min-height:500px">
 
-                <form action="{{ route('rendezvous.store') }}" method="post">
+                <form action="{{ route('rendezvous.store') }}" method="post"   enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="AccountId" value="{{$client->id}}" >
-                    <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
+                    <input type="hidden" name="created_by" value="{{auth()->user()->id}}" >
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
@@ -119,7 +119,14 @@
                         </div>
 
                     </div>
-
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="">
+                                <label for="file">Fichier(s):</label>
+                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple     /><br><br>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row pt-1">
                         <div class="col-md-12">
                             <button type="submit" class="btn-primary btn float-right" >Ajouter</button>

@@ -56,6 +56,7 @@ Route::put('/compte_client/{id}', [ClientsController::class, 'update'])->name('c
 Route::get('/clients/show/{id}', [ClientsController::class, 'show'])->name('compte_client.show');
 Route::get('/clients/folder/{id}', [ClientsController::class, 'folder'])->name('compte_client.folder');
 Route::post('/ouverture', [ClientsController::class, 'ouverture'])->name('ouverture');
+Route::get('/clients/destroy/{id}',[ClientsController::class,'destroy'])->name('clients.destroy');
 
 
 
@@ -104,6 +105,7 @@ Route::put('/rendezvous/{id}', [RendezVousController::class, 'update'])->name('r
 Route::get('/rendezvous/create/{id}', [RendezVousController::class, 'create'])->name('rendezvous.create');
 Route::get('/rendezvous', [RendezVousController::class, 'index'])->name('rendezvous.index');
 Route::get('/rendezvous/destroy/{id}',[RendezVousController::class,'destroy'])->name('rendezvous.destroy');
+Route::post('/rendezvous/{id}/delete-file', [RendezvousController::class, 'deleteFile'])->name('fichier.delete');
 
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.auth');

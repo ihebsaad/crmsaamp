@@ -67,7 +67,7 @@ class ClientsController extends Controller
 
 		$client->update($request->all());
 
-		return redirect()->route('compte_client.show', $id)
+		return redirect()->route('fiche', ['id' =>  $id])
 				->with('success', 'Client modifié');
 
 	}
@@ -412,6 +412,14 @@ class ClientsController extends Controller
 	}
 
 
+	public function destroy($id)
+	{
+ 		$client = CompteClient::find($id);
+ 		$client->delete();
+
+		return redirect()->route('search')
+		->with('success','Supprimé avec succès');
+	}
 
 
 } // end class

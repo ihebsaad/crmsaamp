@@ -63,7 +63,14 @@ if (is_array($commandes) || is_object($commandes)) {
                 <h6 class="m-0 font-weight-bold text-primary">Fiche du client {{$client->id}} - {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
-            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a>  @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
+            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a>
+                @if(auth()->user()->user_type=='admin'  && $client->etat_id==1  )
+                    <a title="Supprimer"   onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('clients.destroy', $client->id )}}" class="btn btn-danger btn-sm btn-responsive ml-3 mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                        <span class="fa fa-fw fa-trash-alt"></span> Supprimer
+                    </a>
+                @endif
+                @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
+
                 <div class="clearfix"></div>
                 <form id="">
                     <div class="row pt-1">
@@ -77,7 +84,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         <div class="col-md-2">
                             <div class="">
                                 <label for="postalCode">CP:</label>
-                                <h6>{{$client->postalCode}}</h6>
+                                <h6>{{$client->zip ?? $client->postalCode}}</h6>
                             </div>
                         </div>
 
@@ -160,7 +167,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Phone">Télephone:</label>
-                                <h6>{{$client->Phone}}</h6>
+                                <h6>{{$client->Phone ??  $client->Tel}}</h6>
                             </div>
 
                         </div>
@@ -555,7 +562,7 @@ if (is_array($commandes) || is_object($commandes)) {
                             <tbody>
                                 @foreach($Proch_rendezvous as $rv)
                                 <tr>
-                                    <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
+                                    <td>{{date('d/m/Y', strtotime($rv->Started_at))}} {{$rv->heure_debut}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
                                     @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                         <td>
                                             <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
@@ -585,7 +592,7 @@ if (is_array($commandes) || is_object($commandes)) {
                             <tbody>
                                 @foreach($Anc_rendezvous as $rv)
                                 <tr>
-                                    <td>{{date('d/m/Y H:i', strtotime($rv->Started_at))}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
+                                    <td>{{date('d/m/Y', strtotime($rv->Started_at))}} {{$rv->heure_debut}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
                                         @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                             <td>
                                                 <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">

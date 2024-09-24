@@ -66,7 +66,9 @@ class RendezVousController extends Controller
 
 		if($client->id==1 && $id!=1){
 			$client=DB::table('CRM_CompteCLient')->where('Id_Salesforce',$rendezvous->AccountId)->first();
-			$adresse=$client->Rue.' - '.$client->postalCode;
+			$rue = $client->Rue ?? '' ;
+			$zip =$client->postalCode ?? '';
+			$adresse=$rue.' '.$zip;
 		}
 
 
@@ -103,12 +105,47 @@ class RendezVousController extends Controller
 
         ]);
 
-        $rendezvous=RendezVous::create($request->all());
+        //$rendezvous=RendezVous::create($request->all());
+
+		$rendezvous = RendezVous::create([
+			'AccountId' => $request->input('AccountId') ?? 0,
+			'created_by' => $request->input('created_by'),
+			'user_id' => $request->input('user_id'),
+			'Account_Name' => $request->input('Account_Name'),
+			'Started_at' => $request->input('Started_at'),
+			'heure_debut' => $request->input('heure_debut'),
+			'End_AT' => $request->input('End_AT'),
+			'heure_fin' => $request->input('heure_fin'),
+			'Type' => $request->input('Type'),
+			'Location' => $request->input('Location'),
+			'Subject' => $request->input('Subject'),
+			'Description' => $request->input('Description'),
+		]);
+
+		$rendezvous->save();
 
 		$client=CompteClient::find($rendezvous->AccountId);
 
 		$rendezvous->Account_Name=$client->Nom;
 		$rendezvous->save();
+
+
+
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+			$fileNames = [];
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path() . "/fichiers";
+				$fichier->move($path, $name);
+				$fileNames[] = $name;
+			}
+
+			// Serialize the filenames array
+			$rendezvous->fichier = serialize($fileNames);
+			$rendezvous->save();
+		}
 
 		if($rendezvous->AccountId >0)
 			return redirect()->route('fiche', ['id' => $rendezvous->AccountId])->with(['success' => "Rendez Vous ajouté "]);
@@ -117,6 +154,35 @@ class RendezVousController extends Controller
 		->with('success','Rendez vous ajouté');
 	}
 
+
+	public function deleteFile(Request $request, $id)
+	{
+		// Find the rendezvous by ID
+		$rendezvous = Rendezvous::find($id);
+
+		// Deserialize the stored file names
+		$fileNames = unserialize($rendezvous->fichier);
+
+		// Get the file name to delete
+		$fileToDelete = $request->input('file_name');
+
+		// Remove the file from the list
+		if (($key = array_search($fileToDelete, $fileNames)) !== false) {
+			unset($fileNames[$key]);
+		}
+
+		// Re-serialize the array and save the updated list
+		$rendezvous->fichier = serialize(array_values($fileNames));
+		$rendezvous->save();
+
+		// Delete the file from the filesystem
+		$filePath = public_path() . "/fichiers/" . $fileToDelete;
+		if (file_exists($filePath)) {
+			unlink($filePath);  // Delete the file
+		}
+
+		return redirect()->back()->with('success', 'Fichier supprimé avec succès.');
+	}
 
 	public function destroy($id)
 	{
