@@ -32,9 +32,9 @@ h6{
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Account_Name">Client:</label>
+                                <label for="Account_Name">@if($client!= null) Client: @else Nom: @endif </label>
                                 <h6>{{$rendezvous->Account_Name}} </h6>
-                                <h6><small>{{$adresse}} </small></h6>
+                                <h6><small>{{$adresse ?? ''}} </small></h6>
                             </div>
                         </div>
                         <div class="col-md-2">

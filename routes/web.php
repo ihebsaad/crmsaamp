@@ -33,12 +33,16 @@ Route::get('/', function () {
 
 
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home')->middleware('verified');
+Route::get('/statistiques', 'App\Http\Controllers\HomeController@statistiques')->name('statistiques');
 Route::get('/adminhome', 'App\Http\Controllers\HomeController@adminhome')->name('adminhome');
 Route::get('/dashboard', 'App\Http\Controllers\HomeController@dashboard')->name('dashboard');
 Route::get('/help', 'App\Http\Controllers\HomeController@help')->name('help');
 
 Route::get('/clients/phone', [HomeController::class, 'phone'])->name('phone');
 Route::get('/agenda', [HomeController::class, 'agenda'])->name('agenda');
+Route::post('/agenda', [HomeController::class, 'agenda'])->name('agenda');
+Route::get('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
+Route::post('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
 
 
 Route::get('/refresh', 'App\Http\Controllers\Auth\LoginController@refresh')->name('refresh');
@@ -151,6 +155,7 @@ Route::get('/stats_commercial_client', [StatsController::class, 'stats_commercia
 Route::get('/stats_agence', [StatsController::class, 'stats_agence'])->name('stats_agence');
 Route::get('/stats_agence_client', [StatsController::class, 'stats_agence_client'])->name('stats_agence_client');
 Route::get('/stats_agences', [StatsController::class, 'stats_agences'])->name('stats_agences');
+Route::get('/stats_clients_inactifs', [StatsController::class, 'stats_clients_inactifs'])->name('stats_clients_inactifs');
 
 
 Route::get('/folders', 'App\Http\Controllers\ClientsController@folders')->name('folders');

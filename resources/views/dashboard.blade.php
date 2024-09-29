@@ -150,18 +150,22 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h6 class="modal-title" id="exampleModalLabel">Développement en cours </h6>
+          <h6 class="modal-title" id="exampleModalLabel">Bienvenue sur le CRM </h6>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body text-center"  >
-			<div style="font-size:16px;">
-				<h5>Bienvenue sur le CRM</h5><br>
-				<b style="color:red;font-size:13px">
-				Certaines données ou certains modules peuvent être manquants ou présenter des bugs.<br>
-				Merci de nous en informer.<br><br>
-        Les données Salesforce (RDV, prise de contact, offre de prix) des mois de mai, juin et juillet, ne sont pas encore disponibles.</b><br>
+        <div class="modal-body  "  >
+			<div style="font-size:14px;">
+				<h5> NOUVEAUTÉ !</h5>
+ 1. Ajout de rendez-vous hors clientèle :<br>
+ - Un nouvel onglet dans le menu permet désormais d'ajouter des rendez-vous qui ne concernent pas les clients.<br><br>
+2.  Remontée automatique des prises de contact AS400 :<br>
+- Les prises de contact AS400 sont maintenant automatiquement remontées dans le système.<br><br>
+3. Possibilité d'entrer des prises de contact hors AS400 :<br>
+- Vous pouvez toujours entrer manuellement des prises de contact hors AS400 via la fiche client.<br><br>
+4. Nouveau tableau de statistiques :<br>
+- Un tableau permet de visualiser les clients inactifs en fonction du nombre de mois sélectionné.
 				</div>
 		</div>
         <div class="modal-footer">

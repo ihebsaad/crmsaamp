@@ -131,5 +131,21 @@ class StatsController extends Controller
         return $stats;
     }
 
+    public static function stats_clients_inactifs(Request $request)
+    {
+        try {
+            $user_id = $request->get('user') ;
+            $mois = $request->get('mois') ?? 1;
+
+            DB::select("SET @p0=$mois;");
+            DB::select("SET @p1=$user_id;");
+            $stats = DB::select('call `sp_stats_client_inactifs_mois_com`(@p0, @p1);');
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            throw $e;
+        }
+
+        return $stats;
+    }
 
 }

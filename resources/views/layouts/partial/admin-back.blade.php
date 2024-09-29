@@ -10,12 +10,53 @@
   .menu-link {
     font-weight: bold;
     color: #000;
-    margin-left: 50px
+    margin-left: 10px;
+    text-align:center;
   }
 
   .bg-dark {
     background-color: #f6c23e30 !important;
   }
+
+  #sidebarToggleTop{
+    display:none;
+  }
+
+
+/*
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+
+@media (min-width: 1281px) {
+
+  .navbar-nav{
+    padding-left:100px;
+  }
+  .menu-link{
+    margin-left:50px;
+  }
+
+}
+
+/*
+ ##Device = Laptops, Desktops
+ ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+
+  .navbar-nav{
+    padding-left:100px;
+  }
+  .menu-link{
+    margin-left:50px;
+  }
+
+}
+
+
+
 /*
   .table-container {
     position: relative;
@@ -41,11 +82,11 @@
   </button>
 
   <!-- Topbar Navbar -->
-  <div class="navbar-nav ml-5 mr-3 hidemobile">
+  <div class="navbar-nav text-center">
   </div>
-  <a class="menu-link hidemobile" href="{{route('adminhome')}}">Accueil</a>
-  <a class="menu-link hidemobile" href="{{route('search')}}">Clients</a>
-  <a class="menu-link hidemobile" href="{{route('taches.index')}}">Activités</a>
+  <a class="menu-link mr-2" href="{{route('adminhome')}}">Accueil</a>
+  <a class="menu-link mr-2" href="{{route('search')}}">Clients</a>
+  <a class="menu-link mr-2" href="{{route('taches.index')}}">Activités</a>
 
   <div class="navbar-nav ml-auto">
     <!-- Nav Item - Messages -->

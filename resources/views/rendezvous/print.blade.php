@@ -23,7 +23,7 @@
                 <div class="">
                     <label for="Account_Name">Client:</label>
                     <h6>{{$rendezvous->Account_Name}}</h6>
-                    <h6><small>{{$client->adresse1}} - {{$client->zip}}</small></h6>
+                    <h6><small>{{$client->adresse1 ?? ''}} - {{$client->zip ?? ''}}</small></h6>
                 </div>
             </div>
             <div class="col-md-2">

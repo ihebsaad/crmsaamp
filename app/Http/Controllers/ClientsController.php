@@ -240,7 +240,12 @@ class ClientsController extends Controller
 		$query = CompteClient::query();
 
 		$type = $request->get('type');
+		$client_id = $request->get('client_id');
 		$print = $request->get('print');
+
+		if ($request->has('client_id') && $request->client_id) {
+			$query->where('cl_ident', 'like', '%' . $request->client_id . '%');
+		}
 		if ($type == 2) {
 			$query->where('etat_id',2);
 		} elseif ($type == 1) {
@@ -260,7 +265,7 @@ class ClientsController extends Controller
 		}
 
 		if ($request->has('zip') && $request->zip) {
-			$query->where('zip', 'like', $request->zip. '%' );
+			$query->whereRaw("TRIM(zip) LIKE ?", [trim($request->zip) . '%']);
 		}
 
 		$tri = $request->get('tri');

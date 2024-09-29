@@ -98,12 +98,18 @@ if (Auth::check()) {
       </a>
     @endif
     <a class="nav-link" href="{{route('agenda')}}" >
-    <i class="fas fa-calendar" ></i>
+    <i class="fas fa-calendar-alt" ></i>
       <span><div class="hidemobile"> Mon </div>Agenda</span>
     </a>
+    @if($user->user_type!='admin')
+      <a class="nav-link" href="{{route('rendezvous.create',['id'=>0])}}" >
+      <i class="fas fa-calendar" ></i>
+        <span style="font-size:10px!important">Rendez-vous <div class="hidemobile">hors clientèle</div></span>
+      </a>
+    @endif
     <a class="nav-link" href="{{route('help')}}" >
     <i class="fas fa-book" ></i>
-      <span> Guide <div class="hidemobile">d'utilisation</div></span>
+      <span> Aide </span>
     </a>
   <!--
     <hr class="sidebar-divider">

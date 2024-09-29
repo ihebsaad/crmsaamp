@@ -24,13 +24,13 @@
 
                 <form action="{{ route('rendezvous.store') }}" method="post"   enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="AccountId" value="{{$client->id}}" >
+                    <input type="hidden" name="AccountId" value="{{$client->id ?? 0}}" >
                     <input type="hidden" name="created_by" value="{{auth()->user()->id}}" >
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Account_Name">Nom du client:</label>
-                                <input type="text" id="Account_Name" class="form-control" name="Account_Name"  readonly value="{{$client->Nom}}"><br><br>
+                                <label for="Account_Name">Nom @if($client!=null)du client @endif :</label>
+                                <input type="text" id="Account_Name" class="form-control" name="Account_Name" @if($client!= null)  readonly @endif value="{{$client->Nom ?? '' }}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">

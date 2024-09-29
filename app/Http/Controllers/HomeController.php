@@ -105,15 +105,59 @@ class HomeController extends Controller
 		}
 	}
 
-	public function agenda()
+	public function agenda(Request $request)
 	{
-		//$rendezvous=RendezVous::get();
-		$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
-		->orWhere('user_id',auth()->user()->id)
-		->orderBy('id','desc')
-		->get();
+		$representants=DB::table("representant")->get();
+		$user=$request->get('user');
 
-		return view('agenda',compact('rendezvous'));
+		if($user>0){
+			$User=User::find($user);
+			$rendezvous=RendezVous::where('Attribue_a',$User->name.' '.$User->lastname)
+			->orWhere('user_id',$user)
+			//->where('AccountId','>',0)
+			->orderBy('id','desc')
+			->get();
+		}else{
+			$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
+			->orWhere('user_id',auth()->user()->id)
+			//->where('AccountId','>',0)
+			->orderBy('id','desc')
+			->get();
+		}
+
+
+		return view('agenda',compact('rendezvous','representants','user'));
+
+	}
+
+
+	public function rendesvous_ext(Request $request)
+	{
+		$representants=DB::table("representant")->get();
+		$user=$request->get('user');
+
+		$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
+		where('user_id',auth()->user()->id)
+		->where('AccountId',0)
+		->orderBy('id','desc')->get();
+
+		if($user>0){
+			$User=User::find($user);
+			$rendezvous=RendezVous:://where('Attribue_a',$User->name.' '.$User->lastname)
+			where('user_id',$user)
+			->where('AccountId',0)
+			->orderBy('id','desc')
+			->get();
+		}else{
+			$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
+			where('user_id',auth()->user()->id)
+			->where('AccountId',0)
+			->orderBy('id','desc')
+			->get();
+		}
+
+
+		return view('agenda',compact('rendezvous','representants','user'));
 
 	}
 
@@ -184,16 +228,35 @@ class HomeController extends Controller
 				}
 			}
 
-			$stats = null;//self::stats_commercial($request);
-            $stats2 = null;//self::stats_commercial_client($request);
-            $stats3 = null;//self::stats_agence($request);
-            $stats4 = null;//self::stats_agence_client($request);
-            $stats5 = null;//self::stats_agences($request);
-			return view('home',compact('agences','users','stats','stats2','stats3','stats4','stats5','representants','commercial'));
+			$stats=$stats2=$stats3=$stats4=$stats5=$stats6= null;
+
+			return view('home',compact('agences','users','stats','stats2','stats3','stats4','stats5','stats6','representants','commercial'));
 		}
 	}
 
+	public function statistiques()
+	{
+		if (auth()->user()->user_type == 'visitor') {
+			return view('visitor');
+		} else {
+			//StatsController::stats();
+			$agences= DB::table('agence')->get();
+			$users= DB::table('users')->where('user_type','<>','')->get();
+			$representants= DB::table('representant')->orderBy('nom','asc')->get();
 
+			$commercial=false;
+			foreach($representants as $rep){
+				if(auth()->user()->id==$rep->users_id )
+				{
+					$commercial=true;break;
+				}
+			}
+
+			$stats=$stats2=$stats3=$stats4=$stats5=$stats6= null;
+
+			return view('stats',compact('agences','users','stats','stats2','stats3','stats4','stats5','stats6','representants','commercial'));
+		}
+	}
 
 	public function send_demand(Request $request)
 	{

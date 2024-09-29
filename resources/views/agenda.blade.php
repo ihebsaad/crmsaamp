@@ -83,9 +83,28 @@
 		<!-- Project Card Example -->
 		<div class="card shadow mb-4">
 			<div class="card-header py-3">
-				<h6 class="m-0 font-weight-bold text-primary">Mon calendrier</h6>
+				<h6 class="m-0 font-weight-bold text-primary">@if(request()->is('exterieurs')) Rendez Vous Extérieurs @else Mon Agenda  @endif</h6>
 			</div>
 			<div class="card-body">
+				@if( auth()->user()->user_type=='admin' )
+					<form   @if(request()->is('exterieurs')) action="{{route('exterieurs')}}" @else action="{{route('agenda')}}" @endif >
+						<div class="row">
+							<div class="col-lg-4">
+								<span class=" mr-2">Commercial:</span>
+								<select class="form-control mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="this.form.submit();" >
+									<option  @if($user=="") selected="selected" @endif value=""></option>
+									@foreach ($representants as $rp)
+									<option @selected($user >0 && $user==$rp->users_id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
+									@endforeach
+								</select>
+							</div>
+						</div>
+					</form>
+				@else
+					@if(request()->is('exterieurs'))
+						<a href="{{route('rendezvous.create',['id'=>0])}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-calendar-day"></i>  Créer un Rendez-vous Extérieur</a>
+					@endif
+				@endif
 
 				<div id="calendar" class="container-fluid"></div>
 

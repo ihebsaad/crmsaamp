@@ -52,7 +52,10 @@ class RendezVousController extends Controller
 
 	public function create($id)
 	{
-		$client=CompteClient::find($id);
+		if($id>0)
+			$client=CompteClient::find($id);
+		else
+			$client=null;
 		$users=User::where('user_type','<>','')->get();
 		return view('rendezvous.create',compact('client','users'));
 	}
@@ -60,17 +63,21 @@ class RendezVousController extends Controller
 	public function show($id)
 	{
 		$rendezvous=RendezVous::find($id);
+		if($rendezvous->AccountId>0){
+			$client=CompteClient::where('id',$rendezvous->AccountId)->first();
+			$adresse=$client->adresse1.' - '.$client->zip;
 
-		$client=CompteClient::where('id',$rendezvous->AccountId)->first();
-		$adresse=$client->adresse1.' - '.$client->zip;
+			if($client->id==1 && $id!=1){
+				$client=DB::table('CRM_CompteCLient')->where('Id_Salesforce',$rendezvous->AccountId)->first();
+				$rue = $client->Rue ?? '' ;
+				$zip =$client->postalCode ?? '';
+				$adresse=$rue.' '.$zip;
+			}
 
-		if($client->id==1 && $id!=1){
-			$client=DB::table('CRM_CompteCLient')->where('Id_Salesforce',$rendezvous->AccountId)->first();
-			$rue = $client->Rue ?? '' ;
-			$zip =$client->postalCode ?? '';
-			$adresse=$rue.' '.$zip;
+		}else{
+			$client=null;
+			$adresse='';
 		}
-
 
 		return view('rendezvous.show',compact('rendezvous','client','adresse'));
 	}
@@ -78,8 +85,11 @@ class RendezVousController extends Controller
 	public function print($id)
 	{
 		$rendezvous=RendezVous::find($id);
-		$client=CompteClient::find($rendezvous->AccountId);
-
+		if($rendezvous->AccountId>0){
+			$client=CompteClient::find($rendezvous->AccountId);
+		}else{
+			$client=null;
+		}
 		return view('rendezvous.print',compact('rendezvous','client'));
 	}
 
@@ -123,12 +133,12 @@ class RendezVousController extends Controller
 		]);
 
 		$rendezvous->save();
-
+		if($request->input('AccountId') > 0){
 		$client=CompteClient::find($rendezvous->AccountId);
 
 		$rendezvous->Account_Name=$client->Nom;
 		$rendezvous->save();
-
+		}
 
 
 		if ($request->hasFile('files')) {
@@ -188,17 +198,22 @@ class RendezVousController extends Controller
 	{
  		$rv = RendezVous::find($id);
 
+		$previousUrl = url()->previous();
+
 		if ($rv) {
 			$client_id=$rv->AccountId;
 			$rv->delete();
 
-			$previousUrl = url()->previous();
-
-			if (str_contains($previousUrl, '/show/' . $id)) {
+			if (str_contains($previousUrl, '/show/' . $id) && $client_id >0) {
 				return redirect()->route('fiche',$client_id)->with('success', 'Supprimé avec succès');
 			}
 		}
 
-		return back()->with('success', 'Supprimé avec succès');
+		if (str_contains($previousUrl, 'exterieurs') || $client_id ==0) {
+			return redirect()->route('agenda')->with('success', 'Supprimé avec succès');
+		}
+
+		return redirect()->route('agenda')->with('success', 'Supprimé avec succès');
+		//return back()->with('success', 'Supprimé avec succès');
 	}
 } // end class

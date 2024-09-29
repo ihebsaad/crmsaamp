@@ -118,7 +118,7 @@ class GEDService
 		return $response;
 	}
 
-	public static function editItem($itemId, $attachment, $id,$type)
+	public static function editItem($itemId, $attachment, $id, $type)
 	{
 
 		// Récupérer le contenu du fichier et le nom du fichier
@@ -164,18 +164,16 @@ class GEDService
 			// Traitement de la réponse de l'API
 			$data = json_decode($response, true);
 			if ($data && $data['success'] === true) {
-				if($type=='client')
+				if ($type == 'client')
 					return redirect()->route('compte_client.folder', ['id' => $id])->with(['success' => "Le document a été mis à jour avec succès. "]);
 				else
-					return redirect()->route('offres.show',$id)->with(['success' => "Le document a été mis à jour avec succès. "]);
-
+					return redirect()->route('offres.show', $id)->with(['success' => "Le document a été mis à jour avec succès. "]);
 			} else {
 
-				if($type=='client')
+				if ($type == 'client')
 					return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Erreur lors de la mise à jour du document."]);
 				else
-					return redirect()->route('offres.show',$id)->withErrors(['msg' => "Erreur lors de la mise à jour du document."]);
-
+					return redirect()->route('offres.show', $id)->withErrors(['msg' => "Erreur lors de la mise à jour du document."]);
 			}
 		}
 	}
@@ -480,6 +478,15 @@ class GEDService
 			case 8:
 				$typeDoc = "RIB";
 				break;
+			case 9:
+				$typeDoc = "AEX";
+				break;
+			case 10:
+				$typeDoc = "AUTORISATION DE DECLARATION EN DOUANE";
+				break;
+			case 11:
+				$typeDoc = "QUALITE";
+				break;
 		}
 
 		$subfolderPath = "DOCUMENTS OUVERTURE DE COMPTE/$clientId/$typeDoc"; //
@@ -683,7 +690,7 @@ class GEDService
 		}
 
 		// Téléchargement du fichier dans le sous-dossier nouvellement créé
-		$Path = "DOCUMENTS OFFRES DE PRIX/".$clientId."/".$offreId;
+		$Path = "DOCUMENTS OFFRES DE PRIX/" . $clientId . "/" . $offreId;
 		foreach ($_FILES['files']['tmp_name'] as $key => $tmp_name) {
 			$fileName = $_FILES['files']['name'][$key];
 			$fileType = $_FILES['files']['type'][$key];
@@ -713,17 +720,16 @@ class GEDService
 
 			if ($err) {
 				//echo "Erreur cURL : " . $err;
-				\Log::error("Erreur cURL de telechargement GED". $err);
+				\Log::error("Erreur cURL de telechargement GED" . $err);
 				//return back()->withErrors(['msg' => $err]);
-				return redirect()->route('offres.client_list', ['id' => $id])->withErrors(['msg' => "Erreur cURL de telechargement GED". $err]);
+				return redirect()->route('offres.client_list', ['id' => $id])->withErrors(['msg' => "Erreur cURL de telechargement GED" . $err]);
 			} else {
 				//echo "Fichier téléchargé avec succès";
 				//return back()->with('success', ' Fichier téléchargé avec succès');
-				\Log::info(" telechargement GED offre avec succes".$Path);
+				\Log::info(" telechargement GED offre avec succes" . $Path);
 
 				//return redirect()->route('offres.folder', ['id' => $id])->with(['success' => "Fichier téléchargé avec succès "]);
 			}
 		}
 	}
-
 }

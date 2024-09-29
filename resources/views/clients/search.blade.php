@@ -21,13 +21,18 @@
                 <a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter un prospect</a><div class="clearfix"></div>
                 <form action="{{route('search')}}">
                     <div class="row pt-1">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="">Partie du nom</label>
                                 <input type="" class="form-control" id="" placeholder="" name="Nom" value="{{ $request->Nom ?? '' }}">
                             </div>
                         </div>
-
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="">Client ID</label>
+                                <input type="number" class="form-control" id="client_id" placeholder="" name="client_id" value="{{ $request->client_id ?? '' }}">
+                            </div>
+                        </div>
                         <div class="col-md-6 pt-1">
                             <div class="form-check form-check-inline mb-3 mt-4">
                                 <input class="form-check-input mt-2" type="radio" id="tous" value="0" name="type" @if($request->type==0 || $request->type=='' ) checked @endif  >

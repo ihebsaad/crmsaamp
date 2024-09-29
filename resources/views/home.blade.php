@@ -28,7 +28,8 @@
     #stats2 tr:first-child,
     #stats3 tr:first-child,
     #stats4 tr:first-child,
-    #stats5 tr:first-child {
+    #stats5 tr:first-child,
+    #stats6 tr:first-child {
         background-color: cornsilk;
     }
 
@@ -237,6 +238,38 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-12 col-sm-12 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Clients inactifs</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <span class=" mr-2">Inactif depuis :</span><input type="number" class="form-control mb-20" id="nb_mois" onchange="update_stats();" style="max-width:70px"  value="2"/> mois
+                    </div>
+                </div>
+                <div class="table-container mn5">
+                    <table class="table table-bordered table-striped mb-40">
+                        <thead>
+                            <tr id="headtable">
+                                <th class="">Client</th>
+                                <th class="text-center">Dernière facture</th>
+                                <th class="text-center">{{ date('Y'); }}</th>
+                                <th class="text-center">{{ date('Y')-1; }}</th>
+                                <th class="text-center">{{ date('Y')-2; }}</th>
+                                <th class="text-center">{{ date('Y')-3; }}</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stats6">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -246,6 +279,7 @@
         var agence = $('#agence').val();
         var user = ($('#user_id').val());
         var representant = ($('#commercial').find(':selected').data('id'));
+        var nb_mois = $('#nb_mois').val();
         if (typeof representant === 'undefined') {
             representant = $('#commercial').val();
         }
@@ -264,7 +298,7 @@
                 user: representant,
             },
             success: function(data) {
-                console.log(data);
+                //onsole.log(data);
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
@@ -293,7 +327,7 @@
                 user: representant,
             },
             success: function(data) {
-                console.log(data);
+                //console.log(data);
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
@@ -320,7 +354,7 @@
                 user: user,
             },
             success: function(data) {
-                console.log(data);
+                //console.log(data);
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
@@ -346,7 +380,7 @@
                 user: user,
             },
             success: function(data) {
-                console.log(data);
+                //console.log(data);
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
@@ -374,7 +408,7 @@
                 user: user,
             },
             success: function(data) {
-                console.log(data);
+                //console.log(data);
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
@@ -387,6 +421,30 @@
                     html += '<tr><td class="text">' + item.Agence + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
                 });
                 $("#stats5").html(html);
+            }
+        });
+
+
+        $.ajax({
+            url: "{{ route('stats_clients_inactifs') }}",
+            method: "get",
+            data: {
+                _token: _token,
+                mois: nb_mois,
+                user: representant,
+            },
+            success: function(data) {
+                console.log('stats 6 :'+data);
+                var html = '';
+                data.forEach(item => {
+                    let mois = item.annee_mois.split(' - ')[1]; // Récupérer le mois
+                    mois = mois.length === 1 ? '0' + mois : mois; // Ajouter un zéro si le mois est à un seul chiffre
+                    let annee = item.annee_mois.split(' - ')[0]; // Récupérer l'année
+                    let annee_mois = mois + '/' + annee; // Formater comme MM/YYYY
+                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/'+item.id : '#'
+                    html += '<tr><td class="text"><a href='+link+'>' + item.nom + '</a></td><td class="text-center">' + annee_mois + '</td><td class="text-center">' + item.N + '</td><td class="text-center">' + item.N_1 + '</td><td class="text-center">' + item.N_2 + '</td><td class="text-center">' + item.N_3 + '</td></tr>';
+                });
+                $("#stats6").html(html);
             }
         });
 

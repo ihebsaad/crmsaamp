@@ -100,9 +100,12 @@
                                     5 => "KBIS DE MOINS DE 3 MOIS OU REPERTOIRE DES METIERS",
                                     6 => "DECLARATION DEXISTENCE AUPRES DE LA GARANTIE",
                                     7 => "LETTRE DE FUSION",
-                                    8 => "RIB"
+                                    8 => "RIB",
+                                    9 => "AEX",
+                                    10 => "AUTORISATION DE DECLARATION EN DOUANE",
+                                    11 => "QUALITE"
                                 ] as $value => $label)
-                                    @if(!in_array($label, $folderNames))
+                                    @if(!in_array($label, $folderNames) || $value==11 )
                                         <option value="{{ $value }}">{{ $label }}</option>
                                     @endif
                                 @endforeach
@@ -112,9 +115,6 @@
                                 <button type="submit" class="btn-primary btn mt-4 ml-5">Ajouter</button>
                             </div>
                     </div>
-
-
-
 
                 </form>
 

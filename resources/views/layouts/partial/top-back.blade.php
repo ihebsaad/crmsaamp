@@ -1,5 +1,6 @@
 @php
 $user = auth()->user();
+$data=  DB::select ("  CALL `sp_affiche_cours`(); ");
 @endphp
 <style>
    .navbar-nav small {
@@ -28,6 +29,28 @@ $user = auth()->user();
       overflow-y: auto; /* Activez le défilement vertical si le contenu dépasse la hauteur définie */
       width:100%;
     }
+    .navbar small{
+      color:black;
+    }
+    .tendances{
+      list-style:none;
+      line-height:8px;
+      font-size:7px;
+      padding-left:0px!important;
+      padding-top:5px!important;
+    }
+
+@media (min-width: 1281px) {
+ .hidepc{
+  display:none;
+  }
+}
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .hidepc{
+  display:none;
+  }
+}
+
  </style>
 
  <!-- Topbar -->
@@ -40,7 +63,17 @@ $user = auth()->user();
 
    <!-- Topbar Navbar -->
    <div class="navbar-nav ml-5 mr-3 hidemobile">
+    <div id="gold" class="pb-10 ml-5">{{__("msg.Gold")}}</div><br><small>{{$data[0]->cours_au}}</small><div id="silver" class="pb-10">{{ __("msg.Silver")}}</div><br><small>{{$data[0]->cours_ag}}</small><div id="platine" class="pb-10">Plat</div><br><small>{{$data[0]->cours_pt}}</small><div id="pallad" style="color:black" class="pb-10">Pall</div><br><small>{{$data[0]->cours_pd}}</small>
    </div>
+
+   <div class="  hidepc hidetablette" >
+    <ul class="tendances"   >
+      <li> {{__("msg.Gold")}} - <small>{{$data[0]->cours_au}}</small> </li>
+      <li> {{__("msg.Silver")}} - <small>{{$data[0]->cours_ag}}</small> </li>
+      <li> Platine - <small>{{$data[0]->cours_pt}}</small> </li>
+      <li> Palladium - <small>{{$data[0]->cours_pd}}</small> </li>
+    </ul>
+  </div>
    <div class="navbar-nav ml-auto">
 
      <!-- Nav Item - Messages -->
