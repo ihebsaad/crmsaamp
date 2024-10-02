@@ -72,7 +72,7 @@
     <div class="col-lg-12 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Dossier du client {{$client->id}} - {{$client->Nom}}</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Dossier du client {{$client->Nom}} - {{$client->cl_ident}}</h6>
             </div>
             <div class="card-body" style="min-height:300px">
             <h5 class="black">Ajouter des documents</h5>
@@ -84,12 +84,13 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <label for="files">Sélectionnez des fichiers : (obligatoirement PDF)</label>
-                            <input class="form-control" type="file" id="files" name="files[]" multiple required accept="application/pdf">
+                            <input class="form-control" type="file" id="files" name="files[]" multiple required accept="application/pdf"><br>
+                            <label class="text-danger">(Maximum 5 documents par dossier)</label>
                         </div>
                         @php
                             $folderNames = is_array($folders) && !empty($folders) ? array_column($folders, 'name') : [];
                         @endphp
-                        <div class="col-md-4">
+                        <div class="col-md-5">
                             <label>Type de depôt :</label>
                             <select class="form-control" name="type">
                                 @foreach([
@@ -105,13 +106,13 @@
                                     10 => "AUTORISATION DE DECLARATION EN DOUANE",
                                     11 => "QUALITE"
                                 ] as $value => $label)
-                                    @if(!in_array($label, $folderNames) || $value==11 )
+                                    @if(!in_array($label, $folderNames) || $value==11 || 1 )
                                         <option value="{{ $value }}">{{ $label }}</option>
                                     @endif
                                 @endforeach
                             </select>
                         </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <button type="submit" class="btn-primary btn mt-4 ml-5">Ajouter</button>
                             </div>
                     </div>
@@ -212,6 +213,25 @@
                             //window.location.href = `downloadItem.php?id=${itemId}`;
                             window.location.href =`https://crm.mysaamp.com/download/${itemId}`;
                         }
+
+                        function countFiles(itemId) {
+
+                            $.ajax({
+                                url: `https://crm.mysaamp.com/count_files/${itemId}`,
+                                method: "get",
+                                data: {  _token: _token,cl_id:cl_id,mois:mois},
+                                success:function(data){
+                                    console.log(data);
+                                    var html='';
+                                    data.forEach(item => {
+                                        html+='<tr><td>'+item.metier+'</td><td>'+item.N_3+'</td><td>'+item.N_2+'</td><td>'+item.N_1+'</td><td>'+item.N+'</td></tr>';
+                                    });
+                                    $("#stats").html(html);
+                                }
+                            });
+
+                        }
+
                     <?php } ?>
                 </script>
 

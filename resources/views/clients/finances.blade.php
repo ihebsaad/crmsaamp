@@ -19,7 +19,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">État financier du client {{$client->id}} - {{$client->Nom}} </h6>
+                <h6 class="m-0 font-weight-bold text-primary">État financier du client {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
                 <a href="{{route('fiche',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-circle"></i> Fiche</a><!-- <a href="{{route('phone',['id'=>$client->id])}}"  class="btn btn-primary mb-3 float-right"><i class="fas fa-phone-alt"></i> Télephonie</a>-->

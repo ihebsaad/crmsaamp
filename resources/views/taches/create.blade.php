@@ -64,8 +64,12 @@
                                 <label for="Type">Type:</label>
                                 <select    id="Type" class="  form-control" name="Type"   >
                                     <option></option>
-                                    <option  value="Acompte / Demande de paiement">Acompte / Demande de paiement</option>
                                     <option  value="Appel téléphonique">Appel téléphonique</option>
+                                    <option  value="Remise de commande">Remise de commande</option>
+                                    <option  value="Suivi client">Suivi client</option>
+                                    <option  value="Autre">Autre</option>
+<!--
+                                    <option  value="Acompte / Demande de paiement">Acompte / Demande de paiement</option>
                                     <option  value="Avoir">Avoir</option>
                                     <option  value="Bordereau achat">Bordereau achat</option>
                                     <option  value="Bon de réception">Bon de réception</option>
@@ -81,11 +85,8 @@
                                     <option  value="Offre de prix">Offre de prix</option>
                                     <option  value="Ordre de Bourse sur le Fixing">Ordre de Bourse sur le Fixing</option>
                                     <option  value="Prise de commande">Prise de commande</option>
-                                    <option  value="Remise de commande">Remise de commande</option>
-                                    <option  value="Suivi client">Suivi client</option>
                                     <option  value="Vérification comptable interne">Vérification comptable interne</option>
-                                    <option  value="Virement">Virement</option>
-                                    <option  value="Autre">Autre</option>
+                                    <option  value="Virement">Virement</option>-->
                                 </select><br><br>
                             </div>
                         </div>

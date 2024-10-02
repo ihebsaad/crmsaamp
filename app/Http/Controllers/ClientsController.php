@@ -92,6 +92,24 @@ class ClientsController extends Controller
 	public function fiche($id)
 	{
 		$client=CompteClient::find($id);
+		$users_id=DB::table('users')->where('client_id',$client->cl_ident)->get();
+
+		$users_ids = DB::table('users')
+			->where('client_id', $client->cl_ident)
+			->pluck('id'); // Get only user IDs
+
+		// Get the latest login time from the user_logins table for these users
+		$lastLogin = DB::table('user_logins')
+			->whereIn('user_id', $users_ids)
+			->orderBy('login_at', 'desc') // Order by login_at descending
+			->first(); // Get the most recent record
+		$login='';
+		if ($lastLogin) {
+			$login= "Dernière connexion à MySaamp :  " .  date('d/m/Y H:i', strtotime($lastLogin->login_at));
+		} else {
+			$login= "Pas de connexion à mysaamp";
+		}
+
 		$contacts=$retours =$taches=array();
 		$representants = DB::table('representant')->get();
 
@@ -213,7 +231,7 @@ class ClientsController extends Controller
 		->where('Started_at', '<', $now)
 		->orderBy('Started_at', 'desc')
 		->get();
-		return view('clients.fiche',compact('client','contacts','retours','Proch_rendezvous','Anc_rendezvous','taches','stats','commandes','agence_name','commercial','support'));
+		return view('clients.fiche',compact('client','contacts','retours','Proch_rendezvous','Anc_rendezvous','taches','stats','commandes','agence_name','commercial','support','login'));
 	}
 
 
@@ -290,8 +308,9 @@ class ClientsController extends Controller
 		$type= $request->get('type');
 		$cl_ident= $request->get('cl_ident');
 		$id= $request->get('id');
+		$files = $request->file('files');
 
-		$result=GEDService::Account($cl_ident,$type,$id);
+		$result=GEDService::Account($cl_ident,$type,$id,$files);
 		return $result;
 	}
 
@@ -352,6 +371,12 @@ class ClientsController extends Controller
 			\Log::info('GED folder show ' );
 		}
 		return view('clients.folders',compact('folders','folderName','folderContent','parent','files','folderId','client_id'));
+	}
+
+	public function count_files($folderId)
+	{
+		$count=GEDService::countFiles($folderId);
+		return $count;
 	}
 
 	public function download($id)

@@ -171,13 +171,15 @@
                             div.className += 'col-sm-2 ';
                             div.className += 'mb-3 ';
                             div.className += 'content-item';
+                            const itemNameEscaped = item.name.replace(/'/g, "\\'");
+
                             div.innerHTML = `
                                 <div class="file" onclick="viewItem(${item.id})"></div>
                                 <div class="file-title"> ${item.name}</div>
                                 <div>
                                     <span onclick="viewItem(${item.id})"><img class="view mr-2" title="Visualiser" width="25" src="{{ URL::asset('img/view.png')}}"></span>
                                     <span onclick="downloadItem('${item.id}')"><img class="download mr-2" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
-                                    <span onclick="editItem('${item.id}','${item.name}')"><img class="replace" title="Remplacer" width="28" src="{{ URL::asset('img/edit-file.png')}}"></span>
+                                    <span onclick="editItem('${item.id}','${itemNameEscaped}')"><img class="replace" title="Remplacer" width="28" src="{{ URL::asset('img/edit-file.png')}}"></span>
                                 </div>
                                 `;
                             return div;

@@ -53,6 +53,22 @@ if (is_array($commandes) || is_object($commandes)) {
         margin-bottom: 5px;
         font-size:8px
     }
+    #ModalTrading h2{
+        font-size:16px!important;
+    }
+    #ModalTrading h2{
+        font-size:16px!important;
+    }
+    #ModalTrading th  {
+        background-color:#e7d686;
+    }
+    @media (min-width: 1025px){
+        #ModalTrading .modal-content{
+            width:800px!important;
+            /*margin-left:10%;*/
+        }
+    }
+
 </style>
 <div class="row">
 
@@ -60,7 +76,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
         <div class="card shadow mb-1">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Fiche du client {{$client->id}} - {{$client->Nom}} - {{$client->cl_ident}} </h6>
+                <h6 class="m-0 font-weight-bold text-primary">Fiche du client : {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
             <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a>
@@ -69,7 +85,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         <span class="fa fa-fw fa-trash-alt"></span> Supprimer
                     </a>
                 @endif
-                @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
+                @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a>  <a  href="#" data-toggle="modal" data-target="#ModalTrading" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-coins"></i> Trading</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
 
                 <div class="clearfix"></div>
                 <form id="">
@@ -164,7 +180,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         </div>
                     </div>
                     <div class="row pt-1">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="">
                                 <label for="Phone">Télephone:</label>
                                 <h6>{{$client->Phone ??  $client->Tel}}</h6>
@@ -185,11 +201,14 @@ if (is_array($commandes) || is_object($commandes)) {
                             </div>
                         </div>
                         -->
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="">
                                 <label for="">Site Web:</label>
                                 <h6>{{$client->url}}</h6>
                             </div>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <b class="float-right text-info " ><i>{{$login}}</i></b>
                         </div>
                         <!--
                         <div class="col-md-4">
@@ -483,6 +502,31 @@ if (is_array($commandes) || is_object($commandes)) {
                 </div>
 
 
+
+                <div class="modal fade" id="ModalTrading" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document" style="width: 75%;margin: 0 auto;">
+                        <div class="modal-content" >
+                            <div class="modal-header">
+                                <h5 class="modal-title text-center">Trading du client</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div id="tot" class="row mt-2 mb-2"></div>
+					            <div id="solde" class="row"></div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Fermer</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
 
@@ -687,5 +731,27 @@ if (is_array($commandes) || is_object($commandes)) {
                 }
             });
         }
+
+        function load_data()
+        {
+	        var _token = $('input[name="_token"]').val();
+	        $.ajax({
+                url: "https://mysaamp.com/solde/1/{{$client->cl_ident}}",
+                method: "get",
+                dataType: "json", // Use jsonp to bypass CORS
+                //data: {  _token: _token},
+                success:function(data){
+                    $("#solde").html(data.solde);
+                    $("#tot").html(data.tot);
+                    $("#trading").html(data.trading+' €');
+                    $("#lots").html(data.lots+' €');
+                    $(".total").val(data.total);
+                    $("#weight").html(data.weight+' €');
+					console.log('data : '+data);
+                }
+            });
+        }
+
+        load_data();
     </script>
     @endsection

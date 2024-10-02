@@ -316,6 +316,23 @@ class GEDService
 		}
 	}
 
+	// calculer le nombre de fichiers (à tester)
+	public static function countFiles($folderId)
+	{
+		// URL de l'API pour récupérer les sous-dossiers
+		$apiUrl = "https://ged.maileva.com/api/document/childrenOf/$folderId?p=$folderId";
+		$response = self::curlExecute($apiUrl);
+
+		// Décodage de la réponse JSON
+		$data = json_decode($response, true);
+		if ($data !== null && $data['success'] === true) {
+			\Log::info('getFolderContent ' . json_encode($response));
+
+			return count($data['data']);
+
+		}
+	}
+
 	public static function downloadItem($itemId)
 	{
 		$headers = array(
@@ -379,7 +396,7 @@ class GEDService
 
 
 	// OUVERTURE DE COMPTE
-	public static function Account($clientId, $type, $id)
+	public static function Account($clientId, $type, $id, $files)
 	{
 
 		// URL de l'API pour récupérer les sous-dossiers
@@ -529,50 +546,44 @@ class GEDService
 		}
 
 		// Téléchargement du fichier dans le sous-dossier nouvellement créé
-		$Path = "DOCUMENTS OUVERTURE DE COMPTE/$clientId/$typeDoc";
-		foreach ($_FILES['files']['tmp_name'] as $key => $tmp_name) {
-			$fileName = $_FILES['files']['name'][$key];
-			$fileType = $_FILES['files']['type'][$key];
-			$filePath = $_FILES['files']['tmp_name'][$key];
+		$subfolderPath = "DOCUMENTS OUVERTURE DE COMPTE/$clientId/$typeDoc";
+		foreach ($files as $file) {
+			$fileName = $file->getClientOriginalName();
+			$fileType = $file->getMimeType();
+			$filePath = $file->getPathname();
 
 			if ($fileType == 'application/pdf') {
-				$file = new \CURLFile($filePath, $fileType, $fileName);
+				$curlFile = new \CURLFile($filePath, $fileType, $fileName);
 				$postFields = array(
-					'file' => $file,
-					'path' => $Path
+					'file' => $curlFile,
+					'path' => $subfolderPath
 				);
-			}
-			$curl = curl_init();
-			curl_setopt_array($curl, array(
-				CURLOPT_URL => 'https://ged.maileva.com/api/document/',
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_POST => true,
-				CURLOPT_POSTFIELDS => $postFields,
-				CURLOPT_HTTPHEADER => array(
-					'Auth-Token: ' . self::getToken()
-				),
-				CURLOPT_SSL_VERIFYPEER => false
-			));
 
-			$response = curl_exec($curl);
-			$err = curl_error($curl);
-			curl_close($curl);
+				$curl = curl_init();
+				curl_setopt_array($curl, array(
+					CURLOPT_URL => 'https://ged.maileva.com/api/document/',
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POST => true,
+					CURLOPT_POSTFIELDS => $postFields,
+					CURLOPT_HTTPHEADER => array(
+						'Auth-Token: ' . self::getToken()
+					),
+					CURLOPT_SSL_VERIFYPEER => false
+				));
 
-			if ($err) {
-				//echo "Erreur cURL : " . $err;
-				\Log::error("Erreur cURL de telechargement GED");
-				//return back()->withErrors(['msg' => $err]);
-				return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Erreur cURL de telechargement GED"]);
-			} else {
-				//echo "Fichier téléchargé avec succès";
-				//return back()->with('success', ' Fichier téléchargé avec succès');
-				\Log::info(" telechargement GED avec succes");
+				$response = curl_exec($curl);
+				$err = curl_error($curl);
+				curl_close($curl);
 
-				return redirect()->route('compte_client.folder', ['id' => $id])->with(['success' => "Fichier téléchargé avec succès "]);
+				if ($err) {
+					\Log::error("Erreur cURL de téléchargement GED pour le fichier : $fileName");
+					return redirect()->route('compte_client.folder', ['id' => $id])->withErrors(['msg' => "Erreur cURL de téléchargement GED pour le fichier $fileName"]);
+				}
 			}
 		}
-	}
 
+		return redirect()->route('compte_client.folder', ['id' => $id])->with(['success' => "Fichiers téléchargés avec succès"]);
+	}
 
 
 	// Ajout document offres
