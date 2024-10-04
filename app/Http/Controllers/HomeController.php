@@ -130,6 +130,41 @@ class HomeController extends Controller
 
 	}
 
+	public function print_agenda(Request $request)
+	{
+		$user=$request->get('user');
+		$now = Carbon::now();
+		$mois=date('Y-m');
+
+		if($user>0){
+			$User=User::find($user);
+
+			$rendezvous=RendezVous::/*where(function($q) use ($now,$user,$User) {
+				$q->where('user_id',$user)
+				->orWhere('Attribue_a',$User->name.' '.$User->lastname);
+			})*/
+			where('user_id', $user)
+			->where('Started_at', 'like',  $mois. '%')
+ 			->orderBy('Started_at', 'asc')
+			->orderBy('heure_debut','asc')
+			->get();
+
+		}else{
+			$rendezvous=RendezVous::/*where(function($q) use ($now,$user,$User) {
+				$q->where('user_id',$user)
+				->orWhere('Attribue_a',$User->name.' '.$User->lastname);
+			})*/
+			where('user_id', auth()->user()->id)
+			->where('Started_at', 'like',  $mois. '%')
+ 			->orderBy('Started_at', 'asc')
+			->orderBy('heure_debut','asc')
+			->get();
+		}
+
+		return view('rendezvous.print_list',compact('rendezvous','user'));
+
+	}
+
 
 	public function rendesvous_ext(Request $request)
 	{

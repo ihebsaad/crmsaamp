@@ -141,8 +141,8 @@ class ClientsController extends Controller
 		$stats=$commandes=null;
 
 		if($client->cl_ident!=''){
-			$taches=Tache::where('mycl_id',$client->cl_ident)->get();
-
+			//$taches=Tache::where('mycl_id',$client->cl_ident)->get();
+			$taches=self::getClientTasks($client->cl_ident);
 			try{
 
 				DB::select("SET @p0=$client->cl_ident ;");
@@ -285,12 +285,31 @@ class ClientsController extends Controller
 		if ($request->has('zip') && $request->zip) {
 			$query->whereRaw("TRIM(zip) LIKE ?", [trim($request->zip) . '%']);
 		}
-
+/*
 		$tri = $request->get('tri');
 		if ($tri == 1) {
 			$query->orderBy('Nom');
 		} elseif ($tri == 2) {
 			$query->orderBy('pays_code')->orderBy('ville');
+		}
+*/
+		$sort = $request->get('sort', 'Nom'); // Default sort by 'Nom'
+		$direction = $request->get('direction', 'asc'); // Default direction 'asc'
+
+		// Map request sort values to database column names
+		switch ($sort) {
+			case 'ville':
+				$query->orderBy('ville', $direction);
+				break;
+			case 'agence':
+				$query->orderBy('agence_ident', $direction);
+				break;
+			case 'etat_id':
+				$query->orderBy('etat_id', $direction);
+				break;
+			default:
+				$query->orderBy('Nom', $direction);
+				break;
 		}
 
 		$clients = $query->get()->take(1000);
@@ -371,6 +390,72 @@ class ClientsController extends Controller
 			\Log::info('GED folder show ' );
 		}
 		return view('clients.folders',compact('folders','folderName','folderContent','parent','files','folderId','client_id'));
+	}
+
+
+	public function getClientTasks($client_id){
+
+		$tasks = Tache::where('mycl_id', $client_id)->get();
+
+		// Récupérer les données de prise_contact_as400 avec jointures pour récupérer les données nécessaires
+		$prises = DB::table('prise_contact_as400')
+			->where('prise_contact_as400.cl_ident',$client_id)
+			->join('client', 'prise_contact_as400.cl_ident', '=', 'client.cl_ident')
+			->join('agence', 'prise_contact_as400.agence_id', '=', 'agence.agence_ident')
+			->join('sujet', 'prise_contact_as400.id_sujet', '=', 'sujet.sujet_ident')
+			->join('type_contact', 'prise_contact_as400.id_type_contact', '=', 'type_contact.type_contact_ident')
+			->select(
+				'client.id as ID_Compte',
+				'prise_contact_as400.date_pr as DateTache',
+				DB::raw('NULL as heure_debut'), // Pas de champ dans prise_contact_as400
+				DB::raw('NULL as Status'), // Status vide pour prise_contact_as400
+				DB::raw('NULL as Priority'), // Priority vide pour prise_contact_as400
+				'type_contact.titre_type_contact as Type',
+				'client.Nom as Nom_de_compte',
+				'client.cl_ident as mycl_id',
+				DB::raw('CONCAT(
+					"Prise de contact AS400",
+					CASE
+						WHEN prise_contact_as400.nature_lot IS NOT NULL AND prise_contact_as400.nature_lot != 0
+						THEN CONCAT(", Nature du lot : ", prise_contact_as400.nature_lot)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.poids IS NOT NULL AND prise_contact_as400.poids != 0
+						THEN CONCAT(", Poids : ", prise_contact_as400.poids)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.essai IS NOT NULL AND prise_contact_as400.essai != 0
+						THEN CONCAT(", Essai : ", prise_contact_as400.essai)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.montant IS NOT NULL AND prise_contact_as400.montant != 0
+						THEN CONCAT(", Montant : ", prise_contact_as400.montant)
+						ELSE ""
+					END
+				) as Description'),
+				'agence.agence_lib as Agence',
+				'sujet.titre_sujet as Subject',
+				DB::raw('1 as as400') // Indicateur que les données viennent de prise_contact_as400
+			)
+			->orderBy('prise_contact_as400.id', 'desc')->limit(1000)
+			->get()
+			->toArray(); // Convertir en tableau
+
+		// Fusionner les tâches avec les prises de contact
+		$tasks = collect($tasks)->map(function ($task) {
+			$task = (object) $task; // Convertir en stdClass
+			$task->as400 = 0; // Ajouter un attribut pour indiquer que cela vient de Tache
+			return $task;
+		});
+
+		$prises = collect($prises);
+
+		$taches = $tasks->merge($prises);
+
+		return $taches;
 	}
 
 	public function count_files($folderId)

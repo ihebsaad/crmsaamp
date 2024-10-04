@@ -352,17 +352,20 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <tr>
                                     <td>{{$tache->Type}}</td>
                                     <td>{{ date('d/m/Y', strtotime($tache->DateTache)) }} {{$tache->heure_debut}}</td>
-                                    <td><a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a></td>
-                                    <!--<td>{{ $tache->Nom_contact }}</td>-->
+                                    <td>@if($tache->as400 == 0)<a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a>@else  {{ $tache->Subject }} @endif</td>
                                     <td style="padding-left:2px!important">
-                                    <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $statut }}</span>
-                                    <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $priority }}</span>
+                                        @if($tache->as400 == 0)
+                                        <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $statut ?? '' }}</span>
+                                        <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $priority ?? '' }}</span>
+                                        @endif
                                     </td>
                                     @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                         <td>
+                                            @if($tache->as400 == 0)
                                             <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('taches.destroy', $tache->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                                 <span class="fa fa-fw fa-trash-alt"></span>
                                             </a>
+                                            @endif
                                         </td>
                                     @endif
                                 </tr>

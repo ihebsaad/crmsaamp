@@ -105,6 +105,7 @@
 						<a href="{{route('rendezvous.create',['id'=>0])}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-calendar-day"></i>  Créer un Rendez-vous Extérieur</a>
 					@endif
 				@endif
+				<a href="{{route('print_agenda',['user'=>auth()->user()->id])}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-print"></i> Imprimer ma liste</a>
 
 				<div id="calendar" class="container-fluid"></div>
 
@@ -137,13 +138,28 @@
         $startDateTime = $start_date . ' ' . $start_time;
         $endDateTime = $end_date . ' ' . $end_time;
 
-        // Retourne l'événement pour FullCalendar
-        return [
-          'title' => $rv['Account_Name'] . ' ' . $rv['Subject'],
-          'start' => date('c', strtotime($startDateTime)), // Combinaison de la date et heure de début
-          'end' => date('c', strtotime($endDateTime)),     // Combinaison de la date et heure de fin
-          'url' => "https://crm.mysaamp.com/rendezvous/show/".$rv['id']
-        ];
+
+		$heure_debut = date('H', strtotime($startDateTime)); // Récupérer l'heure (format 24h)
+
+		// Appliquer une couleur selon l'heure de début
+		if ($heure_debut < 12) {
+			$color = '#378006'; // Couleur pour le matin
+		} else if ($heure_debut >= 12 && $heure_debut < 18) {
+			$color = '#33C3FF'; // Couleur pour le midi
+		} else {
+			$color = '#FF33A2'; // Couleur pour le soir
+		}
+		$location = $rv['Location']!='' ? ' ('.$rv['Location'].')' : ' ';
+
+		// Retourne l'événement pour FullCalendar
+		return [
+			'title' => $rv['Account_Name'] . ' ' . $rv['Subject'].' '. mb_strimwidth($rv['Description'], 0, 100, "..."),
+			'start' => date('c', strtotime($startDateTime)), // Combinaison de la date et heure de début
+			'end' => date('c', strtotime($endDateTime)),     // Combinaison de la date et heure de fin
+			'url' => "https://crm.mysaamp.com/rendezvous/show/".$rv['id'],
+			'color' => $color, // Attribuer la couleur en fonction de l'heure
+			'location' => $location,
+			];
     }, $rendezvous->toArray())); ?>;
 
 		function getInitialView() {
@@ -157,11 +173,60 @@
 			headerToolbar: {
 			left: 'prev,next today',
 			center: 'title',
-			right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+			right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
 			},
 			events: events,
 
 			eventColor: '#378006', // Optional: Customize event color
+			/*
+			eventContent: function(arg) {
+				let titleEl = document.createElement('div');
+				let locationEl = document.createElement('strong'); // Élément pour le texte en gras
+
+				// Ajouter le titre
+				titleEl.innerHTML = arg.event.title;
+
+				// Ajouter la localisation en gras
+				locationEl.innerHTML = ' ' + arg.event.extendedProps.location; // Utilisation de la localisation
+				titleEl.appendChild(locationEl);
+
+				return { domNodes: [titleEl] };
+			},
+			eventDidMount: function(info) {
+				// Ajout de l'attribut title pour afficher tout le texte au survol
+				info.el.setAttribute('title', info.event.title);
+			},
+			eventDidMount: function(info) {
+				if (info.view.type.startsWith('list')) {
+					// Utiliser HTML dans les vues de liste uniquement
+					info.el.querySelector('.fc-list-item-title').innerHTML = info.event.title + ' <strong>' + info.event.extendedProps.location + '</strong>';
+				} else {
+					// Dans les vues de grille, afficher un titre simple
+					info.el.querySelector('.fc-event-title').textContent = info.event.title;
+				}
+			},*/
+			eventDidMount: function(info) {
+				if (info.view.type.startsWith('list')) {
+					// Cible la classe correcte pour la vue liste
+					var titleEl = info.el.querySelector('.fc-list-event-title');
+					if (titleEl) {
+						titleEl.innerHTML = info.event.title + ' <strong>' + info.event.extendedProps.location + '</strong>';
+					}
+				} else {
+					// Dans les vues de grille, on peut garder le texte simple
+					var titleEl = info.el.querySelector('.fc-event-title');
+					if (titleEl) {
+						titleEl.textContent = info.event.title;
+					}
+				}
+			},
+
+			/*
+			eventContent: function(arg) {
+				return {
+					html: '<b>' + arg.event.title + '</b>' // Ici vous pouvez formater l'affichage du titre complet
+				};
+			},*/
 			//aspectRatio: 1.8, // Adjust this ratio for responsiveness
 
 			windowResize: function(view) {

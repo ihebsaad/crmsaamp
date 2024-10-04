@@ -45,7 +45,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Activité de l'agence </h6>
+                <h6 class="m-0 font-weight-bold text-primary">@if( request()->is('mestaches')) Mes Activités @else Activité de l'agence @endif</h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -75,41 +75,7 @@
                     </div>
                     @endif
                 </div>
-                <!--
-                <table id="mytable" class="table table-striped" style="width:100%">
-                    <thead>
-                        <tr id="headtable">
-                            <th>ID </th>
-                            <th>Sujet</th>
-                            <th>Contact</th>
-                            <th>Type</th>
-                            <th>Priorité</th>
-                            <th>Statut</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($taches as $tache)
-                            <tr>
-                                <td>{{ $tache->id }}</td>
-                                <td><a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a></td>
-                                <td>{{ $tache->Nom_contact }}</td>
-                                <td>{{ $tache->Type }}</td>
-                                <td>{{ $tache->Priority }}</td>
-                                <td>{{ $tache->Status }}</td>
-                                <td>{{ date('d/m/Y', strtotime($tache->DateTache)) }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
 
-
-                @php /*
-                $groupedTasks = $taches->groupBy(function($tache) {
-                return \Carbon\Carbon::parse($tache->DateTache)->translatedFormat('F Y');
-                }); */
-                @endphp
--->
                 @php
                 $groupedTasks = $taches->sortByDesc(function($tache) {
                     return \Carbon\Carbon::parse($tache->DateTache)->format('Y-m-d') . ' ' . $tache->heure_debut; // Sort by DateTache and heure_debut
@@ -156,7 +122,7 @@
                                     $color = '#40c157';$statut='Terminée';
                                     break;
                                     default:
-                                    $color = '';
+                                    $color = '';$statut='';
                                     }
 
                                     $class='';
@@ -202,7 +168,7 @@
                                             <span class="task-date">{{ \Carbon\Carbon::parse($task->DateTache)->translatedFormat(' d M') }} {{$task->heure_debut}}</span>
                                         </div>
                                         <div class="task-details">
-                                            <span style="color:black"><i class="fas fa-user-circle"></i>@if($task->Nom_de_compte !='') {{ $task->Nom_de_compte }} @else {{$client->Nom ?? ''}}  @endif - Client ID : {{ $task->mycl_id }} </span><br>
+                                            <span style="color:black"><i class="fas fa-user-circle"></i><a href="{{route('fiche',['id'=>$client->id ?? 0])}}"> @if($task->Nom_de_compte !='') {{ $task->Nom_de_compte }} @else {{$client->Nom ?? ''}}  @endif - Client ID : {{ $task->mycl_id }}</a> </span><br>
                                             <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $statut }}</span>
                                             <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $priority }}</span>
 
@@ -212,7 +178,9 @@
                                         </div>
                                         <div class="task-actions">
                                             <!-- Place for any task actions like edit, delete -->
+                                            @if($task->as400 == 0)
                                             <a href="{{ route('taches.show',['id'=>$task->id]) }}" class="btn btn-primary btn-sm "><i class="fa fa-edit"></i></a>
+                                            @endif
                                         </div>
                                     </li>
                                     @endforeach

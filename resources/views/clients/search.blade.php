@@ -21,19 +21,19 @@
                 <a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter un prospect</a><div class="clearfix"></div>
                 <form action="{{route('search')}}">
                     <div class="row pt-1">
-                        <div class="col-md-4">
+                        <div class="col-lg-3">
                             <div class="">
                                 <label for="">Partie du nom</label>
                                 <input type="" class="form-control" id="" placeholder="" name="Nom" value="{{ $request->Nom ?? '' }}">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-lg-2">
                             <div class="">
                                 <label for="">Client ID</label>
                                 <input type="number" class="form-control" id="client_id" placeholder="" name="client_id" value="{{ $request->client_id ?? '' }}">
                             </div>
                         </div>
-                        <div class="col-md-6 pt-1">
+                        <div class="col-lg-6 pt-1">
                             <div class="form-check form-check-inline mb-3 mt-4">
                                 <input class="form-check-input mt-2" type="radio" id="tous" value="0" name="type" @if($request->type==0 || $request->type=='' ) checked @endif  >
                                 <label class="form-check-label mt-2" for="tous">Tous</label>
@@ -51,12 +51,13 @@
 
                     </div>
                     <div class="row pt-1">
-                        <div class="col-md-3">
+                        <div class="col-lg-3 col-sm-6">
                             <div class="">
                                 <label for="">Adresse</label>
                                 <input type="" class="form-control" id="" placeholder="" name="adresse1" value="{{ $request->adresse1 ?? '' }}">
                             </div>
                         </div>
+                        <!--
                         <div class="col-md-3">
                             <div class="">
                                 <label for="">Liste triée par</label>
@@ -65,18 +66,18 @@
                                     <option value="2"  @if($request->tri==2) selected="selected" @endif>Distance</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
+                        </div>-->
 
 
-                    <div class="row pt-1">
-                        <div class="col-md-2">
+
+
+                        <div class="col-lg-2 col-sm-6">
                             <div class="">
                                 <label for="">Ville</label>
                                 <input type="" class="form-control" id="" placeholder="" name="ville" value="{{ $request->ville ?? '' }}">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-lg-2 col-sm-6">
                             <div class="">
                                 <label for="">Département</label>
                                 <input type="text" class="form-control" id="" placeholder="" name="zip" value="{{ $request->zip ?? '' }}">
@@ -90,10 +91,10 @@
                             </div>
                         </div>
                         -->
-                        <div class="col-md-3 pt-1">
+                        <div class="col-lg-2 col-md-12 col-sm-12 pt-1">
                             <button type="submit" class="btn btn-primary float-right mt-4"><i class="fa fa-search"></i> Recherche</button>
                         </div>
-                        <div class="col-md-3 pt-1">
+                        <div class="col-lg-2 col-md-12 col-sm-12 pt-1">
                             <button type="submit" name="print" value="true" class="btn btn-secondary float-right mt-4"  ><i class="fa fa-print"></i> Imprimer</button>
                         </div>
                     </div>
@@ -103,9 +104,30 @@
                             <!-- Liste des résultats -->
                             <div style="height: 400px;  margin-top: 20px; overflow:  auto;width:100%  ">
                                 <table class="table table-striped mb-40">
-                                    <thead >
-                                        <tr><th>Nom</th><th>Ville</th><th>Agence</th><th>Type</th></tr>
-                                    </thead>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'Nom', 'direction' => request()->direction == 'asc' ? 'desc' : 'asc'])) }}">
+                                                Nom @if(request()->sort == 'Nom')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'ville', 'direction' => request()->direction == 'asc' ? 'desc' : 'asc'])) }}">
+                                                Ville @if(request()->sort == 'ville')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'agence', 'direction' => request()->direction == 'asc' ? 'desc' : 'asc'])) }}">
+                                                Agence @if(request()->sort == 'agence')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'etat_id', 'direction' => request()->direction == 'asc' ? 'desc' : 'asc'])) }}">
+                                                Type @if(request()->sort == 'etat_id')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
+                                            </a>
+                                        </th>
+                                    </tr>
+                                </thead>
                                     <tbody>
                                         @foreach($clients as $client)
 

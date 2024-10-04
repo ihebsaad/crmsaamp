@@ -41,6 +41,7 @@ Route::get('/help', 'App\Http\Controllers\HomeController@help')->name('help');
 Route::get('/clients/phone', [HomeController::class, 'phone'])->name('phone');
 Route::get('/agenda', [HomeController::class, 'agenda'])->name('agenda');
 Route::post('/agenda', [HomeController::class, 'agenda'])->name('agenda');
+Route::get('/print_agenda', [HomeController::class, 'print_agenda'])->name('print_agenda');
 Route::get('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
 Route::post('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
 
@@ -152,6 +153,7 @@ Route::get('/stats', [StatsController::class, 'stats'])->name('stats');
 Route::get('/clients/stats', [StatsController::class, 'stats_client'])->name('stats_client');
 Route::get('/stats_commercial', [StatsController::class, 'stats_commercial'])->name('stats_commercial');
 Route::get('/stats_commercial_client', [StatsController::class, 'stats_commercial_client'])->name('stats_commercial_client');
+Route::get('/stats_commercial_client_12', [StatsController::class, 'stats_commercial_client_12'])->name('stats_commercial_client_12');
 Route::get('/stats_agence', [StatsController::class, 'stats_agence'])->name('stats_agence');
 Route::get('/stats_agence_client', [StatsController::class, 'stats_agence_client'])->name('stats_agence_client');
 Route::get('/stats_agences', [StatsController::class, 'stats_agences'])->name('stats_agences');

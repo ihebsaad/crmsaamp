@@ -80,8 +80,11 @@ if (Auth::check()) {
       <span> Clients </span>
     </a>
       <!--<hr class="sidebar-divider">-->
-
+    @if($user->user_type=='admin')
     <a class="nav-link" href="{{route('taches.index')}}" >
+    @else
+    <a class="nav-link" href="{{route('mestaches')}}" >
+    @endif
       <i class="fas fa-tasks" ></i>
       <span> Activités<div class="hidemobile"> de l'Agence</div></span>
     </a>

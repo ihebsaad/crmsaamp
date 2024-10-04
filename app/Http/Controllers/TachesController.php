@@ -31,71 +31,257 @@ class TachesController extends Controller
 	 * @return \Illuminate\Http\Response
 	 */
 
-
+	/*
 	public function index()
 	{
 		//$taches=Tache::where('id','<>',null)->limit(1000)->orderBy('id','desc')->get();
-
-/*
-		$taches=Tache::where(function ($query) {
-			$query->where('type', 'Appel téléphonique')
-				->orWhere('type', 'Envoyer email')
-				->orWhere('type', 'Envoyer courrier');
-		})->where('id','<>',null)
-		->limit(1000)->orderBy('id','desc')->get();
-		*/
-
 		$taches=Tache::limit(1000)->orderBy('id','desc')->get();
 
 		$agences = DB::table('agence')->get();
 
 		return view('taches.list',compact('taches','agences'));
 	}
+	*/
+
+	public function index()
+	{
+		// Récupérer les tâches
+		$tasks = Tache::orderBy('id', 'desc')->limit(1000)->get();
+
+		// Récupérer les données de prise_contact_as400 avec jointures pour récupérer les données nécessaires
+		$prises = DB::table('prise_contact_as400')
+			->join('client', 'prise_contact_as400.cl_ident', '=', 'client.cl_ident')
+			->join('agence', 'prise_contact_as400.agence_id', '=', 'agence.agence_ident')
+			->join('sujet', 'prise_contact_as400.id_sujet', '=', 'sujet.sujet_ident')
+			->join('type_contact', 'prise_contact_as400.id_type_contact', '=', 'type_contact.type_contact_ident')
+			->select(
+				'client.id as ID_Compte',
+				'prise_contact_as400.date_pr as DateTache',
+				DB::raw('NULL as heure_debut'), // Pas de champ dans prise_contact_as400
+				DB::raw('NULL as Status'), // Status vide pour prise_contact_as400
+				DB::raw('NULL as Priority'), // Priority vide pour prise_contact_as400
+				'type_contact.titre_type_contact as Type',
+				'client.Nom as Nom_de_compte',
+				'client.cl_ident as mycl_id',
+				DB::raw('CONCAT(
+					"Prise de contact AS400",
+					CASE
+						WHEN sujet.titre_sujet IS NOT NULL
+						THEN CONCAT(", Sujet : ", sujet.titre_sujet)
+						ELSE ""
+					END,
+					CASE
+						WHEN type_contact.titre_type_contact IS NOT NULL
+						THEN CONCAT(", Type de contact : ", type_contact.titre_type_contact)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.nature_lot IS NOT NULL AND prise_contact_as400.nature_lot != 0
+						THEN CONCAT(", Nature du lot : ", prise_contact_as400.nature_lot)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.poids IS NOT NULL AND prise_contact_as400.poids != 0
+						THEN CONCAT(", Poids : ", prise_contact_as400.poids)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.essai IS NOT NULL AND prise_contact_as400.essai != 0
+						THEN CONCAT(", Essai : ", prise_contact_as400.essai)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.montant IS NOT NULL AND prise_contact_as400.montant != 0
+						THEN CONCAT(", Montant : ", prise_contact_as400.montant)
+						ELSE ""
+					END
+				) as Description'),
+				'agence.agence_lib as Agence',
+				'sujet.titre_sujet as Subject',
+				DB::raw('1 as as400') // Indicateur que les données viennent de prise_contact_as400
+			)
+			->orderBy('prise_contact_as400.id', 'desc')->limit(1000)
+			->get()
+			->toArray(); // Convertir en tableau
+
+		// Fusionner les tâches avec les prises de contact
+		$tasks = collect($tasks)->map(function ($task) {
+			$task = (object) $task; // Convertir en stdClass
+			$task->as400 = 0; // Ajouter un attribut pour indiquer que cela vient de Tache
+			return $task;
+		});
+
+		$prises = collect($prises);
+
+		$taches = $tasks->merge($prises);
+
+		// Récupérer les agences pour la vue
+		$agences = DB::table('agence')->get();
+
+		// Retourner la vue avec les données fusionnées
+		return view('taches.list', compact('taches', 'agences'));
+	}
 
 	public function mestaches()
 	{
 
-		$taches=Tache::where('user_id',auth()->user()->id)
-		->orderBy('id','desc')
-		->get();
+		// Récupérer l'utilisateur connecté
+		$user = auth()->user();
+
+		// Vérifier si l'utilisateur est dans la table 'representant'
+		$isRepresentant = DB::table('representant')
+			->where('users_id', $user->id)
+			->exists();
+
+		// Commencer la construction de la requête pour les tâches
+		$tasks = Tache::orderBy('CRM_Tache.id', 'desc')
+			->join('client', 'CRM_Tache.mycl_id', '=', 'client.cl_ident')
+			->join('agence', 'CRM_Tache.Agence', '=', 'agence.agence_lib')
+			->select(
+				'client.id as ID_Compte',
+				'CRM_Tache.id',
+				'CRM_Tache.DateTache',
+				'CRM_Tache.heure_debut',
+				'CRM_Tache.Status',
+				'CRM_Tache.Priority',
+				'CRM_Tache.Type',
+				'client.Nom as Nom_de_compte',
+				'CRM_Tache.mycl_id',
+				'CRM_Tache.Description',
+				'agence.agence_lib as Agence',
+				'CRM_Tache.Subject',
+				DB::raw('0 as as400') // Indicateur que les données viennent de Tache
+			);
+
+		if ($isRepresentant) {
+			$id=DB::table('representant')
+			->where('users_id', $user->id)->first()->id;
+			// Si l'utilisateur est dans la table 'representant'
+			$tasks->where(function($q) use ($id) {
+				$q->where('client.commercial', '=', $id)
+				->orWhere('client.commercial_support', '=', $id);
+			});
+		} else {
+			// Si l'utilisateur n'est pas dans 'representant', filtrer par agence
+			$tasks->where(function($q) use ($user) {
+				$q->where('agence.agence_ident', '=', $user->agence_ident);
+			});
+		}
+
+		// Exécuter la requête
+		$tasks = $tasks->get();
+
+		// Récupérer les prises de contact de la table 'prise_contact_as400' avec la même logique
+		$prises = DB::table('prise_contact_as400')
+			->join('client', 'prise_contact_as400.cl_ident', '=', 'client.cl_ident')
+			->join('agence', 'prise_contact_as400.agence_id', '=', 'agence.agence_ident')
+			->join('sujet', 'prise_contact_as400.id_sujet', '=', 'sujet.sujet_ident')
+			->join('type_contact', 'prise_contact_as400.id_type_contact', '=', 'type_contact.type_contact_ident')
+			->select(
+				'client.id as ID_Compte',
+				'prise_contact_as400.date_pr as DateTache',
+				DB::raw('NULL as heure_debut'), // Pas de champ dans prise_contact_as400
+				DB::raw('NULL as Status'), // Status vide pour prise_contact_as400
+				DB::raw('NULL as Priority'), // Priority vide pour prise_contact_as400
+				'type_contact.titre_type_contact as Type',
+				'client.Nom as Nom_de_compte',
+				'client.cl_ident as mycl_id',
+				DB::raw('CONCAT(
+					"Prise de contact AS400",
+					CASE
+						WHEN sujet.titre_sujet IS NOT NULL
+						THEN CONCAT(", Sujet : ", sujet.titre_sujet)
+						ELSE ""
+					END,
+					CASE
+						WHEN type_contact.titre_type_contact IS NOT NULL
+						THEN CONCAT(", Type de contact : ", type_contact.titre_type_contact)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.nature_lot IS NOT NULL AND prise_contact_as400.nature_lot != 0
+						THEN CONCAT(", Nature du lot : ", prise_contact_as400.nature_lot)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.poids IS NOT NULL AND prise_contact_as400.poids != 0
+						THEN CONCAT(", Poids : ", prise_contact_as400.poids)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.essai IS NOT NULL AND prise_contact_as400.essai != 0
+						THEN CONCAT(", Essai : ", prise_contact_as400.essai)
+						ELSE ""
+					END,
+					CASE
+						WHEN prise_contact_as400.montant IS NOT NULL AND prise_contact_as400.montant != 0
+						THEN CONCAT(", Montant : ", prise_contact_as400.montant)
+						ELSE ""
+					END
+				) as Description'),
+				'agence.agence_lib as Agence',
+				'sujet.titre_sujet as Subject',
+				DB::raw('1 as as400') // Indicateur que les données viennent de prise_contact_as400
+			);
+
+		if ($isRepresentant ) {
+			$id=DB::table('representant')
+			->where('users_id', $user->id)->first()->id;
+			// Si l'utilisateur est dans 'representant', appliquer les mêmes filtres pour les prises de contact
+			$prises->where(function($q) use ($id) {
+				$q->where('client.commercial', '=', $id)
+				->orWhere('client.commercial_support', '=', $id);
+			});
+		} else {
+			// Sinon, filtrer par agence
+			$prises->where(function($q) use ($user) {
+				$q->where('prise_contact_as400.agence_id', '=', $user->agence_ident);
+			});
+		}
+
+		$prises = $prises->get();
+
+		// Fusionner les tâches et les prises de contact
+		$taches = collect($tasks)->merge($prises);
+
 
 
 		$agences = DB::table('agence')->get();
 
-		return view('taches.list',compact('taches','agences'));
+		return view('taches.list', compact('taches', 'agences'));
 	}
 
 
 	public function create($id)
 	{
-		$client=CompteClient::find($id);
+		$client = CompteClient::find($id);
 		$agences = DB::table('agence')->get();
 
-		return view('taches.create',compact('client','agences'));
+		return view('taches.create', compact('client', 'agences'));
 	}
 
 	public function client_list($id)
 	{
-		$client=CompteClient::find($id);
-		$taches=Tache::where('mycl_id',$client->cl_ident)->get();
-		return view('taches.list',compact('taches','client'));
+		$client = CompteClient::find($id);
+		$taches = Tache::where('mycl_id', $client->cl_ident)->get();
+		return view('taches.list', compact('taches', 'client'));
 	}
 
 	public function show($id)
 	{
-		$tache=Tache::find($id);
-		$client=CompteClient::find($tache->ID_Compte);
+		$tache = Tache::find($id);
+		$client = CompteClient::find($tache->ID_Compte);
 		$agences = DB::table('agence')->get();
 
-		return view('taches.show',compact('tache','client','agences'));
+		return view('taches.show', compact('tache', 'client', 'agences'));
 	}
 
 
 	public function update(Request $request, $id)
-    {
-        $request->validate([
-            'Subject' => 'required',
-         ]);
+	{
+		$request->validate([
+			'Subject' => 'required',
+		]);
 
 		$tache = Tache::find($id);
 		$tache->update($request->all());
@@ -104,19 +290,19 @@ class TachesController extends Controller
 		$tache->save();
 
 		return redirect()->route('taches.show', $id)
-				->with('success', 'Tâche modifiée');
+			->with('success', 'Tâche modifiée');
 	}
 
 	public function store(Request $request)
-    {
-        $request->validate([
-            'Subject' => 'required',
+	{
+		$request->validate([
+			'Subject' => 'required',
 
-        ]);
+		]);
 
-        $tache=Tache::create($request->all());
+		$tache = Tache::create($request->all());
 
-/*
+		/*
 		$client=CompteClient::find($tache->ID_Compte);
 		$agence_id=$client->agence_ident;
 		$agence_name=Agence::where('agence_ident',$agence_id)->first()->agence_lib ?? '';
@@ -126,36 +312,36 @@ class TachesController extends Controller
 
 		$tache->save();
 
-		if($tache->ID_Compte >0)
+		if ($tache->ID_Compte > 0)
 			return redirect()->route('fiche', ['id' => $tache->ID_Compte])->with(['success' => "Tâche ajoutée "]);
 
 		return redirect()->route('taches.show', $tache->id)
-		->with('success','Tache ajoutée');
+			->with('success', 'Tache ajoutée');
 	}
 
 
 	public function destroy($id)
 	{
- 		$tache = Tache::find($id);
+		$tache = Tache::find($id);
 
 		if ($tache) {
-			if(intval($tache->ID_Compte)>0)
-				$client_id=$tache->ID_Compte;
+			if (intval($tache->ID_Compte) > 0)
+				$client_id = $tache->ID_Compte;
 			else
-				$client_id=Client::where('cl_ident',$tache->mycl_id)->first();
+				$client_id = Client::where('cl_ident', $tache->mycl_id)->first();
 
 			$tache->delete();
 
 			$previousUrl = url()->previous();
 
 			if (str_contains($previousUrl, '/show/' . $id)) {
-				return redirect()->route('fiche',$client_id)->with('success', 'Supprimée avec succès');
+				return redirect()->route('fiche', $client_id)->with('success', 'Supprimée avec succès');
 			}
 		}
 
 		return back()->with('success', 'Supprimée avec succès');
 	}
-/*
+	/*
 	public function list_as400()
 	{
 		try{
@@ -265,5 +451,4 @@ class TachesController extends Controller
 		return $result;
 	}
 */
-
 } // end class

@@ -29,7 +29,8 @@
     #stats3 tr:first-child,
     #stats4 tr:first-child,
     #stats5 tr:first-child,
-    #stats6 tr:first-child {
+    #stats6 tr:first-child ,
+    #stats7 tr:first-child {
         background-color: cornsilk;
     }
 
@@ -130,6 +131,57 @@
                             </tr>
                         </thead>
                         <tbody id="stats2">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 col-sm-12 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Statistiques client sur 12 mois glissants </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-container mn5">
+                    <table class="table table-bordered table-striped mb-40">
+                        <thead>
+                            <tr id="headtable">
+                            <th class="">Client</th>
+                            <?php
+                            $mois_francais = [
+                                'Jan' => 'Janvier',
+                                'Feb' => 'Février',
+                                'Mar' => 'Mars',
+                                'Apr' => 'Avril',
+                                'May' => 'Mai',
+                                'Jun' => 'Juin',
+                                'Jul' => 'Juillet',
+                                'Aug' => 'Août',
+                                'Sep' => 'Septembre',
+                                'Oct' => 'Octobre',
+                                'Nov' => 'Novembre',
+                                'Dec' => 'Décembre'
+                            ];
+
+                            for ($i = 0; $i <= 12; $i++) {
+                                // Calculez la date en fonction du nombre de mois précédents
+                                $month_date = strtotime("-$i months");
+
+                                // Récupérez le mois (en format court) et l'année
+                                $month = date('M', $month_date);
+                                $year = date('Y', $month_date);
+
+                                // Affichez le mois en français avec l'année correspondante
+                                echo "<th class='text-center'>{$mois_francais[$month]} $year</th>";
+                            }
+                            ?>
+                            <th class="text-center">TOTAL</th>
+                        </thead>
+                        <tbody id="stats7">
 
                         </tbody>
                     </table>
@@ -341,6 +393,27 @@
                     html += '<tr><td class="text"><a href='+link+'>' + item.nom + '</a></td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
                 });
                 $("#stats2").html(html);
+            }
+        });
+
+
+        $.ajax({
+            url: "{{ route('stats_commercial_client_12') }}",
+            method: "get",
+            data: {
+                _token: _token,
+                agence: agence,
+                mois: mois,
+                user: representant,
+            },
+            success: function(data) {
+                //console.log(data);
+                var html = '';
+                data.forEach(item => {
+                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/'+item.id : '#'
+                    html += '<tr><td class="text"><a href='+link+'>' + item.nom + '</a></td><td>' + item.M + '</td><td>' + item.M_1 + '</td><td>' + item.M_2 + '</td><td>' + item.M_3 + '</td><td>' + item.M_4 + '</td><td>' + item.M_5 + '</td><td>' + item.M_6 + '</td><td>' + item.M_7 + '</td><td>' + item.M_8 + '</td><td>' + item.M_9 + '</td><td>' + item.M_10 + '</td><td>' + item.M_11 + '</td><td>' + item.M_12 + '</td><td>' + item.TOTAL + '</td></tr>';
+                });
+                $("#stats7").html(html);
             }
         });
 

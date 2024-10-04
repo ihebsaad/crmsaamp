@@ -84,6 +84,20 @@ class StatsController extends Controller
 
         return $stats;
     }
+    public static function stats_commercial_client_12(Request $request)
+    {
+        try {
+            $user_id = $request->get('user') ;
+            $mois = $request->get('mois') ?? 1;
+
+            DB::select("SET @p0=$user_id;");
+            $stats = DB::select('call `sp_stats_commercial_client_12mois`(@p0);');
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+        return $stats;
+    }
 
     public static function stats_agence(Request $request)
     {
