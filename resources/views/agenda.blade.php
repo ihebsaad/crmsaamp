@@ -86,26 +86,45 @@
 				<h6 class="m-0 font-weight-bold text-primary">@if(request()->is('exterieurs')) Rendez Vous Extérieurs @else Mon Agenda  @endif</h6>
 			</div>
 			<div class="card-body">
-				@if( auth()->user()->user_type=='admin' )
-					<form   @if(request()->is('exterieurs')) action="{{route('exterieurs')}}" @else action="{{route('agenda')}}" @endif >
+				<div class="row">
+					<div class="col-lg-5">
+
+						@if( auth()->user()->user_type=='admin' )
+							<form   @if(request()->is('exterieurs')) action="{{route('exterieurs')}}" @else action="{{route('agenda')}}" @endif >
+								<div class="row">
+									<div class="col-lg-12">
+										<span class=" mr-2">Commercial:</span>
+										<select class="form-control mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="update_user();this.form.submit();" >
+											<option  @if($user=="") selected="selected" @endif value=""></option>
+											@foreach ($representants as $rp)
+											<option @selected($user >0 && $user==$rp->users_id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
+											@endforeach
+										</select>
+									</div>
+								</div>
+							</form>
+						@else
+							@if(request()->is('exterieurs'))
+								<a href="{{route('rendezvous.create',['id'=>0])}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-calendar-day"></i>  Créer un Rendez-vous Extérieur</a>
+							@endif
+						@endif
+					</div>
+
+					<div class="col-lg-7">
+					<form  action="{{route('print_agenda')}}" >
+						<input type="hidden" name="user" value="{{$user ?? auth()->user()->id}}" id="user" >
 						<div class="row">
-							<div class="col-lg-4">
-								<span class=" mr-2">Commercial:</span>
-								<select class="form-control mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="this.form.submit();" >
-									<option  @if($user=="") selected="selected" @endif value=""></option>
-									@foreach ($representants as $rp)
-									<option @selected($user >0 && $user==$rp->users_id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
-									@endforeach
-								</select>
+							<div class="col-lg-8 col-md-6 col-sm-8 float-right  mb-2">
+								<span class=" mr-2">Mois:</span>
+								<input type="number" class="form-control" id="annee" name="annee" value="{{date('Y')}}" step="1" min="2023" max="2050" style="width:90px" >
+								<input type="number" class="form-control" id="mois" name="mois" value="{{date('m')}}" step="1" min="1" max="12" style="width:70px" >
+							</div>
+							<div class="col-lg-4 col-md-6 col-sm-4 ">
+								<button type="submit" class="btn btn-primary mb-3 mr-3 "><i class="fas fa-print"></i> Imprimer la liste</button>
 							</div>
 						</div>
 					</form>
-				@else
-					@if(request()->is('exterieurs'))
-						<a href="{{route('rendezvous.create',['id'=>0])}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-calendar-day"></i>  Créer un Rendez-vous Extérieur</a>
-					@endif
-				@endif
-				<a href="{{route('print_agenda',['user'=>auth()->user()->id])}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-print"></i> Imprimer ma liste</a>
+				</div>
 
 				<div id="calendar" class="container-fluid"></div>
 
@@ -120,7 +139,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.global.min.js" integrity="sha512-PneTXNl1XRcU6n5B1PGTDe3rBXY04Ht+Eddn/NESwvyc+uV903kiyuXCWgL/OfSUgnr8HLSGqotxe6L8/fOvwA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.js" integrity="sha512-bBl4oHIOeYj6jgOLtaYQO99mCTSIb1HD0ImeXHZKqxDNC7UPWTywN2OQRp+uGi0kLurzgaA3fm4PX6e2Lnz9jQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
-
+		function update_user(){
+			$('#user').val( $('#commercial').val());
+		}
 
         document.addEventListener('DOMContentLoaded', function() {
       	var calendarEl = document.getElementById('calendar');
@@ -177,34 +198,8 @@
 			},
 			events: events,
 
-			eventColor: '#378006', // Optional: Customize event color
-			/*
-			eventContent: function(arg) {
-				let titleEl = document.createElement('div');
-				let locationEl = document.createElement('strong'); // Élément pour le texte en gras
+			//eventColor: '#378006', // Optional: Customize event color
 
-				// Ajouter le titre
-				titleEl.innerHTML = arg.event.title;
-
-				// Ajouter la localisation en gras
-				locationEl.innerHTML = ' ' + arg.event.extendedProps.location; // Utilisation de la localisation
-				titleEl.appendChild(locationEl);
-
-				return { domNodes: [titleEl] };
-			},
-			eventDidMount: function(info) {
-				// Ajout de l'attribut title pour afficher tout le texte au survol
-				info.el.setAttribute('title', info.event.title);
-			},
-			eventDidMount: function(info) {
-				if (info.view.type.startsWith('list')) {
-					// Utiliser HTML dans les vues de liste uniquement
-					info.el.querySelector('.fc-list-item-title').innerHTML = info.event.title + ' <strong>' + info.event.extendedProps.location + '</strong>';
-				} else {
-					// Dans les vues de grille, afficher un titre simple
-					info.el.querySelector('.fc-event-title').textContent = info.event.title;
-				}
-			},*/
 			eventDidMount: function(info) {
 				if (info.view.type.startsWith('list')) {
 					// Cible la classe correcte pour la vue liste

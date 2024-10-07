@@ -114,10 +114,12 @@ class OffresController extends Controller
 
 		$offre = Offre::create([
 			'cl_id' => $request->input('cl_id') ?? 0,
+			'mycl_id' => $request->input('mycl_id') ?? 0,
 			'Nom_offre' => $request->input('Nom_offre'),
 			'Date_creation' => $request->input('Date_creation'),
 			'Produit_Service' => $request->input('Produit_Service'),
 			'Description' => $request->input('Description'),
+			'user_id' => $request->input('user_id'),
 			'nom_compte' => $request->input('nom_compte') ?? '',
 			// Other fields as necessary
 		]);

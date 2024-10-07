@@ -99,7 +99,7 @@
                     @method('PUT')
 
                     <div class="row pt-1">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="">
                                 <label for="Nom_offre">Nom:</label>
                                 <h6>{{$offre->Nom_offre}}</h6><!--
@@ -119,6 +119,11 @@
                         </div>
 
                         <div class="col-md-3">
+                            <label for="Type">Type:</label>
+                            <h6>{{$offre->Type}}</h6>
+                        </div>
+
+                        <div class="col-md-3">
                             <div >
                                 <label for="Produit_Service">Produit Service:</label>
                                 <h6>{{$offre->Produit_Service}}</h6>
@@ -129,14 +134,15 @@
 
 
                     <div class="row pt-1">
-                        <div class="col-md-4">
+
+                        <div class="col-md-6">
                             <div class="">
                                 <label for="Description">Description:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{$offre->Description}}</textarea><br><br>
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             @if($offre->fichier!= null)
                                 @php $fileNames = unserialize($offre->fichier); @endphp
                                 <div class="">

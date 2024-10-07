@@ -25,6 +25,7 @@
                 <form action="{{ route('rendezvous.store') }}" method="post"   enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="AccountId" value="{{$client->id ?? 0}}" >
+                    <input type="hidden" name="mycl_id" value="{{$client->id ?? 0}}" >
                     <input type="hidden" name="created_by" value="{{auth()->user()->id}}" >
                     <div class="row pt-1">
                         <div class="col-md-4">

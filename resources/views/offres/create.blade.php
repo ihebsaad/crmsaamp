@@ -25,10 +25,11 @@
                 <form action="{{ route('offres.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="cl_id" value="{{$client->cl_ident}}" >
-                    <input type="hidden" name="id" value="{{$client->id}}" >
+                    <input type="hidden" name="mycl_id" value="{{$client->id}}" >
                     <input type="hidden" name="nom_compte" value="{{$client->Nom}}" >
+                    <input type="hidden" name="user_id" value="{{$auth->user()->id}}" >
                     <div class="row pt-1">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="">
                                 <label for="Nom_offre">Nom:</label>
                                 <input type="text" id="Nom_offre" class="form-control" name="Nom_offre"  value="{{old('Nom_offre')}}"><br><br>
@@ -39,6 +40,17 @@
                             <div class="">
                                 <label for="Date_creation">Date :</label>
                                 <input type="text" id="Date_creation" class="form-control datepicker" name="Date_creation"  value="{{old('Date_creation')}}"><br><br>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="Type">Type:</label>
+                                <select    id="type" class="form-control" name="type"   >
+                                    <option  value="TG">TG</option>
+                                    <option  value="Hors TG">Hors TG</option>
+                                    <option  value="Appr">Apprêts/Bij/DP</option>
+                                </select><br><br>
                             </div>
                         </div>
 
@@ -76,27 +88,14 @@
 
                     <div class="row pt-1">
 
-                        <div class="col-md-2">
-                            <div class="">
 
-                            </div>
-                        </div>
-
-                        <div class="col-md-2">
-                            <div class="">
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row pt-1">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="">
                                 <label for="Description">Description:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{old('Description')}}</textarea><br><br>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="">
                                 <label for="Nom_offre">Fichier(s):</label>
                                 <input type="file" id="fichier" class="form-control" name="files[]"  multiple required  accept="application/pdf" /><br><br>

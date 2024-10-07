@@ -34,11 +34,11 @@
                             <th>ID </th>
                             <th>Nom</th>
                             <th>Compte</th>
-                            <th>Etape</th>
-                            <th>Motif</th>
+                            <th>Type</th>
+                            <th>Statut</th><!--
                             <th>Validée</th>
                             <th>Création</th>
-                            <th>Clôture</th>
+                            <th>Clôture</th>-->
                         </tr>
                     </thead>
                     <tbody>
@@ -47,11 +47,11 @@
                                 <td>{{ $offre->id }}</td>
                                 <td><a href="{{route('offres.show',['id'=>$offre->id])}}">{{ $offre->Nom_offre }}</a></td>
                                 <td>{{ $offre->nom_compte }}</td>
-                                <td>{{ $offre->Etape }}</td>
-                                <td>{{ $offre->Motif_perdu }}</td>
+                                <td>{{ $offre->type }}</td>
+                                <td>{{ $offre->statut }}</td><!--
                                 <td>{{ $offre->Offre_validee ? 'Oui' : 'Non' }}</td>
                                 <td>{{ date('d/m/Y', strtotime($offre->Date_creation)) }}</td>
-                                <td>@if($offre->Date_cloture!=''){{ date('d/m/Y', strtotime($offre->Date_cloture)) }}@endif</td>
+                                <td>@if($offre->Date_cloture!=''){{ date('d/m/Y', strtotime($offre->Date_cloture)) }}@endif</td>-->
                             </tr>
                         @endforeach
                     </tbody>

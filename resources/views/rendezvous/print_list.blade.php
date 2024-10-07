@@ -16,7 +16,7 @@
 
     <div class="col-lg-12 col-sm-12 mb-4">
 
-        <h6 class="m-0 font-weight-bold text-primary mb-4 mt-4 ml-3">Les rendez vous de mois</h6>
+        <h6 class="m-0 font-weight-bold text-primary mb-4 mt-4 ml-3">Les rendez vous de {{$name}} - {{sprintf("%02d", $mois)}}/{{$annee}}  </h6>
 
                  <table id="" class="table table-striped" style="width:100%">
                     <thead>
@@ -37,7 +37,7 @@
                                 <td>{{ $rv->Subject }}</td>
                                 <td>{{ date('d/m/Y', strtotime($rv->Started_at)) }}</td>
                                 <td>{{ $rv->heure_debut }}</td>
-                                <td>{{ $rv->location }}</td>
+                                <td>{{ $rv->Location }}</td>
                             </tr>
                         @endforeach
                     </tbody>

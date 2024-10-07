@@ -134,17 +134,25 @@ class HomeController extends Controller
 	{
 		$user=$request->get('user');
 		$now = Carbon::now();
-		$mois=date('Y-m');
+		$annee=$request->get('annee');
+		$mois=$request->get('mois');
+		$month=$annee.'-'.sprintf("%02d", $mois);
+		$name="";
+
+		if($user!= auth()->user()->id && auth()->user()->user_type!='admin' ){
+			return view('welcome');
+		}
+
 
 		if($user>0){
 			$User=User::find($user);
-
+			$name=$User->name.' '.$User->lastname;
 			$rendezvous=RendezVous::/*where(function($q) use ($now,$user,$User) {
 				$q->where('user_id',$user)
 				->orWhere('Attribue_a',$User->name.' '.$User->lastname);
 			})*/
 			where('user_id', $user)
-			->where('Started_at', 'like',  $mois. '%')
+			->where('Started_at', 'like',  $month. '%')
  			->orderBy('Started_at', 'asc')
 			->orderBy('heure_debut','asc')
 			->get();
@@ -155,13 +163,13 @@ class HomeController extends Controller
 				->orWhere('Attribue_a',$User->name.' '.$User->lastname);
 			})*/
 			where('user_id', auth()->user()->id)
-			->where('Started_at', 'like',  $mois. '%')
+			->where('Started_at', 'like',  $month. '%')
  			->orderBy('Started_at', 'asc')
 			->orderBy('heure_debut','asc')
 			->get();
 		}
 
-		return view('rendezvous.print_list',compact('rendezvous','user'));
+		return view('rendezvous.print_list',compact('rendezvous','user','name','mois','annee'));
 
 	}
 
