@@ -140,6 +140,30 @@
 			</table>
 
 		</div>
+    @if(auth()->user()->id== 10 || auth()->user()->id== 39 || auth()->user()->id== 1 )
+      <div class="col-md-6 col-lg-6 col-sm-12">
+        <h4 class="text-center" >Offres de prix à valider</h4>
+        <table id="" class="table table-striped" style="width:100%!important">
+                  <thead>
+                      <tr style="background-color:#2e3e4e;color:white;" id="">
+                          <th>ID</th>
+                          <th>Création</th>
+                          <th>Nom</th>
+                          <th>Client</th>
+                          <th>Par</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  @foreach($offres as $offre)
+                    @php $user=\App\Models\User::find($offre->user_id); @endphp
+                    <tr><td><a href="{{route('offres.show',['id'=>$offre->id])}}">{{$offre->id}}</a></td><td>{{ date('d/m/Y', strtotime($offre->Date_creation))}}</td><td>{{$offre->Nom_offre}}</td><td>{{$offre->nom_compte}}</td><td>{{$user->name ?? ''}} {{$user->lastname ?? ''}}</td></tr>
+                  @endforeach
+          </tbody>
+        </table>
+
+      </div>
+    @endif
+
 	</div>
 
 </div>

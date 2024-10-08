@@ -115,19 +115,18 @@ class TachesController extends Controller
 
 		$taches = $tasks->merge($prises);
 
-		// Récupérer les agences pour la vue
 		$agences = DB::table('agence')->get();
+		$title="Suivi d'activité";
 
-		// Retourner la vue avec les données fusionnées
-		return view('taches.list', compact('taches', 'agences'));
+		return view('taches.list', compact('taches', 'agences','title'));
 	}
 
 	public function mestaches()
 	{
-
 		// Récupérer l'utilisateur connecté
 		$user = auth()->user();
 
+		$title="Suivi d'activité";
 		// Vérifier si l'utilisateur est dans la table 'representant'
 		$isRepresentant = DB::table('representant')
 			->where('users_id', $user->id)
@@ -161,6 +160,7 @@ class TachesController extends Controller
 				$q->where('client.commercial', '=', $id)
 				->orWhere('client.commercial_support', '=', $id);
 			});
+			$title='Activités de mes clients';
 		} else {
 			// Si l'utilisateur n'est pas dans 'representant', filtrer par agence
 			$tasks->where(function($q) use ($user) {
@@ -248,7 +248,7 @@ class TachesController extends Controller
 
 		$agences = DB::table('agence')->get();
 
-		return view('taches.list', compact('taches', 'agences'));
+		return view('taches.list', compact('taches', 'agences','title'));
 	}
 
 

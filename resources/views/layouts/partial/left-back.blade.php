@@ -85,8 +85,13 @@ if (Auth::check()) {
     @else
     <a class="nav-link" href="{{route('mestaches')}}" >
     @endif
-      <i class="fas fa-tasks" ></i>
-      <span> Activités<div class="hidemobile"> de l'Agence</div></span>
+
+    <i class="fas fa-tasks" ></i>
+    @if($user->role=='commercial')
+      <span> Activités<div class="hidemobile"> de mes clients</div></span>
+    @else
+      <span><div class="hidemobile">Suivi d'</div>activité</span>
+    @endif
     </a>
     <!--<hr class="sidebar-divider">
     <a class="nav-link"  href="{{route('offres.index')}}">

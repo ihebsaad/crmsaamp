@@ -93,7 +93,7 @@
 
                             <div class="">
                                 <label for="siret">SIRET:</label>
-                                <input type="number" id="siret" class="form-control" name="siret" value="" required><br><br>
+                                <input type="number" id="siret" class="form-control" name="siret" value="" maxlength="14" required><br><br>
                             </div>
                         </div>
                     </div>

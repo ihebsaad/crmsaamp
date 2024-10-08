@@ -45,21 +45,26 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">@if( request()->is('mestaches')) Mes Activités @else Activité de l'agence @endif</h6>
+                <h6 class="m-0 font-weight-bold text-primary"> {{$title}} </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
 
                 <div class="row">
-                    <div class="col-sm-6">
-                        <label for="agence" class="mr-2">Agence:</label>
-                        <select class="  form-control" id="agence" onchange="filter()" style="width:250px">
-                            <option value="agence">Tous</option>
-                            @foreach ($agences as $agence)
-                            <option @selected(auth()->user()->agence_ident==$agence->agence_ident) value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    @if(auth()->user()->user_type =='admin' || auth()->user()->role =='admin')
+                        <div class="col-sm-6">
+                            <label for="agence" class="mr-2">Agence:</label>
+                            <select class="  form-control" id="agence" onchange="filter()" style="width:250px">
+                                <option value="agence">Tous</option>
+                                @foreach ($agences as $agence)
+                                <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @else
+                        <input type="hidden"  id="agence" value="{{auth()->user()->agence_ident}}" />
+                    @endif
+                    <!--
                     <div class="col-sm-6">
                         @if( request()->is('mestaches'))
                         <a href="{{route('taches.index')}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-tasks"></i> Activités de l'agence</a>
@@ -67,6 +72,7 @@
                         <a href="{{route('mestaches')}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-tasks"></i> Mes Activités</a>
                         @endif
                     </div>
+                    -->
                 </div>
                 <div class="row">
                     @if(isset($client))
@@ -233,9 +239,14 @@
     }
 </style>
 
-
+@if($title=="Suivi d'activité")
+    <script type="text/javascript">
+        filter();
+    </script>
+@endif
 <script type="text/javascript">
-    filter();
+
+    //filter();
 
     function filter() {
         //var classname = $(elm).is(":checked") ? 1 : 0;

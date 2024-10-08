@@ -79,6 +79,8 @@ class ClientsController extends Controller
             'adresse1' => 'required',
             'ville' => 'required',
             'zip' => 'required',
+			'siret' => 'required|string|max:14',
+
         ]);
 
         $client=CompteClient::create($request->all());
@@ -123,12 +125,14 @@ class ClientsController extends Controller
 			$support=$rep_supp->prenom .' '. $rep_supp->nom;
 
 		//if($client->Client_Prospect!='COMPTE PROSPECT'){
-			if($client->cl_ident >0)
-				$contacts=Contact::where('cl_ident',$client->cl_ident)
-				->get();
-			else
-				$contacts=Contact::where('mycl_ident',$client->id)
-				->get();
+			if($client->cl_ident >0){
+				$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
+				$taches=self::getClientTasks($client->cl_ident);
+			}
+			else{
+				$contacts=Contact::where('mycl_ident',$client->id)->get();
+				$tasks = Tache::where('ID_Compte', $client->id)->get();
+			}
 
 			$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
 		//}
@@ -142,7 +146,6 @@ class ClientsController extends Controller
 
 		if($client->cl_ident!=''){
 			//$taches=Tache::where('mycl_id',$client->cl_ident)->get();
-			$taches=self::getClientTasks($client->cl_ident);
 			try{
 
 				DB::select("SET @p0=$client->cl_ident ;");
@@ -396,6 +399,8 @@ class ClientsController extends Controller
 	public function getClientTasks($client_id){
 
 		$tasks = Tache::where('mycl_id', $client_id)->get();
+
+
 
 		// Récupérer les données de prise_contact_as400 avec jointures pour récupérer les données nécessaires
 		$prises = DB::table('prise_contact_as400')

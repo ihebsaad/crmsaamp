@@ -9,9 +9,11 @@ use App\Models\CompteClient;
 use App\Models\RetourClient;
 use App\Models\Contact;
 use App\Models\Offre;
+use App\Models\User;
 use App\Services\PhoneService;
 use Illuminate\Support\Facades\DB;
 use App\Services\GEDService;
+use App\Services\SendMail;
 
 
 class OffresController extends Controller
@@ -96,6 +98,47 @@ class OffresController extends Controller
          ]);
 */
 		$offre = Offre::find($id);
+		$client=Client::find($offre->mycl_id);
+		$user=User::find($offre->user_id);
+		$agence=DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
+
+		if($request->type=='Hors TG' && auth()->user()->id==10)
+		{
+			$offre->update($request->all());
+			if($request->statut=='OK'){
+				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est validée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				SendMail::send($user->email,'Offre validée',$contenu);
+				SendMail::send(trim($agence->mail),'Offre validée',$contenu);
+
+			}
+			elseif($request->statut=='KO'){
+				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est à refaire.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				SendMail::send($user->email,'Offre à refaire',$contenu);
+				SendMail::send(trim($agence->mail),'Offre à refaire',$contenu);
+			}
+
+		}
+		if($request->type=='Appr' && auth()->user()->id==39)
+		{
+			$offre->update($request->all());
+			if($request->statut=='OK'){
+				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est validée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				SendMail::send($user->email,'Offre validée',$contenu);
+				SendMail::send(trim($agence->mail),'Offre validée',$contenu);
+
+			}
+			elseif($request->statut=='KO'){
+				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est à refaire.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				SendMail::send($user->email,'Offre à refaire',$contenu);
+				SendMail::send(trim($agence->mail),'Offre à refaire',$contenu);
+			}
+
+		}
+		if($request->type=='TG'){
+			$offre->update($request->all());
+
+		}
+
 		$offre->update($request->all());
 
 		return redirect()->route('offres.show', $id)
@@ -121,11 +164,40 @@ class OffresController extends Controller
 			'Description' => $request->input('Description'),
 			'user_id' => $request->input('user_id'),
 			'nom_compte' => $request->input('nom_compte') ?? '',
+			'type' => $request->input('type'),
+			//'statut' => '',
 			// Other fields as necessary
 		]);
 
+
 		$offre->save();
-		$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('id'));
+
+		$client=Client::find($offre->mycl_id);
+		$user=User::find($offre->user_id);
+		$agence=DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
+		$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est créée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+
+		if($offre->type=='TG')
+		{
+			SendMail::send($user->email,'Offre Créée',$contenu);
+			SendMail::send(trim($agence->mail),'Offre Créée',$contenu);
+
+			$offre->statut='OK';
+			$offre->save();
+		}
+
+		if($offre->type=='Hors TG')		//user_id 10
+		{
+			SendMail::send('sebastien.canesson@saamp.com',"Demande de validation de l'offre ",$contenu);
+		}
+
+		if($offre->type=='Appr')		//user_id 39
+		{
+			SendMail::send('christelle.correia@saamp.com',"Demande de validation de l'offre",$contenu);
+		}
+
+
+ 		$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('id'));
 
 
 		if ($request->hasFile('files')) {

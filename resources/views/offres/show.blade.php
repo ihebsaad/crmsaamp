@@ -134,15 +134,26 @@
 
 
                     <div class="row pt-1">
-
-                        <div class="col-md-6">
+                    @if(auth()->user()->id== 1 || auth()->user()->id== 10 || auth()->user()->id== 39)
+                        <div class="col-md-4">
+                            <div class="">
+                                <label for="Statut">Statut:</label>
+                                <select    id="statut" class="form-control" name="statut"   >
+                                    <option  value=""></option>
+                                    <option  value="OK">OK</option>
+                                    <option  value="KO">KO</option>
+                                </select><br><br>
+                            </div>
+                        </div>
+                    @endif
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="Description">Description:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{$offre->Description}}</textarea><br><br>
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             @if($offre->fichier!= null)
                                 @php $fileNames = unserialize($offre->fichier); @endphp
                                 <div class="">
@@ -166,7 +177,9 @@
 
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right">Modifier</button>
+                            @if($offre->statut!='KO')
+                                <button type="submit" class="btn-primary btn float-right">Modifier</button>
+                            @endif
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                 <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('offres.destroy', $offre->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                     <span class="fa fa-fw fa-trash-alt"></span> Supprimer

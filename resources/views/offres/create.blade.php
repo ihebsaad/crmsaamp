@@ -27,7 +27,7 @@
                     <input type="hidden" name="cl_id" value="{{$client->cl_ident}}" >
                     <input type="hidden" name="mycl_id" value="{{$client->id}}" >
                     <input type="hidden" name="nom_compte" value="{{$client->Nom}}" >
-                    <input type="hidden" name="user_id" value="{{$auth->user()->id}}" >
+                    <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">

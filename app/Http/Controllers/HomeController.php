@@ -8,6 +8,7 @@ use App\Http\Controllers\StatsController;
 
 use App\Models\User;
 use App\Models\CompteClient;
+use App\Models\Offre;
 use App\Models\RendezVous;
 use App\Models\RetourClient;
 use App\Models\Tache;
@@ -90,6 +91,8 @@ class HomeController extends Controller
 			$total_clients_9= CompteClient::where('etat_id',2)->where('agence_ident',203)->count(); //
 			$total9 = DB::select($query, [203]);
 			$total_9=$total9[0]->total;
+
+
 			return view('adminhome',compact('retours','rendezvous','taches','representants',
 			'total_clients_1','total_clients_2','total_clients_3','total_clients_4','total_clients_5','total_clients_6','total_clients_7','total_clients_8','total_clients_9',
 			'total_1','total_2','total_3','total_4','total_5','total_6','total_7','total_8','total_9'));
@@ -100,6 +103,7 @@ class HomeController extends Controller
 			->orderBy('id','desc')->get();
 
 			$rendezvous=RendezVous::get();
+
 
 			return view('dashboard',compact('rendezvous'));
 		}
@@ -242,9 +246,16 @@ class HomeController extends Controller
 			$total_clients=0;
 		}
 
+		if(auth()->user()->id==10)
+			$offres=Offre::where('type','Hors TG')->where('statut','')->get();
+		elseif(auth()->user()->id==39)
+			$offres=Offre::where('type','Appr')->where('statut','')->get();
+		else
+			$offres=array();
 
 
- 		return view('dashboard',compact('rendezvous','clients','total_clients'));
+
+ 		return view('dashboard',compact('rendezvous','clients','total_clients','offres'));
 	}
 
 	public function help()
