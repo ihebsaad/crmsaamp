@@ -43,12 +43,13 @@
                     </thead>
                     <tbody>
                         @foreach ($offres as $offre)
+                            @php $class= $offre->statut=='OK' ? 'text-success' : 'text-danger'; @endphp
                             <tr>
                                 <td>{{ $offre->id }}</td>
                                 <td><a href="{{route('offres.show',['id'=>$offre->id])}}">{{ $offre->Nom_offre }}</a></td>
                                 <td>{{ $offre->nom_compte }}</td>
                                 <td>{{ $offre->type }}</td>
-                                <td>{{ $offre->statut }}</td><!--
+                                <td class="{{$class}}">{{ $offre->statut }}</td><!--
                                 <td>{{ $offre->Offre_validee ? 'Oui' : 'Non' }}</td>
                                 <td>{{ date('d/m/Y', strtotime($offre->Date_creation)) }}</td>
                                 <td>@if($offre->Date_cloture!=''){{ date('d/m/Y', strtotime($offre->Date_cloture)) }}@endif</td>-->

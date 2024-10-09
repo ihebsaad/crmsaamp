@@ -49,7 +49,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="siret">SIRET:</label>
-                                <input type="text" id="siret" class="form-control" name="siret" value="{{$client->siret}}" ><br><br>
+                                <input type="text" id="Code_siret" class="form-control" name="siret" value="{{$client->Code_siret}}" ><br><br>
                             </div>
                         </div>
 <!--

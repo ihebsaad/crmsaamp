@@ -204,6 +204,7 @@ class ClientsController extends Controller
                             @endforeach-->
 */
 		$rendezvous=RendezVous::where('Account_Name',$client->Nom)
+		->orWhere('mycl_id', $client->id)
 		->get();
 
 		$now = Carbon::now();
@@ -396,15 +397,23 @@ class ClientsController extends Controller
 	}
 
 
-	public function getClientTasks($client_id){
+	public function getClientTasks($client_id)
+	{
+		// Get the current date
+		$currentDate = now();
 
-		$tasks = Tache::where('mycl_id', $client_id)->get();
+		// Get tasks from Tache within the last 15 days
+		$tasks = Tache::where('mycl_id', $client_id)
+			->where('DateTache', '>=', $currentDate->subDays(7)) // Filter for the last 15 days
+			->get();
 
+		// Reset the date calculation
+		$currentDate = now();
 
-
-		// Récupérer les données de prise_contact_as400 avec jointures pour récupérer les données nécessaires
+		// Get records from prise_contact_as400 within the last 7 days
 		$prises = DB::table('prise_contact_as400')
-			->where('prise_contact_as400.cl_ident',$client_id)
+			->where('prise_contact_as400.cl_ident', $client_id)
+			->where('prise_contact_as400.date_pr', '>=', $currentDate->subDays(7)) // Filter for the last 7 days
 			->join('client', 'prise_contact_as400.cl_ident', '=', 'client.cl_ident')
 			->join('agence', 'prise_contact_as400.agence_id', '=', 'agence.agence_ident')
 			->join('sujet', 'prise_contact_as400.id_sujet', '=', 'sujet.sujet_ident')
@@ -447,21 +456,24 @@ class ClientsController extends Controller
 			)
 			->orderBy('prise_contact_as400.id', 'desc')->limit(1000)
 			->get()
-			->toArray(); // Convertir en tableau
+			->toArray(); // Convert to array
 
-		// Fusionner les tâches avec les prises de contact
+		// Convert tasks to collection and map 'as400' flag
 		$tasks = collect($tasks)->map(function ($task) {
-			$task = (object) $task; // Convertir en stdClass
-			$task->as400 = 0; // Ajouter un attribut pour indiquer que cela vient de Tache
+			$task = (object) $task; // Convert to stdClass
+			$task->as400 = 0; // Add 'as400' attribute for tasks
 			return $task;
 		});
 
+		// Convert prises to collection
 		$prises = collect($prises);
 
+		// Merge tasks and prises
 		$taches = $tasks->merge($prises);
 
 		return $taches;
 	}
+
 
 	public function count_files($folderId)
 	{

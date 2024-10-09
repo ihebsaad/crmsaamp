@@ -58,7 +58,7 @@
 </head>
 <body>
     <div class="content">
-        <div class="title">Désolé !</div>
+        <div class="title">Oups !</div>
         <p class="message">Erreur interne du serveur</p>
 
         @if(auth()->user()->user_type=='admin')

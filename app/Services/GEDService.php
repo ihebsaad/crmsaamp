@@ -504,6 +504,9 @@ class GEDService
 			case 11:
 				$typeDoc = "QUALITE";
 				break;
+			case 12:
+				$typeDoc = "ENQUETE(COMPLIANCE)";
+				break;
 		}
 
 		$subfolderPath = "DOCUMENTS OUVERTURE DE COMPTE/$clientId/$typeDoc"; //

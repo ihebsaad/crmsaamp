@@ -118,7 +118,7 @@ class OffresController extends Controller
 			}
 
 		}
-		if($request->type=='Appr' && auth()->user()->id==39)
+		if($request->type=='Apprêts/Bij/DP' && auth()->user()->id==39)
 		{
 			$offre->update($request->all());
 			if($request->statut=='OK'){
@@ -141,8 +141,9 @@ class OffresController extends Controller
 
 		$offre->update($request->all());
 
-		return redirect()->route('offres.show', $id)
-				->with('success', 'Tâche modifiée');
+
+		return redirect()->route('offres.client_list', $client->id)
+			->with('success','Offre ajoutée');
 	}
 
 	public function store(Request $request)
@@ -164,7 +165,7 @@ class OffresController extends Controller
 			'Description' => $request->input('Description'),
 			'user_id' => $request->input('user_id'),
 			'nom_compte' => $request->input('nom_compte') ?? '',
-			'type' => $request->input('type'),
+			'type' => $request->get('type'),
 			//'statut' => '',
 			// Other fields as necessary
 		]);
@@ -189,11 +190,16 @@ class OffresController extends Controller
 		if($offre->type=='Hors TG')		//user_id 10
 		{
 			SendMail::send('sebastien.canesson@saamp.com',"Demande de validation de l'offre ",$contenu);
+			SendMail::send('said.el-marouani@saamp.com',"Demande de validation de l'offre ",$contenu);
+			SendMail::send('elisabeth.escard@saamp.com',"Demande de validation de l'offre ",$contenu);
+
 		}
 
-		if($offre->type=='Appr')		//user_id 39
+		if($offre->type=='Apprêts/Bij/DP')		//user_id 39
 		{
 			SendMail::send('christelle.correia@saamp.com',"Demande de validation de l'offre",$contenu);
+			SendMail::send('said.el-marouani@saamp.com',"Demande de validation de l'offre ",$contenu);
+			SendMail::send('elisabeth.escard@saamp.com',"Demande de validation de l'offre ",$contenu);
 		}
 
 
@@ -218,7 +224,7 @@ class OffresController extends Controller
 
 
 
-		return redirect()->route('offres.show', $offre->id)
+		return redirect()->route('offres.client_list', $client->id)
 		->with('success','Offre ajoutée');
 	}
 

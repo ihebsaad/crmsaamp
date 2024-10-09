@@ -120,6 +120,7 @@ class RendezVousController extends Controller
 		$rendezvous = RendezVous::create([
 			'AccountId' => $request->input('AccountId') ?? 0,
 			'created_by' => $request->input('created_by'),
+			'mycl_id' => $request->input('mycl_id'),
 			'user_id' => $request->input('user_id'),
 			'Account_Name' => $request->input('Account_Name'),
 			'Started_at' => $request->input('Started_at'),

@@ -120,7 +120,7 @@
 
                         <div class="col-md-3">
                             <label for="Type">Type:</label>
-                            <h6>{{$offre->Type}}</h6>
+                            <h6>{{$offre->type}}</h6>
                         </div>
 
                         <div class="col-md-3">
@@ -140,16 +140,23 @@
                                 <label for="Statut">Statut:</label>
                                 <select    id="statut" class="form-control" name="statut"   >
                                     <option  value=""></option>
-                                    <option  value="OK">OK</option>
-                                    <option  value="KO">KO</option>
+                                    <option @selected($offre->statut=='OK') value="OK">OK</option>
+                                    <option @selected($offre->statut=='KO')  value="KO">KO</option>
                                 </select><br><br>
+                            </div>
+                        </div>
+                    @else
+                        <div class="col-md-4">
+                            <div class="">
+                                <label for="Statut">Statut:</label>
+                                <h6>{{$offre->Statut}}</h6>
                             </div>
                         </div>
                     @endif
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Description">Description:</label>
-                                <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{$offre->Description}}</textarea><br><br>
+                                <h6>{{$offre->Description}}</h6>
                             </div>
                         </div>
 
@@ -177,10 +184,10 @@
 
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            @if($offre->statut!='KO')
+                            @if($offre->statut=='')
                                 <button type="submit" class="btn-primary btn float-right">Modifier</button>
                             @endif
-                            @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                            @if(auth()->user()->role=='admin' || auth()->user()->id== 10 || auth()->user()->id== 39)
                                 <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('offres.destroy', $offre->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                     <span class="fa fa-fw fa-trash-alt"></span> Supprimer
                                 </a>

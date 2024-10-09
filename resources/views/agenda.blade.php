@@ -89,15 +89,17 @@
 				<div class="row">
 					<div class="col-lg-5">
 
-						@if( auth()->user()->user_type=='admin' )
-							<form   @if(request()->is('exterieurs')) action="{{route('exterieurs')}}" @else action="{{route('agenda')}}" @endif >
+						@if( auth()->user()->role=='admin' || auth()->user()->role=='respAG' || auth()->user()->role=='adv' )
+							<form    action="{{route('agenda')}}"  >
 								<div class="row">
 									<div class="col-lg-12">
-										<span class=" mr-2">Commercial:</span>
+										<span class=" mr-2">Utilisateur:</span>
 										<select class="form-control mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="update_user();this.form.submit();" >
 											<option  @if($user=="") selected="selected" @endif value=""></option>
-											@foreach ($representants as $rp)
-											<option @selected($user >0 && $user==$rp->users_id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
+											@foreach ($users as $User)
+												@if(trim($User->lastname)!=='')
+													<option @selected($user >0 && $user==$User->id) value="{{$User->id}}"  >{{$User->name}}  {{$User->lastname}}</option>
+												@endif
 											@endforeach
 										</select>
 									</div>

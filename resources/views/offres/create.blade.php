@@ -49,7 +49,7 @@
                                 <select    id="type" class="form-control" name="type"   >
                                     <option  value="TG">TG</option>
                                     <option  value="Hors TG">Hors TG</option>
-                                    <option  value="Appr">Apprêts/Bij/DP</option>
+                                    <option  value="Apprêts/Bij/DP">Apprêts/Bij/DP</option>
                                 </select><br><br>
                             </div>
                         </div>

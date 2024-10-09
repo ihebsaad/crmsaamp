@@ -111,16 +111,37 @@ class HomeController extends Controller
 
 	public function agenda(Request $request)
 	{
-		$representants=DB::table("representant")->get();
 		$user=$request->get('user');
+		$users=array();
+
+		$role = auth()->user()->role;
+		$user_id = auth()->user()->id;
+		$agence_id = auth()->user()->agence_ident;
+
+		if($role =='admin'|| $role =='respAG' || $role =='adv' ){
+			//$representants=DB::table("representant")->get();
+			$users=DB::table("users")->where('username','like','%@saamp.com')->get();
+		}
+		if($role =='respAG' || $role =='adv' ){
+			$users=DB::table("users")
+			->where('username','like','%@saamp.com')
+			->where('agence_ident',$agence_id)
+			//->where('role','commercial')
+			//->whereIn('role', ['commercial', 'user'])
+			->get();
+		}
 
 		if($user>0){
+			if($role =='respAG' || $role =='adv' || $role =='admin'  ){
 			$User=User::find($user);
 			$rendezvous=RendezVous::where('Attribue_a',$User->name.' '.$User->lastname)
 			->orWhere('user_id',$user)
 			//->where('AccountId','>',0)
 			->orderBy('id','desc')
 			->get();
+			}else{
+				return view('welcome');
+			}
 		}else{
 			$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
 			->orWhere('user_id',auth()->user()->id)
@@ -130,7 +151,7 @@ class HomeController extends Controller
 		}
 
 
-		return view('agenda',compact('rendezvous','representants','user'));
+		return view('agenda',compact('rendezvous','user','users'));
 
 	}
 
@@ -246,10 +267,10 @@ class HomeController extends Controller
 			$total_clients=0;
 		}
 
-		if(auth()->user()->id==10)
-			$offres=Offre::where('type','Hors TG')->where('statut','')->get();
-		elseif(auth()->user()->id==39)
-			$offres=Offre::where('type','Appr')->where('statut','')->get();
+		if(auth()->user()->id==10 )
+			$offres=Offre::where('type','Hors TG')->where('statut',null)->get();
+		elseif(auth()->user()->id==39 || auth()->user()->id ==1 )
+			$offres=Offre::where('type','Apprêts/Bij/DP')->where('statut',null)->get();
 		else
 			$offres=array();
 

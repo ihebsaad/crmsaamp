@@ -104,7 +104,8 @@
                                     8 => "RIB",
                                     9 => "AEX",
                                     10 => "AUTORISATION DE DECLARATION EN DOUANE",
-                                    11 => "QUALITE"
+                                    11 => "QUALITE",
+                                    12 => "ENQUETE(COMPLIANCE)"
                                 ] as $value => $label)
                                     @if(!in_array($label, $folderNames) || $value==11 || 1 )
                                         <option value="{{ $value }}">{{ $label }}</option>
@@ -151,7 +152,9 @@
                         const pathIds = pathList.split(',');
                         const lastPathId = pathIds[pathIds.length - 1];
 
-                        button.textContent = name;
+                        var count=26;
+                        var result = name.slice(0, count) + (name.length > count ? "..." : "");
+                        button.textContent = result;
                         button.className += 'folder-btn';
                         button.onclick = function() {
                            <?php if(isset($folderName)){ ?>
