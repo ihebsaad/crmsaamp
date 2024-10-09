@@ -189,17 +189,17 @@ class OffresController extends Controller
 
 		if($offre->type=='Hors TG')		//user_id 10
 		{
-			SendMail::send('sebastien.canesson@saamp.com',"Demande de validation de l'offre ",$contenu);
-			SendMail::send('said.el-marouani@saamp.com',"Demande de validation de l'offre ",$contenu);
-			SendMail::send('elisabeth.escard@saamp.com',"Demande de validation de l'offre ",$contenu);
+			SendMail::send(env('Email_sebastien'),"Demande de validation de l'offre ",$contenu);
+			SendMail::send(env('Email_said'),"Demande de validation de l'offre ",$contenu);
+			SendMail::send(env('Email_elisabeth'),"Demande de validation de l'offre ",$contenu);
 
 		}
 
 		if($offre->type=='Apprêts/Bij/DP')		//user_id 39
 		{
-			SendMail::send('christelle.correia@saamp.com',"Demande de validation de l'offre",$contenu);
-			SendMail::send('said.el-marouani@saamp.com',"Demande de validation de l'offre ",$contenu);
-			SendMail::send('elisabeth.escard@saamp.com',"Demande de validation de l'offre ",$contenu);
+			SendMail::send(env('Email_christelle'),"Demande de validation de l'offre",$contenu);
+			SendMail::send(env('Email_said'),"Demande de validation de l'offre ",$contenu);
+			SendMail::send(env('Email_elisabeth'),"Demande de validation de l'offre ",$contenu);
 		}
 
 
