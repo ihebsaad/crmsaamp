@@ -225,13 +225,29 @@ class ClientsController extends Controller
 		->orderBy('Started_at', 'desc')
 		->get();
 */
-
+/*
 		$Proch_rendezvous = RendezVous::where('Account_Name', $client->Nom)
 		->where('Started_at', '>=', $now)
 		->orderBy('Started_at', 'desc')
 		->get();
-
+*/
+		$Proch_rendezvous = RendezVous::where(function ($query) use ($client) {
+			$query->where('Account_Name', $client->Nom)
+				->orWhere('mycl_id', $client->id);
+		})
+		->where('Started_at', '>=', $now)
+		->orderBy('Started_at', 'desc')
+		->get();
+/*
 		$Anc_rendezvous = RendezVous::where('Account_Name', $client->Nom)
+		->where('Started_at', '<', $now)
+		->orderBy('Started_at', 'desc')
+		->get();*/
+
+		$Anc_rendezvous = RendezVous::where(function ($query) use ($client) {
+			$query->where('Account_Name', $client->Nom)
+				->orWhere('mycl_id', $client->id);
+		})
 		->where('Started_at', '<', $now)
 		->orderBy('Started_at', 'desc')
 		->get();

@@ -51,19 +51,36 @@
             <div class="card-body" style="min-height:500px">
 
                 <div class="row">
-                    @if(auth()->user()->user_type =='admin' || auth()->user()->role =='admin')
-                        <div class="col-sm-6">
-                            <label for="agence" class="mr-2">Agence:</label>
-                            <select class="  form-control" id="agence" onchange="filter()" style="width:250px">
-                                <option value="agence">Tous</option>
-                                @foreach ($agences as $agence)
-                                <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    @else
-                        <input type="hidden"  id="agence" value="{{auth()->user()->agence_ident}}" />
-                    @endif
+                    <div class="col-md-3">
+                        @if(auth()->user()->user_type =='admin' || auth()->user()->role =='admin')
+                            <div class="col-md-6 col-sm-12">
+                                <label for="agence" class="mr-2">Agence:</label>
+                                <select class="  form-control" id="agence" onchange="filter()" style="width:200px">
+                                    <option value="agence">Tous</option>
+                                    @foreach ($agences as $agence)
+                                    <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @else
+                            <input type="hidden"  id="agence" value="{{auth()->user()->agence_ident}}" />
+                        @endif
+                    </div>
+                    <div class="col-lg-1">
+                    </div>
+                        <form action="{{route('taches.index')}}" method="GET" style="display:contents" >
+                            <div class="col-lg-3 col-md-12">
+                                <label for="nom" class="mr-2">Nom:</label>
+                                <input class="form-control" name="nom" type="text" value="{{$nom}}" style="max-width:150px"/>
+                            </div>
+                            <div class="col-lg-3 col-md-12">
+                                <label for="nom" class="mr-2">Client ID:</label>
+                                <input class="form-control" name="cl_ident" type="number"  value="{{$cl_ident}}"  style="max-width:100px"/>
+                            </div>
+                            <div class="col-lg-2 col-md-12">
+                                <input class="btn btn-info" type="submit" value="Filtrer" ></input>
+                            </div>
+                        </form>
                     <!--
                     <div class="col-sm-6">
                         @if( request()->is('mestaches'))

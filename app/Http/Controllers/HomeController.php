@@ -61,7 +61,61 @@ class HomeController extends Controller
 			//->limit(20)
 			->orderBy('name','desc')->get();
 
-			$taches=Tache::where('DateTache','like',date('Y-m-d').'%' )->orderBy('heure_debut','asc')->get();
+			//taches=Tache::where('DateTache','like',date('Y-m-d').'%' )->orderBy('heure_debut','asc')->get();
+
+				// Récupérer les filtres
+				$nom = request()->input('nom');
+				$cl_ident = request()->input('cl_ident');
+				// Récupérer les tâches
+				$tasks = Tache::where('DateTache','like',date('Y-m-d').'%' )->orderBy('heure_debut','asc')->get();
+
+				// Récupérer les données de prise_contact_as400
+				$prises = DB::table('prise_contact_as400')
+					->join('client', 'prise_contact_as400.cl_ident', '=', 'client.cl_ident')
+					->join('agence', 'prise_contact_as400.agence_id', '=', 'agence.agence_ident')
+					->join('sujet', 'prise_contact_as400.id_sujet', '=', 'sujet.sujet_ident')
+					->join('type_contact', 'prise_contact_as400.id_type_contact', '=', 'type_contact.type_contact_ident')
+					->select(
+						'client.id as ID_Compte',
+						'prise_contact_as400.date_pr as DateTache',
+						DB::raw('NULL as heure_debut'),
+						DB::raw('NULL as Status'),
+						DB::raw('NULL as Priority'),
+						'type_contact.titre_type_contact as Type',
+						'client.Nom as Nom_de_compte',
+						'client.cl_ident as mycl_id',
+						DB::raw('CONCAT(
+							CASE
+								WHEN sujet.titre_sujet IS NOT NULL
+								THEN CONCAT("Sujet: ", sujet.titre_sujet)
+								ELSE ""
+							END,
+							CASE
+								WHEN type_contact.titre_type_contact IS NOT NULL
+								THEN CONCAT(", Type: ", type_contact.titre_type_contact)
+								ELSE ""
+							END
+						) as Description'),
+						'agence.agence_lib as Agence',
+						'sujet.titre_sujet as Subject',
+						DB::raw('1 as as400')
+					)
+					->where('prise_contact_as400.date_pr','like',date('Y-m-d').'%' )
+					->orderBy('prise_contact_as400.id', 'desc')
+					->get()
+					->toArray();
+
+				// Fusionner les tâches avec les prises de contact
+				$tasks = collect($tasks)->map(function ($task) {
+					$task = (object) $task;
+					$task->as400 = 0;
+					return $task;
+				});
+
+				$prises = collect($prises);
+
+				$taches = $tasks->merge($prises);
+
 			$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
 
 			$total_clients_1= CompteClient::where('etat_id',2)->where('agence_ident',40)->count(); //Paris

@@ -65,9 +65,11 @@ class RendezVousController extends Controller
 		$rendezvous=RendezVous::find($id);
 		if($rendezvous->AccountId>0){
 			$client=CompteClient::where('id',$rendezvous->AccountId)->first();
-			$adresse=$client->adresse1.' - '.$client->zip;
+			$adresse1=$client->adresse1 ?? '';
+			$zip=$client->zip ?? '';
+			$adresse=$adresse1 .' - '.$zip ;
 
-			if($client->id==1 && $id!=1){
+			if($client && $client->id==1 && $id!=1){
 				$client=DB::table('CRM_CompteCLient')->where('Id_Salesforce',$rendezvous->AccountId)->first();
 				$rue = $client->Rue ?? '' ;
 				$zip =$client->postalCode ?? '';

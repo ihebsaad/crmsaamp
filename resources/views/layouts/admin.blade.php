@@ -101,8 +101,31 @@
     </div>
   </div>
 
-
-
+@php
+  $data=  DB::select ("  CALL `sp_affiche_cours`(); ");
+@endphp
+    <!-- Metals Modal-->
+  <div class="modal fade" id="metalsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Tendances</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body text-center"  >
+          <div id="gold" style="width:100%!important" class="pb-10">{{__("msg.Gold")}}</div><br><small class="mb-30">{{$data[0]->cours_au}}</small>
+          <div id="silver"  style="width:100%!important" class="pb-10 mt-30">{{ __("msg.Silver")}}</div><br><small class="mb-30">{{$data[0]->cours_ag}}</small>
+          <div id="platine" style="width:100%!important" class="pb-10 mt-30">Plat</div><br><small class="mb-30">{{$data[0]->cours_pt}}</small>
+          <div id="pallad" style="width:100%!important;color:black" class="pb-10 mt-30">Pall</div><br><small class="mb-30">{{$data[0]->cours_pd}}</small>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">{{__('msg.Close')}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
  @include('layouts.partial.footer-scripts-back')
 

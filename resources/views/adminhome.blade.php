@@ -237,8 +237,7 @@
 				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
 					<thead>
 						<tr style="background-color:#2e3e4e;color:white;" id="">
-							<th>Heure</th>
-							<th>Sujet</th>
+							<th colspan="2">    Sujet    </th>
 							<th>Client</th>
 							<th>Agence</th>
 							<th>Statut</th>
@@ -246,12 +245,18 @@
 					</thead>
 					<tbody>
 						@foreach($taches as $tache)
+
 						<tr>
-							<td>{{ $tache->heure_debut }}</td>
-							<td><a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a></td>
-							<td>{{ $tache->Nom_de_compte }}</td>
-							<td>{{ $tache->Agence }}</td>
-							<td>{{ $tache->Status }} - {{ $tache->Priority }}</td>
+							<td colspan="2">
+							@if($tache->heure_debut){{ $tache->heure_debut }}  @endif
+							@if(isset($tache->id ))<a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a>
+								@else
+									{{$tache->Description}}
+								@endif
+							</td>
+							<td><small>{{ $tache->Nom_de_compte }}</small></td>
+							<td><small>{{ $tache->Agence }}</small></td>
+							<td><small>{{ $tache->Status }} - {{ $tache->Priority }}</small></td>
 						</tr>
 						@endforeach
 					</tbody>

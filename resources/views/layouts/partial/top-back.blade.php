@@ -67,12 +67,15 @@ $data=  DB::select ("  CALL `sp_affiche_cours`(); ");
    </div>
 
    <div class="  hidepc hidetablette" >
+    <a href="#" data-toggle="modal" data-target="#metalsModal"><img class="" src="{{ URL::asset('img/trade.png')}}" width="40" /></a>
+<!--
     <ul class="tendances"   >
       <li> {{__("msg.Gold")}} - <small>{{$data[0]->cours_au}}</small> </li>
       <li> {{__("msg.Silver")}} - <small>{{$data[0]->cours_ag}}</small> </li>
       <li> Platine - <small>{{$data[0]->cours_pt}}</small> </li>
       <li> Palladium - <small>{{$data[0]->cours_pd}}</small> </li>
     </ul>
+-->
   </div>
    <div class="navbar-nav ml-auto">
 
