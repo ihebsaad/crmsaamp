@@ -155,13 +155,8 @@ class TachesController extends Controller
 				DB::raw('CONCAT(
 					"Prise de contact AS400",
 					CASE
-						WHEN sujet.titre_sujet IS NOT NULL
-						THEN CONCAT(", Sujet : ", sujet.titre_sujet)
-						ELSE ""
-					END,
-					CASE
 						WHEN type_contact.titre_type_contact IS NOT NULL
-						THEN CONCAT(", Type de contact : ", type_contact.titre_type_contact)
+						THEN CONCAT(" ", type_contact.titre_type_contact)
 						ELSE ""
 					END,
 					CASE
@@ -419,15 +414,9 @@ class TachesController extends Controller
 				'client.Nom as Nom_de_compte',
 				'client.cl_ident as mycl_id',
 				DB::raw('CONCAT(
-					"Prise de contact AS400",
-					CASE
-						WHEN sujet.titre_sujet IS NOT NULL
-						THEN CONCAT(", Sujet : ", sujet.titre_sujet)
-						ELSE ""
-					END,
 					CASE
 						WHEN type_contact.titre_type_contact IS NOT NULL
-						THEN CONCAT(", Type de contact : ", type_contact.titre_type_contact)
+						THEN CONCAT(" ", type_contact.titre_type_contact)
 						ELSE ""
 					END,
 					CASE
@@ -460,19 +449,38 @@ class TachesController extends Controller
 			})
 			->when($cl_ident, function ($query, $cl_ident) {
 				return $query->where('client.cl_ident', '=', $cl_ident);
-			})
-			->orderBy('prise_contact_as400.id', 'desc')
-			->get()
-			->toArray();
+			});
 
-		// Combine the tasks and prises into a single collection
-		$tasks = collect($tasks)->map(function ($task) {
-			$task = (object) $task;
-			$task->as400 = 0;
-			return $task;
-		});
 
-		$prises = collect($prises);
+			if ($isRepresentant ) {
+				$id=DB::table('representant')
+				->where('users_id', $user->id)->first()->id;
+					// Si l'utilisateur est dans 'representant', appliquer les mêmes filtres pour les prises de contact
+				$prises->where(function($q) use ($id) {
+					$q->where('client.commercial', '=', $id)
+					->orWhere('client.commercial_support', '=', $id);
+				});
+			} else {
+				// Sinon, filtrer par agence
+				$prises->where(function($q) use ($user) {
+					$q->where('prise_contact_as400.agence_id', '=', $user->agence_ident);
+				});
+			}
+
+			$prises=$prises
+				->orderBy('prise_contact_as400.id', 'desc')
+				->get()
+				->toArray();
+
+			$prises = collect($prises);
+
+			// Combine the tasks and prises into a single collection
+			$tasks = collect($tasks)->map(function ($task) {
+				$task = (object) $task;
+				$task->as400 = 0;
+				return $task;
+			});
+
 
 		$taches = $tasks->merge($prises);
 

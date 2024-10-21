@@ -164,6 +164,7 @@ Route::get('/folders', 'App\Http\Controllers\ClientsController@folders')->name('
 Route::get('/folders/{id}/{name}/{parent}/{client_id}', 'App\Http\Controllers\ClientsController@folderContent')->name('folderContent');
 Route::get('/download/{id}', 'App\Http\Controllers\ClientsController@download');
 Route::get('/viewpdf/{id}', 'App\Http\Controllers\ClientsController@view')->name('showPdf');
+Route::get('/delete_file/{id}', 'App\Http\Controllers\ClientsController@delete_file')->name('delete_file');
 Route::get('/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\ClientsController@edit_file');
 Route::post('/editFile', 'App\Http\Controllers\ClientsController@editFile')->name('editFile');
 

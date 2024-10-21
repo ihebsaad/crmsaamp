@@ -223,6 +223,12 @@
                         <div class="col-md-12">
                             <button type="submit" class="btn-primary btn float-right">Modifier</button>
                         </div>
+
+                        @if(  $client->etat_id==1  )
+                            <a title="Supprimer"   onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('clients.destroy', $client->id )}}" class="btn btn-danger btn-sm btn-responsive ml-3 mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                <span class="fa fa-fw fa-trash-alt"></span> Supprimer
+                            </a>
+                        @endif
                     </div>
 
                 </form>

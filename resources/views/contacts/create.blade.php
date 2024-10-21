@@ -87,7 +87,7 @@
 
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Description">Compte:</label>
+                                <label for="Description">Client:</label>
                                 <input type="text" id="Compte" class="form-control" name="" readonly value="{{ $client->Nom }}"><br><br>
                             </div>
                         </div>

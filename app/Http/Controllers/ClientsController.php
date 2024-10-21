@@ -79,14 +79,45 @@ class ClientsController extends Controller
             'adresse1' => 'required',
             'ville' => 'required',
             'zip' => 'required',
-			'siret' => 'required|string|max:14',
-
+			'Code_siret' => 'required|string', //|max:14
         ]);
+/*
+		if(CompteClient::where('siret',$request->input('siret'))->exists()  ){
+			return back()->withErrors(['msg' => "stocker siret dans la colonne Code siret"]);
+		}*/
 
-        $client=CompteClient::create($request->all());
+		$siret=trim($request->input('Code_siret'));
+		$client = CompteClient::create([
+			'Nom' => $request->input('Nom'),
+			'adresse1' => $request->input('adresse1'),
+			'ville' => $request->input('ville'),
+			'zip' => $request->input('zip'),
+			'siret' => $siret,
+			'Pays' => $request->input('Pays'),
+			'pays_code' => $request->input('pays_code'),
+			'latitude' => $request->input('latitude'),
+			'longitude' => $request->input('longitude'),
+			'Code_siret' => $siret,
+			'Tel' => $request->input('Tel'),
+			'email' => $request->input('email'),
+			'url' => $request->input('url'),
+			'etat_id'=>1,
+			'Code_siren'=> substr($siret,0,9),
+		]);
+
+		$client->save();
+
+		$contact = Contact::create([
+			'Nom'=> $request->input('nom_contact'),
+			'Prenom'=> $request->input('prenom_contact'),
+			'email'=> $request->input('email_contact'),
+			'mycl_ident'=> $client->id,
+		]);
+
+		$contact->save();
+
 		return redirect()->route('fiche', $client->id)
 		->with('success','Client ajouté');
-
 
 	}
 
@@ -491,12 +522,6 @@ class ClientsController extends Controller
 	}
 
 
-	public function count_files($folderId)
-	{
-		$count=GEDService::countFiles($folderId);
-		return $count;
-	}
-
 	public function download($id)
 	{
 		try{
@@ -533,6 +558,12 @@ class ClientsController extends Controller
 
 		return "Document not found or access denied.";
 
+	}
+
+	public function delete_file($itemid)
+	{
+		$res=GEDService::deleteFile($itemid);
+		return $res;
 	}
 
 	/** VIEW **/

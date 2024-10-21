@@ -20,6 +20,8 @@
             <div class="card-body">
                 <a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter un prospect</a><div class="clearfix"></div>
                 <form action="{{route('search')}}">
+                    <input type="hidden" name="sort" value="{{isset(request()->sort) ? request()->sort :'Nom'}}"/>
+                    <input type="hidden" name="direction"  value="{{isset(request()->direction) ? request()->direction :'asc'}}"/>
                     <div class="row pt-1">
                         <div class="col-lg-3">
                             <div class="">

@@ -87,7 +87,7 @@
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Description">Compte:</label>
-                                <input type="text" id="Compte" class="form-control" name="Compte"  value="{{$client->Nom}}"><br><br>
+                                <input type="text" id="Compte" class="form-control" name=""  readonly value="{{$client->Nom}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -98,10 +98,10 @@
                         </div>
 
                     </div>
-<!--
+
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            @if($client->etat_id==1 )
+                            @if($client->etat_id==1 || 1 )
                                 <button type="submit" class="btn-primary btn float-right">Modifier</button>
                             @endif
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
@@ -111,7 +111,7 @@
                             @endif
                         </div>
                     </div>
--->
+
 
                 </form>
 

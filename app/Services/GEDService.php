@@ -507,6 +507,10 @@ class GEDService
 			case 12:
 				$typeDoc = "ENQUETE(COMPLIANCE)";
 				break;
+			case 13:
+				$typeDoc = "CONVENTION OCA";
+				break;
+
 		}
 
 		$subfolderPath = "DOCUMENTS OUVERTURE DE COMPTE/$clientId/$typeDoc"; //
@@ -588,6 +592,46 @@ class GEDService
 		return redirect()->route('compte_client.folder', ['id' => $id])->with(['success' => "Fichiers téléchargés avec succès"]);
 	}
 
+
+	public static function deleteFile($itemId)
+	{
+ 		$headers = array(
+			'Content-Type: application/json',
+			'Auth-Token: ' . self::getToken()
+		);
+
+		$apiUrl = "https://ged.maileva.com/api/document/$itemId";
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, array(
+			CURLOPT_CUSTOMREQUEST => 'DELETE',
+			CURLOPT_URL => $apiUrl,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER => $headers,
+			CURLOPT_SSL_VERIFYPEER => false
+		));
+
+		$response = curl_exec($curl);
+		$err = curl_error($curl);
+
+		curl_close($curl);
+
+		if ($err) {
+			echo "Erreur cURL : " . $err;
+			return 0;
+		} else {
+			$data = json_decode($response, true);
+			if ($data && $data['success'] === true) {
+				\Log::info('Le document a été supprimé avec succès.');
+				return 1;
+
+			} else {
+				\Log::info('Erreur lors de la suppression du document');
+				return 0;
+			}
+		}
+	}
 
 	// Ajout document offres
 	public static function OffreDocs($clientId, $offreId, $id)

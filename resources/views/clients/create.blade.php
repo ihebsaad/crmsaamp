@@ -42,7 +42,7 @@
                         <div class="col-md-5">
                             <div class="">
                                 <label for="Rue">Adresse:</label>
-                                <input type="text" id="adresse1" class="form-control" name="adresse1" required><br><br>
+                                <input type="text" id="adresse1" class="form-control" name="adresse1" required value="{{old('adresse1')}}"><br><br>
                             </div>
                         </div>
                     </div>
@@ -88,12 +88,19 @@
                     </div>
 
                     <div class="row pt-1">
-
+<!--
                         <div class="col-md-2">
 
                             <div class="">
                                 <label for="siret">SIRET:</label>
-                                <input type="number" id="siret" class="form-control" name="siret" value="" maxlength="14" required><br><br>
+                                <input type="number" id="siret" class="form-control" name="siret" value="{{old('siret')}}" maxlength="14" required><br><br>
+                            </div>
+                        </div>-->
+                        <div class="col-md-2">
+
+                            <div class="">
+                                <label for="siret">Code SIRET:</label>
+                                <input type="text" id="Code_siret" class="form-control" name="Code_siret" value="{{old('Code_siret')}}"    ><br><br>
                             </div>
                         </div>
                     </div>
@@ -101,30 +108,53 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Nom">Nom:</label>
-                                <input type="text" id="Nom" class="form-control" name="Nom"  value="" required><br><br>
+                                <label for="Nom">Raison sociale:</label>
+                                <input type="text" id="Nom" class="form-control" name="Nom"  value="{{old('Nom')}}" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Phone">Télephone:</label>
-                                <input type="text" id="Phone" class="form-control" name="Tel" value=""><br><br>
+                                <input type="text" id="Phone" class="form-control" name="Tel" value="{{old('Tel')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
                                 <label for="">Email:</label>
-                                <input type="email" id="email" class="form-control" name="email"><br><br>
+                                <input type="email" id="email" class="form-control" name="email" value="{{old('email')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
                                 <label for="">Site Web:</label>
-                                <input type="url" id="url" class="form-control" name="url"><br><br>
+                                <input type="url" id="url" class="form-control" name="url" value="{{old('url')}}"><br><br>
                             </div>
                         </div>
 
                     </div>
+
+                    <div class="row pt-1">
+                        <div class="col-md-4">
+                            <div class="">
+                                <label for="Nom">Nom de contact:</label>
+                                <input type="text" id="nom_contact" class="form-control" name="nom_contact"  value="{{old('nom_contact')}}"  ><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="Phone">Prénom de contact:</label>
+                                <input type="text" id="prenom_contact" class="form-control" name="prenom_contact" value="{{old('prenom_contact')}}" ><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="">Email de contact:</label>
+                                <input type="email" id="email_contact" class="form-control" name="email_contact" value="{{old('email_contact')}}" ><br><br>
+                            </div>
+                        </div>
+
+                    </div>
+
 <!--
                     <div class="row pt-1">
 

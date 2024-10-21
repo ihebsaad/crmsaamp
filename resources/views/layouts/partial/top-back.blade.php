@@ -1,6 +1,8 @@
 @php
 $user = auth()->user();
-$data=  DB::select ("  CALL `sp_affiche_cours`(); ");
+$user_id=auth()->user()->id;
+\DB::select("SET @p0='$user->client_id' ;");
+$data=  DB::select ("  CALL `sp_affiche_cours`(@p0); ");
 @endphp
 <style>
    .navbar-nav small {

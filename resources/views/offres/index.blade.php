@@ -17,7 +17,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Liste des offres @if(isset($client)) ( {{ $client->cl_ident}} - {{ $client->Nom}} ) @endif </h6>
+                <h6 class="m-0 font-weight-bold text-primary">Liste des offres @if(isset($client)) ( {{ $client->cl_ident ?? '' }} - {{ $client->Nom}} ) @endif </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">

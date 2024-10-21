@@ -202,8 +202,8 @@ class OffresController extends Controller
 			SendMail::send(env('Email_elisabeth'),"Demande de validation de l'offre ",$contenu);
 		}
 
-
- 		$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('id'));
+		if($request->input('cl_id') > 0)
+ 			$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('id'));
 
 
 		if ($request->hasFile('files')) {

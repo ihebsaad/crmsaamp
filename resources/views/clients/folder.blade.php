@@ -63,7 +63,7 @@
         cursor: pointer;
         transition: transform 0.3s, box-shadow 0.3s;
     }
-    .download, .view, .replace{
+    .download, .view, .replace .delete{
         cursor:pointer;
     }
 </style>
@@ -105,7 +105,8 @@
                                     9 => "AEX",
                                     10 => "AUTORISATION DE DECLARATION EN DOUANE",
                                     11 => "QUALITE",
-                                    12 => "ENQUETE(COMPLIANCE)"
+                                    12 => "ENQUETE(COMPLIANCE)",
+                                    13 => "CONVENTION OCA",
                                 ] as $value => $label)
                                     @if(!in_array($label, $folderNames) || $value==11 || 1 )
                                         <option value="{{ $value }}">{{ $label }}</option>
@@ -185,6 +186,7 @@
                         // Fonction pour créer un élément de contenu
                         function createContentItem(item) {
                             const div = document.createElement('div');
+                            div.id += 'item-'+item.id;
                             div.className += 'col-sm-2 ';
                             div.className += 'mb-3 ';
                             div.className += 'content-item';
@@ -194,6 +196,8 @@
                                 <div>
                                     <span onclick="viewItem(${item.id})"><img class="view mr-2" title="Visualiser" width="25" src="{{ URL::asset('img/view.png')}}"></span>
                                     <span onclick="downloadItem('${item.id}')"><img class="download" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
+                                    <span onclick="editItem('${item.id}','${itemNameEscaped}')"><img class="replace mr-2" title="Remplacer" width="28" src="{{ URL::asset('img/edit-file.png')}}"></span>
+                                    <span onclick="return confirm('Êtes-vous sûrs ?')?deleteItem('${item.id}'):'';"  ><img class="delete ml-2" title="Supprimer" width="26" src="{{ URL::asset('img/delete.png')}}"></span>
                                 </div>
                                 `;
                             return div;
@@ -212,27 +216,29 @@
 
                         }
 
+                        function editItem(itemId,name) {
+                            //window.location.href =`https://mysaamp.com/view/${itemId}`;
+                            window.open(`https://crm.mysaamp.com/edit_file/${itemId}/<?php echo $client_id;?>/${name}`, '_self');
+                        }
+
                         function downloadItem(itemId) {
                             //window.location.href = `downloadItem.php?id=${itemId}`;
                             window.location.href =`https://crm.mysaamp.com/download/${itemId}`;
                         }
 
-                        function countFiles(itemId) {
-
+                        function deleteItem(itemId) {
+                            var _token = $('input[name="_token"]').val();
                             $.ajax({
-                                url: `https://crm.mysaamp.com/count_files/${itemId}`,
+                                url: `https://crm.mysaamp.com/delete_file/${itemId}`,
                                 method: "get",
-                                data: {  _token: _token,cl_id:cl_id,mois:mois},
+                                //data: {  _token: _token,id:itemId},
                                 success:function(data){
                                     console.log(data);
-                                    var html='';
-                                    data.forEach(item => {
-                                        html+='<tr><td>'+item.metier+'</td><td>'+item.N_3+'</td><td>'+item.N_2+'</td><td>'+item.N_1+'</td><td>'+item.N+'</td></tr>';
-                                    });
-                                    $("#stats").html(html);
+                                    if(data==1){
+                                        $('#item-'+itemId).hide('slow');
+                                    }
                                 }
                             });
-
                         }
 
                     <?php } ?>

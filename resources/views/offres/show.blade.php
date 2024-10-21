@@ -74,7 +74,7 @@
         cursor: pointer;
         transition: transform 0.3s, box-shadow 0.3s;
     }
-    .download, .view,.replace{
+    .download, .view,.replace,.delete{
         cursor:pointer;
     }
 
@@ -219,6 +219,7 @@
                         // Fonction pour créer un élément de contenu
                         function createContentItem(item) {
                             const div = document.createElement('div');
+                            div.id += 'item-'+item.id;
                             let nom= item.name;
                             let filename ;
                             <?php if($offre->old_id!=''){?>
@@ -229,13 +230,17 @@
                             div.className += 'col-sm-2 ';
                             div.className += 'mb-3 ';
                             div.className += 'content-item';
+                            const itemNameEscaped = item.name.replace(/'/g, "\\'");
+
                             div.innerHTML = `
                                 <div class="file" onclick="viewItem(${item.id})"></div>
                                 <div class="file-title"> ${filename}</div>
                                 <div>
                                     <span onclick="viewItem(${item.id})"><img class="view mr-2" title="Visualiser" width="25" src="{{ URL::asset('img/view.png')}}"></span>
                                     <span onclick="downloadItem('${item.id}')"><img class="download mr-2" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
-                                    <span onclick="editItem('${item.id}','${item.name}')"><img class="replace" title="Remplacer" width="28" src="{{ URL::asset('img/edit-file.png')}}"></span>
+                                    <span onclick="editItem('${item.id}','${itemNameEscaped}')"><img class="replace mr-2" title="Remplacer" width="28" src="{{ URL::asset('img/edit-file.png')}}"></span>
+                                    <span onclick="return confirm('Êtes-vous sûrs ?')?deleteItem('${item.id}'):'';"  ><img class="ml-2 delete" title="Supprimer" width="26" src="{{ URL::asset('img/delete.png')}}"></span>
+
                                 </div>
                                 `;
                             return div;
@@ -263,6 +268,23 @@
                             //window.location.href = `downloadItem.php?id=${itemId}`;
                             window.location.href =`https://crm.mysaamp.com/download/${itemId}`;
                         }
+
+
+                        function deleteItem(itemId) {
+                            var _token = $('input[name="_token"]').val();
+                            $.ajax({
+                                url: `https://crm.mysaamp.com/delete_file/${itemId}`,
+                                method: "get",
+                                //data: {  _token: _token,id:itemId},
+                                success:function(data){
+                                    console.log(data);
+                                    if(data==1){
+                                        $('#item-'+itemId).hide('slow');
+                                    }
+                                }
+                            });
+                        }
+
                     <?php } ?>
                 </script>
 
@@ -290,7 +312,7 @@
                 buttonImage: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAATCAYAAAB2pebxAAABGUlEQVQ4jc2UP06EQBjFfyCN3ZR2yxHwBGBCYUIhN1hqGrWj03KsiM3Y7p7AI8CeQI/ATbBgiE+gMlvsS8jM+97jy5s/mQCFszFQAQN1c2AJZzMgA3rqpgcYx5FQDAb4Ah6AFmdfNxp0QAp0OJvMUii2BDDUzS3w7s2KOcGd5+UsRDhbAo+AWfyU4GwnPAYG4XucTYOPt1PkG2SsYTbq2iT2X3ZFkVeeTChyA9wDN5uNi/x62TzaMD5t1DTdy7rsbPfnJNan0i24ejOcHUPOgLM0CSTuyY+pzAH2wFG46jugupw9mZczSORl/BZ4Fq56ArTzPYn5vUA6h/XNVX03DZe0J59Maxsk7iCeBPgWrroB4sA/LiX/R/8DOHhi5y8Apx4AAAAASUVORK5CYII=",
                 firstDay: 1,
                 dateFormat: "yy-mm-dd",
-                minDate:0
+                //minDate:0
             });
         });
 

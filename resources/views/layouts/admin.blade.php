@@ -102,7 +102,9 @@
   </div>
 
 @php
-  $data=  DB::select ("  CALL `sp_affiche_cours`(); ");
+  $user_id=auth()->user()->id;
+  DB::select("SET @p0='$user_id' ;");
+  $data=  DB::select ("  CALL `sp_affiche_cours`(@p0); ");
 @endphp
     <!-- Metals Modal-->
   <div class="modal fade" id="metalsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

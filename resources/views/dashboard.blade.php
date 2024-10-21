@@ -175,9 +175,9 @@
       <div class="modal-content">
         <div class="modal-header">
           <h6 class="modal-title" id="exampleModalLabel">Bienvenue sur le CRM </h6>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <!--<button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
-          </button>
+          </button>-->
         </div>
         <div class="modal-body  "  >
 			<div style="font-size:14px;">
@@ -203,7 +203,14 @@
 	<script>
 		$(document).ready(function() {
 			setTimeout(function() {
-				$('#maintenance').modal('show');
+
+        $('#maintenance').modal({
+          show:true,
+          keyboard: false,
+          backdrop: 'static'
+        });
+
+				//$('#maintenance').modal('show');
 			}, 5000); // 5000 millisecondes = 5 secondes
 		});
 	</script>
