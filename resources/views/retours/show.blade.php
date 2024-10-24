@@ -187,7 +187,7 @@
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $creator=\App\Models\User::find($retour->user_id); ?>
-                                <b><i>{{__('msg.Edit')}}Créée par : {{$creator->name}} {{$creator->lastname}}</i></b>
+                                <b><i>{{__('msg.Created by')}} : {{$creator->name}} {{$creator->lastname}}</i></b>
                             </div>
                         </div>
                     @endif
@@ -195,14 +195,14 @@
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $User=\App\Models\User::find($retour->edited_by); ?>
-                                <b><i>{{__('msg.Edit')}} modification par : {{$User->name}} {{$User->lastname}}</i></b>
+                                <b><i>{{__('msg.Last update by')}} : {{$User->name}} {{$User->lastname}}</i></b>
                             </div>
                         </div>
                     @endif
                     <div class="row pt-1">
                         <div class="col-md-12">
                             <button type="submit" class="btn-primary btn float-right">Modifier</button>
-                            @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com')
+                            @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com' || auth()->user()->email=='stephane.hamel@saamp.com')
                                 <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                     <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                                 </a>

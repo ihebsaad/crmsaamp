@@ -71,7 +71,7 @@ Route::put('/retours/{id}', [RetoursController::class, 'update'])->name('retours
 Route::post('/ajoutretour', [RetoursController::class, 'store'])->name('retours.store');
 Route::get('/retours/create/{id}', [RetoursController::class, 'create'])->name('retours.create');
 Route::put('/retours/{id}', [RetoursController::class, 'update'])->name('retours.update');
-Route::get('/retours', [RetoursController::class, 'index'])->name('retours.index');
+Route::get('/retours/list', [RetoursController::class, 'index'])->name('retours.list');
 Route::get('/retours/destroy/{id}',[RetoursController::class,'destroy'])->name('retours.destroy');
 
 

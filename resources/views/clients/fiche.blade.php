@@ -565,7 +565,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <th>{{__('msg.Open date')}}</th>
                                 <th>{{__('msg.Closing date')}}</th>
                                 @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com')
-                                    <th>Supp</th>
+                                    <th>{{__('msg.Del')}}</th>
                                 @endif
                             </tr>
                         </thead>

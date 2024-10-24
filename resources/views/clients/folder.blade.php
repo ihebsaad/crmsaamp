@@ -91,7 +91,7 @@
                             $folderNames = is_array($folders) && !empty($folders) ? array_column($folders, 'name') : [];
                         @endphp
                         <div class="col-md-5">
-                            <label>Type de depôt :</label>
+                            <label>{{__('msg.Type of deposit')}}:</label>
                             <select class="form-control" name="type">
                                 @foreach([
                                     1 => "DOCUMENTS OUVERTURE DE COMPTE POIDS",

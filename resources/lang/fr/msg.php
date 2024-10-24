@@ -582,4 +582,10 @@ return [
 	"Created by"=>"Créé par",
 	"Last update by"=>"Dernière modification par",
 	"Task"=>"Prise de contact",
+	"List of Complaints"=>"Liste des Réclamations",
+	"Only fenced"=>"Uniquement clôturés",
+	"Type of deposit"=>"Type de depôt",
+	"Reason"=>"Motif",
+	"Only open"=>"Uniquement ouverts",
+ 	
  ];

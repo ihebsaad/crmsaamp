@@ -123,6 +123,7 @@
                 "targets": 'no-sort',
                 "orderable": false,
             }],
+            <?php if(auth()->user()->lg=='fr'){ ?>
             "language": {
                 "decimal": "",
                 "emptyTable": "Pas de données",
@@ -147,7 +148,7 @@
                     "sortDescending": ": activer pour un tri descendant"
                 }
             }
-
+            <?php } ?>
         });
 
 

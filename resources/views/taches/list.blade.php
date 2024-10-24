@@ -133,16 +133,16 @@
                                     $color='';
                                     switch ( $task->Status ) {
                                     case 'Not Started':
-                                    $color = '#82e2e8';$statut="{{__('msg.Not started')}}";
+                                    $color = '#82e2e8';$statut=__('msg.Not started');
                                     break;
                                     case 'In Progress':
-                                    $color = '#5f9fff';$statut="{{__('msg.In progress')}}";
+                                    $color = '#5f9fff';$statut=__('msg.In progress');
                                     break;
                                     case 'Deferred':
-                                    $color = '#a778c9';$statut="{{__('msg.Deferred')}}";
+                                    $color = '#a778c9';$statut=__('msg.Deferred');
                                     break;
                                     case 'Completed':
-                                    $color = '#40c157';$statut"{{__('msg.Completed')}}";
+                                    $color = '#40c157';$statut=__('msg.Completed');
                                     break;
                                     default:
                                     $color = '';$statut='';
@@ -151,13 +151,13 @@
                                     $class='';
                                     switch ( $task->Priority ) {
                                     case 'Normal':
-                                    $class = 'primary';$priority="{{__('msg.Normal')}}";
+                                    $class = 'primary';$priority=__('msg.Normal');
                                     break;
                                     case 'High':
-                                    $class = 'danger';$priority="{{__('msg.High')}}";
+                                    $class = 'danger';$priority=__('msg.High');
                                     break;
                                     case 'Low':
-                                    $class = 'info';$priority="{{__('msg.Low')}}";
+                                    $class = 'info';$priority=__('msg.Low');
                                     break;
 
                                     default:
@@ -192,8 +192,8 @@
                                         </div>
                                         <div class="task-details">
                                             <span style="color:black"><i class="fas fa-user-circle"></i><a href="{{route('fiche',['id'=>$client->id ?? 0])}}"> @if($task->Nom_de_compte !='') {{ $task->Nom_de_compte }} @else {{$client->Nom ?? ''}}  @endif - Client ID : {{ $task->mycl_id }}</a> </span><br>
-                                            <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $statut }}</span>
-                                            <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $priority }}</span>
+                                            <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {!!  $statut !!}</span>
+                                            <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {!! $priority !!}</span>
 
                                             {{ $task->Description }}<br>
                                             <i>{{ $task->Agence }}</i>

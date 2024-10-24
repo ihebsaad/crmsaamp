@@ -476,6 +476,7 @@ return [
 	"Current orders"=>"Current orders",
 	"Trading of customer"=>"Trading of customer",
 	"Complaints"=>"Complaints",
+	"Complaint"=>"Complaint",
 	"Open date"=>"Open date",
 	"Closing date"=>"Closing date",
 	"Del"=>"Del",
@@ -576,5 +577,10 @@ return [
 	"Completed"=>"Completed",
 	"Created by"=>"Created by",
 	"Last update by"=>"Last update by",
-	"Task"=>"Task",
+	"List of Complaints"=>"List of Complaints",
+	"Only fenced"=>"Only fenced",
+	"Type of deposit"=>"Type of deposit",
+	"Reason"=>"Reason",
+	"Only open"=>"Only open",
+
 ];

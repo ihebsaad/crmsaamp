@@ -33,6 +33,7 @@ class RetoursController extends Controller
 
 	public function index()
 	{
+		//dd('test');
 		$retours=RetourClient::orderBy('id','desc')->limit(1000)->get();
 		return view('retours.index',compact('retours'));
 	}

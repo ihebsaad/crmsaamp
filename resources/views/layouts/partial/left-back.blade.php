@@ -99,13 +99,11 @@ if (Auth::check()) {
       <span> Offres commerciales </span>
     </a>-->
     <!--<hr class="sidebar-divider">-->
-    @if($user->user_type=='admin' || $user->email=='directeur.qualite@saamp.com' )
-      <a class="nav-link" href="{{route('retours.index')}}" >
+    <a class="nav-link" href="{{route('retours.list')}}" >
       <i class="fas fa-comments" ></i>
         <span> Réclamations </span>
       </a>
-    @endif
-    <a class="nav-link" href="{{route('agenda')}}" >
+     <a class="nav-link" href="{{route('agenda')}}" >
     <i class="fas fa-calendar-alt" ></i>
       <span><div class="hidemobile"> Mon </div>Agenda</span>
     </a>

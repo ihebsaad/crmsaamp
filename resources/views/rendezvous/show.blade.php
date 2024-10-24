@@ -157,14 +157,14 @@ h6{
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $creator=\App\Models\User::find($rendezvous->user_id); ?>
-                                <b><i>Créé par : {{$creator->name}} {{$creator->lastname}}</i></b>
+                                <b><i>{{__('msg.Created by')}} : {{$creator->name}} {{$creator->lastname}}</i></b>
                             </div>
                         </div>
                     @elseif($rendezvous->user_id > 0)
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $creator=\App\Models\User::find($rendezvous->user_id); ?>
-                                <b><i>Créé par : {{$creator->name}} {{$creator->lastname}}</i></b>
+                                <b><i>{{__('msg.Created by')}} : {{$creator->name}} {{$creator->lastname}}</i></b>
                             </div>
                         </div>
                     @endif
@@ -172,7 +172,7 @@ h6{
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $User=\App\Models\User::find($rendezvous->edited_by); ?>
-                                <b><i>Dernière modification par : {{$User->name}} {{$User->lastname}}</i></b>
+                                <b><i>{{__('msg.Last update by')}} : {{$User->name}} {{$User->lastname}}</i></b>
                             </div>
                         </div>
                     @endif

@@ -17,12 +17,17 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Edit')}}Liste des Réclamations </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.List of Complaints')}} </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
                 <div class="row">
-                    <label class="ml-2 pointer text-primary" for='mycheck'><input id="mycheck" type="checkbox" onclick="filter(this)"> Uniquement clôturés</input></lablel>
+                    <div class="col-md-2">
+                        <label class="ml-2 pointer text-primary" for='mycheck'><input id="mycheck" type="checkbox" onclick="filter(this)"> {{__('msg.Only fenced')}}</input></lablel>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="ml-2 pointer text-primary" for='mycheck2'><input id="mycheck2" type="checkbox" onclick="filter2(this)"> {{__('msg.Only open')}}</input></lablel>
+                    </div>
                 </div>
 
                 <table id="mytable" class="table table-striped" style="width:100%">
@@ -32,9 +37,9 @@
                             <th>{{__('msg.Name')}}</th>
                             <th>{{__('msg.Date')}}</th>
                             <th>{{__('msg.Contact')}}</th>
-                            <th>{{__('msg.Edit')}}Motif</th>
+                            <th>{{__('msg.Reason')}}</th>
                             <th>{{__('msg.Agency')}}</th>
-                            <th>{{__('msg.Edit')}}Date de clôture</th>
+                            <th>{{__('msg.Closing date')}}</th>
                             <th>{{__('msg.Type')}}</th>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                             <th>{{__('msg.Del')}}</th>
@@ -60,7 +65,7 @@
                         $class = '';
                         }
                         @endphp
-                        <tr class="myline @if($retour->Date_cloture=='0000-00-00' || $retour->Date_cloture=='') noncloture @endif">
+                        <tr class="myline @if($retour->Date_cloture=='0000-00-00' || $retour->Date_cloture=='') noncloture @else cloture @endif">
                             <td>{{$retour->id}}</td>
                             <td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
                             <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
@@ -130,6 +135,15 @@
             }
         }
 
+        function filter2(elm) {
+            var nonsolde = $(elm).is(":checked") ? 1 : 0;
+            if (nonsolde) {
+                toggle('cloture', 'none');
+            } else {
+                toggle('myline', 'table-row');
+            }
+        }
+
         function toggle(className, displayState) {
             var elements = document.getElementsByClassName(className);
             for (var i = 0; i < elements.length; i++) {
@@ -161,6 +175,7 @@
                     "targets": 'no-sort',
                     "orderable": false,
                 }],
+                <?php if(auth()->user()->lg=='fr'){ ?>
                 "language": {
                     "decimal": "",
                     "emptyTable": "Pas de données",
@@ -185,6 +200,7 @@
                         "sortDescending": ": activer pour un tri descendant"
                     }
                 }
+                <?php } ?>
 
             });
 
