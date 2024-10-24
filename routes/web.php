@@ -168,6 +168,7 @@ Route::get('/viewpdf/{id}', 'App\Http\Controllers\ClientsController@view')->name
 Route::get('/delete_file/{id}', 'App\Http\Controllers\ClientsController@delete_file')->name('delete_file');
 Route::get('/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\ClientsController@edit_file');
 Route::post('/editFile', 'App\Http\Controllers\ClientsController@editFile')->name('editFile');
+Route::post('/relancer', 'App\Http\Controllers\OffresController@relancer')->name('relancer');
 
 /*
 use App\Jobs\UpdateSequentialIdsJob;

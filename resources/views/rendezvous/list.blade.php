@@ -17,14 +17,14 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Liste des rendez vous @if(isset($client)) ( {{ $client->cl_ident}} - {{ $client->Nom}} ) @endif </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Appointments list')}} @if(isset($client)) ( {{ $client->cl_ident}} - {{ $client->Nom}} ) @endif </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
                 <div class="row">
                     @if(isset($client))
                         <div class="col-sm-12">
-                            <a href="{{route('rendezvous.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                            <a href="{{route('rendezvous.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> {{__('msg.Add')}}</a>
                         </div>
                     @endif
                 </div>
@@ -32,12 +32,12 @@
                     <thead>
                         <tr id="headtable">
                             <th>ID </th>
-                            <th>Client</th>
-                            <th>Sujet</th>
-                            <th>Date</th>
-                            <th>Lieu</th>
+                            <th>{{__('msg.Customer')}}</th>
+                            <th>{{__('msg.Subject')}}</th>
+                            <th>{{__('msg.Date')}}</th>
+                            <th>{{__('msg.Place')}}</th>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                <th>Supp</th>
+                                <th>{{__('msg.Del')}}</th>
                             @endif
                         </tr>
                     </thead>
@@ -51,7 +51,7 @@
                                 <td>{{ $rv->location }}</td>
                                 @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                     <td>
-                                        <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                        <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                             <span class="fa fa-fw fa-trash-alt"></span>
                                         </a>
                                     </td>

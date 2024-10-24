@@ -79,7 +79,7 @@ if (is_array($commandes) || is_object($commandes)) {
                 <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Customer sheet')}} : {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
-            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> {{__('msg.Appointment')}}</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> {{__('msg.Tasks')}}</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a>
+            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> {{__('msg.Appointment')}}</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> {{__('msg.Tasks')}}</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> {{__('msg.Offers')}}</a>
                 @if(  $client->etat_id==1  )
                     <a title="{{__('msg.Delete')}}"   onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('clients.destroy', $client->id )}}" class="btn btn-danger btn-sm btn-responsive ml-3 mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                         <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}

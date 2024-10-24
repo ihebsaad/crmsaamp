@@ -19,7 +19,7 @@ h6{
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rendez Vous {{$rendezvous->id}} </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Appointment')}} {{$rendezvous->id}} </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -32,33 +32,37 @@ h6{
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Account_Name">@if($client!= null) Client: @else Nom: @endif </label>
-                                <h6>{{$rendezvous->Account_Name}} </h6>
+                                <label for="Account_Name">@if($client!= null) {{__('msg.Customer')}}: @else {{__('msg.Name')}}: @endif </label>
+                                @if($rendezvous->mycl_id>0)
+                                    <h6><a href="{{route('fiche',['id'=>$rendezvous->mycl_id])}}">{{$rendezvous->Account_Name}}</a></h6>
+                                @else
+                                    <h6>{{$rendezvous->Account_Name}}</h6>
+                                @endif
                                 <h6><small>{{$adresse ?? ''}} </small></h6>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Started_at">Date de début:</label>
+                                <label for="Started_at">{{__('msg.Start date')}}:</label>
                                 <input type="text" id="Started_at" class="form-control datepicker" name="Started_at"  value="{{date('Y-m-d', strtotime($rendezvous->Started_at))}}"><br><br>
 
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="heure_fin">Heure de début:</label>
+                                <label for="heure_fin">{{__('msg.Start hour')}}:</label>
                                 <input type="time" id="heure_debut" class="form-control" name="heure_debut"  value="{{$rendezvous->heure_debut}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="End_at">Date de fin:</label>
+                                <label for="End_at">{{__('msg.End date')}}:</label>
                                 <input type="text" id="End_at" class="form-control datepicker" name="End_at"  value="{{ $rendezvous->End_at !='' ? date('Y-m-d', strtotime($rendezvous->End_at)) : '' }}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="heure_fin">Heure de fin:</label>
+                                <label for="heure_fin">{{__('msg.End hour')}}:</label>
                                 <input type="time" id="heure_fin" class="form-control" name="heure_fin"  value="{{$rendezvous->heure_fin}}"><br><br>
                             </div>
                         </div>
@@ -67,14 +71,14 @@ h6{
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                            <label for="Type">Type:</label>
+                            <label for="Type">{{__('msg.Type')}}:</label>
                                 <h6>{{$rendezvous->Type}}</h6>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                         <div class="">
-                                <label for="Location">Lieu:</label>
+                                <label for="Location">{{__('msg.Place')}}:</label>
                                 <h6>{{$rendezvous->Location}}</h6>
                             </div>
                         </div>
@@ -84,14 +88,14 @@ h6{
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Subject">Sujet:</label>
+                                <label for="Subject">{{__('msg.Subject')}}:</label>
                                 <input type="text" id="Subject" class="form-control" name="Subject"  value="{{$rendezvous->Subject}}"><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Date_creation">Attribué à:</label>
+                                <label for="Date_creation">{{__('msg.Attributed to')}}:</label>
                                 @if($rendezvous->user_id > 0 )
                                     <?php $user=\App\Models\User::find($rendezvous->user_id); ?>
                                     <h6>{{ $user->name}} {{ $user->lastname}}</h6>
@@ -104,7 +108,7 @@ h6{
 
                         <div class="col-md-6">
                             <div >
-                                <label for="Description">Description :</label>
+                                <label for="Description">{{__('msg.Description')}}:</label>
                                 <textarea id="Description" class="form-control" name="Description" style="min-height:150px">{{$rendezvous->Description}}</textarea><br><br>
                             </div>
                         </div>
@@ -115,7 +119,7 @@ h6{
                             @if($rendezvous->fichier!= null)
                                 @php $fileNames = unserialize($rendezvous->fichier); @endphp
                                 <div class="">
-                                    <label for="Description">Fichier(s):</label><br>
+                                    <label for="Description">{{__('msg.File(s)')}}:</label><br>
                                     <table style="border:none">
 
                                         @foreach ($fileNames as $fichier)
@@ -141,10 +145,10 @@ h6{
 
                     <div class="row pt-3">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right" >Modifier</button>
+                            <button type="submit" class="btn-primary btn float-right" >{{__('msg.Edit')}}</button>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rendezvous->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
-                                    <span class="fa fa-fw fa-trash-alt"></span> Supprimer
+                                <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rendezvous->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                    <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                                 </a>
                             @endif
                         </div>

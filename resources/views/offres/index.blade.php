@@ -17,14 +17,14 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Liste des offres @if(isset($client)) ( {{ $client->cl_ident ?? '' }} - {{ $client->Nom}} ) @endif </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.List of offers')}} @if(isset($client)) ( {{ $client->cl_ident ?? '' }} - {{ $client->Nom}} ) @endif </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
                 <div class="row">
                     @if(isset($client))
                         <div class="col-sm-12">
-                            <a href="{{route('offres.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                            <a href="{{route('offres.create',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> {{__('msg.Add')}}</a>
                         </div>
                     @endif
                 </div>
@@ -32,10 +32,10 @@
                     <thead>
                         <tr id="headtable">
                             <th>ID </th>
-                            <th>Nom</th>
-                            <th>Compte</th>
-                            <th>Type</th>
-                            <th>Statut</th><!--
+                            <th>{{__('msg.Name')}}</th>
+                            <th>{{__('msg.Account')}}</th>
+                            <th>{{__('msg.Type')}}</th>
+                            <th>{{__('msg.Status')}}</th><!--
                             <th>Validée</th>
                             <th>Création</th>
                             <th>Clôture</th>-->

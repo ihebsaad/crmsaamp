@@ -155,6 +155,8 @@ class OffresController extends Controller
         ]);
 
         //$offre=Offre::create($request->all());
+		$Date1 = date('Y-m-d');
+		$date_relance = date('Y-m-d', strtotime($Date1 . " + 15 days"));
 
 		$offre = Offre::create([
 			'cl_id' => $request->input('cl_id') ?? 0,
@@ -166,6 +168,7 @@ class OffresController extends Controller
 			'user_id' => $request->input('user_id'),
 			'nom_compte' => $request->input('nom_compte') ?? '',
 			'type' => $request->get('type'),
+			'date_relance' => $date_relance,
 			//'statut' => '',
 			// Other fields as necessary
 		]);
@@ -222,8 +225,6 @@ class OffresController extends Controller
 			$offre->save();
 		}
 
-
-
 		return redirect()->route('offres.client_list', $client->id)
 		->with('success','Offre ajoutée');
 	}
@@ -236,8 +237,20 @@ class OffresController extends Controller
 
 	}
 
-	// ici
-	public function editFile(Request $request)
+	public function relancer(Request $request)
+	{
+		$id= $request->get('id');
+		$offre= Offre::find($id);
+		//$client=Client::find($offre->mycl_id);
+		$user=User::find($offre->user_id);
+		$contenu="Bonjour,<br><br>Offre <a href='https://crm.mysaamp.com/offres/show/$offre->id'> $offre->id</a> de type $offre->type.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+		if(isset($user->email))
+			SendMail::send($user->email,"Relance de l'offre $offre->Nom_offre",$contenu);
+
+		return 1;
+	}
+
+		public function editFile(Request $request)
 	{
 		$itemId= $request->get('item_id');
 		$attachment=$request->file('file');

@@ -17,7 +17,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Liste des Réclamations </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Edit')}}Liste des Réclamations </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -29,15 +29,15 @@
                     <thead>
                         <tr id="headtable">
                             <th>ID </th>
-                            <th>Nom</th>
-                            <th>Date</th>
-                            <th>Contact</th>
-                            <th>Motif</th>
-                            <th>Agence</th>
-                            <th>Date de clôture</th>
-                            <th>Type</th>
+                            <th>{{__('msg.Name')}}</th>
+                            <th>{{__('msg.Date')}}</th>
+                            <th>{{__('msg.Contact')}}</th>
+                            <th>{{__('msg.Edit')}}Motif</th>
+                            <th>{{__('msg.Agency')}}</th>
+                            <th>{{__('msg.Edit')}}Date de clôture</th>
+                            <th>{{__('msg.Type')}}</th>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                            <th>Supp</th>
+                            <th>{{__('msg.Del')}}</th>
                             @endif
                         </tr>
                     </thead>

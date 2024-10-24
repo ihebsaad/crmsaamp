@@ -13,7 +13,7 @@
             font-weight: 200;
             height: 100vh;
             margin: 0;
-            background-image: url({{  URL::asset('img/error.jpg') }}); 
+            background-image: url({{  URL::asset('img/error.jpg') }});
             background-size: cover; /* Ajuste l'image pour couvrir tout l'écran */
             background-position: center; /* Centre l'image */
             background-repeat: no-repeat; /* Empêche la répétition de l'image */
@@ -41,8 +41,8 @@
 <body>
     <div class="content">
         <div class="title">404</div>
-        <p class="message">Désolé, la page que vous cherchez n'a pas été trouvée.</p>
-        <a href="{{ url('/') }}">Retour à l'accueil</a>
+        <p class="message">{{__('msg.Sorry, Page not found')}}</p>
+        <a href="{{ url('/') }}">{{__('msg.Back to Home')}}</a>
     </div>
 </body>
 </html>

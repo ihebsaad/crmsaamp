@@ -73,14 +73,14 @@
 
         <div class="card shadow mb-4" style="min-height:80vh">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Gestion électronique des documents</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Electronic document management')}}</h6>
             </div>
             <div class="card-body">
                 @if(isset($folders) && isset($folders[0]))
                     <nav aria-label="breadcrumb" style="width:100%">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('folders') }}"><img  width="30" src="{{ URL::asset('img/shared-folder.png')}}"> Mes documents</a>
+                            <a href="{{ route('folders') }}"><img  width="30" src="{{ URL::asset('img/shared-folder.png')}}"> {{__('msg.My documents')}}</a>
                         </li>
                         @php
                             $pathComponents = explode('/', $folders[0]['virtualPath']);

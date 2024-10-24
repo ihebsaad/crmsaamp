@@ -54,9 +54,9 @@
                     <div class="col-md-3">
                         @if(auth()->user()->user_type =='admin' || auth()->user()->role =='admin')
                             <div class="col-md-6 col-sm-12">
-                                <label for="agence" class="mr-2">Agence:</label>
+                                <label for="agence" class="mr-2">{{__('msg.Agency')}}:</label>
                                 <select class="  form-control" id="agence" onchange="filter()" style="width:200px">
-                                    <option value="agence">Tous</option>
+                                    <option value="agence">{{__('msg.All')}}</option>
                                     @foreach ($agences as $agence)
                                     <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
                                     @endforeach
@@ -70,15 +70,15 @@
                     </div>
                         <form action="{{route('taches.index')}}" method="GET" style="display:contents" >
                             <div class="col-lg-3 col-md-12">
-                                <label for="nom" class="mr-2">Nom:</label>
+                                <label for="nom" class="mr-2">{{__('msg.Name')}}:</label>
                                 <input class="form-control" name="nom" type="text" value="{{$nom}}" style="max-width:150px"/>
                             </div>
                             <div class="col-lg-3 col-md-12">
-                                <label for="nom" class="mr-2">Client ID:</label>
+                                <label for="nom" class="mr-2">{{__('msg.Client ID')}}:</label>
                                 <input class="form-control" name="cl_ident" type="number"  value="{{$cl_ident}}"  style="max-width:100px"/>
                             </div>
                             <div class="col-lg-2 col-md-12">
-                                <input class="btn btn-info" type="submit" value="Filtrer" ></input>
+                                <input class="btn btn-info" type="submit" value="{{__('msg.Filter')}}" ></input>
                             </div>
                         </form>
                     <!--
@@ -110,7 +110,7 @@
                 <div class="accordion" id="tasksAccordion" style="border-bottom:1px solid lightgray">
 
                     @if(count($taches)==0)
-                    <h2 class="text-center mt-5">Vous n’avez encore pris aucun contact</h2>
+                    <h2 class="text-center mt-5">{{__('msg.You have no contacts')}}</h2>
                     @else
 
                     @foreach($groupedTasks as $month => $tasks)
@@ -133,16 +133,16 @@
                                     $color='';
                                     switch ( $task->Status ) {
                                     case 'Not Started':
-                                    $color = '#82e2e8';$statut='Pas commencée';
+                                    $color = '#82e2e8';$statut="{{__('msg.Not started')}}";
                                     break;
                                     case 'In Progress':
-                                    $color = '#5f9fff';$statut='En cours';
+                                    $color = '#5f9fff';$statut="{{__('msg.In progress')}}";
                                     break;
                                     case 'Deferred':
-                                    $color = '#a778c9';$statut='Reportée';
+                                    $color = '#a778c9';$statut="{{__('msg.Deferred')}}";
                                     break;
                                     case 'Completed':
-                                    $color = '#40c157';$statut='Terminée';
+                                    $color = '#40c157';$statut"{{__('msg.Completed')}}";
                                     break;
                                     default:
                                     $color = '';$statut='';
@@ -151,13 +151,13 @@
                                     $class='';
                                     switch ( $task->Priority ) {
                                     case 'Normal':
-                                    $class = 'primary';$priority='Normale';
+                                    $class = 'primary';$priority="{{__('msg.Normal')}}";
                                     break;
                                     case 'High':
-                                    $class = 'danger';$priority='Haute';
+                                    $class = 'danger';$priority="{{__('msg.High')}}";
                                     break;
                                     case 'Low':
-                                    $class = 'info';$priority='Basse';
+                                    $class = 'info';$priority="{{__('msg.Low')}}";
                                     break;
 
                                     default:

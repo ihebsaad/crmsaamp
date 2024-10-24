@@ -59,15 +59,15 @@
 <body>
     <div class="content">
         <div class="title">Oups !</div>
-        <p class="message">Erreur interne du serveur</p>
+        <p class="message">{{__('msg.Server Error')}} </p>
 
         @if(auth()->user()->user_type=='admin')
-            <a href="{{ route('adminhome') }}">Retour au tableau de bord</a><br><br>
+            <a href="{{ route('adminhome') }}">{{__('msg.Back to dashboard')}}</a><br><br>
         @else
-            <a href="{{ route('dashboard') }}">Retour au tableau de bord</a><br><br>
+            <a href="{{ route('dashboard') }}">{{__('msg.Back to dashboard')}}</a><br><br>
         @endif
 
-        <button onclick="toggleDetails()">Afficher les détails de l'erreur</button>
+        <button onclick="toggleDetails()">{{__('msg.Show error details')}}</button>
         <div class="details" id="errorDetails">
             <?php
                 // Récupérer l'exception d'origine

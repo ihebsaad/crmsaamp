@@ -7,20 +7,20 @@
 ?>
 
 <style>
-
-    h6{
-        color:black;
-        font-weight:bold;
+    h6 {
+        color: black;
+        font-weight: bold;
     }
-    table{
-        border:none;
+
+    table {
+        border: none;
     }
 </style>
 
 <style>
-    .foldername{
-        width:100%;
-        margin-bottom:25px;
+    .foldername {
+        width: 100%;
+        margin-bottom: 25px;
     }
 
     #folders-container {
@@ -52,12 +52,12 @@
     }
 
 
-    .file-title{
-        font-weight:normal;
-        color:black;
-        font-size:13px;
-        margin-top:5px;
-        margin-bottom:5px;
+    .file-title {
+        font-weight: normal;
+        color: black;
+        font-size: 13px;
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
 
     .file {
@@ -74,12 +74,16 @@
         cursor: pointer;
         transition: transform 0.3s, box-shadow 0.3s;
     }
-    .download, .view,.replace,.delete{
-        cursor:pointer;
+
+    .download,
+    .view,
+    .replace,
+    .delete {
+        cursor: pointer;
     }
 
-    .ged{
-        border:2px solid #f8f9fd;
+    .ged {
+        border: 2px solid #f8f9fd;
     }
 </style>
 <div class="row">
@@ -89,7 +93,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Offre {{$offre->id}}  -  Client : {{$offre->cl_id}} - {{$offre->nom_compte}}   </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Offer')}} {{$offre->id}}  -  {{__('msg.Customer')}} : {{$offre->cl_id}} - {{$offre->nom_compte}} </h6>
             </div>
 
             <div class="card-body" style="min-height:300px">
@@ -97,11 +101,11 @@
                 <form action="{{ route('offres.update', $offre->id) }}" method="post">
                     @csrf
                     @method('PUT')
-
+                    <input type="hidden" id="offer" value="{{$offre->id}}"/>
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Nom_offre">Nom:</label>
+                                <label for="Nom_offre">{{__('msg.Name')}}:</label>
                                 <h6>{{$offre->Nom_offre}}</h6><!--
                                 <input type="text" id="Nom_offre" class="form-control" name="Nom_offre"  value="{{$offre->Nom_offre}}"><br><br>
                                 -->
@@ -110,7 +114,7 @@
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Date_creation">Date :</label>
+                                <label for="Date_creation">{{__('msg.Date')}}:</label>
                                 <h6>{{date('d/m/Y', strtotime($offre->Date_creation))}}</h6>
                                 <!--
                                 <input type="text" id="Date_creation" class="form-control datepicker" name="Date_creation"  value="{{$offre->Date_creation}}"><br><br>
@@ -119,13 +123,13 @@
                         </div>
 
                         <div class="col-md-3">
-                            <label for="Type">Type:</label>
+                            <label for="Type">{{__('msg.Type')}}:</label>
                             <h6>{{$offre->type}}</h6>
                         </div>
 
                         <div class="col-md-3">
-                            <div >
-                                <label for="Produit_Service">Produit Service:</label>
+                            <div>
+                                <label for="Produit_Service">{{__('msg.Service product')}}:</label>
                                 <h6>{{$offre->Produit_Service}}</h6>
                             </div>
                         </div>
@@ -134,63 +138,72 @@
 
 
                     <div class="row pt-1">
-                    @if(auth()->user()->id== 1 || auth()->user()->id== 10 || auth()->user()->id== 39)
+                        @if(auth()->user()->id== 1 || auth()->user()->id== 10 || auth()->user()->id== 39)
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Statut">Statut:</label>
-                                <select    id="statut" class="form-control" name="statut"   >
-                                    <option  value=""></option>
+                                <label for="Statut">{{__('msg.Status')}}:</label>
+                                <select id="statut" class="form-control" name="statut">
+                                    <option value=""></option>
                                     <option @selected($offre->statut=='OK') value="OK">OK</option>
-                                    <option @selected($offre->statut=='KO')  value="KO">KO</option>
+                                    <option @selected($offre->statut=='KO') value="KO">KO</option>
                                 </select><br><br>
                             </div>
                         </div>
-                    @else
+                        @else
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Statut">Statut:</label>
+                                <label for="Statut">{{__('msg.Status')}}:</label>
                                 <h6>{{$offre->Statut}}</h6>
                             </div>
                         </div>
-                    @endif
+                        @endif
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Description">Description:</label>
+                                <label for="Description">{{__('msg.Description')}}:</label>
                                 <h6>{{$offre->Description}}</h6>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             @if($offre->fichier!= null)
-                                @php $fileNames = unserialize($offre->fichier); @endphp
-                                <div class="">
-                                    <label for="Description">Fichier(s):</label><br>
-                                    <table>
+                            @php $fileNames = unserialize($offre->fichier); @endphp
+                            <div class="">
+                                <label for="Description">{{__('msg.File(s)')}}:</label><br>
+                                <table>
 
-                                        @foreach ($fileNames as $fichier)
-                                        <tr>
-                                            <td><label><b class="black mr-2">{{$fichier}}</b></label></td>
-                                            <td><a href="https://crm.mysaamp.com/offres/{{$fichier}}" target="_blank" ><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png')}}"></a></td>
-                                            <td><a href="https://crm.mysaamp.com/offres/{{$fichier}}" download ><img class="download mr-2" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
-                                        </tr>
-                                        @endforeach
+                                    @foreach ($fileNames as $fichier)
+                                    <tr>
+                                        <td><label><b class="black mr-2">{{$fichier}}</b></label></td>
+                                        <td><a href="https://crm.mysaamp.com/offres/{{$fichier}}" target="_blank"><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png')}}"></a></td>
+                                        <td><a href="https://crm.mysaamp.com/offres/{{$fichier}}" download><img class="download mr-2" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
+                                    </tr>
+                                    @endforeach
 
-                                    </table>
-                                </div>
+                                </table>
+                            </div>
                             @endif
                         </div>
 
                     </div>
 
                     <div class="row pt-1">
+                        <div class="col-md-4">
+                            @if($offre->date_relance!='')
+                            <label for="Statut">Date relance:</label> <h6>{{date('d/m/Y', strtotime($offre->date_relance))}}</h6>
+                            <button type="button" class="btn-info btn" onclick="relancer()" id="relance">Relancer</button>
+
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row pt-1">
                         <div class="col-md-12">
                             @if($offre->statut=='')
-                                <button type="submit" class="btn-primary btn float-right">Modifier</button>
+                            <button type="submit" class="btn-primary btn float-right">{{__('msg.Edit')}}</button>
                             @endif
                             @if(auth()->user()->role=='admin' || auth()->user()->id== 10 || auth()->user()->id== 39)
-                                <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('offres.destroy', $offre->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
-                                    <span class="fa fa-fw fa-trash-alt"></span> Supprimer
-                                </a>
+                            <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('offres.destroy', $offre->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
+                            </a>
                             @endif
                         </div>
                     </div>
@@ -199,16 +212,16 @@
 
             </div>
 
-            <h3 class="pl-5">Documents </h3>
-			<div class="ged pl-5 pr-5 pb-5 pt-3">
+            <h3 class="pl-5">{{__('msg.Files')}} </h3>
+            <div class="ged pl-5 pr-5 pb-5 pt-3">
 
 
-			    <div class="pl-5" id="folders-container"></div>
+                <div class="pl-5" id="folders-container"></div>
                 <div class="row pl-5" id="files-container"></div>
 
                 <script>
-                     <?php
-                    if(isset($folderContent)){ ?>
+                    <?php
+                    if (isset($folderContent)) { ?>
                         const apiResponseContent = {
                             data: <?php echo json_encode($folderContent); ?>
                         };
@@ -219,13 +232,13 @@
                         // Fonction pour créer un élément de contenu
                         function createContentItem(item) {
                             const div = document.createElement('div');
-                            div.id += 'item-'+item.id;
-                            let nom= item.name;
-                            let filename ;
-                            <?php if($offre->old_id!=''){?>
-                             filename = nom.substring(0, nom.length-21);
-                            <?php }else{?>
-                             filename=nom ;
+                            div.id += 'item-' + item.id;
+                            let nom = item.name;
+                            let filename;
+                            <?php if ($offre->old_id != '') { ?>
+                                filename = nom.substring(0, nom.length - 21);
+                            <?php } else { ?>
+                                filename = nom;
                             <?php } ?>
                             div.className += 'col-sm-2 ';
                             div.className += 'mb-3 ';
@@ -259,14 +272,14 @@
 
                         }
 
-                        function editItem(itemId,name) {
+                        function editItem(itemId, name) {
                             //window.location.href =`https://mysaamp.com/view/${itemId}`;
-                            window.open(`https://crm.mysaamp.com/offres/edit_file/${itemId}/<?php echo $offre->id;?>/${name}`, '_self');
+                            window.open(`https://crm.mysaamp.com/offres/edit_file/${itemId}/<?php echo $offre->id; ?>/${name}`, '_self');
                         }
 
                         function downloadItem(itemId) {
                             //window.location.href = `downloadItem.php?id=${itemId}`;
-                            window.location.href =`https://crm.mysaamp.com/download/${itemId}`;
+                            window.location.href = `https://crm.mysaamp.com/download/${itemId}`;
                         }
 
 
@@ -276,10 +289,10 @@
                                 url: `https://crm.mysaamp.com/delete_file/${itemId}`,
                                 method: "get",
                                 //data: {  _token: _token,id:itemId},
-                                success:function(data){
+                                success: function(data) {
                                     console.log(data);
-                                    if(data==1){
-                                        $('#item-'+itemId).hide('slow');
+                                    if (data == 1) {
+                                        $('#item-' + itemId).hide('slow');
                                     }
                                 }
                             });
@@ -288,15 +301,44 @@
                     <?php } ?>
                 </script>
 
-			</div>
+            </div>
 
         </div>
 
     </div>
     <script>
-        $(function () {
+        function relancer() {
+            var _token = $('input[name="_token"]').val();
+            var offre = $('#offer').val();
+            $.ajax({
+                //url: `https://crm.mysaamp.com/relancer/${offre}`,
+                url: `https://crm.mysaamp.com/relancer`,
+                method: "post",
+                data: {  _token: _token,id:offre},
+                success: function(data) {
+                    console.log(data);
+                    if(data==1){
+                        $.notify({
+                            message: 'Message envoyé !',
+                            icon: 'glyphicon glyphicon-check'
+                        },{
+                            type: 'success',
+                            delay: 3000,
+                            timer: 1000,
+                            placement: {
+                                from: "top",
+                                align: "right"
+                            },
+                        });
+                        $('#relance').prop('disabled',true);
+                    }
+                }
+            });
+        }
 
-            $( ".datepicker" ).datepicker({
+        $(function() {
+
+            $(".datepicker").datepicker({
 
                 altField: "#datepicker",
                 closeText: 'Fermer',
@@ -315,7 +357,6 @@
                 //minDate:0
             });
         });
-
     </script>
 
     @endsection

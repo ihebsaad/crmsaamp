@@ -23,7 +23,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Réclamation {{$retour->id}} </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Complaint')}} {{$retour->id}} </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -36,7 +36,7 @@
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Name">Réference:</label>
+                                <label for="Name">{{__('msg.Reference')}}:</label>
                                 <h6>{{$retour->Name}}</h6>
                                 <!--<input type="text" id="Name" class="form-control" name="Name"  value="{{$retour->Name}}"><br><br>-->
 
@@ -44,21 +44,21 @@
                         </div>
                         <div class="col-md-3">
                             <div >
-                                <label for="Type_retour">Type de retour:</label><br>
+                                <label for="Type_retour">{{__('msg.Return type')}}:</label><br>
                                 <b  class="bg-{{$class}}" style="color:white;padding: 5px 10px;border-radius:5px">{{$retour->Type_retour}}</b>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Motif_retour">Motif de retour:</label>
+                                <label for="Motif_retour">{{__('msg.Reason for return')}}:</label>
                                 <h6>{{$retour->Motif_retour}}</h6>
                             </div>
                         </div>
                         @if(auth()->user()->user_type=='admin')
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Responsable_de_resolution">Agence assignée:</label>
+                                <label for="Responsable_de_resolution">{{__('msg.Agency')}}:</label>
                                 <select    id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution" required  >
                                     <option></option>
                                     @foreach($agences as $agence)
@@ -73,26 +73,30 @@
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Division">Client:</label>
-                                <h6>{{$retour->cl_id}} - {{$retour->Nom_du_compte}}</h6>
+                                <label for="Division">{{__('msg.Customer')}}:</label>
+                                @if($retour->idclient > 0)
+                                    <h6><a href="{{route('fiche',['id'=>$retour->idclient])}}">{{$retour->cl_id}} - {{$retour->Nom_du_compte}}</a></h6>
+                                @else
+                                    <h6>{{$retour->cl_id}} - {{$retour->Nom_du_compte}}</h6>
+                                @endif
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Division">Division:</label>
+                                <label for="Division">{{__('msg.Division')}}:</label>
                                 <h6>{{$retour->Division}}</h6>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Date_ouverture">Date d'ouverture:</label>
+                                <label for="Date_ouverture">{{__('msg.Open date')}}:</label>
                                 <h6>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</h6>
                                 <!--<input type="text" id="Date_ouverture" class="form-control" name="Date_ouverture"  value="{{$retour->Date_ouverture}}"><br><br>-->
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Date_cloture">Date de clôture:</label>
+                                <label for="Date_cloture">{{__('msg.Closing date')}}:</label>
                                 <input type="text" id="Date_cloture" class="form-control datepicker" name="Date_cloture"   value="{{$retour->Date_cloture}}"><br><br>
                             </div>
                         </div>
@@ -102,21 +106,21 @@
 
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Details_des_causes">Détails des causes:</label>
+                                <label for="Details_des_causes">{{__('msg.Details of causes')}}:</label>
                                 <textarea  id="Details_des_causes" class="form-control" name="Details_des_causes"  style="min-height:150px">{{$retour->Details_des_causes}}</textarea><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div >
-                                <label for="Type_retour">Référence du lot:</label>
+                                <label for="Type_retour">{{__('msg.Batch reference')}}:</label>
                                 <h6>{{$retour->Ref_produit_lot_commande_facture}}</h6>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Depot_concerne ">Dépôt concerné:</label>
+                                <label for="Depot_concerne ">{{__('msg.Deposit concerned')}}:</label>
                                 <h6>{{$retour->Depot_concerne}}</h6>
                             </div>
 
@@ -127,13 +131,13 @@
                     <div class="row pt-1">
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Une_reponse_a_ete_apportee_au_client">Réponse au client:</label>
+                                <label for="Une_reponse_a_ete_apportee_au_client">{{__('msg.Following')}}:</label>
                                 <textarea  id="Une_reponse_a_ete_apportee_au_client" class="form-control" name="Une_reponse_a_ete_apportee_au_client"  style="min-height:150px">{{$retour->Une_reponse_a_ete_apportee_au_client}}</textarea><br><br>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Description_c">Description:</label>
+                                <label for="Description_c">{{__('msg.Purpose')}}:</label>
                                 <textarea  id="Description_c" class="form-control" name="Description_c"  style="min-height:150px">{{$retour->Description_c}}</textarea><br><br>
                             </div>
                         </div>
@@ -156,11 +160,34 @@
                         </div>
                                 -->
                     </div>
+
+                    <div class="row pt-1 pb-1">
+                        <div class="col-md-4">
+                            @if($retour->fichier!= null)
+                                @php $fileNames = unserialize($retour->fichier); @endphp
+                                <div class="">
+                                    <label for="Description">{{__('msg.File(s)')}}:</label><br>
+                                    <table>
+
+                                        @foreach ($fileNames as $fichier)
+                                        <tr>
+                                            <td><label><b class="black mr-2">{{$fichier}}</b></label></td>
+                                            <td><a href="https://crm.mysaamp.com/retours/{{$fichier}}" target="_blank" ><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png')}}"></a></td>
+                                            <td><a href="https://crm.mysaamp.com/retours/{{$fichier}}" download ><img class="download mr-2" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
+                                        </tr>
+                                        @endforeach
+
+                                    </table>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
                     @if($retour->user_id > 0)
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $creator=\App\Models\User::find($retour->user_id); ?>
-                                <b><i>Créée par : {{$creator->name}} {{$creator->lastname}}</i></b>
+                                <b><i>{{__('msg.Edit')}}Créée par : {{$creator->name}} {{$creator->lastname}}</i></b>
                             </div>
                         </div>
                     @endif
@@ -168,7 +195,7 @@
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $User=\App\Models\User::find($retour->edited_by); ?>
-                                <b><i>Dernière modification par : {{$User->name}} {{$User->lastname}}</i></b>
+                                <b><i>{{__('msg.Edit')}} modification par : {{$User->name}} {{$User->lastname}}</i></b>
                             </div>
                         </div>
                     @endif
@@ -176,8 +203,8 @@
                         <div class="col-md-12">
                             <button type="submit" class="btn-primary btn float-right">Modifier</button>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com')
-                                <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
-                                    <span class="fa fa-fw fa-trash-alt"></span> Supprimer
+                                <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                    <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                                 </a>
                             @endif
                         </div>

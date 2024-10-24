@@ -17,7 +17,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Créer une offre </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Create an offer')}}</h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -31,21 +31,21 @@
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Nom_offre">Nom:</label>
+                                <label for="Nom_offre">{{__('msg.Name')}}:</label>
                                 <input type="text" id="Nom_offre" class="form-control" name="Nom_offre"  value="{{old('Nom_offre')}}"><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Date_creation">Date :</label>
+                                <label for="Date_creation">{{__('msg.Date')}} :</label>
                                 <input type="text" id="Date_creation" class="form-control datepicker" name="Date_creation"  value="{{old('Date_creation')}}"><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Type">Type:</label>
+                                <label for="Type">{{__('msg.Type')}}:</label>
                                 <select    id="type" class="form-control" name="type"   >
                                     <option  value="TG">TG</option>
                                     <option  value="Hors TG">Hors TG</option>
@@ -56,7 +56,7 @@
 
                         <div class="col-md-3">
                             <div >
-                                <label for="Produit_Service">Produit Service:</label>
+                                <label for="Produit_Service">{{__('msg.Service product')}}:</label>
                                 <select    id="Produit_Service" class="  form-control" name="Produit_Service"   >
                                     <option></option>
 <!--
@@ -75,9 +75,9 @@
                                     <option  value="INVEST - Lingots titrés;">INVEST - Lingots titrés</option>
                                     <option  value="INVEST - Pièces monétaire">INVEST - Pièces monétaire</option>
 -->
-                                    <option  value="AFFINAGE">AFFINAGE</option>
-                                    <option  value="APPRET">APPRET</option>
-                                    <option  value="BIJOUTERIE">BIJOUTERIE</option>
+                                    <option  value="AFFINAGE">{{__('msg.Refining')}}</option>
+                                    <option  value="APPRET">APPRET{{__('msg.Primer')}}</option>
+                                    <option  value="BIJOUTERIE">{{__('msg.Jewelry')}}</option>
                                     <option  value="DP">DP</option>
                                     <option  value="INVEST">INVEST</option>
                                 </select><br><br>
@@ -91,13 +91,13 @@
 
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Description">Description:</label>
+                                <label for="Description">{{__('msg.Description')}}:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{old('Description')}}</textarea><br><br>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Nom_offre">Fichier(s):</label>
+                                <label for="Nom_offre">{{__('msg.File(s)')}}:</label>
                                 <input type="file" id="fichier" class="form-control" name="files[]"  multiple required  accept="application/pdf" /><br><br>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
 
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right" >Ajouter</button>
+                            <button type="submit" class="btn-primary btn float-right" >{{__('msg.Add')}}</button>
                         </div>
                     </div>
 

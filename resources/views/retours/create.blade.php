@@ -19,12 +19,12 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Créer une réclamation </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Create a complaint')}} </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
 
-                <form action="{{ route('retours.store') }}" method="post">
+                <form action="{{ route('retours.store') }}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="idclient" value="{{$client->id}}" >
                 <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
 
@@ -39,19 +39,19 @@
                         </div>-->
                         <div class="col-md-3">
                             <div >
-                                <label for="Type_retour">Type de retour:</label>
+                                <label for="Type_retour">{{__('msg.Return type')}}:</label>
                                 <select    id="Type_retour" class="  form-control" name="Type_retour"   >
                                     <option></option>
-                                    <option  value="Information générale">Information générale</option>
-                                    <option  value="Négatif">Négatif</option>
-                                    <option  value="Positif">Positif</option>
+                                    <option  value="Information générale">{{__('msg.General information')}}</option>
+                                    <option  value="Négatif">{{__('msg.Negative')}}</option>
+                                    <option  value="Positif">{{__('msg.Positive')}}</option>
                                 </select><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Motif_retour">Motif de retour:</label>
+                                <label for="Motif_retour">{{__('msg.Reason for return')}}:</label>
                                 <select    id="Motif_retour" class="  form-control" name="Motif_retour"   >
                                     <option></option>
                                     <option  value="Apprêts">Apprêts</option>
@@ -89,7 +89,7 @@
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Nom_du_compte">Nom du client:</label>
+                                <label for="Nom_du_compte">{{__('msg.Account name')}}:</label>
                                 <input type="text" id="Nom_du_compte" class="form-control" name="Nom_du_compte" readonly value="{{trim($client->Nom)}}"><br><br>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Division">Division:</label>
+                                <label for="Division">{{__('msg.Division')}}:</label>
                                 <select    id="Division" class="  form-control" name="Division"   >
                                     <option></option>
                                     <option  value="accueil et relation client ">accueil et relation client </option>
@@ -124,19 +124,19 @@
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Date_ouverture">Date d'ouverture:</label>
+                                <label for="Date_ouverture">{{__('msg.Open date')}}:</label>
                                 <input type="text" id="Date_ouverture" class="form-control datepicker" name="Date_ouverture"  value="{{old('Date_ouverture')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Date_cloture">Date de clôture:</label>
+                                <label for="Date_cloture">{{__('msg.Closing date')}}:</label>
                                 <input type="text" id="Date_cloture" class="form-control datepicker" name="Date_cloture"  value="{{old('Date_cloture')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Title">Client ID:</label>
+                                <label for="Title">{{__('msg.Client ID')}}:</label>
                                 <input type="text" id="Title" class="form-control" name="cl_id"  readonly value="{{$client->cl_ident}}"><br><br>
                             </div>
                         </div>
@@ -147,21 +147,21 @@
 
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Details_des_causes">Détails des causes:</label>
+                                <label for="Details_des_causes">{{__('msg.Details of causes')}}:</label>
                                 <textarea  id="Details_des_causes" class="form-control" name="Details_des_causes"  style="min-height:150px">{{old('Details_des_causes')}}</textarea><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div >
-                                <label for="Type_retour">Référence du lot:</label>
+                                <label for="Type_retour">{{__('msg.Batch reference')}}:</label>
                                 <input type="text" id="Ref_produit_lot_commande_facture" class="form-control" name="Ref_produit_lot_commande_facture"  value="{{old('Ref_produit_lot_commande_facture')}}"><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Depot_concerne ">Dépôt concerné:</label>
+                                <label for="Depot_concerne ">{{__('msg.Deposit concerned')}}:</label>
                                 <input type="text" id="Depot_concerne" class="form-control" name="Depot_concerne"  value="{{old('Depot_concerne')}}"><br><br>
                             </div>
 
@@ -172,13 +172,13 @@
                     <div class="row pt-1">
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Une_reponse_a_ete_apportee_au_client">Réponse au client:</label>
+                                <label for="Une_reponse_a_ete_apportee_au_client">{{__('msg.Following')}}:</label>
                                 <textarea  id="Une_reponse_a_ete_apportee_au_client" class="form-control" name="Une_reponse_a_ete_apportee_au_client"  style="min-height:150px">{{old('Une_reponse_a_ete_apportee_au_client')}}</textarea><br><br>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Description_c">Description:</label>
+                                <label for="Description_c">{{__('msg.Purpose')}}:</label>
                                 <textarea  id="Description_c" class="form-control" name="Description_c"  style="min-height:150px">{{old('Description_c')}}</textarea><br><br>
                             </div>
                         </div>
@@ -196,9 +196,18 @@
                         -->
                     </div>
 
+                    <div class="row pt-1 pb-1">
+                        <div class="col-md-6">
+                            <div class="">
+                                <label for="Nom_offre">{{__('msg.File(s)')}}:</label>
+                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple required  accept="application/pdf" /><br><br>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right">Ajouter</button>
+                            <button type="submit" class="btn-primary btn float-right">{{__('msg.Add')}}</button>
                         </div>
                     </div>
 

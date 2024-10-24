@@ -106,17 +106,52 @@ class RetoursController extends Controller
             'Type_retour' => 'required',
         ]);
 
-        $retour=RetourClient::create($request->all());
-		$retour->save();
+        //$retour=RetourClient::create($request->all());
 
+		$retour = RetourClient::create([
+			'idclient' => $request->input('idclient') ?? 0,
+			'user_id' => $request->input('user_id') ?? 0,
+			'Type_retour' => $request->input('Type_retour') ,
+			'Motif_retour' => $request->input('Motif_retour'),
+			'Nom_du_compte' => $request->input('Nom_du_compte'),
+			'Division' => $request->input('Division'),
+			'Date_ouverture' => $request->input('Date_ouverture'),
+			'Date_cloture' => $request->input('Date_cloture'),
+			'cl_id' => $request->input('cl_id'),
+			'Details_des_causes' => $request->input('Details_des_causes'),
+			'Ref_produit_lot_commande_facture' => $request->input('Ref_produit_lot_commande_facture'),
+			'Depot_concerne' => $request->input('Depot_concerne'),
+			'Une_reponse_a_ete_apportee_au_client' => $request->input('Une_reponse_a_ete_apportee_au_client'),
+			'Description_c' => $request->input('Description_c'),
+		]);
+
+		$retour->save();
+/*
 		$contact=Contact::find($retour->mycontact_id);
 
 		$prenom = $contact->Prenom ?? '';
 		$nom = $contact->Nom ?? '';
 		$retour->Nom_du_contact= $prenom  .' '.$nom;
-
+*/
 		$retour->name='RC-'.sprintf('%05d',$retour->id);
 		$retour->save();
+
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+			$fileNames = [];
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path() . "/retours";
+				$fichier->move($path, $name);
+				$fileNames[] = $name;
+			}
+
+			// Serialize the filenames array
+			$retour->fichier = serialize($fileNames);
+			$retour->save();
+		}
+
 
 		self::send_mail($retour,'remy.reverbel@saamp.com');
 		self::send_mail($retour,'reyad.bouzeboudja@saamp.com');

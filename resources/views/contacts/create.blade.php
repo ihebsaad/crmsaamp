@@ -33,7 +33,7 @@
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Nom">{{__('msg.Name')}}:</label>
+                                <label for="Nom">{{__('msg.Last name')}}:</label>
                                 <input type="text" id="Nom" class="form-control" name="Nom"  value="{{old('Nom')}}"><br><br>
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Title">{{__('msg.Client id')}}:</label>
+                                <label for="Title">{{__('msg.Client ID')}}:</label>
                                 <input type="text" id="Title" class="form-control" name="cl_ident"  readonly value="{{$client->cl_ident}}"><br><br>
                             </div>
                         </div>

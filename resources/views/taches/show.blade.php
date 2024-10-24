@@ -17,7 +17,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Prise de contact {{$tache->id}} </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Task')}} {{$tache->id}} </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -30,20 +30,20 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Subject">Sujet:</label>
+                                <label for="Subject">{{__('msg.Subject')}}:</label>
                                 <input type="text" id="Subject" class="form-control" name="Subject"  value="{{$tache->Subject}}"><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="DateTache">Date :</label>
+                                <label for="DateTache">{{__('msg.Date')}} :</label>
                                 <input type="text" id="DateTache" class="form-control datepicker" name="DateTache"  value="{{date('Y-m-d', strtotime($tache->DateTache))}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="heure_debut">Heure :</label>
+                                <label for="heure_debut">{{__('msg.Start hour')}} :</label>
                                 <input type="text" id="heure_debut" class="form-control" name="heure_debut"  value="{{$tache->heure_debut}}"><br><br>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Subject">Client ID:</label>
+                                <label for="Subject">{{__('msg.Client ID')}}:</label>
                                 <input type="text" id="mycl_id" class="form-control" name="mycl_id" readonly value="{{$tache->mycl_id}}"><br><br>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div >
-                                <label for="Type">Type:</label>
+                                <label for="Type">{{__('msg.Type')}}:</label>
                                 <select    id="Type" class="  form-control" name="Type"   >
                                     <option></option>
                                     <option   @selected($tache->Type=="Acompte / Demande de paiement") value="Acompte / Demande de paiement">Acompte / Demande de paiement</option>
@@ -91,7 +91,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Priority">Priorité:</label>
+                                <label for="Priority">{{__('msg.Priority')}}:</label>
                                 <select    id="Priority" class="form-control" name="Priority"   >
                                     <option></option>
                                     <option @selected($tache->Priority=="Normal")  value="Normal">Normale</option>
@@ -103,7 +103,7 @@
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Status">Status:</label>
+                                <label for="Status">{{__('msg.Status')}}:</label>
                                 <select    id="Status" class="form-control" name="Status"   >
                                     <option></option>
                                     <option  @selected($tache->Status=="Not Started") value="Not Started">Pas commencée</option>
@@ -116,7 +116,7 @@
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Agence">Agence:</label>
+                                <label for="Agence">{{__('msg.Agency')}}:</label>
                                 <select    id="Agence" class="form-control" name="Agence" required  >
                                     @foreach($agences as $agence)
                                         <option @selected($tache->Agence==$agence->agence_lib) value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
@@ -129,7 +129,7 @@
                     <div class="row pt-1">
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Description">Description:</label>
+                                <label for="Description">{{__('msg.Dascription')}}:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{$tache->Description}}</textarea><br><br>
                             </div>
                         </div>
@@ -138,7 +138,7 @@
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $creator=\App\Models\User::find($tache->user_id); ?>
-                                <b><i>Créée par : {{$creator->name}} {{$creator->lastname}}</i></b>
+                                <b><i>{{__('msg.Created by')}} : {{$creator->name}} {{$creator->lastname}}</i></b>
                             </div>
                         </div>
                     @endif
@@ -146,7 +146,7 @@
                         <div class="row pt-1">
                             <div class="col-md-12">
                                 <?php $User=\App\Models\User::find($tache->edited_by); ?>
-                                <b><i>Dernière modification par : {{$User->name}} {{$User->lastname}}</i></b>
+                                <b><i>{{__('msg.Last update by')}} : {{$User->name}} {{$User->lastname}}</i></b>
                             </div>
                         </div>
                     @endif
@@ -154,8 +154,8 @@
                         <div class="col-md-12">
                             <button type="submit" class="btn-primary btn float-right">Modifier</button>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('taches.destroy', $tache->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
-                                    <span class="fa fa-fw fa-trash-alt"></span> Supprimer
+                                <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('taches.destroy', $tache->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                    <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                                 </a>
                             @endif
                         </div>

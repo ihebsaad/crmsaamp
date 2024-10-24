@@ -138,9 +138,9 @@ class ClientsController extends Controller
 			->first(); // Get the most recent record
 		$login='';
 		if ($lastLogin) {
-			$login= "Dernière connexion à MySaamp :  " .  date('d/m/Y H:i', strtotime($lastLogin->login_at));
+			$login= __('msg.Last login to MySaamp')." : " .  date('d/m/Y H:i', strtotime($lastLogin->login_at));
 		} else {
-			$login= "Pas de connexion à mysaamp";
+			$login= __('msg.No connection to MySaamp') ;
 		}
 
 		$contacts=$retours =$taches=array();
