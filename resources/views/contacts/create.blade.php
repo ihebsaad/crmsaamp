@@ -17,7 +17,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Ajouter un contact </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Add a contact')}}Ajouter un contact </h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -33,26 +33,26 @@
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Nom">Nom:</label>
+                                <label for="Nom">{{__('msg.Name')}}:</label>
                                 <input type="text" id="Nom" class="form-control" name="Nom"  value="{{old('Nom')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Prenom">Prénom:</label>
+                                <label for="Prenom">{{__('msg.First name')}}:</label>
                                 <input type="text" id="Prenom" class="form-control" name="Prenom"  value="{{old('Prenom')}}"><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Title">Titre:</label>
+                                <label for="Title">{{__('msg.Title')}}Titre:</label>
                                 <input type="text" id="Title" class="form-control" name="Title"  value="{{old('Title')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Title">Client ID:</label>
+                                <label for="Title">{{__('msg.Client id')}}:</label>
                                 <input type="text" id="Title" class="form-control" name="cl_ident"  readonly value="{{$client->cl_ident}}"><br><br>
                             </div>
                         </div>
@@ -62,21 +62,21 @@
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="MobilePhone">Mobile:</label>
+                                <label for="MobilePhone">{{__('msg.Mobile')}}:</label>
                                 <input type="text" id="Phone" class="form-control" name="Phone"  value="{{old('MobilePhone')}}"><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Phone">Tél:</label>
+                                <label for="Phone">{{__('msg.Phone')}}:</label>
                                 <input type="text" id="Phone" class="form-control" name="Phone"  value="{{old('Phone')}}"><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Email">Email:</label>
+                                <label for="Email">{{__('msg.Email')}}:</label>
                                 <input type="text" id="Email" class="form-control" name="email"  value="{{old('email')}}"><br><br>
                             </div>
                         </div>
@@ -87,13 +87,13 @@
 
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Description">Client:</label>
+                                <label for="Description">{{__('msg.Customer')}}:</label>
                                 <input type="text" id="Compte" class="form-control" name="" readonly value="{{ $client->Nom }}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Description">Description:</label>
+                                <label for="Description">{{__('msg.Description')}}:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  >{{old('Description')}}</textarea><br><br>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
 
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right">Ajouter</button>
+                            <button type="submit" class="btn-primary btn float-right">{{__('msg.Add')}}</button>
                         </div>
                     </div>
 
