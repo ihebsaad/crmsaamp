@@ -76,50 +76,50 @@ if (is_array($commandes) || is_object($commandes)) {
 
         <div class="card shadow mb-1">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Fiche du client : {{$client->Nom}} - {{$client->cl_ident}} </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Customer sheet')}} : {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
-            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> Rendez-vous</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> Prise de Contact</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a>
+            <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day"></i> {{__('msg.Appointment')}}</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks"></i> {{__('msg.Tasks')}}</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift"></i> Offres</a>
                 @if(  $client->etat_id==1  )
-                    <a title="Supprimer"   onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('clients.destroy', $client->id )}}" class="btn btn-danger btn-sm btn-responsive ml-3 mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
-                        <span class="fa fa-fw fa-trash-alt"></span> Supprimer
+                    <a title="{{__('msg.Delete')}}"   onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('clients.destroy', $client->id )}}" class="btn btn-danger btn-sm btn-responsive ml-3 mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                        <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                     </a>
                 @endif
-                @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> Modifier</a> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> Mon Dossier</a>  <a  href="#" data-toggle="modal" data-target="#ModalTrading" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-coins"></i> Trading</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
+                @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-edit"></i> {{__('msg.Edit')}}</a> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-folder"></i> {{__('msg.My folder')}}</a>  <a  href="#" data-toggle="modal" data-target="#ModalTrading" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-coins"></i> Trading</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-money-bill-wave"></i> Finances</a>
 
                 <div class="clearfix"></div>
                 <form id="">
                     <div class="row pt-1">
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Nom">Nom:</label>
+                                <label for="Nom">{{__('msg.Name')}}:</label>
                                 <h6>{{$client->Nom}}</h6>
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="postalCode">CP:</label>
+                                <label for="postalCode">{{__('msg.Postal code')}}:</label>
                                 <h6>{{$client->zip ?? $client->postalCode}}</h6>
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="BillingAddress_city">Ville:</label>
+                                <label for="BillingAddress_city">{{__('msg.City')}}:</label>
                                 <h6>{{$client->ville}}</h6>
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Pays">Pays:</label>
+                                <label for="Pays">{{__('msg.Country')}}:</label>
                                 <h6>{{$client->pays_code}}</h6>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Rue">Adresse:</label>
+                                <label for="Rue">{{__('msg.Address')}}:</label>
                                 <h6>{{$client->adresse1}}</h6>
                             </div>
                         </div>
@@ -128,7 +128,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="agence">Agence:</label>
+                                <label for="agence">{{__('msg.Agency')}}:</label>
                                 <h6>{{$agence_name}}</h6>
                             </div>
                         </div>
@@ -160,7 +160,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Client_Prospect">Activité:</label>
+                                <label for="Client_Prospect">{{__('msg.Activity')}}:</label>
                                 <h6>{{$client->activite}} - {{$client->sous_activite}} </h6>
                             </div>
                         </div>
@@ -182,7 +182,7 @@ if (is_array($commandes) || is_object($commandes)) {
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Phone">Télephone:</label>
+                                <label for="Phone">{{__('msg.Phone')}}:</label>
                                 <h6>{{$client->Phone ??  $client->Tel}}</h6>
                             </div>
 
@@ -203,7 +203,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         -->
                         <div class="col-md-3">
                             <div class="">
-                                <label for="">Site Web:</label>
+                                <label for="">{{__('msg.Website')}}:</label>
                                 <h6>{{$client->url}}</h6>
                             </div>
                         </div>
@@ -228,18 +228,18 @@ if (is_array($commandes) || is_object($commandes)) {
 
         <div class="card shadow mb-1">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Statistiques </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Statistics')}} </h6>
             </div>
 
             <div class="card-body" style="min-height:400px">
                 <div class="table-container">
                     <input id="mois" type="checkbox" value="1" onchange="show_stats('{{$client->cl_ident}}')"  >
-                    <label class="" for="mois">Afficher les années pleines</label>
+                    <label class="" for="mois">{{__('msg.Show full years')}}</label>
                     </input>
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">Métier</th>
+                                <th class="">{{__('msg.Job')}}</th>
                                 <th class="">{{ date('Y')-3; }}</th>
                                 <th class="">{{ date('Y')-2; }}</th>
                                 <th class="">{{ date('Y')-1; }}</th>
@@ -270,7 +270,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
         <div class="card shadow mb-1">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Prises de contact </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Tasks')}}</h6>
             </div>
 
             <div class="card-body" style="min-height:400px">
@@ -280,12 +280,10 @@ if (is_array($commandes) || is_object($commandes)) {
                             <tr id="headtable">
                                 <th>Type</th>
                                 <th>Date</th>
-                                <th>Sujet</th>
+                                <th>{{__('msg.Subject')}}</th>
                                 <!--<th>Contact</th>-->
-                                <th>Statut</th>
-                                @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                    <th>Supp</th>
-                                @endif
+                                <th>{{__('msg.Amount')}}</th>
+                                <th>{{__('msg.Weight')}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -354,20 +352,32 @@ if (is_array($commandes) || is_object($commandes)) {
                                     <td>{{ date('d/m/Y', strtotime($tache->DateTache)) }} {{$tache->heure_debut}}</td>
                                     <td>@if($tache->as400 == 0)<a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a>@else  {{ $tache->Subject }} @endif</td>
                                     <td style="padding-left:2px!important">
+<!--
                                         @if($tache->as400 == 0)
                                         <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {{ $statut ?? '' }}</span>
                                         <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {{ $priority ?? '' }}</span>
                                         @endif
+                                -->
+                                        @if(isset($tache->montant))
+                                            {{ $tache->montant>0  ? $tache->montant : '' }}
+                                        @endif
                                     </td>
+                                    <td>
+                                        @if(isset($tache->poids))
+                                            {{ $tache->poids>0  ? $tache->poids : '' }}
+                                        @endif
+                                    </td>
+                                    <!--
                                     @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                         <td>
                                             @if($tache->as400 == 0)
-                                            <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('taches.destroy', $tache->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                            <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('taches.destroy', $tache->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                                 <span class="fa fa-fw fa-trash-alt"></span>
                                             </a>
                                             @endif
                                         </td>
                                     @endif
+                                    -->
                                 </tr>
                             @endforeach
                         </tbody>
@@ -381,7 +391,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
         <div class="card shadow mb-1">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Commandes en cours </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Current orders')}} </h6>
             </div>
 
             <div class="card-body" style="min-height:400px;margin-left:25px">
@@ -440,7 +450,7 @@ if (is_array($commandes) || is_object($commandes)) {
                     <div class="modal-dialog" role="document" style="width: 75%;margin: 0 auto;">
                         <div class="modal-content" >
                             <div class="modal-header">
-                                <h5 class="modal-title text-center">Commandes en cours</h5>
+                                <h5 class="modal-title text-center">{{__('msg.Current orders')}}</h5>
                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
@@ -510,7 +520,7 @@ if (is_array($commandes) || is_object($commandes)) {
                     <div class="modal-dialog" role="document" style="width: 75%;margin: 0 auto;">
                         <div class="modal-content" >
                             <div class="modal-header">
-                                <h5 class="modal-title text-center">Trading du client</h5>
+                                <h5 class="modal-title text-center">{{__('msg.Trading of customer')}}</h5>
                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
@@ -522,7 +532,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Fermer</button>
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">{{__('msg.Close')}}</button>
                             </div>
 
                         </div>
@@ -540,20 +550,20 @@ if (is_array($commandes) || is_object($commandes)) {
         <!-- Project Card Example -->
         <div class="card shadow mb-1">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Réclamations </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Complaints')}} </h6>
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
 
                 @if($client->cl_ident >0)
-                <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> {{__('msg.Add')}}</a>
                 <div class="table-container">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr>
-                                <th>Titre</th>
-                                <th>Date d'ouverture</th>
-                                <th>Date de clôture</th>
+                                <th>{{__('msg.Title')}}</th>
+                                <th>{{__('msg.Open date')}}</th>
+                                <th>{{__('msg.Closing date')}}</th>
                                 @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com')
                                     <th>Supp</th>
                                 @endif
@@ -567,7 +577,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                 <td> @if($retour->Date_cloture!='0000-00-00' && $retour->Date_cloture!='') {{date('d/m/Y', strtotime($retour->Date_cloture))}} @endif </td>
                                     @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com')
                                         <td>
-                                            <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                            <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                                 <span class="fa fa-fw fa-trash-alt"></span>
                                             </a>
                                         </td>
@@ -588,21 +598,21 @@ if (is_array($commandes) || is_object($commandes)) {
         <!-- Project Card Example -->
         <div class="card shadow mb-1">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Évènements </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Events')}} </h6>
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
 
                 <div class="table-container">
-                    <h6 style="width:100%;cursor:pointer" class="black" onclick="$('#prochain').toggle();" >Prochains Rendez Vous</h6>
+                    <h6 style="width:100%;cursor:pointer" class="black" onclick="$('#prochain').toggle();" >{{__('msg.Coming appointments')}}</h6>
                     <div id="prochain" style="width:100%">
                         <table class="table table-bordered table-striped mb-40" style="min-height:120px">
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>Titre</th>
+                                    <th>{{__('msg.Title')}}</th>
                                     @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                    <th>Supp</th>
+                                    <th>{{__('msg.Del')}}</th>
                                     @endif
                                 </tr>
                             </thead>
@@ -612,7 +622,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                     <td>{{date('d/m/Y', strtotime($rv->Started_at))}} {{$rv->heure_debut}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
                                     @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                         <td>
-                                            <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                            <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                                 <span class="fa fa-fw fa-trash-alt"></span>
                                             </a>
                                         </td>
@@ -624,15 +634,15 @@ if (is_array($commandes) || is_object($commandes)) {
                         </table>
                     </div>
 
-                    <h6  style="width:100%;cursor:pointer" class="black"  onclick="$('#ancien').toggle();" >Anciens Rendez Vous</h6>
+                    <h6  style="width:100%;cursor:pointer" class="black"  onclick="$('#ancien').toggle();" >{{__('msg.Old appointments')}}</h6>
                     <div id="ancien"  >
                         <table class="table table-bordered table-striped mb-40" >
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>Titre</th>
+                                    <th>{{__('msg.Title')}}</th>
                                     @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                    <th>Supp</th>
+                                    <th>{{__('msg.Del')}}</th>
                                     @endif
                                 </tr>
                             </thead>
@@ -642,7 +652,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                     <td>{{date('d/m/Y', strtotime($rv->Started_at))}} {{$rv->heure_debut}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
                                         @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                             <td>
-                                                <a title="Supprimer" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                                <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                                     <span class="fa fa-fw fa-trash-alt"></span>
                                                 </a>
                                             </td>
@@ -671,7 +681,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
             <div class="card-body" style="min-height:400px;width:100%">
                 @if($client->etat_id==1  )
-                    <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> Ajouter</a>
+                    <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> {{__('msg.Add')}}</a>
                 @endif
 
                 <div class="table-container">
@@ -679,7 +689,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         <thead>
                             <tr>
                                 <th>Email</th>
-                                <th>Nom</th>
+                                <th>{{__('msg.Name')}}</th>
                                 <!--<th>Tél</th
                                 @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
                                     <th>Supp</th>

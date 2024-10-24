@@ -20,7 +20,7 @@
 
   <div class="row pt-1 no-print">
             <div class="col-md-12">
-                <button type="button" onclick="window.print()" class="btn-secondary btn  mt-5 no-print"><i class="fa fa-print"></i> Imprimer</button>
+                <button type="button" onclick="window.print()" class="btn-secondary btn  mt-5 no-print"><i class="fa fa-print"></i> {{__('msg.Print')}}</button>
             </div>
         </div>
 </div>

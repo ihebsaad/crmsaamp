@@ -72,10 +72,10 @@
     <div class="col-lg-12 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Dossier du client {{$client->Nom}} - {{$client->cl_ident}}</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Customer folder {{$client->Nom}} - {{$client->cl_ident}}</h6>
             </div>
             <div class="card-body" style="min-height:300px">
-            <h5 class="black">Ajouter des documents</h5>
+            <h5 class="black">{{__('msg.Add documents')}}</h5>
                 <form action="{{route('ouverture')}}" method="post" enctype="multipart/form-data" style="margin:30px 0px 50px 50px">
                     {{ csrf_field() }}
                     <input   type="hidden"   name="id" value="{{$client->id}}"  required>
@@ -83,9 +83,9 @@
 
                     <div class="row pt-1">
                         <div class="col-md-4">
-                            <label for="files">Sélectionnez des fichiers : (obligatoirement PDF)</label>
+                            <label for="files">{{__('msg.Select files (PDF only)')}}</label>
                             <input class="form-control" type="file" id="files" name="files[]" multiple required accept="application/pdf"><br>
-                            <label class="text-danger">(Maximum 5 documents par dossier)</label>
+                            <label class="text-danger">{{__('msg.(Maximum 5 files per folder)')}}</label>
                         </div>
                         @php
                             $folderNames = is_array($folders) && !empty($folders) ? array_column($folders, 'name') : [];
@@ -115,7 +115,7 @@
                             </select>
                         </div>
                             <div class="col-md-3">
-                                <button type="submit" class="btn-primary btn mt-4 ml-5">Ajouter</button>
+                                <button type="submit" class="btn-primary btn mt-4 ml-5">{{__('msg.Add')}}</button>
                             </div>
                     </div>
 
@@ -123,7 +123,7 @@
 
                 @if(isset($folders) && isset($folders[0]))
 
-                <h5 class="black">Mon dossier</h5>
+                <h5 class="black">{{__('msg.My folder')}}</h5>
 
                 @endif
 

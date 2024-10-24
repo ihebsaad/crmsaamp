@@ -21,12 +21,12 @@
 <table class="table table-striped mb-40">
     <thead>
         <tr>
-            <th>Nom</th>
-            <th>Adresse</th>
-            <th>Ville</th>
-            <th>Tél</th>
-            <th>Agence</th>
-            <th>Type</th>
+            <th>{{__('msg.Name')}}</th>
+            <th>{{__('msg.Address')}}</th>
+            <th>{{__('msg.City')}}</th>
+            <th>{{__('msg.Phone')}}</th>
+            <th>{{__('msg.Agency')}}</th>
+            <th>{{__('msg.Type')}}</th>
         </tr>
     </thead>
     <tbody>
@@ -39,8 +39,8 @@
         switch ($client->etat_id) {
         case 2 : $color='#2660c3'; $type_c='Client' ; break;
         case 1 : $color='#2ab62c'; $type_c='Prospect' ;break;
-        case 3 : $color='#ff2e36'; $type_c='Fermé' ; break;
-        case 4 : $color='#ff2e36'; $type_c='Inactif' ; break;
+        case 3 : $color='#ff2e36'; $type_c='{{__("msg.Closed")}}' ; break;
+        case 4 : $color='#ff2e36'; $type_c='{{__("msg.Inactive")}}' ; break;
         }
 
         $tel= $client->Phone ??  $client->Tel;

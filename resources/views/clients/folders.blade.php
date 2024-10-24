@@ -73,7 +73,7 @@
 
         <div class="card shadow mb-4" style="min-height:80vh">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Gestion électronique des documents</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Electronic document management')}}</h6>
             </div>
             <div class="card-body">
                 @if(isset($folders) && isset($folders[0]))

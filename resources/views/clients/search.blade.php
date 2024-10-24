@@ -15,39 +15,39 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Recherche des clients</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Search customers')}}</h6>
             </div>
             <div class="card-body">
-                <a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> Ajouter un prospect</a><div class="clearfix"></div>
+                <a href="{{route('compte_client.create')}}"  class="btn btn-primary  ml-3 float-right"><i class="fas fa-user-plus"></i> {{__('msg.Add')}} {{__('msg.a prospect')}}</a><div class="clearfix"></div>
                 <form action="{{route('search')}}">
                     <input type="hidden" name="sort" value="{{isset(request()->sort) ? request()->sort :'Nom'}}"/>
                     <input type="hidden" name="direction"  value="{{isset(request()->direction) ? request()->direction :'asc'}}"/>
                     <div class="row pt-1">
                         <div class="col-lg-3">
                             <div class="">
-                                <label for="">Partie du nom</label>
+                                <label for="">{{__('msg.Part of the name')}}</label>
                                 <input type="" class="form-control" id="" placeholder="" name="Nom" value="{{ $request->Nom ?? '' }}">
                             </div>
                         </div>
                         <div class="col-lg-2">
                             <div class="">
-                                <label for="">Client ID</label>
+                                <label for="">{{__('msg.Client ID')}}</label>
                                 <input type="number" class="form-control" id="client_id" placeholder="" name="client_id" value="{{ $request->client_id ?? '' }}">
                             </div>
                         </div>
                         <div class="col-lg-6 pt-1">
                             <div class="form-check form-check-inline mb-3 mt-4">
                                 <input class="form-check-input mt-2" type="radio" id="tous" value="0" name="type" @if($request->type==0 || $request->type=='' ) checked @endif  >
-                                <label class="form-check-label mt-2" for="tous">Tous</label>
+                                <label class="form-check-label mt-2" for="tous">{{__('msg.All')}}</label>
                             </div>
                             <div class="form-check form-check-inline mb-3 mt-4">
                                 <input class="form-check-input mt-2" type="radio" id="clientsUniquement" value="2" name="type" @if($request->type==2) checked @endif  >
-                                <label class="form-check-label mt-2" for="clientsUniquement">Clients uniquement</label>
+                                <label class="form-check-label mt-2" for="clientsUniquement">{{__('msg.Customers only')}}</label>
                             </div>
 
                             <div class="form-check form-check-inline mb-3 mt-4">
                                 <input class="form-check-input mt-2" type="radio" id="prospectUniquement" value="1" name="type" @if($request->type==1) checked @endif >
-                                <label class="form-check-label mt-2" for="prospectUniquement">Prospect uniquement</label>
+                                <label class="form-check-label mt-2" for="prospectUniquement">{{__('msg.Prospects only')}}</label>
                             </div>
                         </div>
 
@@ -55,7 +55,7 @@
                     <div class="row pt-1">
                         <div class="col-lg-3 col-sm-6">
                             <div class="">
-                                <label for="">Adresse</label>
+                                <label for="">{{__('msg.Address')}}</label>
                                 <input type="" class="form-control" id="" placeholder="" name="adresse1" value="{{ $request->adresse1 ?? '' }}">
                             </div>
                         </div>
@@ -75,13 +75,13 @@
 
                         <div class="col-lg-2 col-sm-6">
                             <div class="">
-                                <label for="">Ville</label>
+                                <label for="">{{__('msg.City')}}</label>
                                 <input type="" class="form-control" id="" placeholder="" name="ville" value="{{ $request->ville ?? '' }}">
                             </div>
                         </div>
                         <div class="col-lg-2 col-sm-6">
                             <div class="">
-                                <label for="">Département</label>
+                                <label for="">{{__('msg.Department')}}</label>
                                 <input type="text" class="form-control" id="" placeholder="" name="zip" value="{{ $request->zip ?? '' }}">
                             </div>
                         </div>
@@ -94,10 +94,10 @@
                         </div>
                         -->
                         <div class="col-lg-2 col-md-12 col-sm-12 pt-1">
-                            <button type="submit" class="btn btn-primary float-right mt-4"><i class="fa fa-search"></i> Recherche</button>
+                            <button type="submit" class="btn btn-primary float-right mt-4"><i class="fa fa-search"></i> {{__('msg.Search')}}</button>
                         </div>
                         <div class="col-lg-2 col-md-12 col-sm-12 pt-1">
-                            <button type="submit" name="print" value="true" class="btn btn-secondary float-right mt-4"  ><i class="fa fa-print"></i> Imprimer</button>
+                            <button type="submit" name="print" value="true" class="btn btn-secondary float-right mt-4"  ><i class="fa fa-print"></i> {{__('msg.Print')}}</button>
                         </div>
                     </div>
 
@@ -110,22 +110,22 @@
                                     <tr>
                                         <th>
                                             <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'Nom', 'direction' => request()->direction == 'asc' ? 'desc' : 'asc'])) }}">
-                                                Nom @if(request()->sort == 'Nom')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
+                                                {{__('msg.Name')}} @if(request()->sort == 'Nom')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
                                             </a>
                                         </th>
                                         <th>
                                             <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'ville', 'direction' => request()->direction == 'asc' ? 'desc' : 'asc'])) }}">
-                                                Ville @if(request()->sort == 'ville')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
+                                                {{__('msg.City')}} @if(request()->sort == 'ville')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
                                             </a>
                                         </th>
                                         <th>
                                             <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'agence', 'direction' => request()->direction == 'asc' ? 'desc' : 'asc'])) }}">
-                                                Agence @if(request()->sort == 'agence')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
+                                                {{__('msg.Agency')}} @if(request()->sort == 'agence')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
                                             </a>
                                         </th>
                                         <th>
                                             <a href="{{ route('search', array_merge(request()->all(), ['sort' => 'etat_id', 'direction' => request()->direction == 'asc' ? 'desc' : 'asc'])) }}">
-                                                Type @if(request()->sort == 'etat_id')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
+                                                {{__('msg.Type')}} @if(request()->sort == 'etat_id')<i class="fa fa-sort-{{ request()->direction == 'asc' ? 'up' : 'down' }}"></i>@endif
                                             </a>
                                         </th>
                                     </tr>

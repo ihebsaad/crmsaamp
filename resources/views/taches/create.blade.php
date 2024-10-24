@@ -25,6 +25,7 @@
                 <form action="{{ route('taches.store') }}" method="post">
                     @csrf
                     <input type="hidden" name="ID_Compte" value="{{$client->id}}" >
+                    <input type="hidden" name="mycl_id" value="{{$client->id}}" >
                     <input type="hidden" name="Nom_de_compte" value="{{$client->Nom}}" >
 
                     <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >

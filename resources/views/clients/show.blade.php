@@ -21,7 +21,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Modifier le @if($client->etat_id==2) client @else prospect @endif</h6>
+                <h6 class="m-0 font-weight-bold text-primary">@if($client->etat_id==2) {{__('msg.Edit the customer')}} @else {{__('msg.Edit the prospect')}} @endif</h6>
             </div>
             <div class="card-body">
 
@@ -35,7 +35,7 @@
                         </div>
                         <div class="col-md-5">
                             <div class="">
-                                <label for="Rue">Adresse:</label>
+                                <label for="Rue">{{__('msg.Address')}}:</label>
                                 <input type="text" id="adresse1" class="form-control" name="adresse1" required value="{{$client->adresse1}}"><br><br>
                             </div>
                         </div>
@@ -44,25 +44,25 @@
                     <div class="row pt-1">
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Pays">Pays:</label>
+                                <label for="Pays">{{__('msg.Country')}}:</label>
                                 <input type="text" id="Pays" class="form-control" name="Pays"  required value="{{$client->Pays}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="pays_code">Code Pays:</label>
+                                <label for="pays_code">{{__('msg.Country code')}}:</label>
                                 <input type="text" id="pays_code" class="form-control" name="pays_code" maxlength="2" required value="{{$client->pays_code}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="zip">Code Postal:</label>
+                                <label for="zip">{{__('msg.Postal code')}}:</label>
                                 <input type="text" id="zip" class="form-control" name="zip" required value="{{$client->zip}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="ville">Ville:</label>
+                                <label for="ville">{{__('msg.City')}}:</label>
                                 <input type="text" id="ville" class="form-control" name="ville" required value="{{$client->ville}}"><br><br>
                             </div>
                         </div>
@@ -84,21 +84,21 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Nom">Nom:</label>
+                                <label for="Nom">{{__('msg.Name')}}:</label>
                                 <input type="text" id="Nom" class="form-control" name="Nom"   required value="{{$client->Nom}}"><br><br>
                             </div>
                         </div>
                         @if($client->etat_id==2)
                             <div class="col-md-2">
                                 <div class="">
-                                    <label for="id">ID Client:</label>
+                                    <label for="id">{{__('msg.Client ID')}}:</label>
                                     <input type="text" id="cl_ident" class="form-control" name="cl_ident" value="{{$client->cl_ident}}" readonly  ><br><br>
                                 </div>
                             </div>
                         @endif
                         <div class="col-md-3 ">
                             <div class="">
-                                <label for="id">Activité:</label>
+                                <label for="id">{{__('msg.Activity')}}:</label>
                                 <select  type="text" id="activite" class="form-control" name="activite"  >
                                     <option @if($client->activite=="") selected="selected" @endif value=""></option>
                                     <option @if($client->activite=="Affineurs et Traders") selected="selected" @endif value="Affineurs et Traders">Affineurs et Traders</option>
@@ -121,7 +121,7 @@
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="sous_activite">Sous activité:</label>
+                                <label for="sous_activite">{{__('msg.Under activity')}}:</label>
                                 <input type="text" id="sous_activite" class="form-control" name="sous_activite"     value="{{$client->sous_activite}}"><br><br>
                             </div>
                         </div>
@@ -131,7 +131,7 @@
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="agence">Agence:</label>
+                                <label for="agence">{{__('msg.Agency')}}:</label>
                                 <!--
                                 <select  type="text" id="Agence" class="form-control" name="Agence"  >
                                     <option @if($client->Agence=="") selected="selected" @endif value=""></option>
@@ -158,7 +158,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="commercial">Commercial:</label>
+                                <label for="commercial">{{__('msg.Commercial')}}:</label>
                                 <select   id="commercial" class="form-control" name="commercial" value="{{$client->Commercial}}" >
                                     <option></option>
                                     @foreach($representants as $rep )
@@ -169,7 +169,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="commercial_support">Commercial support:</label>
+                                <label for="commercial_support">{{__('msg.Commercial support')}}:</label>
                                 <select   id="commercial_support" class="form-control" name="commercial_support" value="{{$client->commercial_support}}" >
                                     <option></option>
                                     @foreach($representants as $rep )
@@ -180,7 +180,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="ADV">ADV:</label>
+                                <label for="ADV">{{__('msg.ADV')}}:</label>
                                 <input type="text" id="ADV" class="form-control" name="ADV" value="{{$client->ADV}}"><br><br>
                             </div>
                         </div>
@@ -188,7 +188,7 @@
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="etat_id">Type:</label>
+                                <label for="etat_id">{{__('msg.Type')}}:</label>
                                     @foreach($etats as $etat )
                                         @if($client->etat_id==$etat->id)<h6 style="color:black"> {{$etat->etat}}</h6> @endif
                                     @endforeach
@@ -199,7 +199,7 @@
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Phone">Télephone:</label>
+                                <label for="Phone">{{__('msg.Phone')}}:</label>
                                 <input type="text" id="Tel" class="form-control" name="Phone" value="{{$client->Tel}}"><br><br>
                             </div>
                         </div>
@@ -212,7 +212,7 @@
                         </div>-->
                         <div class="col-md-3">
                             <div class="">
-                                <label for="">Site Web:</label>
+                                <label for="">{{__('msg.Website')}}:</label>
                                 <input type="url" id="url" class="form-control" name="url" value="{{$client->url}}"><br><br>
                             </div>
                         </div>
@@ -221,12 +221,12 @@
 
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right">Modifier</button>
+                            <button type="submit" class="btn-primary btn float-right">{{__('msg.Edit')}}</button>
                         </div>
 
                         @if(  $client->etat_id==1  )
-                            <a title="Supprimer"   onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('clients.destroy', $client->id )}}" class="btn btn-danger btn-sm btn-responsive ml-3 mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
-                                <span class="fa fa-fw fa-trash-alt"></span> Supprimer
+                            <a title="{{__('msg.Delete')}}"   onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('clients.destroy', $client->id )}}" class="btn btn-danger btn-sm btn-responsive ml-3 mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="{{__('msg.Delete')}}">
+                                <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                             </a>
                         @endif
                     </div>

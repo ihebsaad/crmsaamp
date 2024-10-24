@@ -28,7 +28,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Ajouter un prospect</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Add')}} {{__('msg.a prospect')}}</h6>
             </div>
             <div class="card-body">
 
@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-md-5">
                             <div class="">
-                                <label for="Rue">Adresse:</label>
+                                <label for="Rue">{{__('msg.Address')}}:</label>
                                 <input type="text" id="adresse1" class="form-control" name="adresse1" required value="{{old('adresse1')}}"><br><br>
                             </div>
                         </div>
@@ -50,25 +50,25 @@
                     <div class="row pt-1">
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Pays">Pays:</label>
+                                <label for="Pays">{{__('msg.Country')}}:</label>
                                 <input type="text" id="Pays" class="form-control" name="Pays" value="France" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="pays_code">Code Pays:</label>
+                                <label for="pays_code">{{__('msg.Country code')}}:</label>
                                 <input type="text" id="pays_code" class="form-control" name="pays_code" value="FR" maxlength="2" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="zip">Code Postal:</label>
+                                <label for="zip">{{__('msg.Postal code')}}:</label>
                                 <input type="text" id="zip" class="form-control" name="zip" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="ville">Ville:</label>
+                                <label for="ville">{{__('msg.City')}}:</label>
                                 <input type="text" id="ville" class="form-control" name="ville" required><br><br>
                             </div>
                         </div>
@@ -99,7 +99,7 @@
                         <div class="col-md-2">
 
                             <div class="">
-                                <label for="siret">Code SIRET:</label>
+                                <label for="siret">SIRET:</label>
                                 <input type="text" id="Code_siret" class="form-control" name="Code_siret" value="{{old('Code_siret')}}"    ><br><br>
                             </div>
                         </div>
@@ -108,25 +108,25 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Nom">Raison sociale:</label>
+                                <label for="Nom">{{__('msg.Company name')}}:</label>
                                 <input type="text" id="Nom" class="form-control" name="Nom"  value="{{old('Nom')}}" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Phone">Télephone:</label>
+                                <label for="Phone">{{__('msg.Phone')}}:</label>
                                 <input type="text" id="Phone" class="form-control" name="Tel" value="{{old('Tel')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
-                                <label for="">Email:</label>
+                                <label for="">{{__('msg.Email')}}:</label>
                                 <input type="email" id="email" class="form-control" name="email" value="{{old('email')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
-                                <label for="">Site Web:</label>
+                                <label for="">{{__('msg.Website')}}:</label>
                                 <input type="url" id="url" class="form-control" name="url" value="{{old('url')}}"><br><br>
                             </div>
                         </div>
@@ -136,19 +136,19 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Nom">Nom de contact:</label>
+                                <label for="Nom">{{__('msg.Contact last name')}}:</label>
                                 <input type="text" id="nom_contact" class="form-control" name="nom_contact"  value="{{old('nom_contact')}}"  ><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Phone">Prénom de contact:</label>
+                                <label for="Phone">{{__('msg.Contact first name')}}:</label>
                                 <input type="text" id="prenom_contact" class="form-control" name="prenom_contact" value="{{old('prenom_contact')}}" ><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
-                                <label for="">Email de contact:</label>
+                                <label for="">{{__('msg.Contact email')}}:</label>
                                 <input type="email" id="email_contact" class="form-control" name="email_contact" value="{{old('email_contact')}}" ><br><br>
                             </div>
                         </div>
@@ -201,7 +201,7 @@
 
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right">Ajouter</button>
+                            <button type="submit" class="btn-primary btn float-right">{{__('msg.Add')}}</button>
                         </div>
                     </div>
 

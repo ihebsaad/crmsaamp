@@ -31,6 +31,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::post('/setlanguage', 'App\Http\Controllers\HomeController@setlanguage')->name('setlanguage');
 
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home')->middleware('verified');
 Route::get('/statistiques', 'App\Http\Controllers\HomeController@statistiques')->name('statistiques');

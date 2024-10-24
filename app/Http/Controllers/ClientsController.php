@@ -162,7 +162,7 @@ class ClientsController extends Controller
 			}
 			else{
 				$contacts=Contact::where('mycl_ident',$client->id)->get();
-				$tasks = Tache::where('ID_Compte', $client->id)->get();
+				$taches = Tache::where('ID_Compte', $client->id)->get();
 			}
 
 			$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
@@ -454,6 +454,14 @@ class ClientsController extends Controller
 			->where('DateTache', '>=', $currentDate->subDays(7)) // Filter for the last 15 days
 			->get();
 
+/*
+			$tasks = Tache::where(function ($query) use ($client_id) {
+				$query->where('ID_Compte', $client_id)
+					->orWhere('mycl_id', $client_id);
+			})
+			->where('DateTache', '>=', $currentDate->subDays(7)) // Filter for the last 15 days
+			->get();
+*/
 		// Reset the date calculation
 		$currentDate = now();
 
@@ -467,6 +475,8 @@ class ClientsController extends Controller
 			->join('type_contact', 'prise_contact_as400.id_type_contact', '=', 'type_contact.type_contact_ident')
 			->select(
 				'client.id as ID_Compte',
+				'prise_contact_as400.montant',
+				'prise_contact_as400.poids',
 				'prise_contact_as400.date_pr as DateTache',
 				DB::raw('NULL as heure_debut'), // Pas de champ dans prise_contact_as400
 				DB::raw('NULL as Status'), // Status vide pour prise_contact_as400
