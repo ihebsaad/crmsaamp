@@ -363,6 +363,24 @@ class HomeController extends Controller
 		}
 	}
 
+
+		public function stats_tasks(Request $request)
+	{
+		if (auth()->user()->user_type == 'visitor') {
+			return view('visitor');
+		} else {
+			$agences= DB::table('agence')->get();
+
+			$debut = $request->get('debut') ??  date('Y-m-01') ;
+			$fin = $request->get('fin') ??  date('Y-m-d');
+			$agence= $request->get('agence') ?? 1;
+
+			$stats=$stats2=null;
+
+			return view('stats_tasks',compact('agences','stats','stats2','debut','fin','agence'));
+		}
+	}
+
 	public function statistiques()
 	{
 		if (auth()->user()->user_type == 'visitor') {

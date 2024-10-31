@@ -57,6 +57,7 @@ Route::get('/statistiques', 'App\Http\Controllers\HomeController@statistiques')-
 Route::get('/adminhome', 'App\Http\Controllers\HomeController@adminhome')->name('adminhome');
 Route::get('/dashboard', 'App\Http\Controllers\HomeController@dashboard')->name('dashboard');
 Route::get('/help', 'App\Http\Controllers\HomeController@help')->name('help');
+Route::get('/stats_tasks', 'App\Http\Controllers\HomeController@stats_tasks')->name('stats_tasks');
 
 Route::get('/clients/phone', [HomeController::class, 'phone'])->name('phone');
 Route::get('/agenda', [HomeController::class, 'agenda'])->name('agenda');
@@ -178,6 +179,8 @@ Route::get('/stats_agence', [StatsController::class, 'stats_agence'])->name('sta
 Route::get('/stats_agence_client', [StatsController::class, 'stats_agence_client'])->name('stats_agence_client');
 Route::get('/stats_agences', [StatsController::class, 'stats_agences'])->name('stats_agences');
 Route::get('/stats_clients_inactifs', [StatsController::class, 'stats_clients_inactifs'])->name('stats_clients_inactifs');
+Route::get('/stats_actvivites', [StatsController::class, 'stats_actvivites'])->name('stats_actvivites');
+Route::get('/stats_actvivites_semaine', [StatsController::class, 'stats_actvivites_semaine'])->name('stats_actvivites_semaine');
 
 
 Route::get('/folders', 'App\Http\Controllers\ClientsController@folders')->name('folders');

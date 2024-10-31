@@ -162,4 +162,39 @@ class StatsController extends Controller
         return $stats;
     }
 
+
+    public static function stats_actvivites(Request $request)
+    {
+        try {
+            $agence = $request->get('agence') ?? auth()->user()->agence_ident ;
+
+            DB::select("SET @p0=$agence;");
+            $stats = DB::select('call `sp_stats_agence_activite_semaine`(@p0);');
+        } catch (\Exception $e) {
+            dd('stats_actvivites '.$e->getMessage());
+            throw $e;
+        }
+
+        return $stats;
+    }
+
+
+    public static function stats_actvivites_semaine(Request $request)
+    {
+        try {
+            $debut = $request->get('debut') ;
+            $fin = $request->get('fin')  ;
+            //d('debut '.$debut. '  Fin : '.$fin);
+
+            //DB::select("SET @p0=$debut;");
+            //DB::select("SET @p1=$fin;");
+            $stats = DB::select("call `sp_stats_agences_activite_date`('$debut', '$fin');");
+        } catch (\Exception $e) {
+            dd('stats_actvivites_semaine '.$e->getMessage());
+            throw $e;
+        }
+
+        return $stats;
+    }
+
 }

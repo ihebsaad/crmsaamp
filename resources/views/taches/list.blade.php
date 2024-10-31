@@ -49,39 +49,40 @@
             </div>
 
             <div class="card-body" style="min-height:500px">
-
                 <div class="row">
-                    <div class="col-md-3">
-                        @if(auth()->user()->user_type =='admin' || auth()->user()->role =='admin')
-                            <div class="col-md-6 col-sm-12">
-                                <label for="agence" class="mr-2">{{__('msg.Agency')}}:</label>
-                                <select class="  form-control" id="agence" onchange="filter()" style="width:200px">
-                                    <option value="agence">{{__('msg.All')}}</option>
-                                    @foreach ($agences as $agence)
-                                    <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
-                                    @endforeach
-                                </select>
+                    <div class="col-lg-9 col-md-12">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @if(auth()->user()->user_type =='admin' || auth()->user()->role =='admin')
+                                <div class="col-md-6 col-sm-12">
+                                    <span for="agence" class="mr-2">{{__('msg.Agency')}}:</span>
+                                    <select class=" mt-2 form-control" id="agence" onchange="filter()" style="width:200px">
+                                        <option value="agence">{{__('msg.All')}}</option>
+                                        @foreach ($agences as $agence)
+                                        <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @else
+                                <input type="hidden" id="agence" value="{{auth()->user()->agence_ident}}" />
+                                @endif
                             </div>
-                        @else
-                            <input type="hidden"  id="agence" value="{{auth()->user()->agence_ident}}" />
-                        @endif
-                    </div>
-                    <div class="col-lg-1">
-                    </div>
-                        <form action="{{route('taches.index')}}" method="GET" style="display:contents" >
-                            <div class="col-lg-3 col-md-12">
-                                <label for="nom" class="mr-2">{{__('msg.Name')}}:</label>
-                                <input class="form-control" name="nom" type="text" value="{{$nom}}" style="max-width:150px"/>
+                            <div class="col-lg-1">
                             </div>
-                            <div class="col-lg-3 col-md-12">
-                                <label for="nom" class="mr-2">{{__('msg.Client ID')}}:</label>
-                                <input class="form-control" name="cl_ident" type="number"  value="{{$cl_ident}}"  style="max-width:100px"/>
-                            </div>
-                            <div class="col-lg-2 col-md-12">
-                                <input class="btn btn-info" type="submit" value="{{__('msg.Filter')}}" ></input>
-                            </div>
-                        </form>
-                    <!--
+                            <form action="{{route('taches.index')}}" method="GET" style="display:contents">
+                                <div class="col-lg-3 col-md-12">
+                                    <label for="nom" class="mr-2">{{__('msg.Name')}}:</label><br>
+                                    <input class="form-control" name="nom" type="text" value="{{$nom}}" style="max-width:150px" />
+                                </div>
+                                <div class="col-lg-3 col-md-12">
+                                    <label for="nom" class="mr-2">{{__('msg.Client ID')}}:</label><br>
+                                    <input class="form-control" name="cl_ident" type="number" value="{{$cl_ident}}" style="max-width:100px" />
+                                </div>
+                                <div class="col-lg-2 col-md-12">
+                                    <input class="btn btn-info" type="submit" value="{{__('msg.Filter')}}"></input>
+                                </div>
+                            </form>
+                            <!--
                     <div class="col-sm-6">
                         @if( request()->is('mestaches'))
                         <a href="{{route('taches.index')}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-tasks"></i> Activités de l'agence</a>
@@ -90,7 +91,13 @@
                         @endif
                     </div>
                     -->
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-12">
+                        <a href="{{route('stats_tasks')}}" class="btn btn-success mb-2 ml-3 float-right"><i class="fas fa-stats"></i> Voir statistiques d'activité</a>
+                    </div>
                 </div>
+
                 <div class="row">
                     @if(isset($client))
                     <div class="col-sm-12">
@@ -101,9 +108,9 @@
 
                 @php
                 $groupedTasks = $taches->sortByDesc(function($tache) {
-                    return \Carbon\Carbon::parse($tache->DateTache)->format('Y-m-d') . ' ' . $tache->heure_debut; // Sort by DateTache and heure_debut
+                return \Carbon\Carbon::parse($tache->DateTache)->format('Y-m-d') . ' ' . $tache->heure_debut; // Sort by DateTache and heure_debut
                 })->groupBy(function($tache) {
-                    return \Carbon\Carbon::parse($tache->DateTache)->translatedFormat('F Y'); // Group by 'Month Year'
+                return \Carbon\Carbon::parse($tache->DateTache)->translatedFormat('F Y'); // Group by 'Month Year'
                 });
                 @endphp
 
@@ -191,8 +198,8 @@
                                             <span class="task-date">{{ \Carbon\Carbon::parse($task->DateTache)->translatedFormat(' d M') }} {{$task->heure_debut}}</span>
                                         </div>
                                         <div class="task-details">
-                                            <span style="color:black"><i class="fas fa-user-circle"></i><a href="{{route('fiche',['id'=>$client->id ?? 0])}}"> @if($task->Nom_de_compte !='') {{ $task->Nom_de_compte }} @else {{$client->Nom ?? ''}}  @endif - Client ID : {{ $task->mycl_id }}</a> </span><br>
-                                            <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {!!  $statut !!}</span>
+                                            <span style="color:black"><i class="fas fa-user-circle"></i><a href="{{route('fiche',['id'=>$client->id ?? 0])}}"> @if($task->Nom_de_compte !='') {{ $task->Nom_de_compte }} @else {{$client->Nom ?? ''}} @endif - Client ID : {{ $task->mycl_id }}</a> </span><br>
+                                            <span class="float-right status ml-2" style="color:white;font-weight:bold;background-color:{{$color}}" title="Statut"><i class="fas fa-flag"></i> {!! $statut !!}</span>
                                             <span class="float-right status bg-{{$class}} ml-2" style="color:white;" title="Priorité"><i class="fas fa-bell"></i> {!! $priority !!}</span>
 
                                             {{ $task->Description }}<br>
@@ -257,12 +264,11 @@
 </style>
 
 @if($title=="Suivi d'activité")
-    <script type="text/javascript">
-        filter();
-    </script>
+<script type="text/javascript">
+    filter();
+</script>
 @endif
 <script type="text/javascript">
-
     //filter();
 
     function filter() {
