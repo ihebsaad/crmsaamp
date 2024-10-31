@@ -12,7 +12,8 @@ use App\Http\Controllers\TachesController;
 use App\Http\Controllers\OffresController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\StatsController;
-
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\CommentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,6 +32,24 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+
+
+// Affiche la liste des tickets
+Route::get('/tickets/list', [TicketController::class, 'index'])->name('tickets.index');
+Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
+Route::post('/tickets/store', [TicketController::class, 'store'])->name('tickets.store');
+Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
+Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
+Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
+
+##Route::resource('tickets', TicketController::class);
+#Route::get('/tickets', [TicketController::class,'index'])->name('tickets.index');
+#Route::post('/tickets/store', [TicketController::class,'store'])->name('tickets.store');
+Route::post('tickets/{ticket}/comments', [CommentController::class, 'store'])->name('tickets.comments.store');
+
+
+
 Route::post('/setlanguage', 'App\Http\Controllers\HomeController@setlanguage')->name('setlanguage');
 
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home')->middleware('verified');
@@ -41,10 +60,10 @@ Route::get('/help', 'App\Http\Controllers\HomeController@help')->name('help');
 
 Route::get('/clients/phone', [HomeController::class, 'phone'])->name('phone');
 Route::get('/agenda', [HomeController::class, 'agenda'])->name('agenda');
-Route::post('/agenda', [HomeController::class, 'agenda'])->name('agenda');
+#Route::post('/agenda', [HomeController::class, 'agenda'])->name('agenda');
 Route::get('/print_agenda', [HomeController::class, 'print_agenda'])->name('print_agenda');
 Route::get('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
-Route::post('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
+#Route::post('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
 
 
 Route::get('/refresh', 'App\Http\Controllers\Auth\LoginController@refresh')->name('refresh');
@@ -169,6 +188,7 @@ Route::get('/delete_file/{id}', 'App\Http\Controllers\ClientsController@delete_f
 Route::get('/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\ClientsController@edit_file');
 Route::post('/editFile', 'App\Http\Controllers\ClientsController@editFile')->name('editFile');
 Route::post('/relancer', 'App\Http\Controllers\OffresController@relancer')->name('relancer');
+
 
 /*
 use App\Jobs\UpdateSequentialIdsJob;

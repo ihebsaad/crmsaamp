@@ -32,13 +32,13 @@
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Nom">{{__('msg.Last name')}}:</label>
+                                <label for="Nom">{{__('msg.Contact last name')}}:</label>
                                 <input type="text" id="Nom" class="form-control" name="Nom"  value="{{$contact->Nom}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Prenom">{{__('msg.First name')}}:</label>
+                                <label for="Prenom">{{__('msg.Contact first name')}}:</label>
                                 <input type="text" id="Prenom" class="form-control" name="Prenom"  value="{{$contact->Prenom}}"><br><br>
                             </div>
                         </div>

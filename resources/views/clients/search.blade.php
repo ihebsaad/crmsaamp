@@ -138,12 +138,13 @@
                                             $agenceLib = $agences[$client->agence_ident] ?? '';
                                             $type_c='';
                                             switch ($client->etat_id) {
-                                            case 2 :  $color='#2660c3'; $type_c='Client' ; break;
-                                            case 1 : $color='#2ab62c'; $type_c='Prospect' ;break;
-                                            case 3 : $color='#ff2e36'; $type_c='Fermé' ; break;
-                                            case 4 : $color='#ff2e36';  $type_c='Inactif' ; break;
+                                            case 2 : /* $color='#2660c3';*/ $type_c='Client' ; break;
+                                            case 1 : /*$color='#2ab62c';*/ $type_c='Prospect' ;break;
+                                            case 3 : /*$color='#ff2e36';*/ $type_c='Fermé' ; break;
+                                            case 4 : /*$color='#ff2e36'; */ $type_c='Inactif' ; break;
 
                                             }
+                                            $color= $client->couleur_html ?? '#2660c3';
 
                                               @endphp
                                             <tr><td><a href="{{route('fiche',['id'=>$client->id])}}">{{$client->Nom}}</a></td><td>{{$client->ville}}</td><td>{{$agenceLib}}</td><td style="color:{{$color}}">{{$type_c}}</td></tr>
@@ -191,7 +192,7 @@
         // Helper function to create an icon
         function createIcon(color) {
             return new L.Icon({
-                iconUrl: 'https://crm.mysaamp.com/img/marker-'+color+'.png',
+                iconUrl: 'https://crm.mysaamp.com/img/'+color+'.png',
 
                 iconSize: [32, 32],
                 iconAnchor: [12, 41],
@@ -203,7 +204,11 @@
         clients.forEach(function (client) {
             if (client.latitude && client.longitude) {
                 var clientType = client.etat_id;
-                var color = iconOptions[clientType] || 'gray'; // Default to gray if type is unknown
+                var color =  'gray' ;
+                if (client.couleur_html!=null){
+                    var color =  client.couleur_html.slice(1);
+                }
+                // iconOptions[clientType] || 'gray'; // Default to gray if type is unknown
                 var marker = L.marker([client.latitude, client.longitude], { icon: createIcon(color) }).addTo(map);
                 marker.bindPopup('<b>' + client.Nom + '</b><br>' + client.adresse1);
             } else {

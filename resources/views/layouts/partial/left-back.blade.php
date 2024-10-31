@@ -59,25 +59,25 @@ if (Auth::check()) {
   @if($user_type=='admin')
    <a class="nav-link" href="{{route('adminhome')}}">
       <i class="fas fa-tachometer-alt"></i>
-      <span><div class="hidemobile">Mon </div>Tableau<div class="hidemobile"> de bord</div></span>
+      <span><div class="hidemobile">{{__('msg.My')}} </div>{{__('msg.Dashboard')}}</span>
     </a>
   @else
   <a class="nav-link" href="{{route('dashboard')}}">
       <i class="fas fa-tachometer-alt"></i>
-      <span><div class="hidemobile"> Mon </div>Tableau<div class="hidemobile"> de bord</div></span>
+      <span><div class="hidemobile"> {{__('msg.My')}} </div>{{__('msg.Dashboard')}}</span>
     </a>
   @endif
 
 
     <a class="nav-link" href="{{route('home')}}">
       <i class="fas fa-home" ></i>
-      <span><div class="hidemobile"> Mes </div>Statistiques</span>
+      <span><div class="hidemobile"> {{__('msg.My ')}} </div>{{__('msg.Statistics')}}</span>
     </a>
 
 
     <a class="nav-link" href="{{route('search')}}">
       <i class="fas fa-users" ></i>
-      <span> Clients </span>
+      <span> {{__('msg.Customers')}} </span>
     </a>
       <!--<hr class="sidebar-divider">-->
     @if($user->user_type=='admin')
@@ -88,9 +88,9 @@ if (Auth::check()) {
 
     <i class="fas fa-tasks" ></i>
     @if($user->role=='commercial')
-      <span> Activités<div class="hidemobile"> de mes clients</div></span>
+      <span>{{__('msg.Activities of my customers')}}</span>
     @else
-      <span><div class="hidemobile">Suivi d'</div>activité</span>
+      <span>{{__('msg.Activities tracking')}} </span>
     @endif
     </a>
     <!--<hr class="sidebar-divider">
@@ -101,21 +101,25 @@ if (Auth::check()) {
     <!--<hr class="sidebar-divider">-->
     <a class="nav-link" href="{{route('retours.list')}}" >
       <i class="fas fa-comments" ></i>
-        <span> Réclamations </span>
+        <span> {{__('msg.Complaints')}} </span>
       </a>
      <a class="nav-link" href="{{route('agenda')}}" >
     <i class="fas fa-calendar-alt" ></i>
-      <span><div class="hidemobile"> Mon </div>Agenda</span>
+      <span><div class="hidemobile">{{__('msg.My')}} </div>{{__('msg.Diary')}}</span>
     </a>
     @if($user->user_type!='admin')
       <a class="nav-link" href="{{route('rendezvous.create',['id'=>0])}}" >
       <i class="fas fa-calendar" ></i>
-        <span style="font-size:10px!important">Rendez-vous <div class="hidemobile">hors clientèle</div></span>
+        <span style="font-size:10px!important">{{__('msg.Appointments')}} <div class="hidemobile">{{__('msg.excluding customers')}}</div></span>
       </a>
     @endif
     <a class="nav-link" href="{{route('help')}}" >
     <i class="fas fa-book" ></i>
-      <span> Aide </span>
+      <span>{{__('msg.Help')}}</span>
+    </a>
+    <a class="nav-link" href="{{route('tickets.index')}}" >
+    <i class="fas fa-life-ring" ></i>
+      <span>Support</span>
     </a>
   <!--
     <hr class="sidebar-divider">

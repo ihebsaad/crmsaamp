@@ -106,12 +106,12 @@
 
 	<div class="row">
 		<div class="col-md-12 text-center">
-			<span class="text-center mb-2" style="color:black">Bienvenue <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b> sur votre nouvel outil CRM !</span><br><br>
+			<span class="text-center mb-2" style="color:black">{{__('msg.Welcome')}} <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b> </span><br><br>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-12 text-center">
-			<h4>Nombre de clients </h4>
+			<h4>{{__('msg.Number of customers')}}</h4>
 		</div>
 	</div>
 	<div class="row mb-5">
@@ -204,16 +204,16 @@
 
 	<div class="row">
 		<div class="col-md-4 col-lg-4 col-sm-12">
-			<h4 class="text-center">Réclamations non clôturées </h4>
+			<h4 class="text-center">{{__('msg.Unclosed complaints')}}</h4>
 			<div class="table-container"  style="margin-top:36px">
 				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
 					<thead>
 						<tr style="background-color:#2e3e4e;color:white;" id="">
-							<th>Titre</th>
-							<th>Ouverture</th>
-							<th>Client</th>
-							<th>Contact</th>
-							<th>Motif</th>
+							<th>{{__('msg.Title')}}</th>
+							<th>{{__('msg.Open date')}}</th>
+							<th>{{__('msg.Customer')}}</th>
+							<th>{{__('msg.Contact')}}</th>
+							<th>{{__('msg.Reason')}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -232,15 +232,15 @@
 		</div>
 
 		<div class="col-md-4 col-lg-4 col-sm-12">
-			<h4 class="text-center">Prises de contact d'aujourd'hui</h4>
+			<h4 class="text-center">{{__('msg.Today appointments')}}</h4>
 			<div class="table-container" style="margin-top:36px">
 				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
 					<thead>
 						<tr style="background-color:#2e3e4e;color:white;" id="">
-							<th colspan="2">    Sujet    </th>
-							<th>Client</th>
-							<th>Agence</th>
-							<th>Statut</th>
+							<th colspan="2">    {{__('msg.Subject')}}    </th>
+							<th>{{__('msg.Customer')}}</th>
+							<th>{{__('msg.Agency')}}</th>
+							<th>{{__('msg.Status')}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -266,9 +266,9 @@
 
 
 		<div class="col-md-4 col-lg-4 col-sm-12">
-			<h4 class="text-center">Prochains rendez vous</h4>
+			<h4 class="text-center">{{__('msg.Coming appointments')}}</h4>
 
-			<div class="text-center" style="color:#2e3e4e">Commercial <select id="commercial" onchange="filter_comm()" class="form-control"  ></div>
+			<div class="text-center" style="color:#2e3e4e">{{__('msg.Commercial')}} <select id="commercial" onchange="filter_comm()" class="form-control"  ></div>
 			<option>Tous</option>
 			@foreach( $representants as $rep )
 			<option value="{{$rep->users_id}}">{{$rep->prenom}} {{$rep->nom}}</option>
@@ -279,10 +279,10 @@
 				<thead>
 					<tr  style="background-color:#2e3e4e;color:white;" id="">
 						<th>ID</th>
-						<th>Client</th>
-						<th>Sujet</th>
-						<th>Date</th>
-						<th>Attribué à</th>
+						<th>{{__('msg.Customer')}}</th>
+						<th>{{__('msg.Subject')}}</th>
+						<th>{{__('msg.Date')}}</th>
+						<th>{{__('msg.Attribued to')}}</th>
 					</tr>
 				</thead>
 				<tbody>

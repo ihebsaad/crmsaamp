@@ -34,7 +34,7 @@
 		<!-- Project Card Example -->
 		<div class="card shadow mb-4">
 			<div class="card-header py-3">
-				<h6 class="m-0 font-weight-bold text-primary">Guide d'utilisation</h6>
+				<h6 class="m-0 font-weight-bold text-primary">{{__('msg.User Guide')}}</h6>
 			</div>
 			<div class="card-body">
 				<h2 style="margin-left:30px">Sommaire</h2>

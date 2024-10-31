@@ -78,7 +78,7 @@ if($lg=='pl' ){ $langue='Polski';$displaypl='display:none';}
     <i style="color:#f2ba01" class="fa fa-bars"></i>
   </button>
 
-  <ul style="margin-top:10px;display:none" id="" class="nav  ">
+  <ul style="margin-top:10px;" id="" class="nav  ">
 
     <li class="dropdown menu-item">
       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">

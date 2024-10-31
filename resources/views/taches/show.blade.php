@@ -129,7 +129,7 @@
                     <div class="row pt-1">
                         <div class="col-md-6">
                             <div class="">
-                                <label for="Description">{{__('msg.Dascription')}}:</label>
+                                <label for="Description">{{__('msg.Description')}}:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{$tache->Description}}</textarea><br><br>
                             </div>
                         </div>

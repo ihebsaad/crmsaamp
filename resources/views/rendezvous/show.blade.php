@@ -178,7 +178,7 @@ h6{
                     @endif
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <a  href="{{route('rendezvous.print',['id'=>$rendezvous->id])}}" target="_blank" class="btn btn-secondary" ><i class="fa fa-print"></i> Imprimer</a>
+                            <a  href="{{route('rendezvous.print',['id'=>$rendezvous->id])}}" target="_blank" class="btn btn-secondary" ><i class="fa fa-print"></i> {{__('msg.Print')}}</a>
                         </div>
                     </div>
                 </form>

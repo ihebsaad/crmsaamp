@@ -175,7 +175,7 @@ if (is_array($commandes) || is_object($commandes)) {
                                     case 4 : $color='#ff2e36';  $type_c='Inactif' ; break;
                                     }
                                 @endphp
-                                <h6 style="color:{{$color}}">{{$type_c}}</h6>
+                                <h6 style="color:{{$client->couleur_html ?? 'gray'}}">{{$type_c}}</h6>
                             </div>
                         </div>
                     </div>

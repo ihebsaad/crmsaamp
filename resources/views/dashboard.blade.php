@@ -84,31 +84,31 @@
 
 	<div class="row">
 		<div class="col-md-12 text-center">
-			<span class="text-center mb-5" style="color:black">Bienvenue  <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b> sur votre nouvel outil CRM !</span><br><br><br>
+			<span class="text-center mb-5" style="color:black">{{__('msg.Welcome')}}  <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b> sur votre nouvel outil CRM !</span><br><br><br>
 		</div>
 	</div>
 
 	<div class="row">
 		<div class="col-md-6 col-lg-6 col-sm-12 text-center  mb-5">
-			<h4>Nombre de clients</h4>
+			<h4>{{__('msg.Number of customers')}}</h4>
 			<div class="circle">
 				<p style="margin-top:revert">{{ $total_clients }}</p>
 			</div>
 			<!--<h1><b>{{ $total_clients }}</b></h1>-->
 		</div>
 		<div class="col-md-6 col-lg-6 col-sm-12">
-			<h4 class="text-center">Top clients</h4>
+			<h4 class="text-center">{{__('msg.Top customers')}}</h4>
 			<div id="piechart" style="width:100%!important; height: 300px;"></div>
 		</div>
 		<div class="col-md-6 col-lg-6 col-sm-12">
-			<h4 class="text-center">Prochains rendez vous</h4>
+			<h4 class="text-center">{{__('msg.Coming appointments')}}</h4>
 			<table id="" class="table table-striped" style="width:100%!important">
                 <thead>
                     <tr style="background-color:#2e3e4e;color:white;" id="">
                         <th>ID</th>
-                        <th>Client</th>
-                        <th>Sujet</th>
-                        <th>Date</th>
+                        <th>{{__('msg.Customer')}}</th>
+                        <th>{{__('msg.Subject')}}</th>
+                        <th>{{__('msg.Date')}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -128,8 +128,8 @@
 			<table id="" class="table table-striped" style="width:100%!important">
                 <thead>
                     <tr style="background-color:#2e3e4e;color:white;" id="">
-                        <th>Client</th>
-                        <th>Chiffre d'affaire</th>
+                        <th>{{__('msg.Customer')}}</th>
+                        <th>{{__('msg.Turnover')}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -142,15 +142,16 @@
 		</div>
     @if(auth()->user()->id== 10 || auth()->user()->id== 39 || auth()->user()->id== 1 )
       <div class="col-md-6 col-lg-6 col-sm-12">
-        <h4 class="text-center" >Offres de prix à valider</h4>
+        <h4 class="text-center" >{{__('msg.Price offers to be validated')}}</h4>
+        @if(count($offres)>0)<div class="text-danger">Vous avez <b>{!!count($offres)!!}</b> offres en attente de votre validation ! </div> @endif
         <table id="" class="table table-striped" style="width:100%!important">
                   <thead>
                       <tr style="background-color:#2e3e4e;color:white;" id="">
                           <th>ID</th>
-                          <th>Création</th>
-                          <th>Nom</th>
-                          <th>Client</th>
-                          <th>Par</th>
+                          <th>{{__('msg.Creation')}}</th>
+                          <th>{{__('msg.Name')}}</th>
+                          <th>{{__('msg.Customer')}}</th>
+                          <th>{{__('msg.By')}}</th>
                       </tr>
                   </thead>
                   <tbody>

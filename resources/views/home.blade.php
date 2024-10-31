@@ -59,7 +59,7 @@
     @else
     @if( auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv' )
     <div class="col-lg-4">
-        <span class=" mr-2">Commercial:</span>
+        <span class=" mr-2">{{__('msg.Commercial')}}:</span>
         <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">
             @foreach ($representants as $rp)
             <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
@@ -74,7 +74,7 @@
 
     <div class="col-lg-4 mt-4">
         <input id="mois" type="checkbox" value="1" onchange="update_stats();">
-        <label class="mt-2" for="mois">Afficher les années pleines</label>
+        <label class="mt-2" for="mois">{{__('msg.Show full years')}}</label>
         </input>
     </div>
 </div>
@@ -84,14 +84,14 @@
     <div class="col-lg-6 col-sm-12  mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Par Métier</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.By')}} {{__('msg.Job')}}</h6>
             </div>
             <div class="card-body">
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">Métier</th>
+                                <th class="">{{__('msg.Job')}}</th>
                                 <th class="text-center">{{ date('Y'); }}</th>
                                 <th class=""></th>
                                 <th class="text-center">{{ date('Y')-1; }}</th>
@@ -113,14 +113,14 @@
     <div class="col-lg-6 col-sm-12 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Par Client</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.By')}} {{__('msg.Customer')}}</h6>
             </div>
             <div class="card-body">
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">Client</th>
+                                <th class="">{{__('msg.Customer')}}</th>
                                 <th class="text-center">{{ date('Y'); }}</th>
                                 <th class=""></th>
                                 <th class="text-center">{{ date('Y')-1; }}</th>
@@ -143,14 +143,14 @@
     <div class="col-lg-12 col-sm-12 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Statistiques client sur 12 mois glissants </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.12-month rolling customer statistics')}} </h6>
             </div>
             <div class="card-body">
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                            <th class="">Client</th>
+                            <th class="">{{__('msg.Customer')}}</th>
                             <?php
                             $mois_francais = [
                                 'Jan' => 'Janvier',
@@ -193,7 +193,7 @@
 
 <div class="row">
     <div class="col-lg-4">
-        <span class=" mr-2">Agence:</span><select class="form-control mb-20" id="agence" onchange="update_stats();" style="max-width:300px">
+        <span class=" mr-2">{{__('msg.Agency')}}:</span><select class="form-control mb-20" id="agence" onchange="update_stats();" style="max-width:300px">
             <option></option>
             @foreach ($agences as $agence)
             <option @selected(auth()->user()->agence_ident==$agence->agence_ident) value="{{$agence->agence_ident}}">{{$agence->agence_lib}}    |  <small>{{$agence->adresse1}}</small></option>
@@ -207,14 +207,14 @@
     <div class="col-lg-6 col-sm-12 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Par Métier</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.By')}} {{__('msg.Job')}}</h6>
             </div>
             <div class="card-body">
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">Métier</th>
+                                <th class="">{{__('msg.Job')}}</th>
                                 <th class="text-center">{{ date('Y'); }}</th>
                                 <th class=""></th>
                                 <th class="text-center">{{ date('Y')-1; }}</th>
@@ -236,14 +236,14 @@
     <div class="col-lg-6 col-sm-12 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Par Client</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.By')}} {{__('msg.Customer')}}</h6>
             </div>
             <div class="card-body">
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">Client</th>
+                                <th class="">{{__('msg.Customer')}}</th>
                                 <th class="text-center">{{ date('Y'); }}</th>
                                 <th class=""></th>
                                 <th class="text-center">{{ date('Y')-1; }}</th>
@@ -265,14 +265,14 @@
     <div class="col-lg-12 col-sm-12 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Toutes les agences</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.All agencies')}}</h6>
             </div>
             <div class="card-body">
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">Agence</th>
+                                <th class="">{{__('msg.Agency')}}</th>
                                 <th class="text-center">{{ date('Y'); }}</th>
                                 <th class=""></th>
                                 <th class="text-center">{{ date('Y')-1; }}</th>
@@ -294,20 +294,20 @@
     <div class="col-lg-12 col-sm-12 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Clients inactifs</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Inactive customers')}}</h6>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-4">
-                        <span class=" mr-2">Inactif depuis :</span><input type="number" class="form-control mb-20" id="nb_mois" onchange="update_stats();" style="max-width:70px"  value="2"/> mois
+                        <span class=" mr-2">{{__('msg.Inactive since')}} :</span><input type="number" class="form-control mb-20" id="nb_mois" onchange="update_stats();" style="max-width:70px"  value="2"/> {{__('msg.Month')}}
                     </div>
                 </div>
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">Client</th>
-                                <th class="text-center">Dernière facture</th>
+                                <th class="">{{__('msg.Customer')}}</th>
+                                <th class="text-center">{{__('msg.Last invoice')}}</th>
                                 <th class="text-center">{{ date('Y'); }}</th>
                                 <th class="text-center">{{ date('Y')-1; }}</th>
                                 <th class="text-center">{{ date('Y')-2; }}</th>

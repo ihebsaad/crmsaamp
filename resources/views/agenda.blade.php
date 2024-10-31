@@ -83,17 +83,17 @@
 		<!-- Project Card Example -->
 		<div class="card shadow mb-4">
 			<div class="card-header py-3">
-				<h6 class="m-0 font-weight-bold text-primary">@if(request()->is('exterieurs')) Rendez Vous Extérieurs @else Mon Agenda  @endif</h6>
+				<h6 class="m-0 font-weight-bold text-primary">{{__('msg.My')}} {{__('msg.Diary')}}</h6>
 			</div>
 			<div class="card-body">
 				<div class="row">
 					<div class="col-lg-5">
 
 						@if( auth()->user()->role=='admin' || auth()->user()->role=='respAG' || auth()->user()->role=='adv' )
-							<form    action="{{route('agenda')}}"  >
+							<form  method="get"  action="{{route('agenda')}}"  >
 								<div class="row">
 									<div class="col-lg-12">
-										<span class=" mr-2">Utilisateur:</span>
+										<span class=" mr-2">{{__('msg.User')}}:</span>
 										<select class="form-control mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="update_user();this.form.submit();" >
 											<option  @if($user=="") selected="selected" @endif value=""></option>
 											@foreach ($users as $User)
@@ -107,7 +107,7 @@
 							</form>
 						@else
 							@if(request()->is('exterieurs'))
-								<a href="{{route('rendezvous.create',['id'=>0])}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-calendar-day"></i>  Créer un Rendez-vous Extérieur</a>
+								<!--<a href="{{route('rendezvous.create',['id'=>0])}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-calendar-day"></i>  Créer un Rendez-vous Extérieur</a>-->
 							@endif
 						@endif
 					</div>
@@ -117,12 +117,12 @@
 						<input type="hidden" name="user" value="{{$user ?? auth()->user()->id}}" id="user" >
 						<div class="row">
 							<div class="col-lg-8 col-md-6 col-sm-8 float-right  mb-2">
-								<span class=" mr-2">Mois:</span>
+								<span class=" mr-2">{{__('msg.Month')}}:</span>
 								<input type="number" class="form-control" id="annee" name="annee" value="{{date('Y')}}" step="1" min="2023" max="2050" style="width:90px" >
 								<input type="number" class="form-control" id="mois" name="mois" value="{{date('m')}}" step="1" min="1" max="12" style="width:70px" >
 							</div>
 							<div class="col-lg-4 col-md-6 col-sm-4 ">
-								<button type="submit" class="btn btn-primary mb-3 mr-3 "><i class="fas fa-print"></i> Imprimer la liste</button>
+								<button type="submit" class="btn btn-primary mb-3 mr-3 "><i class="fas fa-print"></i> {{__('msg.Print')}}</button>
 							</div>
 						</div>
 					</form>
