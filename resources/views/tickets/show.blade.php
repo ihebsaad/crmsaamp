@@ -26,6 +26,8 @@
 				<div class="card mb-4">
 					<div class="card-header">{{ __('msg.Ticket Information') }}</div>
 					<div class="card-body">
+						@php $user= \App\Models\User::find($ticket->user_id); @endphp
+						<p><strong>{{ __('msg.By') }}:</strong> {{ $user->name }} {{ $user->lastname }}</p>
 						<p><strong>{{ __('msg.Subject') }}:</strong> {{ $ticket->subject }}</p>
 						<p><strong>{{ __('msg.Category') }}:</strong> {{ ucfirst($ticket->category) }}</p>
 						<p><strong>{{ __('msg.Status') }}:</strong>

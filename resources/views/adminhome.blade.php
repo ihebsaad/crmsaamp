@@ -99,6 +99,9 @@
 		position: relative;
 	}
 	#commercial{width:160px;font-size:13px;padding: 3px 6px 3px 6px;margin-left:10px;}
+	.sortable{
+		cursor:pointer;
+	}
 </style>
 
 
@@ -234,35 +237,33 @@
 		<div class="col-md-4 col-lg-4 col-sm-12">
 			<h4 class="text-center">{{__('msg.Today appointments')}}</h4>
 			<div class="table-container" style="margin-top:36px">
-				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
+				<table id="appointments-table" class="table table-striped" style="width:90%!important;margin-left:5%">
 					<thead>
-						<tr style="background-color:#2e3e4e;color:white;" id="">
-							<th colspan="2">    {{__('msg.Subject')}}    </th>
-							<th>{{__('msg.Customer')}}</th>
-							<th>{{__('msg.Agency')}}</th>
-							<th>{{__('msg.Status')}}</th>
+						<tr style="background-color:#2e3e4e;color:white;">
+							<th class="sortable" data-column="heure_debut">   {{__('msg.Subject')}}   </th>
+							<th class="sortable" data-column="Nom_de_compte">Client</th>
+							<th class="sortable" data-column="Agence">{{__('msg.Agency')}}</th>
 						</tr>
 					</thead>
 					<tbody>
 						@foreach($taches as $tache)
-
 						<tr>
-							<td colspan="2">
-							@if($tache->heure_debut){{ $tache->heure_debut }}  @endif
-							@if(isset($tache->id ))<a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a>
+							<td >
+								@if($tache->heure_debut){{ $tache->heure_debut }}  @endif
+								@if(isset($tache->id))<a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a>
 								@else
-									{{$tache->Description}}
+								{{$tache->Description}}
 								@endif
 							</td>
 							<td><small>{{ $tache->Nom_de_compte }}</small></td>
 							<td><small>{{ $tache->Agence }}</small></td>
-							<td><small>{{ $tache->Status }} - {{ $tache->Priority }}</small></td>
 						</tr>
 						@endforeach
 					</tbody>
 				</table>
 			</div>
 		</div>
+
 
 
 		<div class="col-md-4 col-lg-4 col-sm-12">
@@ -313,13 +314,7 @@
 
 
 <script>
-		$(document).ready(function() {
-			setTimeout(function() {
-				$('#maintenance').modal('show');
-			}, 5000); // 5000 millisecondes = 5 secondes
-		});
-
-      function filter_comm() {
+	    function filter_comm() {
         var user = $('#commercial').find(":selected").val();
             if (user>0) {
               toggle('users', 'none');
@@ -335,6 +330,48 @@
                 elements[i].style.display = displayState;
             }
         }
-	</script>
+
+		$(document).ready(function() {
+
+			setTimeout(function() {
+				$('#maintenance').modal('show');
+			}, 5000); // 5000 millisecondes = 5 secondes
+
+			$('.sortable').on('click', function() {
+				var table = $('#appointments-table tbody');
+				var rows = table.find('tr').toArray();
+				var column = $(this).data('column');
+				var order = $(this).hasClass('asc') ? 'desc' : 'asc';
+
+				// Remove sorting classes from other headers
+				$('.sortable').removeClass('asc desc');
+
+				// Add sorting class to the clicked header
+				$(this).addClass(order);
+
+				rows.sort(function(a, b) {
+					var aText = $(a).find('td:contains("' + column + '")').text().trim();
+					var bText = $(b).find('td:contains("' + column + '")').text().trim();
+
+					// Compare values (numeric or alphabetic)
+					if ($.isNumeric(aText) && $.isNumeric(bText)) {
+						aText = parseFloat(aText);
+						bText = parseFloat(bText);
+					}
+
+					if (order === 'asc') {
+						return aText > bText ? 1 : -1;
+					} else {
+						return aText < bText ? 1 : -1;
+					}
+				});
+
+				// Append sorted rows to the table
+				$.each(rows, function(index, row) {
+					table.append(row);
+				});
+			});
+		});
+</script>
 
 @endsection

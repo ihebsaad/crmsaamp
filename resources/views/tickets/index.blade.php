@@ -27,12 +27,16 @@
                                 <th scope="col">{{ __('msg.Category') }}</th>
                                 <th scope="col">{{ __('msg.Status') }}</th>
                                 <th scope="col">{{ __('msg.Created At') }}</th>
+                                <th scope="col">{{ __('msg.By') }}</th>
                                 <th scope="col">{{ __('msg.Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($tickets as $ticket)
-                            @php $reponses = \App\Models\Comment::where('ticket_id',$ticket->id)->count(); @endphp
+                            @php
+                                $reponses = \App\Models\Comment::where('ticket_id',$ticket->id)->count();
+                                $user= \App\Models\User::find($ticket->user_id);
+                            @endphp
                             <tr>
                                 <td>{{ $ticket->id }}</td>
                                 <td>{{ $ticket->subject }} ({{ $reponses }})</td>
@@ -43,6 +47,7 @@
                                     </span>
                                 </td>
                                 <td>{{ $ticket->created_at->format('d/m/Y H:i') }}</td>
+                                <td>{{ $user->name ?? '' }} {{ $user->lastname ?? '' }}</td>
                                 <td>
                                     <a href="{{ route('tickets.show', $ticket->id) }}" class="btn btn-info btn-sm">{{ __('msg.View') }}</a>
                                     @if(auth()->user()->user_type=='admin')
@@ -67,7 +72,7 @@
     </div>
 
 </div>
- 
+
 
 
 @endsection
