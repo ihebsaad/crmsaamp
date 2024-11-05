@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\CompteClient;
 use App\Models\RetourClient;
 use App\Models\Contact;
+use App\Models\File;
 use App\Services\SendMail;
 use Illuminate\Support\Facades\DB;
 
@@ -70,9 +71,9 @@ class RetoursController extends Controller
 
 			//orWhere
 			$contact=Contact::where('id',$retour->mycontact_id)->first();
+			$files=File::where('parent','retours')->where('parent_id',$retour->id)->get();
 
-
-		return view('retours.show',compact('retour','contact','class','agences'));
+		return view('retours.show',compact('retour','contact','class','agences','files'));
 	}
 
 
@@ -85,14 +86,37 @@ class RetoursController extends Controller
 */
 		$retour = RetourClient::find($id);
 		$agence_lib=$retour->Responsable_de_resolution;
-		$retour->update($request->all());
+		//$retour->update($request->all());
+
+		$retour->update([
+			'edited_by' => $request->input('edited_by') ?? 0,
+			'Responsable_de_resolution' => $request->input('Responsable_de_resolution') ,
+			'Date_cloture' => $request->input('Date_cloture'),
+			'Details_des_causes' => $request->input('Details_des_causes'),
+			'Une_reponse_a_ete_apportee_au_client' => $request->input('Une_reponse_a_ete_apportee_au_client'),
+			'Description_c' => $request->input('Description_c'),
+		]);
+
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path("fichiers/retours");
+				$fichier->move($path, $name);
+
+				// Store each file in the files table
+				File::create([
+					'name' => $name,
+					'parent_id' => $retour->id,
+					'parent' => 'retours'
+				]);
+			}
+		}
 
 		// email agence
 		$agence= DB::table('agence')->where('agence_lib',trim($retour->Responsable_de_resolution))->first();
-		/*
-		if(isset($agence))
-			self::send_mail($retour,$agence->mail);
-		*/
+
 
 		if(isset($agence) && isset($agence->mail2) && $agence_lib != $request->get('Responsable_de_resolution') )
 			self::send_mail($retour,$agence->mail2);
@@ -136,7 +160,7 @@ class RetoursController extends Controller
 */
 		$retour->name='RC-'.sprintf('%05d',$retour->id);
 		$retour->save();
-
+/*
 		if ($request->hasFile('files')) {
 			$fichiers = $request->file('files');
 			$fileNames = [];
@@ -152,7 +176,24 @@ class RetoursController extends Controller
 			$retour->fichier = serialize($fileNames);
 			$retour->save();
 		}
+*/
 
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path("fichiers/retours");
+				$fichier->move($path, $name);
+
+				// Store each file in the files table
+				File::create([
+					'name' => $name,
+					'parent_id' => $retour->id,
+					'parent' => 'retours'
+				]);
+			}
+		}
 
 		self::send_mail($retour,'remy.reverbel@saamp.com');
 		self::send_mail($retour,'reyad.bouzeboudja@saamp.com');

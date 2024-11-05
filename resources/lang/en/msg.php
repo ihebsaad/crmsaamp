@@ -583,8 +583,6 @@ return [
 	"Reason"=>"Reason",
 	"Only open"=>"Only open",
 	"Other"=>"Other",
-
-
 	"Unclosed complaints"=>"Unclosed complaints",
 	"Open"=>"Open",
 	"Customer"=>"Customer",
@@ -616,7 +614,7 @@ return [
 	"User"=>"User",
 	"Month"=>"Month",
 	"Today appointments"=>"Today appointments",
-	
+
 	"Add a support ticket"=>"Add a support ticket",
 	"Question"=>"Question",
 	"Error or Problem"=>"Error or Problem",
@@ -637,6 +635,7 @@ return [
 	"Resolved"=>"Resolved",
 	"Update Ticket"=>"Update Ticket",
 	"Submit"=>"Submit",
+	"Add files"=>"Add files",
 
 
 ];

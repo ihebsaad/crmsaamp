@@ -195,6 +195,7 @@
                         </div>
                         -->
                     </div>
+                    <input type="hidden"  name="fichier"  />
 
                     <div class="row pt-1 pb-1">
                         <div class="col-md-6">

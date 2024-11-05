@@ -14,6 +14,9 @@ use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FilesController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -191,6 +194,8 @@ Route::get('/delete_file/{id}', 'App\Http\Controllers\ClientsController@delete_f
 Route::get('/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\ClientsController@edit_file');
 Route::post('/editFile', 'App\Http\Controllers\ClientsController@editFile')->name('editFile');
 Route::post('/relancer', 'App\Http\Controllers\OffresController@relancer')->name('relancer');
+
+Route::delete('/files/{file}', [FilesController::class, 'destroyFile'])->name('files.destroy');
 
 
 /*

@@ -641,5 +641,6 @@ return [
 	"Resolved"=>"Résolu",
 	"Update Ticket"=>"Modifier le ticket",
 	"Submit"=>"Envoyer",
+	"Add files"=>"Ajouter des fichier",
 
  ];

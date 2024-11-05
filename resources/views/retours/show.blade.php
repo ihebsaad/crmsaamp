@@ -28,7 +28,7 @@
 
             <div class="card-body" style="min-height:500px">
 
-                <form action="{{ route('retours.update', $retour->id) }}" method="post">
+                <form action="{{ route('retours.update', $retour->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="edited_by" value="{{auth()->user()->id}}" >
@@ -59,7 +59,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Responsable_de_resolution">{{__('msg.Agency')}}:</label>
-                                <select    id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution" required  >
+                                <select    id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution"    >
                                     <option></option>
                                     @foreach($agences as $agence)
                                         <option @selected($retour->Responsable_de_resolution==$agence->agence_lib) value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
@@ -162,23 +162,34 @@
                     </div>
 
                     <div class="row pt-1 pb-1">
+                        <div class="col-md-6">
+                            <div class="">
+                                <label for="Nom_offre">{{__('msg.Add files')}}:</label>
+                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple required  accept="application/pdf" /><br><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row pt-1 pb-1">
                         <div class="col-md-4">
-                            @if($retour->fichier!= null)
-                                @php $fileNames = unserialize($retour->fichier); @endphp
-                                <div class="">
-                                    <label for="Description">{{__('msg.File(s)')}}:</label><br>
-                                    <table>
-
-                                        @foreach ($fileNames as $fichier)
-                                        <tr>
-                                            <td><label><b class="black mr-2">{{$fichier}}</b></label></td>
-                                            <td><a href="https://crm.mysaamp.com/retours/{{$fichier}}" target="_blank" ><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png')}}"></a></td>
-                                            <td><a href="https://crm.mysaamp.com/retours/{{$fichier}}" download ><img class="download mr-2" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
-                                        </tr>
-                                        @endforeach
-
-                                    </table>
-                                </div>
+                            @if(count($files)>0)
+                                <label for="Description">{{ __('msg.File(s)') }}:</label><br>
+                                <table style="border:none;width:100%">
+                                    @foreach ($files as $file)
+                                    <tr>
+                                        <td style="border:none;"><label><b class="black mr-2">{{ $file->name }}</b></label></td>
+                                        <td style="border:none;"><a href="{{ url('/fichiers/retours/' . $file->name) }}" target="_blank"><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png') }}"></a></td>
+                                        <td style="border:none;"><a href="{{ url('/fichiers/retours/' . $file->name) }}" download><img class="download mr-2" title="Télécharger" width="30" src="{{ URL::asset('img/download.png') }}"></a></td>
+                                        <td style="border:none;">
+                                            <td>
+                                                <a title="{{__('msg.Delete')}}" onclick="deleteFile('{{ $file->id }}')" href="javascript:void(0);"  class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                                    <span class="fa fa-fw fa-trash-alt"></span>
+                                                </a>
+                                            </td>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </table>
                             @endif
                         </div>
                     </div>
@@ -240,7 +251,31 @@
                 dateFormat: "yy-mm-dd",
                 minDate:0
             });
+
         });
+
+
+        function deleteFile(fileId) {
+        if (confirm('Êtes-vous sûrs ?')) {
+            fetch(`{{ url('/files') }}/${fileId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();  // Reload the page to reflect changes
+                } else {
+                    alert("Failed to delete file.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while deleting the file.");
+            });
+        }
+    }
 
     </script>
 
