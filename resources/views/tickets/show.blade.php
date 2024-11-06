@@ -24,7 +24,7 @@
 
 
 				<div class="card mb-4">
-					<div class="card-header">{{ __('msg.Ticket Information') }}</div>
+					<div class="card-header">{{ __('msg.Ticket Information') }} {{$ticket->id}}</div>
 					<div class="card-body">
 						@php $user= \App\Models\User::find($ticket->user_id); @endphp
 						<p><strong>{{ __('msg.By') }}:</strong> {{ $user->name }} {{ $user->lastname }}</p>

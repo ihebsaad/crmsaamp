@@ -547,6 +547,7 @@ return [
 	"Attributed to"=>"Attributé à",
 	"Account name"=>"Nom du compte",
 	"Appointments list"=>"Liste des rendez vous",
+	"Appointments"=>"Rendez vous",
 	"Hour"=>"Heure",
 	"of"=>"de",
 	"Following"=>"Suite",
@@ -591,7 +592,7 @@ return [
 
 	"Unclosed complaints"=>"Réclamations non clôturées",
 	"Open"=>"Ouverture",
-	"Customer"=>"Modifier",
+	"Customer"=>"Client",
 	"Contact"=>"Contact",
 	"Reason"=>"Motif",
 	"Uesr"=>"Utilisateur",

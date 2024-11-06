@@ -543,6 +543,7 @@ return [
 	"Attributed to"=>"Attributed to",
 	"Account name"=>"Account name",
 	"Appointments list"=>"Appointments list",
+	"Appointments"=>"Appointments",
 	"Hour"=>"Hour",
 	"of"=>"of",
 	"Following"=>"Following",

@@ -49,37 +49,46 @@
             </div>
 
             <div class="card-body" style="min-height:500px">
-                <div class="row">
-                    <div class="col-lg-9 col-md-12">
-                        <div class="row">
-                            <div class="col-md-3">
-                                @if(auth()->user()->user_type =='admin' || auth()->user()->role =='admin')
-                                <div class="col-md-6 col-sm-12">
-                                    <span for="agence" class="mr-2">{{__('msg.Agency')}}:</span>
-                                    <select class=" mt-2 form-control" id="agence" onchange="filter()" style="width:200px">
-                                        <option value="agence">{{__('msg.All')}}</option>
-                                        @foreach ($agences as $agence)
-                                        <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @else
-                                <input type="hidden" id="agence" value="{{auth()->user()->agence_ident}}" />
+                <form  @if( request()->is('mestaches')) action="{{route('mestaches')}}"   @else action="{{route('taches.index')}}"  @endif  method="GET" style="display:contents">
+
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                        @if(auth()->user()->user_type =='admin' || auth()->user()->role =='admin')
+                                         <span for="agence" class="text-primary mr-2">{{__('msg.Agency')}}:</span>
+                                        <select class=" mt-2 form-control" id="agence" onchange="filter()" style="width:200px">
+                                            <option value="agence">{{__('msg.All')}}</option>
+                                            <option value="web">WEB</option>
+                                            @foreach ($agences as $agence)
+                                            <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                                            @endforeach
+                                        </select>
+                                 @else
+                                    <input type="hidden" id="agence" value="{{auth()->user()->agence_ident}}" />
                                 @endif
-                            </div>
-                            <div class="col-lg-1">
-                            </div>
-                            <form action="{{route('taches.index')}}" method="GET" style="display:contents">
-                                <div class="col-lg-3 col-md-12">
-                                    <label for="nom" class="mr-2">{{__('msg.Name')}}:</label><br>
-                                    <input class="form-control" name="nom" type="text" value="{{$nom}}" style="max-width:150px" />
+                        </div>
+                        <div class="col-md-6">
+                        <a href="{{route('stats_tasks')}}" class="btn btn-success mb-2 ml-3 mr-2 float-right"><i class="fas fa-stats"></i> Voir statistiques d'activité</a>
+                        </div>
+                    </div>
+                        <div class="row">
+                                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                                    <span class="text-primary mr-2">{{__('msg.Name')}}:</span><br>
+                                    <input class="form-control" name="nom" type="text" value="{{$nom}}" style="width:95%" />
                                 </div>
-                                <div class="col-lg-3 col-md-12">
-                                    <label for="nom" class="mr-2">{{__('msg.Client ID')}}:</label><br>
+                                <div class="col-md-2 col-sm-12 mb-2">
+                                    <span class="text-primary mr-2">{{__('msg.Client ID')}}:</span><br>
                                     <input class="form-control" name="cl_ident" type="number" value="{{$cl_ident}}" style="max-width:100px" />
                                 </div>
-                                <div class="col-lg-2 col-md-12">
-                                    <input class="btn btn-info" type="submit" value="{{__('msg.Filter')}}"></input>
+                                <div class="col-md-2 col-sm-12">
+                                    <span class="text-primary mr-2">Début</span><br>
+                                    <input class="form-control datepicker" id="debut" name="debut" value="{{ $debut }}" style="width:150px" />
+								</div>
+								<div class="col-md-2 col-sm-12">
+                                    <span class="text-primary ">Fin</span><br>
+                                    <input class="form-control datepicker" id="fin" name="fin" value="{{ $fin }}" style="width:150px" />
+                                </div>
+                                <div class="col-md-3 col-sm-12">
+                                    <button class="btn btn-info mt-4" type="submit" value="{{__('msg.Filter')}}"><i class="fa fa-filter"></i> {{__('msg.Filter')}}</input>
                                 </div>
                             </form>
                             <!--
@@ -92,11 +101,8 @@
                     </div>
                     -->
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-md-12">
-                        <a href="{{route('stats_tasks')}}" class="btn btn-success mb-2 ml-3 float-right"><i class="fas fa-stats"></i> Voir statistiques d'activité</a>
-                    </div>
-                </div>
+
+
 
                 <div class="row">
                     @if(isset($client))
@@ -192,7 +198,7 @@
                                     $icon = 'img/task.png';
                                     }
                                     @endphp
-                                    <li class="list-group-item agence {{ $task->Agence }}">
+                                    <li class="list-group-item agence  @if($task->as400 == 0) web @endif  {{ $task->Agence }}">
                                         <div class="task-header">
                                             <span class="task-title" title="{{$task->Type}}"><img src="{{  URL::asset($icon) }}" width="25" /> {{ $task->Subject }}</span>
                                             <span class="task-date">{{ \Carbon\Carbon::parse($task->DateTache)->translatedFormat(' d M') }} {{$task->heure_debut}}</span>
@@ -204,6 +210,7 @@
 
                                             {{ $task->Description }}<br>
                                             <i>{{ $task->Agence }}</i>
+                                            @if($task->as400 == 0) <br><b>WEB</b> @endif
 
                                         </div>
                                         <div class="task-actions">
@@ -365,6 +372,29 @@
 
 
 
+
+        $( ".datepicker" ).datepicker({
+
+            //altField: "#datepicker",
+            closeText: 'Fermer',
+            prevText: 'Précédent',
+            nextText: 'Suivant',
+            currentText: 'Aujourd\'hui',
+            monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+            monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+            dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+            dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+            dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+            weekHeader: 'Sem.',
+            buttonImage: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAATCAYAAAB2pebxAAABGUlEQVQ4jc2UP06EQBjFfyCN3ZR2yxHwBGBCYUIhN1hqGrWj03KsiM3Y7p7AI8CeQI/ATbBgiE+gMlvsS8jM+97jy5s/mQCFszFQAQN1c2AJZzMgA3rqpgcYx5FQDAb4Ah6AFmdfNxp0QAp0OJvMUii2BDDUzS3w7s2KOcGd5+UsRDhbAo+AWfyU4GwnPAYG4XucTYOPt1PkG2SsYTbq2iT2X3ZFkVeeTChyA9wDN5uNi/x62TzaMD5t1DTdy7rsbPfnJNan0i24ejOcHUPOgLM0CSTuyY+pzAH2wFG46jugupw9mZczSORl/BZ4Fq56ArTzPYn5vUA6h/XNVX03DZe0J59Maxsk7iCeBPgWrroB4sA/LiX/R/8DOHhi5y8Apx4AAAAASUVORK5CYII=",
+            firstDay: 1,
+            dateFormat: "yy-mm-dd",
+            //minDate:0
+        });
+
     });
+
+
+
 </script>
 @stop

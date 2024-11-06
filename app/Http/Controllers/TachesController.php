@@ -126,8 +126,13 @@ class TachesController extends Controller
 		// Récupérer les filtres
 		$nom = request()->input('nom');
 		$cl_ident = request()->input('cl_ident');
+
+		$debut = request()->input('debut', now()->subDays(5)->format('Y-m-d'));
+		$fin = request()->input('fin', now()->format('Y-m-d'));
+
 		// Récupérer les tâches
 		$tasks = Tache::orderBy('id', 'desc')->limit(1000)
+			->whereBetween('DateTache', [$debut, $fin])
 			->when($nom, function ($query, $nom) {
 				return $query->where('Nom_de_compte', 'LIKE', "%{$nom}%");
 			})
@@ -143,6 +148,7 @@ class TachesController extends Controller
 			->join('agence', 'prise_contact_as400.agence_id', '=', 'agence.agence_ident')
 			->join('sujet', 'prise_contact_as400.id_sujet', '=', 'sujet.sujet_ident')
 			->join('type_contact', 'prise_contact_as400.id_type_contact', '=', 'type_contact.type_contact_ident')
+			->whereBetween('prise_contact_as400.date_pr', [$debut, $fin])
 			->select(
 				'client.id as ID_Compte',
 				'prise_contact_as400.date_pr as DateTache',
@@ -209,7 +215,7 @@ class TachesController extends Controller
 		$agences = DB::table('agence')->get();
 		$title = "Suivi d'activité";
 
-		return view('taches.list', compact('taches', 'agences', 'title','nom','cl_ident'));
+		return view('taches.list', compact('taches', 'agences', 'title','nom','cl_ident','debut','fin'));
 	}
 
 /*
@@ -351,6 +357,9 @@ class TachesController extends Controller
 		$cl_ident = request()->input('cl_ident');
 		$title = "Suivi d'activité";
 
+		$debut = request()->input('debut', now()->subDays(5)->format('Y-m-d'));
+		$fin = request()->input('fin', now()->format('Y-m-d'));
+
 		$isRepresentant = DB::table('representant')
 			->where('users_id', $user->id)
 			->exists();
@@ -358,6 +367,7 @@ class TachesController extends Controller
 		$tasks = Tache::orderBy('CRM_Tache.id', 'desc')
 			->join('client', 'CRM_Tache.mycl_id', '=', 'client.cl_ident')
 			->join('agence', 'CRM_Tache.Agence', '=', 'agence.agence_lib')
+			->whereBetween('DateTache', [$debut, $fin])
 			->select(
 				'client.id as ID_Compte',
 				'CRM_Tache.id',
@@ -404,6 +414,7 @@ class TachesController extends Controller
 			->join('agence', 'prise_contact_as400.agence_id', '=', 'agence.agence_ident')
 			->join('sujet', 'prise_contact_as400.id_sujet', '=', 'sujet.sujet_ident')
 			->join('type_contact', 'prise_contact_as400.id_type_contact', '=', 'type_contact.type_contact_ident')
+			->whereBetween('prise_contact_as400.date_pr', [$debut, $fin])
 			->select(
 				'client.id as ID_Compte',
 				'prise_contact_as400.date_pr as DateTache',
@@ -484,7 +495,7 @@ class TachesController extends Controller
 
 		$taches = $tasks->merge($prises);
 
-		return view('taches.list', compact('taches', 'title','nom','cl_ident'));
+		return view('taches.list', compact('taches', 'title','nom','cl_ident','debut','fin'));
 	}
 
 	public function create($id)

@@ -72,7 +72,7 @@ class TicketController extends Controller
 			$ticket->files = serialize($fileNames);
 			$ticket->save();
 		}
-        $contenu="Bonjour,<br><br>Nouvelle demande d'assistance:<br> <a href='https://crm.mysaamp.com/tickets/$ticket->id' target='_blank'>N° $ticket->id </a><br>Sujet: $ticket->subject <br>Description: $ticket->description  .<br>Par: $user_name <br><br><i>CRM SAAMP</i>";
+        $contenu="Bonjour,<br><br>Nouvelle demande d'assistance:<br> <a href='https://crm.mysaamp.com/tickets/$ticket->id' target='_blank'>N° $ticket->id </a><br>Sujet:<br> $ticket->subject <br>Description:<br> $ticket->description  .<br>Par:<br> $user_name <br><br><i>CRM SAAMP</i>";
         SendMail::send(env('Admin_Email'),"Demande d'assistance",$contenu);
         SendMail::send(env('Email_iheb'),"Demande d'assistance",$contenu);
         SendMail::send(env('Email_reyad'),"Demande d'assistance",$contenu);
