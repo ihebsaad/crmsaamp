@@ -256,26 +256,26 @@
 
 
         function deleteFile(fileId) {
-        if (confirm('Êtes-vous sûrs ?')) {
-            fetch(`{{ url('/files') }}/${fileId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    location.reload();  // Reload the page to reflect changes
-                } else {
-                    alert("Failed to delete file.");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred while deleting the file.");
-            });
+            if (confirm('Êtes-vous sûrs ?')) {
+                fetch(`{{ url('/files') }}/${fileId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();  // Reload the page to reflect changes
+                    } else {
+                        alert("Failed to delete file.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while deleting the file.");
+                });
+            }
         }
-    }
 
     </script>
 

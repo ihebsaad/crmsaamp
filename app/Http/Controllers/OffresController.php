@@ -14,6 +14,7 @@ use App\Services\PhoneService;
 use Illuminate\Support\Facades\DB;
 use App\Services\GEDService;
 use App\Services\SendMail;
+use App\Models\File;
 
 
 class OffresController extends Controller
@@ -74,6 +75,8 @@ class OffresController extends Controller
 		$offre=Offre::find($id);
 		$folders=array();
 		$files=false;
+		$fichiers=File::where('parent','offres')->where('parent_id',$offre->id)->get();
+
 		try{
 			$folderContent=GEDService::getFolderParent($offre->old_id);
 			//dd($folderContent);
@@ -86,65 +89,9 @@ class OffresController extends Controller
 		finally {
 			\Log::info('GED folder show ' );
 		}
-		return view('offres.show',compact('offre','folders','files','folderContent'));
+		return view('offres.show',compact('offre','folders','files','folderContent','fichiers'));
 	}
 
-
-	public function update(Request $request, $id)
-    {
-		/*
-        $request->validate([
-            'Subject' => 'required',
-         ]);
-*/
-		$offre = Offre::find($id);
-		$client=Client::find($offre->mycl_id);
-		$user=User::find($offre->user_id);
-		$agence=DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
-
-		if($request->type=='Hors TG' && auth()->user()->id==10)
-		{
-			$offre->update($request->all());
-			if($request->statut=='OK'){
-				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est validée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
-				SendMail::send($user->email,'Offre validée',$contenu);
-				SendMail::send(trim($agence->mail),'Offre validée',$contenu);
-
-			}
-			elseif($request->statut=='KO'){
-				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est à refaire.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
-				SendMail::send($user->email,'Offre à refaire',$contenu);
-				SendMail::send(trim($agence->mail),'Offre à refaire',$contenu);
-			}
-
-		}
-		if($request->type=='Apprêts/Bij/DP' && auth()->user()->id==39)
-		{
-			$offre->update($request->all());
-			if($request->statut=='OK'){
-				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est validée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
-				SendMail::send($user->email,'Offre validée',$contenu);
-				SendMail::send(trim($agence->mail),'Offre validée',$contenu);
-
-			}
-			elseif($request->statut=='KO'){
-				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est à refaire.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
-				SendMail::send($user->email,'Offre à refaire',$contenu);
-				SendMail::send(trim($agence->mail),'Offre à refaire',$contenu);
-			}
-
-		}
-		if($request->type=='TG'){
-			$offre->update($request->all());
-
-		}
-
-		$offre->update($request->all());
-
-
-		return redirect()->route('offres.client_list', $client->id)
-			->with('success','Offre ajoutée');
-	}
 
 	public function store(Request $request)
     {
@@ -205,28 +152,111 @@ class OffresController extends Controller
 			SendMail::send(env('Email_elisabeth'),"Demande de validation de l'offre ",$contenu);
 		}
 
-		if($request->input('cl_id') > 0)
- 			$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('id'));
+		if($request->input('cl_id') > 0){
+			$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('id'));
 
+		}else{
+			if ($request->hasFile('files')) {
+				$fichiers = $request->file('files');
 
-		if ($request->hasFile('files')) {
-			$fichiers = $request->file('files');
-			$fileNames = [];
+				foreach ($fichiers as $fichier) {
+					$name = $fichier->getClientOriginalName();
+					$path = public_path("fichiers/offres");
+					$fichier->move($path, $name);
 
-			foreach ($fichiers as $fichier) {
-				$name = $fichier->getClientOriginalName();
-				$path = public_path() . "/offres";
-				$fichier->move($path, $name);
-				$fileNames[] = $name;
+					// Store each file in the files table
+					File::create([
+						'name' => $name,
+						'parent_id' => $offre->id,
+						'parent' => 'offres'
+					]);
+				}
 			}
-
-			// Serialize the filenames array
-			$offre->fichier = serialize($fileNames);
-			$offre->save();
 		}
 
 		return redirect()->route('offres.client_list', $client->id)
 		->with('success','Offre ajoutée');
+	}
+
+
+
+	public function update(Request $request, $id)
+    {
+		/*
+        $request->validate([
+            'Subject' => 'required',
+         ]);
+*/
+		$offre = Offre::find($id);
+		$client=Client::find($offre->mycl_id);
+		$user=User::find($offre->user_id);
+		$agence=DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
+
+		if($request->type=='Hors TG' && auth()->user()->id==10)
+		{
+			//$offre->update($request->all());
+			$offre->statut= $request->get('statut');
+			$offre->save();
+
+			if($request->statut=='OK'){
+				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est validée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				SendMail::send($user->email,'Offre validée',$contenu);
+				SendMail::send(trim($agence->mail),'Offre validée',$contenu);
+
+			}
+			elseif($request->statut=='KO'){
+				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est à refaire.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				SendMail::send($user->email,'Offre à refaire',$contenu);
+				SendMail::send(trim($agence->mail),'Offre à refaire',$contenu);
+			}
+
+		}
+		if($request->type=='Apprêts/Bij/DP' && auth()->user()->id==39)
+		{
+			//$offre->update($request->all());
+			$offre->statut= $request->get('statut');
+			$offre->save();
+
+			if($request->statut=='OK'){
+				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est validée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				SendMail::send($user->email,'Offre validée',$contenu);
+				SendMail::send(trim($agence->mail),'Offre validée',$contenu);
+
+			}
+			elseif($request->statut=='KO'){
+				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est à refaire.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				SendMail::send($user->email,'Offre à refaire',$contenu);
+				SendMail::send(trim($agence->mail),'Offre à refaire',$contenu);
+			}
+
+		}
+		if($request->type=='TG'){
+			//$offre->update($request->all());
+			$offre->statut= $request->get('statut');
+			$offre->save();
+		}
+
+		//$offre->update($request->all());
+
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path("fichiers/offres");
+				$fichier->move($path, $name);
+
+				// Store each file in the files table
+				File::create([
+					'name' => $name,
+					'parent_id' => $offre->id,
+					'parent' => 'offres'
+				]);
+			}
+		}
+
+		return redirect()->route('offres.client_list', $client->id)
+			->with('success','Offre modifiée');
 	}
 
 	/** VIEW **/

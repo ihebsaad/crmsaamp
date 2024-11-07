@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Services\SendMail;
+use App\Models\File;
 
 class TicketController extends Controller
 {
@@ -57,6 +58,7 @@ class TicketController extends Controller
         ]);
 
         $user_name= auth()->user()->name.' ' .auth()->user()->lastname ;
+        /*
 		if ($request->hasFile('files')) {
 			$fichiers = $request->file('files');
 			$fileNames = [];
@@ -72,10 +74,27 @@ class TicketController extends Controller
 			$ticket->files = serialize($fileNames);
 			$ticket->save();
 		}
-        $contenu="Bonjour,<br><br>Nouvelle demande d'assistance:<br> <a href='https://crm.mysaamp.com/tickets/$ticket->id' target='_blank'>N° $ticket->id </a><br>Sujet:<br> $ticket->subject <br>Description:<br> $ticket->description  .<br>Par:<br> $user_name <br><br><i>CRM SAAMP</i>";
+        */
+        if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path("fichiers/tickets");
+				$fichier->move($path, $name);
+
+				// Store each file in the files table
+				File::create([
+					'name' => $name,
+					'parent_id' => $ticket->id,
+					'parent' => 'tickets'
+				]);
+			}
+		}
+        $contenu="Bonjour,<br><br>Nouvelle demande d'assistance:<br> <a href='https://crm.mysaamp.com/tickets/$ticket->id' target='_blank'>N° $ticket->id </a><br><br><b>Sujet:</b><br><br> $ticket->subject <br><b>Description:</b><br><br> $ticket->description  .<br><br><b>Par:</b><br> $user_name <br><br><i>CRM SAAMP</i>";
         SendMail::send(env('Admin_Email'),"Demande d'assistance",$contenu);
-        SendMail::send(env('Email_iheb'),"Demande d'assistance",$contenu);
-        SendMail::send(env('Email_reyad'),"Demande d'assistance",$contenu);
+        SendMail::send(env('Admin_iheb'),"Demande d'assistance",$contenu);
+        SendMail::send(env('Admin_reyad'),"Demande d'assistance",$contenu);
 
         }catch( \Exception $e){
             dd($e->getMessage());
@@ -88,7 +107,8 @@ class TicketController extends Controller
     public function show($id)
     {
         $ticket = Ticket::with('comments.user')->findOrFail($id);
-        return view('tickets.show', compact('ticket'));
+		$fichiers=File::where('parent','tickets')->where('parent_id',$ticket->id)->get();
+        return view('tickets.show', compact('ticket','fichiers'));
     }
 
     // Affiche le formulaire d'édition d'un ticket
@@ -123,8 +143,8 @@ class TicketController extends Controller
             $contenu="La demande d'assistance <a href='https://crm.mysaamp.com/tickets/$ticket->id' target='_blank'>N° $ticket->id</a> est passée à :   $ticket->status   par ".auth()->user()->name." ". auth()->user()->lastname .".<br><br><i>CRM SAAMP</i>" ;
 
             SendMail::send(env('Admin_Email'),"Demande d'assistance $ticket->id => $ticket->status ",$contenu);
-            SendMail::send(env('Email_iheb'),"Demande d'assistance $ticket->id => $ticket->status ",$contenu);
-            SendMail::send(env('Email_reyad'),"Demande d'assistance $ticket->id => $ticket->status ",$contenu);
+            SendMail::send(env('Admin_iheb'),"Demande d'assistance $ticket->id => $ticket->status ",$contenu);
+            SendMail::send(env('Admin_reyad'),"Demande d'assistance $ticket->id => $ticket->status ",$contenu);
 
         }
 

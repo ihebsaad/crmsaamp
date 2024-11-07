@@ -9,6 +9,7 @@ use App\Models\CompteClient;
 use App\Models\RendezVous;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Models\File;
 
 
 class RendezVousController extends Controller
@@ -63,6 +64,7 @@ class RendezVousController extends Controller
 	public function show($id)
 	{
 		$rendezvous=RendezVous::find($id);
+		$files=File::where('parent','rendezvous')->where('parent_id',$rendezvous->id)->get();
 		if($rendezvous->AccountId>0){
 			$client=CompteClient::where('id',$rendezvous->AccountId)->first();
 			$adresse1=$client->adresse1 ?? '';
@@ -81,7 +83,7 @@ class RendezVousController extends Controller
 			$adresse='';
 		}
 
-		return view('rendezvous.show',compact('rendezvous','client','adresse'));
+		return view('rendezvous.show',compact('rendezvous','client','adresse','files'));
 	}
 
 	public function print($id)
@@ -105,6 +107,23 @@ class RendezVousController extends Controller
 */
 		$rendezvous = RendezVous::find($id);
 		$rendezvous->update($request->all());
+
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path("fichiers/rendezvous");
+				$fichier->move($path, $name);
+
+				// Store each file in the files table
+				File::create([
+					'name' => $name,
+					'parent_id' => $rendezvous->id,
+					'parent' => 'rendezvous'
+				]);
+			}
+		}
 
 		return redirect()->route('rendezvous.show', $id)
 				->with('success', 'Rendez vous modifié');
@@ -143,7 +162,7 @@ class RendezVousController extends Controller
 		$rendezvous->save();
 		}
 
-
+/*
 		if ($request->hasFile('files')) {
 			$fichiers = $request->file('files');
 			$fileNames = [];
@@ -158,6 +177,23 @@ class RendezVousController extends Controller
 			// Serialize the filenames array
 			$rendezvous->fichier = serialize($fileNames);
 			$rendezvous->save();
+		}
+*/
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path("fichiers/rendezvous");
+				$fichier->move($path, $name);
+
+				// Store each file in the files table
+				File::create([
+					'name' => $name,
+					'parent_id' => $rendezvous->id,
+					'parent' => 'rendezvous'
+				]);
+			}
 		}
 
 		if($rendezvous->AccountId >0)

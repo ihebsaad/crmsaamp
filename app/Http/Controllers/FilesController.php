@@ -35,7 +35,7 @@ class FilesController extends Controller
 */
     public function destroyFile(File $file)
     {
-        $filePath = public_path("/retours/{$file->name}");
+        $filePath = public_path("fichiers/{$file->parent}/{$file->name}");
         if (file_exists($filePath)) {
             unlink($filePath);  // Delete file from server
         }

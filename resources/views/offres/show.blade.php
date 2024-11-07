@@ -1,11 +1,6 @@
 @extends('layouts.back')
 
 @section('content')
-
-<?php
-
-?>
-
 <style>
     h6 {
         color: black;
@@ -15,9 +10,7 @@
     table {
         border: none;
     }
-</style>
 
-<style>
     .foldername {
         width: 100%;
         margin-bottom: 25px;
@@ -98,10 +91,10 @@
 
             <div class="card-body" style="min-height:300px">
 
-                <form action="{{ route('offres.update', $offre->id) }}" method="post">
+                <form action="{{ route('offres.update', $offre->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <input type="hidden" id="offer" value="{{$offre->id}}"/>
+                    <input type="hidden" id="offer" value="{{$offre->id}}" />
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
@@ -164,8 +157,11 @@
                             </div>
                         </div>
 
+
+
+                        @if($offre->fichier!= null)
                         <div class="col-md-4">
-                            @if($offre->fichier!= null)
+
                             @php $fileNames = unserialize($offre->fichier); @endphp
                             <div class="">
                                 <label for="Description">{{__('msg.File(s)')}}:</label><br>
@@ -181,26 +177,58 @@
 
                                 </table>
                             </div>
-                            @endif
-                        </div>
 
+                        </div>
+                        @endif
+
+                        @if(count($fichiers)>0)
+                        <div class="col-md-4">
+                            <label for="Description">{{ __('msg.File(s)') }}:</label><br>
+
+                            <table style="border:none;width:100%">
+                                @foreach ($fichiers as $file)
+                                <tr>
+                                    <td style="border:none;"><label><b class="black mr-2">{{ $file->name }}</b></label></td>
+                                    <td style="border:none;"><a href="{{ url('/fichiers/offres/' . $file->name) }}" target="_blank"><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png') }}"></a></td>
+                                    <td style="border:none;"><a href="{{ url('/fichiers/offres/' . $file->name) }}" download><img class="download mr-2" title="Télécharger" width="30" src="{{ URL::asset('img/download.png') }}"></a></td>
+                                    <td style="border:none;">
+                                    <td>
+                                        <a title="{{__('msg.Delete')}}" onclick="deleteFile('{{ $file->id }}')" href="javascript:void(0);" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                            <span class="fa fa-fw fa-trash-alt"></span>
+                                        </a>
+                                    </td>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </table>
+
+                        </div>
+                        @endif
                     </div>
 
                     <div class="row pt-1">
                         <div class="col-md-4">
                             @if($offre->date_relance!='')
-                            <label for="Statut">Date relance:</label> <h6>{{date('d/m/Y', strtotime($offre->date_relance))}}</h6>
+                            <label for="Statut">Date relance:</label>
+                            <h6>{{date('d/m/Y', strtotime($offre->date_relance))}}</h6>
                             <button type="button" class="btn-info btn" onclick="relancer()" id="relance">Relancer</button>
 
                             @endif
                         </div>
+
+                        <div class="col-md-6">
+                            <div class="">
+                                <label for="Nom_offre">{{__('msg.Add files')}}:</label>
+                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple  accept="application/pdf" /><br><br>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            @if($offre->statut=='')
+                            @if(auth()->user()->role=='admin' || auth()->user()->id== 10 || auth()->user()->id== 39 || auth()->user()->id== $offre->id)
                             <button type="submit" class="btn-primary btn float-right">{{__('msg.Edit')}}</button>
-                            @endif
-                            @if(auth()->user()->role=='admin' || auth()->user()->id== 10 || auth()->user()->id== 39)
+
                             <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('offres.destroy', $offre->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                 <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                             </a>
@@ -314,14 +342,17 @@
                 //url: `https://crm.mysaamp.com/relancer/${offre}`,
                 url: `https://crm.mysaamp.com/relancer`,
                 method: "post",
-                data: {  _token: _token,id:offre},
+                data: {
+                    _token: _token,
+                    id: offre
+                },
                 success: function(data) {
                     console.log(data);
-                    if(data==1){
+                    if (data == 1) {
                         $.notify({
                             message: 'Message envoyé !',
                             icon: 'glyphicon glyphicon-check'
-                        },{
+                        }, {
                             type: 'success',
                             delay: 3000,
                             timer: 1000,
@@ -330,7 +361,7 @@
                                 align: "right"
                             },
                         });
-                        $('#relance').prop('disabled',true);
+                        $('#relance').prop('disabled', true);
                     }
                 }
             });
@@ -357,6 +388,29 @@
                 //minDate:0
             });
         });
+
+
+        function deleteFile(fileId) {
+            if (confirm('Êtes-vous sûrs ?')) {
+                fetch(`{{ url('/files') }}/${fileId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            alert("Failed to delete file.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("An error occurred while deleting the file.");
+                    });
+            }
+        }
     </script>
 
     @endsection

@@ -7,11 +7,10 @@
 ?>
 
 <style>
-h6{
-    color:black;
-    font-weight:bold;
-}
-
+    h6 {
+        color: black;
+        font-weight: bold;
+    }
 </style>
 <div class="row">
 
@@ -24,19 +23,19 @@ h6{
 
             <div class="card-body" style="min-height:500px">
 
-                <form action="{{ route('rendezvous.update', $rendezvous->id) }}" method="post">
+                <form action="{{ route('rendezvous.update', $rendezvous->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <input type="hidden" name="edited_by" value="{{auth()->user()->id}}" >
+                    <input type="hidden" name="edited_by" value="{{auth()->user()->id}}">
 
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Account_Name">@if($client!= null) {{__('msg.Customer')}}: @else {{__('msg.Name')}}: @endif </label>
                                 @if($rendezvous->mycl_id>0)
-                                    <h6><a href="{{route('fiche',['id'=>$rendezvous->mycl_id])}}">{{$rendezvous->Account_Name}}</a></h6>
+                                <h6><a href="{{route('fiche',['id'=>$rendezvous->mycl_id])}}">{{$rendezvous->Account_Name}}</a></h6>
                                 @else
-                                    <h6>{{$rendezvous->Account_Name}}</h6>
+                                <h6>{{$rendezvous->Account_Name}}</h6>
                                 @endif
                                 <h6><small>{{$adresse ?? ''}} </small></h6>
                             </div>
@@ -44,26 +43,26 @@ h6{
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Started_at">{{__('msg.Start date')}}:</label>
-                                <input type="text" id="Started_at" class="form-control datepicker" name="Started_at"  value="{{date('Y-m-d', strtotime($rendezvous->Started_at))}}"><br><br>
+                                <input type="text" id="Started_at" class="form-control datepicker" name="Started_at" value="{{date('Y-m-d', strtotime($rendezvous->Started_at))}}"><br><br>
 
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="heure_fin">{{__('msg.Start hour')}}:</label>
-                                <input type="time" id="heure_debut" class="form-control" name="heure_debut"  value="{{$rendezvous->heure_debut}}"><br><br>
+                                <input type="time" id="heure_debut" class="form-control" name="heure_debut" value="{{$rendezvous->heure_debut}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="End_at">{{__('msg.End date')}}:</label>
-                                <input type="text" id="End_at" class="form-control datepicker" name="End_at"  value="{{ $rendezvous->End_at !='' ? date('Y-m-d', strtotime($rendezvous->End_at)) : '' }}"><br><br>
+                                <input type="text" id="End_at" class="form-control datepicker" name="End_at" value="{{ $rendezvous->End_at !='' ? date('Y-m-d', strtotime($rendezvous->End_at)) : '' }}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="heure_fin">{{__('msg.End hour')}}:</label>
-                                <input type="time" id="heure_fin" class="form-control" name="heure_fin"  value="{{$rendezvous->heure_fin}}"><br><br>
+                                <input type="time" id="heure_fin" class="form-control" name="heure_fin" value="{{$rendezvous->heure_fin}}"><br><br>
                             </div>
                         </div>
                     </div>
@@ -71,13 +70,13 @@ h6{
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                            <label for="Type">{{__('msg.Type')}}:</label>
+                                <label for="Type">{{__('msg.Type')}}:</label>
                                 <h6>{{$rendezvous->Type}}</h6>
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                        <div class="">
+                            <div class="">
                                 <label for="Location">{{__('msg.Place')}}:</label>
                                 <h6>{{$rendezvous->Location}}</h6>
                             </div>
@@ -89,7 +88,7 @@ h6{
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Subject">{{__('msg.Subject')}}:</label>
-                                <input type="text" id="Subject" class="form-control" name="Subject"  value="{{$rendezvous->Subject}}"><br><br>
+                                <input type="text" id="Subject" class="form-control" name="Subject" value="{{$rendezvous->Subject}}"><br><br>
                             </div>
                         </div>
 
@@ -97,17 +96,17 @@ h6{
                             <div class="">
                                 <label for="Date_creation">{{__('msg.Attributed to')}}:</label>
                                 @if($rendezvous->user_id > 0 )
-                                    <?php $user=\App\Models\User::find($rendezvous->user_id); ?>
-                                    <h6>{{ $user->name}} {{ $user->lastname}}</h6>
+                                <?php $user = \App\Models\User::find($rendezvous->user_id); ?>
+                                <h6>{{ $user->name}} {{ $user->lastname}}</h6>
                                 @else
-                                    <h6>{{ $rendezvous->Attribue_a}}</h6>
+                                <h6>{{ $rendezvous->Attribue_a}}</h6>
                                 @endif
 
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                            <div >
+                            <div>
                                 <label for="Description">{{__('msg.Description')}}:</label>
                                 <textarea id="Description" class="form-control" name="Description" style="min-height:150px">{{$rendezvous->Description}}</textarea><br><br>
                             </div>
@@ -115,70 +114,96 @@ h6{
 
                     </div>
                     <div class="row">
+                        @if($rendezvous->fichier!= null)
                         <div class="col-md-4">
-                            @if($rendezvous->fichier!= null)
-                                @php $fileNames = unserialize($rendezvous->fichier); @endphp
-                                <div class="">
-                                    <label for="Description">{{__('msg.File(s)')}}:</label><br>
-                                    <table style="border:none">
 
-                                        @foreach ($fileNames as $fichier)
-                                        <tr style="border:none">
-                                            <td><label><b class="black mr-4">{{$fichier}}</b></label></td>
-                                            <td><a href="https://crm.mysaamp.com/fichiers/{{$fichier}}" target="_blank" ><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png')}}"></a></td>
-                                            <td><a href="https://crm.mysaamp.com/fichiers/{{$fichier}}" download ><img class="download mr-2" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
-                                            <td>
-                                                <form method="POST" class="delete-file-form" action="{{ route('fichier.delete', $rendezvous->id) }}">
-                                                    @csrf
-                                                    <input type="hidden" name="file_name" value="{{ $fichier }}">
-                                                    <button type="submit" class="btn btn-danger" title="Supprimer ce fichier"  style="line-height: 18px;font-size: 15px;padding: 5px;" onclick="return confirm('Êtes-vous sûrs ?')"><i class="fa fa-fw fa-trash-alt"></i></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @endforeach
+                            @php $fileNames = unserialize($rendezvous->fichier); @endphp
+                            <div class="">
+                                <label for="Description">{{__('msg.File(s)')}}:</label><br>
+                                <table style="border:none">
 
-                                    </table>
-                                </div>
-                            @endif
+                                    @foreach ($fileNames as $fichier)
+                                    <tr style="border:none">
+                                        <td><label><b class="black mr-4">{{$fichier}}</b></label></td>
+                                        <td><a href="https://crm.mysaamp.com/fichiers/{{$fichier}}" target="_blank"><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png')}}"></a></td>
+                                        <td><a href="https://crm.mysaamp.com/fichiers/{{$fichier}}" download><img class="download mr-2" title="Télecharger" width="30" src="{{ URL::asset('img/download.png')}}"></a></td>
+                                        <td>
+                                            <form method="POST" class="delete-file-form" action="{{ route('fichier.delete', $rendezvous->id) }}">
+                                                @csrf
+                                                <input type="hidden" name="file_name" value="{{ $fichier }}">
+                                                <button type="submit" class="btn btn-danger" title="Supprimer ce fichier" style="line-height: 18px;font-size: 15px;padding: 5px;" onclick="return confirm('Êtes-vous sûrs ?')"><i class="fa fa-fw fa-trash-alt"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+
+                                </table>
+                            </div>
+
                         </div>
+                        @endif
+
+                        @if(count($files)>0)
+
+                        <div class="col-md-4">
+                            <label for="Description">{{ __('msg.File(s)') }}:</label><br>
+                            <table style="border:none;width:100%">
+                                @foreach ($files as $file)
+                                <tr>
+                                    <td style="border:none;"><label><b class="black mr-2">{{ $file->name }}</b></label></td>
+                                    <td style="border:none;"><a href="{{ url('/fichiers/rendezvous/' . $file->name) }}" target="_blank"><img class="view mr-2" title="Visualiser" width="30" src="{{ URL::asset('img/view.png') }}"></a></td>
+                                    <td style="border:none;"><a href="{{ url('/fichiers/rendezvous/' . $file->name) }}" download><img class="download mr-2" title="Télécharger" width="30" src="{{ URL::asset('img/download.png') }}"></a></td>
+                                    <td style="border:none;">
+                                    <td>
+                                        <a title="{{__('msg.Delete')}}" onclick="deleteFile('{{ $file->id }}')" href="javascript:void(0);" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                            <span class="fa fa-fw fa-trash-alt"></span>
+                                        </a>
+                                    </td>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                        @endif
+
                     </div>
 
                     <div class="row pt-3">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right" >{{__('msg.Edit')}}</button>
+                            <button type="submit" class="btn-primary btn float-right">{{__('msg.Edit')}}</button>
                             @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rendezvous->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
-                                    <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
-                                </a>
+                            <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rendezvous->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
+                            </a>
                             @endif
                         </div>
                     </div>
                     @if($rendezvous->created_by > 0)
-                        <div class="row pt-1">
-                            <div class="col-md-12">
-                                <?php $creator=\App\Models\User::find($rendezvous->user_id); ?>
-                                <b><i>{{__('msg.Created by')}} : {{$creator->name}} {{$creator->lastname}}</i></b>
-                            </div>
+                    <div class="row pt-1">
+                        <div class="col-md-12">
+                            <?php $creator = \App\Models\User::find($rendezvous->user_id); ?>
+                            <b><i>{{__('msg.Created by')}} : {{$creator->name}} {{$creator->lastname}}</i></b>
                         </div>
+                    </div>
                     @elseif($rendezvous->user_id > 0)
-                        <div class="row pt-1">
-                            <div class="col-md-12">
-                                <?php $creator=\App\Models\User::find($rendezvous->user_id); ?>
-                                <b><i>{{__('msg.Created by')}} : {{$creator->name}} {{$creator->lastname}}</i></b>
-                            </div>
+                    <div class="row pt-1">
+                        <div class="col-md-12">
+                            <?php $creator = \App\Models\User::find($rendezvous->user_id); ?>
+                            <b><i>{{__('msg.Created by')}} : {{$creator->name}} {{$creator->lastname}}</i></b>
                         </div>
+                    </div>
                     @endif
                     @if($rendezvous->edited_by > 0)
-                        <div class="row pt-1">
-                            <div class="col-md-12">
-                                <?php $User=\App\Models\User::find($rendezvous->edited_by); ?>
-                                <b><i>{{__('msg.Last update by')}} : {{$User->name}} {{$User->lastname}}</i></b>
-                            </div>
+                    <div class="row pt-1">
+                        <div class="col-md-12">
+                            <?php $User = \App\Models\User::find($rendezvous->edited_by); ?>
+                            <b><i>{{__('msg.Last update by')}} : {{$User->name}} {{$User->lastname}}</i></b>
                         </div>
+                    </div>
                     @endif
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <a  href="{{route('rendezvous.print',['id'=>$rendezvous->id])}}" target="_blank" class="btn btn-secondary" ><i class="fa fa-print"></i> {{__('msg.Print')}}</a>
+                            <a href="{{route('rendezvous.print',['id'=>$rendezvous->id])}}" target="_blank" class="btn btn-secondary"><i class="fa fa-print"></i> {{__('msg.Print')}}</a>
                         </div>
                     </div>
                 </form>
@@ -189,9 +214,9 @@ h6{
 
     </div>
     <script>
-        $(function () {
+        $(function() {
 
-            $( ".datepicker" ).datepicker({
+            $(".datepicker").datepicker({
 
                 altField: "#datepicker",
                 closeText: 'Fermer',
@@ -211,6 +236,27 @@ h6{
             });
         });
 
+        function deleteFile(fileId) {
+            if (confirm('Êtes-vous sûrs ?')) {
+                fetch(`{{ url('/files') }}/${fileId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            alert("Failed to delete file.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("An error occurred while deleting the file.");
+                    });
+            }
+        }
     </script>
 
     @endsection

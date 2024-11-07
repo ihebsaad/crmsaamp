@@ -84,9 +84,47 @@
   <!-- Topbar Navbar -->
   <div class="navbar-nav text-center">
   </div>
+<!--
   <a class="menu-link mr-2" href="{{route('adminhome')}}">Accueil</a>
   <a class="menu-link mr-2" href="{{route('search')}}">Clients</a>
   <a class="menu-link mr-2" href="{{route('taches.index')}}">Activités</a>
+
+-->
+
+
+
+   <a class="nav-link menu-link mr-1" href="{{route('adminhome')}}">
+      <i class="fas fa-tachometer-alt"></i>
+      <span>Tableau de bord</span>
+    </a>
+    <a class="nav-link menu-link hidemobile mr-1" href="{{route('home')}}">
+      <i class="fas fa-home" ></i>
+      <span>{{__('msg.Statistics')}}</span>
+    </a>
+    <a class="nav-link menu-link mr-1" href="{{route('search')}}">
+      <i class="fas fa-users" ></i>
+      <span> {{__('msg.Customers')}} </span>
+    </a>
+    <a class="nav-link menu-link mr-1" href="{{route('taches.index')}}" >
+     <i class="fas fa-tasks" ></i>
+      <span>Activités </span>
+    </a>
+    <a class="nav-link menu-link hidemobile hidetablette mr-1" href="{{route('retours.list')}}" >
+      <i class="fas fa-comments" ></i>
+        <span> {{__('msg.Complaints')}} </span>
+      </a>
+     <a class="nav-link menu-link hidemobile hidetablette mr-1" href="{{route('agenda')}}" >
+    <i class="fas fa-calendar-alt" ></i>
+      <span>{{__('msg.Diary')}}</span>
+    </a>
+    <a class="nav-link menu-link mr-1" href="{{route('tickets.index')}}" >
+    <i class="fas fa-life-ring" ></i>
+      <span>Support</span>
+    </a>
+
+
+
+
 
   <div class="navbar-nav ml-auto">
     <!-- Nav Item - Messages -->
