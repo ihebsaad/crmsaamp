@@ -46,7 +46,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Type">{{__('msg.Type')}}:</label>
-                                <select    id="type" class="form-control" name="type"   >
+                                <select    id="type" class="form-control" name="type" required  >
                                     <option  value="TG">TG</option>
                                     <option  value="Hors TG">Hors TG</option>
                                     <option  value="Apprêts/Bij/DP">Apprêts/Bij/DP</option>

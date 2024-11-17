@@ -78,7 +78,11 @@ class OffresController extends Controller
 		$fichiers=File::where('parent','offres')->where('parent_id',$offre->id)->get();
 
 		try{
-			$folderContent=GEDService::getFolderParent($offre->old_id);
+			if($offre->old_id!=null)
+				$folderContent=GEDService::getFolderParent($offre->old_id);
+			else
+				$folderContent=GEDService::getFolderParent($offre->id);
+
 			//dd($folderContent);
 			//getFolderList
 			//$folderContent=GEDService::getFolderContent($offre->old_id);
@@ -152,10 +156,10 @@ class OffresController extends Controller
 			SendMail::send(env('Email_elisabeth'),"Demande de validation de l'offre ",$contenu);
 		}
 
-		if($request->input('cl_id') > 0){
-			$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('id'));
+		if($request->input('cl_id') > 0)//{
+			$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('mycl_id'));
 
-		}else{
+		//}else{
 			if ($request->hasFile('files')) {
 				$fichiers = $request->file('files');
 
@@ -172,7 +176,7 @@ class OffresController extends Controller
 					]);
 				}
 			}
-		}
+		//}
 
 		return redirect()->route('offres.client_list', $client->id)
 		->with('success','Offre ajoutée');
@@ -188,9 +192,14 @@ class OffresController extends Controller
          ]);
 */
 		$offre = Offre::find($id);
-		$client=Client::find($offre->mycl_id);
-		$user=User::find($offre->user_id);
-		$agence=DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
+		if($offre->mycl_id > 0){
+			$client=Client::find($offre->mycl_id);
+			$agence=DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
+		}
+
+		if($offre->user_id > 0)
+			$user=User::find($offre->user_id);
+
 
 		if($request->type=='Hors TG' && auth()->user()->id==10)
 		{

@@ -34,7 +34,7 @@
 		margin-top: 1%;
 		margin-bottom: 3%;
 		display: inline-block;
-		cursor:pointer;
+		cursor: pointer;
 	}
 
 	table td {
@@ -54,7 +54,8 @@
 		z-index: 10;
 		background-color: #2e3e4e;
 	}
-/*
+
+	/*
 	p[data-title]:hover::after {
 		content: attr(title);
 		position: absolute;
@@ -98,9 +99,17 @@
 	[data-title] {
 		position: relative;
 	}
-	#commercial{width:160px;font-size:13px;padding: 3px 6px 3px 6px;margin-left:10px;}
-	.sortable{
-		cursor:pointer;
+
+	#commercial {
+		width: 160px;
+		font-size: 13px;
+		padding: 3px 6px 3px 6px;
+		margin-left: 10px;
+	}
+
+	.sortable,
+	th {
+		cursor: pointer;
 	}
 </style>
 
@@ -206,9 +215,9 @@
 	</div>
 
 	<div class="row">
-		<div class="col-md-4 col-lg-4 col-sm-12">
+		<div class="col-md-6 col-lg-6 col-sm-12 mb-5">
 			<h4 class="text-center">{{__('msg.Unclosed complaints')}}</h4>
-			<div class="table-container"  style="margin-top:36px">
+			<div class="table-container" style="margin-top:36px">
 				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
 					<thead>
 						<tr style="background-color:#2e3e4e;color:white;" id="">
@@ -223,7 +232,7 @@
 						@foreach($retours as $retour)
 						<tr>
 							<td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
-							<td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+							<td  data-order="{{ $retour->Date_ouverture ? date('Y-m-d', strtotime($retour->Date_ouverture)) : '' }}">{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
 							<td>{{$retour->Nom_du_compte}}</td>
 							<td>{{$retour->Nom_du_contact}}</td>
 							<td>{{$retour->Motif_retour}}</td>
@@ -234,7 +243,9 @@
 			</div>
 		</div>
 
-		<div class="col-md-4 col-lg-4 col-sm-12">
+		@if(auth()->user()->role=='admin')
+
+		<div class="col-md-6 col-lg-6 col-sm-12 mb-5">
 			<h4 class="text-center">{{__('msg.Today appointments')}}</h4>
 			<div class="table-container" style="margin-top:36px">
 				<table id="appointments-table" class="table table-striped" style="width:90%!important;margin-left:5%">
@@ -248,7 +259,7 @@
 					<tbody>
 						@foreach($taches as $tache)
 						<tr>
-							<td >
+							<td>
 								@if($tache->heure_debut){{ $tache->heure_debut }}  @endif
 								@if(isset($tache->id))<a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a>
 								@else
@@ -265,48 +276,81 @@
 		</div>
 
 
-
-		<div class="col-md-4 col-lg-4 col-sm-12">
+		<section class="col-md-6 col-lg-6 col-sm-12 mb-3">
 			<h4 class="text-center">{{__('msg.Coming appointments')}}</h4>
 
-			<div class="text-center" style="color:#2e3e4e">{{__('msg.Commercial')}} <select id="commercial" onchange="filter_comm()" class="form-control"  ></div>
+			<div class="text-center" style="color:#2e3e4e">{{__('msg.Commercial')}} <select id="commercial" onchange="filter_comm()" class="form-control"></div>
 			<option>Tous</option>
 			@foreach( $representants as $rep )
 			<option value="{{$rep->users_id}}">{{$rep->prenom}} {{$rep->nom}}</option>
 			@endforeach
 			</select>
 			<div class="table-container">
-			<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
-				<thead>
-					<tr  style="background-color:#2e3e4e;color:white;" id="">
-						<th>ID</th>
-						<th>{{__('msg.Customer')}}</th>
-						<th>{{__('msg.Subject')}}</th>
-						<th>{{__('msg.Date')}}</th>
-						<th>{{__('msg.Attribued to')}}</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach($rendezvous as $rv)
-					<tr class="users user-{{$rv->user_id}}">
-						<td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
-						<td>{{ $rv->Account_Name }}</td>
-						<td>{{ $rv->Subject }}</td>
-						<td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
-						<td>
-							@if($rv->user_id > 0 )
-							<?php $user = \App\Models\User::find($rv->user_id); ?>
-							<h6>{{ $user->name}} {{ $user->lastname}}</h6>
-							@else
-							<h6>{{ $rv->Attribue_a}}</h6>
-							@endif
-						</td>
-					</tr>
-					@endforeach
-				</tbody>
-			</table>
+				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
+					<thead>
+						<tr style="background-color:#2e3e4e;color:white;" id="">
+							<th>ID</th>
+							<th>{{__('msg.Customer')}}</th>
+							<th>{{__('msg.Subject')}}</th>
+							<th>{{__('msg.Date')}}</th>
+							<th>{{__('msg.Attributed to')}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach($rendezvous as $rv)
+						<tr class="users user-{{$rv->user_id}}">
+							<td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
+							<td>{{ $rv->Account_Name }}</td>
+							<td>{{ $rv->Subject }}</td>
+							<td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
+							<td>
+								@if($rv->user_id > 0 )
+								<?php $user = \App\Models\User::find($rv->user_id); ?>
+								<h6>{{ $user->name}} {{ $user->lastname}}</h6>
+								@else
+								<h6>{{ $rv->Attribue_a}}</h6>
+								@endif
+							</td>
+						</tr>
+						@endforeach
+					</tbody>
+				</table>
 			</div>
+		</section>
+		@endif
+		@if(auth()->user()->role=='admin')
+		<div class="col-md-6 col-lg-6 col-sm-12 mb-3">
+			<h4 class="text-center">{{__('msg.Price offers to be validated')}}</h4>
+			<h4 class=""> </h4>
+			<div class="table-container">
+
+				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
+					<thead>
+						<tr style="background-color:#2e3e4e;color:white;" id="">
+							<th>ID</th>
+							<th>{{__('msg.Creation')}}</th>
+							<th>{{__('msg.Name')}}</th>
+							<th>{{__('msg.Customer')}}</th>
+							<th>{{__('msg.By')}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach($offres as $offre)
+						@php $user=\App\Models\User::find($offre->user_id); @endphp
+						<tr>
+							<td><a href="{{route('offres.show',['id'=>$offre->id])}}">{{$offre->id}}</a></td>
+							<td>{{ date('d/m/Y', strtotime($offre->Date_creation))}}</td>
+							<td>{{$offre->Nom_offre}}</td>
+							<td>{{$offre->nom_compte}}</td>
+							<td>{{$user->name ?? ''}} {{$user->lastname ?? ''}}</td>
+						</tr>
+						@endforeach
+					</tbody>
+				</table>
+			</div>
+
 		</div>
+		@endif
 
 	</div>
 
@@ -314,64 +358,84 @@
 
 
 <script>
-	    function filter_comm() {
-        var user = $('#commercial').find(":selected").val();
-            if (user>0) {
-              toggle('users', 'none');
-              toggle('user-'+user, 'table-row');
-            } else {
-              toggle('users', 'table-row');
-            }
-        }
+	function filter_comm() {
+		var user = $('#commercial').find(":selected").val();
+		if (user > 0) {
+			toggle('users', 'none');
+			toggle('user-' + user, 'table-row');
+		} else {
+			toggle('users', 'table-row');
+		}
+	}
 
-        function toggle(className, displayState) {
-            var elements = document.getElementsByClassName(className);
-            for (var i = 0; i < elements.length; i++) {
-                elements[i].style.display = displayState;
-            }
-        }
+	function toggle(className, displayState) {
+		var elements = document.getElementsByClassName(className);
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].style.display = displayState;
+		}
+	}
 
-		$(document).ready(function() {
+	$(document).ready(function() {
+		setTimeout(function() {
+			$('#maintenance').modal('show');
+		}, 5000); // 5000 milliseconds = 5 seconds
 
-			setTimeout(function() {
-				$('#maintenance').modal('show');
-			}, 5000); // 5000 millisecondes = 5 secondes
+		// Function to detect and parse dates in dd/mm/yyyy format
+		function parseDate(dateString) {
+			const [day, month, year] = dateString.split('/');
+			return new Date(year, month - 1, day); // JavaScript months are 0-based
+		}
 
-			$('.sortable').on('click', function() {
-				var table = $('#appointments-table tbody');
-				var rows = table.find('tr').toArray();
-				var column = $(this).data('column');
-				var order = $(this).hasClass('asc') ? 'desc' : 'asc';
+		// Add click event to each table header for sorting
+		$('th').on('click', function() {
+			const $header = $(this);
+			const $table = $header.closest('table');
+			const $tbody = $table.find('tbody');
+			const rows = $tbody.find('tr').toArray();
+			const columnIndex = $header.index();
+			const order = $header.hasClass('asc') ? 'desc' : 'asc';
 
-				// Remove sorting classes from other headers
-				$('.sortable').removeClass('asc desc');
+			// Remove sorting classes from other headers in the same table
+			$header.siblings().removeClass('asc desc');
+			$header.addClass(order);
 
-				// Add sorting class to the clicked header
-				$(this).addClass(order);
+			// Sort rows with date handling
+			rows.sort(function(rowA, rowB) {
+				const cellA = $(rowA).find('td').eq(columnIndex).text().trim();
+				const cellB = $(rowB).find('td').eq(columnIndex).text().trim();
 
-				rows.sort(function(a, b) {
-					var aText = $(a).find('td:contains("' + column + '")').text().trim();
-					var bText = $(b).find('td:contains("' + column + '")').text().trim();
+				// Detect if the column contains dates by checking the format dd/mm/yyyy
+				const isDateColumn = /^\d{2}\/\d{2}\/\d{4}$/.test(cellA) && /^\d{2}\/\d{2}\/\d{4}$/.test(cellB);
 
-					// Compare values (numeric or alphabetic)
-					if ($.isNumeric(aText) && $.isNumeric(bText)) {
-						aText = parseFloat(aText);
-						bText = parseFloat(bText);
-					}
+				let valA, valB;
 
-					if (order === 'asc') {
-						return aText > bText ? 1 : -1;
-					} else {
-						return aText < bText ? 1 : -1;
-					}
-				});
+				if (isDateColumn) {
+					// Parse and compare dates
+					valA = parseDate(cellA);
+					valB = parseDate(cellB);
+				} else if ($.isNumeric(cellA) && $.isNumeric(cellB)) {
+					// Parse and compare numeric values
+					valA = parseFloat(cellA);
+					valB = parseFloat(cellB);
+				} else {
+					// Compare strings alphabetically
+					valA = cellA.toLowerCase();
+					valB = cellB.toLowerCase();
+				}
 
-				// Append sorted rows to the table
-				$.each(rows, function(index, row) {
-					table.append(row);
-				});
+				if (order === 'asc') {
+					return valA > valB ? 1 : -1;
+				} else {
+					return valA < valB ? 1 : -1;
+				}
+			});
+
+			// Append sorted rows to the table
+			$.each(rows, function(index, row) {
+				$tbody.append(row);
 			});
 		});
+	});
 </script>
 
 @endsection

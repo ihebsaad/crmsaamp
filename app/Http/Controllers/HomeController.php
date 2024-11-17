@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\Http\Controllers\StatsController;
 
+use App\Models\Agence;
 use App\Models\User;
 use App\Models\CompteClient;
 use App\Models\Offre;
@@ -46,8 +47,9 @@ class HomeController extends Controller
 
 	public function adminhome()
 	{
-		if (auth()->user()->user_type == 'admin') {
+		if (auth()->user()->user_type == 'admin' || auth()->user()->role == 'admin' || auth()->user()->role == 'dirQUA' ) {
 
+			$offres=Offre::where('statut',null)->get();
 			$now = Carbon::now();
 			$representants=DB::table("representant")->get();
 
@@ -147,7 +149,7 @@ class HomeController extends Controller
 			$total_9=$total9[0]->total;
 
 
-			return view('adminhome',compact('retours','rendezvous','taches','representants',
+			return view('adminhome',compact('retours','rendezvous','taches','representants','offres',
 			'total_clients_1','total_clients_2','total_clients_3','total_clients_4','total_clients_5','total_clients_6','total_clients_7','total_clients_8','total_clients_9',
 			'total_1','total_2','total_3','total_4','total_5','total_6','total_7','total_8','total_9'));
 
@@ -172,7 +174,7 @@ class HomeController extends Controller
 		$user_id = auth()->user()->id;
 		$agence_id = auth()->user()->agence_ident;
 
-		if($role =='admin'|| $role =='respAG' || $role =='adv' ){
+		if($role =='admin' || $role =='respAG' || $role =='adv' ){
 			//$representants=DB::table("representant")->get();
 			$users=DB::table("users")->where('username','like','%@saamp.com')->get();
 		}
@@ -286,15 +288,36 @@ class HomeController extends Controller
 	public function dashboard()
 	{
 		//$rendezvous=RendezVous::get();
+
+		$agence_id = auth()->user()->agence_ident;
+		$agence =Agence::where('agence_ident',$agence_id)->first();
 		$now = Carbon::now();
+		$prospects=array();
+		$commerciaux=array();
+		$customers=array();
+		// stats
 
-		$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
-		where('user_id',auth()->user()->id)
-		->where('Started_at', '>=', $now)
-		->orderBy('Started_at', 'desc')
-		->orderBy('id','desc')
-		->get()->take(5);
+		$retours = array();
+		if(auth()->user()->role=='adv'|| auth()->user()->role=='admin' || auth()->user()->role=='respAG' ){
+			$retours = DB::table('CRM_RetourClient as rc')
+			->join('client as c', 'rc.cl_id', '=', 'c.cl_ident')
+			->where(function ($query) {
+				$query->where('rc.Date_cloture', '0000-00-00')
+					->orWhereNull('rc.Date_cloture');
+			})
+			->where('c.agence_ident', auth()->user()->agence_ident)
+			->select('rc.*', 'c.agence_ident') // Select fields as needed
+			->orderBy('rc.name', 'desc') // Adjust as needed; 'name' should be in `rc` or `c`
+			->get();
+		}
 
+
+
+		$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
+
+		$total_clients= CompteClient::where('etat_id',2)->where('agence_ident',$agence_id)->count();
+		$total1 = DB::select($query, [$agence_id]);
+		$total_1=$total1[0]->total;
 
  		$rep=DB::table("representant")->where('users_id',auth()->user()->id)->first();
 		if(isset($rep)){
@@ -310,15 +333,131 @@ class HomeController extends Controller
 			WHERE
 				(s.Commercial = ? OR s.Commercial_support = ?)
 				AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
-				AND s.cl_ident <> 0
-		";
+				AND s.cl_ident <> 0";
 
 			$result = DB::select($query, [$rep_id, $rep_id]);
 			$total_clients = $result[0]->total_clients;
 
 		}else{
-			$clients = array();
-			$total_clients=0;
+			//$clients = array();
+			//$total_clients=0;
+
+			//$rep_id=$rep->id;
+			//$rep_id=10;
+
+			DB::select("SET @p0='".$agence_id."' ;");
+			$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
+
+			$query = "
+			SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
+			FROM Statistiques s
+			WHERE
+				(s.Commercial = ? OR s.Commercial_support = ?)
+				AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
+				AND s.cl_ident <> 0";
+
+			$result = DB::select($query, [auth()->id(), auth()->id()]);
+			$total_clients = $result[0]->total_clients;
+		}
+
+
+		if(auth()->user()->role=='adv'){
+
+
+
+			$client_ids = CompteClient::where('adv',auth()->user()->id)->pluck('id');
+
+			$rendezvous=RendezVous::whereIn('mycl_id',$client_ids)
+			->where('Started_at', '>=', $now)
+			->orderBy('Started_at', 'desc')
+			->orderBy('id','desc')
+			->get();
+
+		}else{
+
+
+			if(auth()->user()->role=='respAG'){
+				// here
+				$users_ids = User::where('agence_ident',auth()->user()->agence_ident)->pluck('id');
+
+				$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
+				whereIn('user_id',$users_ids)
+				->where('Started_at', '>=', $now)
+				->orderBy('Started_at', 'desc')
+				->orderBy('id','desc')
+				->get();
+
+				//$prospects
+				$prospects=CompteClient::where('agence_ident',auth()->user()->agence_ident)->where('etat_id',1)->get();
+
+				$commerciaux=CompteClient::where('agence_ident',auth()->user()->agence_ident)->pluck('commercial');
+				$commerciaux=$commerciaux->unique();
+				$commerciaux=$commerciaux->filter()->all();
+
+
+				$commerciaux_support=CompteClient::where('agence_ident',auth()->user()->agence_ident)->pluck('commercial_support');
+				$commerciaux_support=$commerciaux_support->unique();
+				$commerciaux_support=$commerciaux_support->filter()->all();
+
+				$commerciaux =array_merge($commerciaux,$commerciaux_support);
+				$commerciaux=array_unique($commerciaux);
+
+
+				foreach($commerciaux as $commercial){
+					//$comm= User::find($commercial);
+					$rep=DB::table("representant")->where('id',$commercial)->first();
+
+					if(isset($rep)){
+						DB::select("SET @p0='$commercial' ;");
+						$customers[$commercial] =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
+						//}
+
+						$query = "
+						SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
+						FROM Statistiques s
+						WHERE
+							(s.Commercial = ? OR s.Commercial_support = ?)
+							AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
+							AND s.cl_ident <> 0
+						";
+
+						$result = DB::select($query, [$commercial, $commercial]);
+						$total_c= $result[0]->total_clients;
+						$total_clients+=$total_c;
+					}
+
+				}
+
+/*
+					DB::select("SET @p0=".auth()->user()->id." ;");
+					$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
+
+					$query = "
+					SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
+					FROM Statistiques s
+					WHERE
+						(s.Commercial = ? OR s.Commercial_support = ?)
+						AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
+						AND s.cl_ident <> 0
+					";
+
+					$result = DB::select($query, [auth()->user()->id, auth()->user()->id]);
+					$total_clients = $result[0]->total_clients;
+*/
+
+			}else{
+				$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
+				where('user_id',auth()->user()->id)
+				->where('Started_at', '>=', $now)
+				->orderBy('Started_at', 'desc')
+				->orderBy('id','desc')
+				->get()->take(5);
+
+			}
+
+
+
+
 		}
 
 		if(auth()->user()->id==10 )
@@ -326,11 +465,11 @@ class HomeController extends Controller
 		elseif(auth()->user()->id==39 || auth()->user()->id ==1 )
 			$offres=Offre::where('type','Apprêts/Bij/DP')->where('statut',null)->get();
 		else
-			$offres=array();
+			$offres=Offre::where('statut',null)->get();
 
 
 
- 		return view('dashboard',compact('rendezvous','clients','total_clients','offres'));
+ 		return view('dashboard',compact('rendezvous','clients','total_clients','total_1','offres','retours','agence','prospects','commerciaux','customers'));
 	}
 
 	public function help()

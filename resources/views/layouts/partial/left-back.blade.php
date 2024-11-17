@@ -56,7 +56,7 @@ if (Auth::check()) {
   <hr class="sidebar-divider">
 
   <li class="nav-item   ">
-  @if($user_type=='admin')
+  @if($user_type=='admin' || auth()->user()->role=='dirQUA' )
    <a class="nav-link" href="{{route('adminhome')}}">
       <i class="fas fa-tachometer-alt"></i>
       <span><div class="hidemobile">{{__('msg.My')}} </div>{{__('msg.Dashboard')}}</span>

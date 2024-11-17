@@ -4,6 +4,7 @@ namespace App\Services;
 
 use DB;
 use Illuminate\Support\Facades\Http;
+use App\Models\CompteClient;
 
 
 class GEDService
@@ -184,7 +185,7 @@ class GEDService
 
 		// URL de l'API pour récupérer les sous-dossiers
 		$apiUrl = "https://ged.maileva.com/api/folder/name/" . $clientDisplayName;
-		//$apiUrl = "https://ged.maileva.com/api/folder/name/DOCUMENTS%20OFFRES%20DE%20PRIX/18931/1176";
+		//$apiUrl = "https://ged.maileva.com/api/folder/name/DOCUMENTS%20OFFRES%20DE%20PRIX/12137/1363";
 
 		//$apiUrl = "https://ged.maileva.com/api/folder/name/DOCUMENTS%20OUVERTURE%20DE%20COMPTE/". $clientDisplayName;
 
@@ -398,7 +399,7 @@ class GEDService
 	// OUVERTURE DE COMPTE
 	public static function Account($clientId, $type, $id, $files)
 	{
-
+		$client_name=CompteClient::where('cl_ident',$clientId)->first()->Nom ?? '';
 		// URL de l'API pour récupérer les sous-dossiers
 		$apiUrl = "https://ged.maileva.com/api/folder/name/DOCUMENTS%20OUVERTURE%20DE%20COMPTE";
 		$response = self::curlExecute($apiUrl);
@@ -555,7 +556,11 @@ class GEDService
 		// Téléchargement du fichier dans le sous-dossier nouvellement créé
 		$subfolderPath = "DOCUMENTS OUVERTURE DE COMPTE/$clientId/$typeDoc";
 		foreach ($files as $file) {
-			$fileName = $file->getClientOriginalName();
+			$originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+			$extension = $file->getClientOriginalExtension();
+
+			// Append the client name to the original name
+			$fileName = $originalName . '_' . $client_name . '.' . $extension;
 			$fileType = $file->getMimeType();
 			$filePath = $file->getPathname();
 
@@ -652,6 +657,8 @@ class GEDService
 
 		if ($data !== null && $data['success'] === true) {
 			$commercialFolderId = $data['data']['id'];
+			\Log::info(" OFFRES DE PRIX commercialFolderId:  $commercialFolderId");
+
 		} else {
 			\Log::error("Le dossier 'DOCUMENTS OFFRES DE PRIX' n'existe pas ou n'a pas pu être trouvé.");
 			return redirect()->route('offres.client_list', ['id' => $id])->withErrors(['msg' => "Le dossier 'DOCUMENTS OFFRES DE PRIX' n'existe pas ou n'a pas pu être trouvé."]);
@@ -669,6 +676,7 @@ class GEDService
 		} else {
 			// Si le dossier client n'existe pas, on le crée
 
+			\Log::info(" Creation dossier OFFRES DE PRIX  ");
 
 			$apiUrl = "https://ged.maileva.com/api/folder/";
 			$postData = json_encode(array(

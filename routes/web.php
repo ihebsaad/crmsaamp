@@ -85,6 +85,7 @@ Route::put('/compte_client/{id}', [ClientsController::class, 'update'])->name('c
 Route::get('/clients/show/{id}', [ClientsController::class, 'show'])->name('compte_client.show');
 Route::get('/clients/folder/{id}', [ClientsController::class, 'folder'])->name('compte_client.folder');
 Route::post('/ouverture', [ClientsController::class, 'ouverture'])->name('ouverture');
+Route::get('/prospects', [ClientsController::class, 'prospects'])->name('prospects');
 Route::get('/clients/destroy/{id}',[ClientsController::class,'destroy'])->name('clients.destroy');
 
 

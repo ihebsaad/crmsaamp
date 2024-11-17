@@ -99,7 +99,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Nom_offre">{{__('msg.Name')}}:</label>
-                                <h6>{{$offre->Nom_offre}}</h6><!--
+                                <h6><a href="{{route('fiche',['id'=>$offre->mycl_id ?? 0])}}">{{$offre->Nom_offre}}</a></h6><!--
                                 <input type="text" id="Nom_offre" class="form-control" name="Nom_offre"  value="{{$offre->Nom_offre}}"><br><br>
                                 -->
                             </div>

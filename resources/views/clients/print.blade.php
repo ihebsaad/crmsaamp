@@ -25,8 +25,10 @@
             <th>{{__('msg.Address')}}</th>
             <th>{{__('msg.City')}}</th>
             <th>{{__('msg.Phone')}}</th>
+            @if(! request()->is('prospects'))
             <th>{{__('msg.Agency')}}</th>
             <th>{{__('msg.Type')}}</th>
+            @endif
         </tr>
     </thead>
     <tbody>
@@ -60,8 +62,10 @@
             <td>{{$client->adresse1}}</td>
             <td>{{$client->ville}}</td>
             <td>{{$tel}}</td>
+            @if(! request()->is('prospects'))
             <td>{{$agenceLib}}</td>
             <td style="color:{{$color}}">{{$type_c}}</td>
+            @endif
         </tr>
         @endforeach
     <tbody>

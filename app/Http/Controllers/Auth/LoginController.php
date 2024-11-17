@@ -92,11 +92,11 @@ class LoginController extends Controller
 	if ( $user->user_type=='adv' ||  $user->user_type=='') {
 		return redirect()->route('dashboard');
 	}
-    if ( $user->user_type=='admin'  ) {
+    if ( $user->user_type=='admin' || $user->role=='admin' || $user->role=='dirQUA'  ) {
 		return redirect()->route('adminhome');
 	}
 
-	 return redirect('/home');
+	 return redirect('/dashboard');
 	}
 
 }

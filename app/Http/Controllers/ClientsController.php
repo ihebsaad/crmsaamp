@@ -373,6 +373,14 @@ class ClientsController extends Controller
 
 	}
 
+	public function prospects(Request $request)
+	{
+		$clients = CompteClient::where('agence_ident',auth()->user()->agence_ident)->where('etat_id',1)->get();
+		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
+		return view('clients.print', compact('clients','request','agences'));
+
+	}
+
 	public function ouverture(Request $request)
 	{
 		$type= $request->get('type');
