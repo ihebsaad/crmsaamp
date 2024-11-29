@@ -147,6 +147,8 @@ class OffresController extends Controller
 			SendMail::send(env('Email_said'),"Demande de validation de l'offre ",$contenu);
 			SendMail::send(env('Email_elisabeth'),"Demande de validation de l'offre ",$contenu);
 
+			$offre->statut='OK';
+			$offre->save();
 		}
 
 		if($offre->type=='Apprêts/Bij/DP')		//user_id 39
@@ -154,6 +156,9 @@ class OffresController extends Controller
 			SendMail::send(env('Email_christelle'),"Demande de validation de l'offre",$contenu);
 			SendMail::send(env('Email_said'),"Demande de validation de l'offre ",$contenu);
 			SendMail::send(env('Email_elisabeth'),"Demande de validation de l'offre ",$contenu);
+
+			$offre->statut='OK';
+			$offre->save();
 		}
 
 		if($request->input('cl_id') > 0)//{
@@ -201,7 +206,7 @@ class OffresController extends Controller
 			$user=User::find($offre->user_id);
 
 
-		if($request->type=='Hors TG' && auth()->user()->id==10)
+		if($offre->type=='Hors TG' && auth()->user()->id==10)
 		{
 			//$offre->update($request->all());
 			$offre->statut= $request->get('statut');
@@ -220,7 +225,7 @@ class OffresController extends Controller
 			}
 
 		}
-		if($request->type=='Apprêts/Bij/DP' && auth()->user()->id==39)
+		if($offre->type=='Apprêts/Bij/DP' && auth()->user()->id==39)
 		{
 			//$offre->update($request->all());
 			$offre->statut= $request->get('statut');
@@ -239,7 +244,7 @@ class OffresController extends Controller
 			}
 
 		}
-		if($request->type=='TG'){
+		if($offre->type=='TG'){
 			//$offre->update($request->all());
 			$offre->statut= $request->get('statut');
 			$offre->save();

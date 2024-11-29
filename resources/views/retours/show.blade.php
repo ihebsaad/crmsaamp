@@ -165,7 +165,7 @@
                         <div class="col-md-6">
                             <div class="">
                                 <label for="Nom_offre">{{__('msg.Add files')}}:</label>
-                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple required  accept="application/pdf" /><br><br>
+                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple   accept="application/pdf" /><br><br>
                             </div>
                         </div>
                     </div>

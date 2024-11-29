@@ -43,26 +43,26 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Started_at">{{__('msg.Start date')}}:</label>
-                                <input type="text" id="Started_at" class="form-control datepicker" name="Started_at" value="{{date('Y-m-d', strtotime($rendezvous->Started_at))}}"><br><br>
+                                <input type="text" id="Started_at" class="form-control datepicker"  required name="Started_at" value="{{date('Y-m-d', strtotime($rendezvous->Started_at))}}"><br><br>
 
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="heure_fin">{{__('msg.Start hour')}}:</label>
-                                <input type="time" id="heure_debut" class="form-control" name="heure_debut" value="{{$rendezvous->heure_debut}}"><br><br>
+                                <input type="time" id="heure_debut" class="form-control" name="heure_debut"  required value="{{$rendezvous->heure_debut}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="End_at">{{__('msg.End date')}}:</label>
-                                <input type="text" id="End_at" class="form-control datepicker" name="End_at" value="{{ $rendezvous->End_at !='' ? date('Y-m-d', strtotime($rendezvous->End_at)) : '' }}"><br><br>
+                                <input type="text" id="End_at" class="form-control datepicker" name="End_at" required value="{{ $rendezvous->End_at !='' ? date('Y-m-d', strtotime($rendezvous->End_at)) : '' }}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="heure_fin">{{__('msg.End hour')}}:</label>
-                                <input type="time" id="heure_fin" class="form-control" name="heure_fin" value="{{$rendezvous->heure_fin}}"><br><br>
+                                <input type="time" id="heure_fin" class="form-control" name="heure_fin" required value="{{$rendezvous->heure_fin}}"><br><br>
                             </div>
                         </div>
                     </div>

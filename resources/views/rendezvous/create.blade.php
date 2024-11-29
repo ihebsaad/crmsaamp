@@ -22,6 +22,14 @@
 
             <div class="card-body" style="min-height:500px">
 
+                <div class="row mt-2 mb-2">
+                    @if(!$userToken)
+                    <div class="col-md-12 float-right">
+                        <a   href="{{ route('google.auth.redirect') }}" class="btn btn-primary float-right"><img width="50" style="width:50" src="{{  URL::asset('img/calendar.png') }}"/> Lier les rendez-vous à mon Agenda Google</a>
+                    </div>
+                    @endif
+                </div>
+
                 <form action="{{ route('rendezvous.store') }}" method="post"   enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="AccountId" value="{{$client->id ?? 0}}" >
@@ -37,25 +45,25 @@
                         <div class="col-md-2">
                             <div class="">
                                 <label for="Started_at">{{__('msg.Start date')}}:</label>
-                                <input type="text" id="Started_at" class="form-control datepicker" name="Started_at"  value="{{old('Started_at')}}"><br><br>
+                                <input type="text" id="Started_at" class="form-control datepicker" name="Started_at"  required value="{{old('Started_at')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="heure_debut">{{__('msg.Start hour')}}:</label>
-                                <input type="time" id="heure_debut" class="form-control" name="heure_debut"  value="{{old('heure_debut')}}"><br><br>
+                                <input type="time" id="heure_debut" class="form-control" name="heure_debut" required value="{{old('heure_debut')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="End_AT">{{__('msg.End date')}}:</label>
-                                <input type="text" id="End_AT" class="form-control datepicker" name="End_AT"  value="{{old('End_AT')}}"><br><br>
+                                <input type="text" id="End_AT" class="form-control datepicker" name="End_AT" required value="{{old('End_AT')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
                                 <label for="heure_fin">{{__('msg.End hour')}}:</label>
-                                <input type="time" id="heure_fin" class="form-control" name="heure_fin"  value="{{old('heure_fin')}}"><br><br>
+                                <input type="time" id="heure_fin" class="form-control" name="heure_fin" required value="{{old('heure_fin')}}"><br><br>
                             </div>
                         </div>
                     </div>
@@ -86,7 +94,7 @@
                         <div class="col-md-4">
                         <div class="">
                                 <label for="Location">{{__('msg.Place')}}:</label>
-                                <input type="text" id="Location" class="form-control" name="Location"  value="{{old('Location')}}"><br><br>
+                                <input type="text" id="Location" class="form-control" name="Location" required value="{{old('Location')}}"><br><br>
                             </div>
                         </div>
 

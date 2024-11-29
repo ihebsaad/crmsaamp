@@ -16,7 +16,7 @@
 
     <div class="col-lg-12 col-sm-12 mb-4">
 
-        <h6 class="m-0 font-weight-bold text-primary mb-4 mt-4 ml-3">{{__('msg.Appointments list')}} {{__('msg.of')}}  {{$name}} - {{sprintf("%02d", $mois)}}/{{$annee}}  </h6>
+        <h6 class="m-0 font-weight-bold text-primary mb-4 mt-4 ml-3">{{__('msg.Appointments list')}} {{__('msg.of')}}  <b>{{$name}}</b> - @if($date_debut!=$date_fin) de {{date('d/m/Y', strtotime($date_debut))}} à {{ date('d/m/Y', strtotime($date_fin))}} @else  le <b>{{date('d/m/Y', strtotime($date_debut))}}</b>  @endif </h6>
 
                  <table id="" class="table table-striped" style="width:100%">
                     <thead>

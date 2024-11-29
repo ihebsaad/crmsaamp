@@ -121,6 +121,13 @@
 			<span class="text-center mb-2" style="color:black">{{__('msg.Welcome')}} <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b> </span><br><br>
 		</div>
 	</div>
+	<div class="row mt-2 mb-2">
+		@if(!$userToken)
+		<div class="col-md-12 float-right">
+			<a href="{{ route('google.auth.redirect') }}" class="btn btn-primary float-right"><img width="50" style="width:50" src="{{  URL::asset('img/calendar.png') }}" /> Lier les rendez-vous à mon Agenda Google</a>
+		</div>
+		@endif
+	</div>
 	<div class="row">
 		<div class="col-md-12 text-center">
 			<h4>{{__('msg.Number of customers')}}</h4>
@@ -232,7 +239,7 @@
 						@foreach($retours as $retour)
 						<tr>
 							<td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
-							<td  data-order="{{ $retour->Date_ouverture ? date('Y-m-d', strtotime($retour->Date_ouverture)) : '' }}">{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+							<td data-order="{{ $retour->Date_ouverture ? date('Y-m-d', strtotime($retour->Date_ouverture)) : '' }}">{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
 							<td>{{$retour->Nom_du_compte}}</td>
 							<td>{{$retour->Nom_du_contact}}</td>
 							<td>{{$retour->Motif_retour}}</td>

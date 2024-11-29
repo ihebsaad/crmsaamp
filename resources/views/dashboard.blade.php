@@ -166,7 +166,13 @@
 </script>
 
 <div class="" style="padding-left:5%;padding-right:5%;padding-top:2%;padding-bottom:2%">
-
+  <div class="row mt-2 mb-3">
+    @if(!$userToken)
+    <div class="col-md-12 float-right">
+      <a href="{{ route('google.auth.redirect') }}" class="btn btn-primary float-right"><img width="50" style="width:50" src="{{  URL::asset('img/calendar.png') }}" /> Lier les rendez-vous à mon Agenda Google</a>
+    </div>
+    @endif
+  </div>
   <div class="row">
     <div class="col-md-6 col-lg-6 col-sm-12 text-center  mb-5">
       @if(auth()->user()->role=='adv' )
@@ -367,15 +373,24 @@
       </div>
       <div class="modal-body  ">
         <div style="font-size:14px;">
-          <h5> NOUVEAUTÉ !</h5>
-          1. Ajout de rendez-vous hors clientèle :<br>
-          - Un nouvel onglet dans le menu permet désormais d'ajouter des rendez-vous qui ne concernent pas les clients.<br><br>
-          2. Remontée automatique des prises de contact AS400 :<br>
-          - Les prises de contact AS400 sont maintenant automatiquement remontées dans le système.<br><br>
-          3. Possibilité d'entrer des prises de contact hors AS400 :<br>
-          - Vous pouvez toujours entrer manuellement des prises de contact hors AS400 via la fiche client.<br><br>
-          4. Nouveau tableau de statistiques :<br>
-          - Un tableau permet de visualiser les clients inactifs en fonction du nombre de mois sélectionné.
+        <h5>1. Workflow pour la gestion des offres dans le CRM</h5>
+Vos offres de prix suivent désormais un scénario précis:<br>
+<b>Si votre offre concerne du "TG"</b>, elle est automatiquement validée.<br>
+<b>Si elle concerne du "Hors TG"</b>, elle sera mise en attente de validation par <b>Sébastien Cannesson</b>. Vous recevrez une notification par mail vous informant si l'offre est validée ou à corriger.<br>
+<b>Si l'offre concerne les apprêts, la bijouterie ou le DP</b>, même principe, mais c’est <b>Christelle Correia</b> qui se chargera de la valider.<br>
+<br>
+<h5>2. Enfin un support !</h5>
+Vous l’avez peut-être remarqué : un nouvel onglet <b>Support</b> est disponible!<br>
+Il vous permet de créer des <b>tickets</b> pour poser vos questions, signaler des bugs ou faire des suggestions.<br>
+<b>Fini les mails et les appels !</b> Vous bénéficiez désormais d’un suivi clair de vos tickets et d’un système de <b>chat intégré</b> pour plus de réactivité.<br>
+<br>
+<h5>3. Votre agenda évolue !</h5>
+<b>Nouveauté 1:</b> Vous pouvez désormais sélectionner une plage de dates et imprimer la liste de vos rendez-vous. Une solution idéale pour joindre cette liste en pièce jointe à vos notes de frais!<br>
+<b>Nouveauté 2:</b> Vous avez sûrement remarqué un nouveau bouton sur votre tableau de bord: il permet de <strong style="color:black">lier votre Google Agenda à votre Agenda CRM</strong>. Désormais, lorsque vous créez un rendez-vous dans la CRM, celui-ci est automatiquement ajouté à votre Google Agenda.<br>
+<b>Et bientôt:</b> Nous travaillons sur une synchronisation dans l’autre sens: les rendez-vous créés dans votre Google Agenda seront automatiquement intégrés à votre Agenda CRM.<br>
+<br>
+<b>Restez connectés pour découvrir encore plus de nouveautés lors de nos prochaines mises à jour!</b><br>
+
         </div>
       </div>
       <div class="modal-footer">

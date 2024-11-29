@@ -87,46 +87,50 @@
 			</div>
 			<div class="card-body">
 				<div class="row">
-					<div class="col-lg-5">
 
 						@if( auth()->user()->role=='admin' || auth()->user()->role=='respAG' || auth()->user()->role=='adv' )
-							<form  method="get"  action="{{route('agenda')}}"  >
-								<div class="row">
-									<div class="col-lg-12">
-										<span class=" mr-2">{{__('msg.User')}}:</span>
-										<select class="form-control mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="update_user();this.form.submit();" >
-											<option  @if($user=="") selected="selected" @endif value=""></option>
-											@foreach ($users as $User)
-												@if(trim($User->lastname)!=='')
-													<option @selected($user >0 && $user==$User->id) value="{{$User->id}}"  >{{$User->name}}  {{$User->lastname}}</option>
-												@endif
-											@endforeach
-										</select>
+							<div class="col-lg-4">
+								<form  method="get"  action="{{route('agenda')}}"  >
+									<div class="row">
+										<div class="col-lg-12">
+											<span class=" mr-2">{{__('msg.User')}}:</span>
+											<select class="form-control mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="update_user();this.form.submit();" >
+												<option  @if($user=="") selected="selected" @endif value=""></option>
+												@foreach ($users as $User)
+													@if(trim($User->lastname)!=='')
+														<option @selected($user >0 && $user==$User->id) value="{{$User->id}}"  >{{$User->name}}  {{$User->lastname}}</option>
+													@endif
+												@endforeach
+											</select>
+										</div>
 									</div>
-								</div>
-							</form>
+								</form>
+							</div>
 						@else
 							@if(request()->is('exterieurs'))
 								<!--<a href="{{route('rendezvous.create',['id'=>0])}}" class="btn btn-primary mb-3 mr-3 float-right"><i class="fas fa-calendar-day"></i>  Créer un Rendez-vous Extérieur</a>-->
 							@endif
 						@endif
-					</div>
 
-					<div class="col-lg-7">
-					<form  action="{{route('print_agenda')}}" >
-						<input type="hidden" name="user" value="{{$user ?? auth()->user()->id}}" id="user" >
-						<div class="row">
-							<div class="col-lg-8 col-md-6 col-sm-8 float-right  mb-2">
-								<span class=" mr-2">{{__('msg.Month')}}:</span>
-								<input type="number" class="form-control" id="annee" name="annee" value="{{date('Y')}}" step="1" min="2023" max="2050" style="width:90px" >
-								<input type="number" class="form-control" id="mois" name="mois" value="{{date('m')}}" step="1" min="1" max="12" style="width:70px" >
+
+					<div class="col-lg-8 col-md-12">
+						<form action="{{route('print_agenda')}}">
+							<input type="hidden" name="user" value="{{$user ?? auth()->user()->id}}" id="user">
+							<div class="row mb-2" style="border:1px solid lightgray;border-radius:20px">
+								<div class="col-lg-9 col-md-12 col-sm-12 float-right mt-2 mb-2">
+									<span class="mr-2">{{__('msg.Start date')}}:</span>
+									<input type="date" class="form-control mr-2" id="date_debut" name="date_debut" value="{{date('Y-m-01')}}" style="width:150px">
+									<span class="ml-3 mr-2">{{__('msg.End date')}}:</span>
+									<input type="date" class="form-control" id="date_fin" name="date_fin" value="{{date('Y-m-t')}}" style="width:150px">
+								</div>
+								<div class="col-lg-3 col-md-12 col-sm-4 mt-2 mb-2">
+									<button type="submit" class="btn btn-primary  mr-3">
+										<i class="fas fa-print"></i> {{__('msg.Print')}}
+									</button>
+								</div>
 							</div>
-							<div class="col-lg-4 col-md-6 col-sm-4 ">
-								<button type="submit" class="btn btn-primary mb-3 mr-3 "><i class="fas fa-print"></i> {{__('msg.Print')}}</button>
-							</div>
-						</div>
-					</form>
-				</div>
+						</form>
+					</div>
 
 				<div id="calendar" class="container-fluid"></div>
 

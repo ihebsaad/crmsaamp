@@ -10,7 +10,15 @@ use App\Models\RendezVous;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Models\File;
+use Spatie\GoogleCalendar\Event;
+use Carbon\Carbon;
+use App\Models\GoogleToken;
+use Google_Client;
+use Google_Service_Calendar;
+use Google_Service_Calendar_Event;
+use Google_Service_Calendar_EventDateTime;
 
+use Illuminate\Support\Facades\Log;
 
 class RendezVousController extends Controller
 {
@@ -35,108 +43,79 @@ class RendezVousController extends Controller
 	{
 		//$rendezvous=RendezVous::orderBy('id','desc')->limit(50)->get();
 
-		$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
-		->orWhere('user_id',auth()->user()->id)
-		->orderBy('id','desc')->get();
-		return view('rendezvous.list',compact('rendezvous'));
+		$rendezvous = RendezVous::where('Attribue_a', auth()->user()->name . ' ' . auth()->user()->lastname)
+			->orWhere('user_id', auth()->user()->id)
+			->orderBy('id', 'desc')->get();
+		return view('rendezvous.list', compact('rendezvous'));
 	}
 
 	public function mesrendezvous()
 	{
 		//$rendezvous=RendezVous::orderBy('id','desc')->limit(50)->get();
 
-		$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
-		->orWhere('user_id',auth()->user()->id)
-		->orderBy('id','desc')->get();
-		return view('rendezvous.list',compact('rendezvous'));
+		$rendezvous = RendezVous::where('Attribue_a', auth()->user()->name . ' ' . auth()->user()->lastname)
+			->orWhere('user_id', auth()->user()->id)
+			->orderBy('id', 'desc')->get();
+		return view('rendezvous.list', compact('rendezvous'));
 	}
 
 	public function create($id)
 	{
-		if($id>0)
-			$client=CompteClient::find($id);
+		if ($id > 0)
+			$client = CompteClient::find($id);
 		else
-			$client=null;
-		$users=User::where('user_type','<>','')->get();
-		return view('rendezvous.create',compact('client','users'));
+			$client = null;
+
+		$userToken = GoogleToken::where('user_id', auth()->id())->first();
+
+		$users = User::where('user_type', '<>', '')->get();
+		return view('rendezvous.create', compact('client', 'users','userToken'));
 	}
 
 	public function show($id)
 	{
-		$rendezvous=RendezVous::find($id);
-		$files=File::where('parent','rendezvous')->where('parent_id',$rendezvous->id)->get();
-		if($rendezvous->AccountId>0){
-			$client=CompteClient::where('id',$rendezvous->AccountId)->first();
-			$adresse1=$client->adresse1 ?? '';
-			$zip=$client->zip ?? '';
-			$adresse=$adresse1 .' - '.$zip ;
+		$rendezvous = RendezVous::find($id);
+		$files = File::where('parent', 'rendezvous')->where('parent_id', $rendezvous->id)->get();
+		if ($rendezvous->AccountId > 0) {
+			$client = CompteClient::where('id', $rendezvous->AccountId)->first();
+			$adresse1 = $client->adresse1 ?? '';
+			$zip = $client->zip ?? '';
+			$adresse = $adresse1 . ' - ' . $zip;
 
-			if($client && $client->id==1 && $id!=1){
-				$client=DB::table('CRM_CompteCLient')->where('Id_Salesforce',$rendezvous->AccountId)->first();
-				$rue = $client->Rue ?? '' ;
-				$zip =$client->postalCode ?? '';
-				$adresse=$rue.' '.$zip;
+			if ($client && $client->id == 1 && $id != 1) {
+				$client = DB::table('CRM_CompteCLient')->where('Id_Salesforce', $rendezvous->AccountId)->first();
+				$rue = $client->Rue ?? '';
+				$zip = $client->postalCode ?? '';
+				$adresse = $rue . ' ' . $zip;
 			}
-
-		}else{
-			$client=null;
-			$adresse='';
+		} else {
+			$client = null;
+			$adresse = '';
 		}
 
-		return view('rendezvous.show',compact('rendezvous','client','adresse','files'));
+		return view('rendezvous.show', compact('rendezvous', 'client', 'adresse', 'files'));
 	}
 
 	public function print($id)
 	{
-		$rendezvous=RendezVous::find($id);
-		if($rendezvous->AccountId>0){
-			$client=CompteClient::find($rendezvous->AccountId);
-		}else{
-			$client=null;
-		}
-		return view('rendezvous.print',compact('rendezvous','client'));
-	}
-
-
-	public function update(Request $request, $id)
-    {
-		/*
-        $request->validate([
-            'Subject' => 'required',
-         ]);
-*/
 		$rendezvous = RendezVous::find($id);
-		$rendezvous->update($request->all());
-
-		if ($request->hasFile('files')) {
-			$fichiers = $request->file('files');
-
-			foreach ($fichiers as $fichier) {
-				$name = $fichier->getClientOriginalName();
-				$path = public_path("fichiers/rendezvous");
-				$fichier->move($path, $name);
-
-				// Store each file in the files table
-				File::create([
-					'name' => $name,
-					'parent_id' => $rendezvous->id,
-					'parent' => 'rendezvous'
-				]);
-			}
+		if ($rendezvous->AccountId > 0) {
+			$client = CompteClient::find($rendezvous->AccountId);
+		} else {
+			$client = null;
 		}
-
-		return redirect()->route('rendezvous.show', $id)
-				->with('success', 'Rendez vous modifié');
+		return view('rendezvous.print', compact('rendezvous', 'client'));
 	}
+
 
 	public function store(Request $request)
-    {
-        $request->validate([
-            'Subject' => 'required',
+	{
+		$request->validate([
+			'Subject' => 'required',
 
-        ]);
+		]);
 
-        //$rendezvous=RendezVous::create($request->all());
+		//$rendezvous=RendezVous::create($request->all());
 
 		$rendezvous = RendezVous::create([
 			'AccountId' => $request->input('AccountId') ?? 0,
@@ -155,14 +134,21 @@ class RendezVousController extends Controller
 		]);
 
 		$rendezvous->save();
-		if($request->input('AccountId') > 0){
-		$client=CompteClient::find($rendezvous->AccountId);
+		if ($request->input('AccountId') > 0) {
+			$client = CompteClient::find($rendezvous->AccountId);
 
-		$rendezvous->Account_Name=$client->Nom;
-		$rendezvous->save();
+			$rendezvous->Account_Name = $client->Nom;
+			$rendezvous->save();
 		}
 
-/*
+		// Synchroniser avec Google Calendar
+		$googleEventId = $this->addToGoogleCalendar($rendezvous);
+		if ($googleEventId) {
+			$rendezvous->google_event_id = $googleEventId;
+			$rendezvous->save();
+		}
+
+		/*
 		if ($request->hasFile('files')) {
 			$fichiers = $request->file('files');
 			$fileNames = [];
@@ -196,13 +182,76 @@ class RendezVousController extends Controller
 			}
 		}
 
-		if($rendezvous->AccountId >0)
+		if ($rendezvous->AccountId > 0)
 			return redirect()->route('fiche', ['id' => $rendezvous->AccountId])->with(['success' => "Rendez Vous ajouté "]);
 
 		return redirect()->route('rendezvous.show', $rendezvous->id)
-		->with('success','Rendez vous ajouté');
+			->with('success', 'Rendez vous ajouté');
 	}
 
+
+	public function update(Request $request, $id)
+	{
+		/*
+        $request->validate([
+            'Subject' => 'required',
+         ]);
+*/
+		$rendezvous = RendezVous::find($id);
+		$rendezvous->update($request->all());
+
+
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path("fichiers/rendezvous");
+				$fichier->move($path, $name);
+
+				// Store each file in the files table
+				File::create([
+					'name' => $name,
+					'parent_id' => $rendezvous->id,
+					'parent' => 'rendezvous'
+				]);
+			}
+		}
+
+
+		// Synchroniser avec Google Calendar
+		if ($rendezvous->google_event_id) {
+
+			$startDateTime = Carbon::parse($rendezvous->Started_at);
+
+			if ($rendezvous->heure_debut) {
+				$startDateTime->setTimeFromTimeString($rendezvous->heure_debut);
+			}
+
+			// Configuration de la date de fin
+			if ($rendezvous->End_at) {
+				$endDateTime = Carbon::parse($rendezvous->End_at);
+			} else {
+				$endDateTime = Carbon::parse($rendezvous->Started_at); // Utiliser Started_at si End_at est vide
+			}
+
+			if ($rendezvous->heure_fin) {
+				$endDateTime->setTimeFromTimeString($rendezvous->heure_fin);
+			}
+
+			$this->updateGoogleCalendar($rendezvous);
+		} else {
+			$googleEventId = $this->addToGoogleCalendar($rendezvous);
+			if ($googleEventId) {
+				$rendezvous->google_event_id = $googleEventId;
+				$rendezvous->save();
+			}
+		}
+
+
+		return redirect()->route('rendezvous.show', $id)
+			->with('success', 'Rendez vous modifié');
+	}
 
 	public function deleteFile(Request $request, $id)
 	{
@@ -225,7 +274,7 @@ class RendezVousController extends Controller
 		$rendezvous->save();
 
 		// Delete the file from the filesystem
-		$filePath = public_path() . "/fichiers/" . $fileToDelete;
+		$filePath = public_path() . "/fichiers/redezvous/" . $fileToDelete;
 		if (file_exists($filePath)) {
 			unlink($filePath);  // Delete the file
 		}
@@ -235,24 +284,251 @@ class RendezVousController extends Controller
 
 	public function destroy($id)
 	{
- 		$rv = RendezVous::find($id);
+		$rv = RendezVous::find($id);
 
 		$previousUrl = url()->previous();
 
 		if ($rv) {
-			$client_id=$rv->AccountId;
+
+			if ($rv->google_event_id) {
+				$this->deleteFromGoogleCalendar($rv->google_event_id);
+			}
+
+			$client_id = $rv->AccountId;
 			$rv->delete();
 
-			if (str_contains($previousUrl, '/show/' . $id) && $client_id >0) {
-				return redirect()->route('fiche',$client_id)->with('success', 'Supprimé avec succès');
+			if (str_contains($previousUrl, '/show/' . $id) && $client_id > 0) {
+				return redirect()->route('fiche', $client_id)->with('success', 'Supprimé avec succès');
 			}
 		}
 
-		if (str_contains($previousUrl, 'exterieurs') || $client_id ==0) {
+		if (str_contains($previousUrl, 'exterieurs') || $client_id == 0) {
 			return redirect()->route('agenda')->with('success', 'Supprimé avec succès');
 		}
 
 		return redirect()->route('agenda')->with('success', 'Supprimé avec succès');
 		//return back()->with('success', 'Supprimé avec succès');
+	}
+
+	/*
+	function syncToGoogleCalendar()
+	{
+
+		$userToken = GoogleToken::where('user_id', auth()->id())->first();
+
+		if (!$userToken) {
+			return false; // L'utilisateur n'a pas de compte Google lié
+		}
+
+		$client = new Google_Client();
+		$client->setAccessToken([
+			'access_token' => $userToken->access_token,
+			'refresh_token' => $userToken->refresh_token,
+			'expires_in' => $userToken->expires_in,
+		]);
+
+		// Rafraîchir le token si nécessaire
+		if ($client->isAccessTokenExpired()) {
+			$newToken = $client->fetchAccessTokenWithRefreshToken($userToken->refresh_token);
+			$userToken->update([
+				'access_token' => $newToken['access_token'],
+				'expires_in' => $newToken['expires_in'],
+			]);
+		}
+	}
+*/
+
+
+	private function addToGoogleCalendar($rendezvous)
+	{
+		$userToken = GoogleToken::where('user_id', $rendezvous->user_id)->first();
+		if (!$userToken) {
+			Log::error("Aucun token Google pour l'utilisateur ID: " . $rendezvous->user_id);
+			return null;
+		}
+
+		$client = $this->getGoogleClient($userToken);
+		$service = new Google_Service_Calendar($client);
+
+ 		$event = new Google_Service_Calendar_Event([
+			'summary' => $rendezvous->Subject,
+			'location' => $rendezvous->Location,
+			'description' => $rendezvous->Description,
+			'start' => [
+				'dateTime' => $this->combineDateTime($rendezvous->Started_at, $rendezvous->heure_debut),
+				'timeZone' => 'Europe/Paris',
+			],
+			'end' => [
+				'dateTime' => $this->combineDateTime($rendezvous->End_AT, $rendezvous->heure_fin),
+				'timeZone' => 'Europe/Paris',
+			],
+			'colorId' => 11, // Couleur personnalisée
+		]);
+
+		$calendarId = 'primary'; // Peut être modifié si nécessaire
+		$createdEvent = $service->events->insert($calendarId, $event);
+
+		return $createdEvent->id ?? null;
+	}
+
+
+	private function updateGoogleCalendar($rendezvous)
+	{
+		$userToken = GoogleToken::where('user_id', $rendezvous->user_id)->first();
+		if (!$userToken) {
+			Log::error("Aucun token Google pour l'utilisateur ID: " . $rendezvous->user_id);
+			return false;
+		}
+
+		$client = $this->getGoogleClient($userToken);
+		$service = new Google_Service_Calendar($client);
+
+		try {
+			$event = $service->events->get('primary', $rendezvous->google_event_id);
+			$event->setSummary($rendezvous->Subject);
+			$event->setLocation($rendezvous->Location);
+			$event->setDescription($rendezvous->Description);
+
+			// Vérifiez et combinez les dates/heures
+			if (empty($rendezvous->End_AT)) {
+				$rendezvous->End_AT = $rendezvous->Started_at;
+			}
+
+			$startDateTime = $this->combineDateTime($rendezvous->Started_at, $rendezvous->heure_debut);
+			$endDateTime = $this->combineDateTime($rendezvous->End_AT, $rendezvous->heure_fin);
+
+			if (!$startDateTime || !$endDateTime || $startDateTime >= $endDateTime) {
+				Log::error("L'heure de début ($startDateTime) est postérieure ou égale à l'heure de fin ($endDateTime).");
+				return false;
+			}
+
+			$start = new Google_Service_Calendar_EventDateTime();
+			$start->setDateTime($startDateTime);
+			$start->setTimeZone('Europe/Paris');
+
+			$end = new Google_Service_Calendar_EventDateTime();
+			$end->setDateTime($endDateTime);
+			$end->setTimeZone('Europe/Paris');
+
+			$event->setStart($start);
+			$event->setEnd($end);
+
+			$updatedEvent = $service->events->update('primary', $event->id, $event);
+
+			Log::info("Événement Google mis à jour avec succès : " . $updatedEvent->id);
+			return $updatedEvent->id ?? null;
+		} catch (\Google_Service_Exception $e) {
+			Log::error("Erreur Google Calendar : " . $e->getMessage());
+			return false;
+		} catch (\Exception $e) {
+			Log::error("Erreur inattendue : " . $e->getMessage());
+			return false;
+		}
+	}
+	/*
+	// Mettre à jour un événement sur Google Calendar
+	public function updateGoogleCalendar($eventId, $title, $startDateTime, $endDateTime)
+	{
+
+		try {
+			// Initialiser le client Google
+			$client = new Google_Client();
+			$client->setAccessToken(auth()->user()->googleToken->access_token);
+
+			$service = new Google_Service_Calendar($client);
+
+			// Récupérer l'événement existant
+			$event = $service->events->get('primary', $eventId);
+
+			// Mettre à jour les détails de l'événement
+			$event->setSummary($title);
+
+			// Créer des instances de EventDateTime pour 'start' et 'end'
+			$start = new Google_Service_Calendar_EventDateTime();
+			$start->setDateTime($startDateTime);
+			$start->setTimeZone('Europe/Paris'); // Remplacez par le fuseau horaire nécessaire
+
+			$end = new Google_Service_Calendar_EventDateTime();
+			$end->setDateTime($endDateTime);
+			$end->setTimeZone('Europe/Paris'); // Remplacez par le fuseau horaire nécessaire
+
+			$event->setStart($start);
+			$event->setEnd($end);
+
+			// Enregistrer l'événement mis à jour
+			$updatedEvent = $service->events->update('primary', $event->getId(), $event);
+
+			return $updatedEvent;
+		} catch (\Exception $e) {
+			\Log::error('Erreur lors de la mise à jour de l\'événement Google Calendar : ' . $e->getMessage());
+			return false;
+		}
+	}
+
+*/
+	// Supprimer un événement de Google Calendar
+	private function deleteFromGoogleCalendar($googleEventId)
+	{
+		$userToken = GoogleToken::where('user_id', auth()->id())->first();
+		if (!$userToken) {
+			Log::error("Aucun token Google pour l'utilisateur ID: " . auth()->id());
+			return false;
+		}
+
+		$client = $this->getGoogleClient($userToken);
+		$service = new Google_Service_Calendar($client);
+
+		$service->events->delete('primary', $googleEventId);
+		return true;
+	}
+
+	// Obtenir un client Google configuré
+	private function getGoogleClient($userToken)
+	{
+		$client = new Google_Client();
+		$client->setClientId(env('GOOGLE_CLIENT_ID'));
+		$client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+		$client->setRedirectUri(env('GOOGLE_REDIRECT_URI'));
+
+		$client->setAccessToken([
+			'access_token' => $userToken->access_token,
+			'refresh_token' => $userToken->refresh_token,
+			'expires_in' => $userToken->expires_in,
+		]);
+
+		// Rafraîchir le token si nécessaire
+		if ($client->isAccessTokenExpired()) {
+			$newToken = $client->fetchAccessTokenWithRefreshToken();
+			$userToken->update([
+				'access_token' => $newToken['access_token'],
+				'expires_in' => $newToken['expires_in'],
+			]);
+		}
+
+		return $client;
+	}
+/*
+	// Combiner date et heure en format ISO 8601
+	private function combineDateTime($date, $time)
+	{
+		$dateTime = Carbon::parse($date);
+		if ($time) {
+			$dateTime->setTimeFromTimeString($time);
+		}
+		return $dateTime->toIso8601String();
+	}*/
+	private function combineDateTime($date, $time)
+	{
+		if (!$date || !$time) {
+			Log::error("Date ou heure invalide : date = $date, time = $time");
+			return null;
+		}
+
+		try {
+			return Carbon::parse("$date $time")->toIso8601String();
+		} catch (\Exception $e) {
+			Log::error("Erreur lors de la combinaison de la date et de l'heure : " . $e->getMessage());
+			return null;
+		}
 	}
 } // end class

@@ -35,6 +35,16 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::get('/confid/', 'App\Http\Controllers\HomeController@confid')->name('confid');
+Route::get('/regles/', 'App\Http\Controllers\HomeController@regles')->name('regles');
+
+
+Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle'])->name('google.auth.redirect');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.auth.callback');
+Route::get('/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+Route::get('/configure-webhook', [GoogleController::class, 'subscribeToGoogleCalendar']);
+Route::post('/google-calendar/webhook', [GoogleController::class, 'webhook']);
 
 
 // Affiche la liste des tickets
@@ -138,8 +148,8 @@ Route::get('/rendezvous/destroy/{id}',[RendezVousController::class,'destroy'])->
 Route::post('/rendezvous/{id}/delete-file', [RendezvousController::class, 'deleteFile'])->name('fichier.delete');
 
 
-Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.auth');
-Route::get('oauth2/callback', [GoogleController::class, 'handleGoogleCallback']);
+##Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.auth');
+##Route::get('oauth2/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 // Routes pour consulter la boîte de réception Gmail
 Route::middleware(['auth'])->group(function () {

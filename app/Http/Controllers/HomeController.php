@@ -13,6 +13,7 @@ use App\Models\Offre;
 use App\Models\RendezVous;
 use App\Models\RetourClient;
 use App\Models\Tache;
+use App\Models\GoogleToken;
 use App\Services\PhoneService;
 use Illuminate\Support\Facades\App;
 use App\Services\SendMail;
@@ -28,7 +29,7 @@ class HomeController extends Controller
 	 */
 	public function __construct()
 	{
-		$this->middleware(['auth'])->except(['checkexiste', 'send_demand']);
+		$this->middleware(['auth'])->except(['checkexiste', 'send_demand','confid','regles']);
 	}
 
 	/**
@@ -43,6 +44,16 @@ class HomeController extends Controller
 	public function welcome()
 	{
 		return view('welcome');
+	}
+
+	public function confid()
+	{
+		return view('calendar.confid');
+	}
+
+	public function regles()
+	{
+		return view('calendar.regles');
 	}
 
 	public function adminhome()
@@ -148,8 +159,9 @@ class HomeController extends Controller
 			$total9 = DB::select($query, [203]);
 			$total_9=$total9[0]->total;
 
+			$userToken = GoogleToken::where('user_id', auth()->id())->first();
 
-			return view('adminhome',compact('retours','rendezvous','taches','representants','offres',
+			return view('adminhome',compact('retours','rendezvous','taches','representants','offres','userToken',
 			'total_clients_1','total_clients_2','total_clients_3','total_clients_4','total_clients_5','total_clients_6','total_clients_7','total_clients_8','total_clients_9',
 			'total_1','total_2','total_3','total_4','total_5','total_6','total_7','total_8','total_9'));
 
@@ -210,7 +222,7 @@ class HomeController extends Controller
 		return view('agenda',compact('rendezvous','user','users'));
 
 	}
-
+/*
 	public function print_agenda(Request $request)
 	{
 		$user=$request->get('user');
@@ -228,10 +240,7 @@ class HomeController extends Controller
 		if($user>0){
 			$User=User::find($user);
 			$name=$User->name.' '.$User->lastname;
-			$rendezvous=RendezVous::/*where(function($q) use ($now,$user,$User) {
-				$q->where('user_id',$user)
-				->orWhere('Attribue_a',$User->name.' '.$User->lastname);
-			})*/
+			$rendezvous=RendezVous::
 			where('user_id', $user)
 			->where('Started_at', 'like',  $month. '%')
  			->orderBy('Started_at', 'asc')
@@ -239,10 +248,7 @@ class HomeController extends Controller
 			->get();
 
 		}else{
-			$rendezvous=RendezVous::/*where(function($q) use ($now,$user,$User) {
-				$q->where('user_id',$user)
-				->orWhere('Attribue_a',$User->name.' '.$User->lastname);
-			})*/
+			$rendezvous=RendezVous::
 			where('user_id', auth()->user()->id)
 			->where('Started_at', 'like',  $month. '%')
  			->orderBy('Started_at', 'asc')
@@ -253,7 +259,44 @@ class HomeController extends Controller
 		return view('rendezvous.print_list',compact('rendezvous','user','name','mois','annee'));
 
 	}
+*/
+	public function print_agenda(Request $request)
+	{
+		$user = $request->get('user');
+		$date_debut = $request->get('date_debut');
+		$date_fin = $request->get('date_fin');
+		$name = "";
 
+		// Validation des dates
+		if (!$date_debut || !$date_fin) {
+			return back()->with('error', __('msg.Please provide a valid date range.'));
+		}
+
+		// Vérification des permissions
+		if ($user != auth()->user()->id && auth()->user()->user_type != 'admin') {
+			return view('welcome');
+		}
+
+		// Récupération des rendez-vous en fonction de l'utilisateur et de la plage de dates
+		if ($user > 0) {
+			$User = User::find($user);
+			$name = $User->name . ' ' . $User->lastname;
+			$rendezvous = RendezVous::where('user_id', $user)
+				->whereBetween('Started_at', [$date_debut, $date_fin])
+				->orderBy('Started_at', 'asc')
+				->orderBy('heure_debut', 'asc')
+				->get();
+		} else {
+			$rendezvous = RendezVous::where('user_id', auth()->user()->id)
+				->whereBetween('Started_at', [$date_debut, $date_fin])
+				->orderBy('Started_at', 'asc')
+				->orderBy('heure_debut', 'asc')
+				->get();
+		}
+
+		// Retourner la vue avec les données
+		return view('rendezvous.print_list', compact('rendezvous', 'user', 'name', 'date_debut', 'date_fin'));
+	}
 
 	public function rendesvous_ext(Request $request)
 	{
@@ -467,9 +510,10 @@ class HomeController extends Controller
 		else
 			$offres=Offre::where('statut',null)->get();
 
+			$userToken = GoogleToken::where('user_id', auth()->id())->first();
 
 
- 		return view('dashboard',compact('rendezvous','clients','total_clients','total_1','offres','retours','agence','prospects','commerciaux','customers'));
+ 		return view('dashboard',compact('rendezvous','clients','total_clients','total_1','offres','retours','agence','prospects','commerciaux','customers','userToken'));
 	}
 
 	public function help()
