@@ -17,7 +17,7 @@
         <!-- Project Card Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Add a contact')}}Ajouter un contact </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Add a contact')}}</h6>
             </div>
 
             <div class="card-body" style="min-height:500px">
@@ -63,7 +63,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="MobilePhone">{{__('msg.Mobile')}}:</label>
-                                <input type="text" id="Phone" class="form-control" name="Phone"  value="{{old('MobilePhone')}}"><br><br>
+                                <input type="text" id="Phone" class="form-control" name="MobilePhone"  value="{{old('MobilePhone')}}"><br><br>
                             </div>
                         </div>
 

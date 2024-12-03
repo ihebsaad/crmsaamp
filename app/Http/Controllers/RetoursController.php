@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\CompteClient;
 use App\Models\RetourClient;
+use App\Models\Agence;
 use App\Models\Contact;
 use App\Models\File;
 use App\Services\SendMail;
@@ -77,6 +78,110 @@ class RetoursController extends Controller
 	}
 
 
+
+
+	public function store(Request $request)
+    {
+        $request->validate([
+            'Type_retour' => 'required',
+        ]);
+
+        //$retour=RetourClient::create($request->all());
+
+		$retour = RetourClient::create([
+			'idclient' => $request->input('idclient') ?? 0,
+			'user_id' => $request->input('user_id') ?? 0,
+			'Type_retour' => $request->input('Type_retour') ,
+			'Motif_retour' => $request->input('Motif_retour'),
+			'Nom_du_compte' => $request->input('Nom_du_compte'),
+			'Division' => $request->input('Division'),
+			'Date_ouverture' => $request->input('Date_ouverture'),
+			'Date_cloture' => $request->input('Date_cloture'),
+			'cl_id' => $request->input('cl_id'),
+			'Details_des_causes' => $request->input('Details_des_causes'),
+			'Ref_produit_lot_commande_facture' => $request->input('Ref_produit_lot_commande_facture'),
+			'Depot_concerne' => ucfirst($request->input('Depot_concerne')),
+			'Une_reponse_a_ete_apportee_au_client' => $request->input('Une_reponse_a_ete_apportee_au_client'),
+			'Description_c' => $request->input('Description_c'),
+		]);
+
+		$retour->save();
+
+		// retour positif
+		if(trim($retour->Type_retour) =='Positif'){
+			$client=CompteClient::find($request->input('idclient'));
+			if (isset($client)){
+				$agence=Agence::where('agence_ident',$client->agence_ident)->first();
+				if(isset($agence))
+					$retour->Depot_concerne= $agence->agence_lib;
+					$retour->Responsable_de_resolution = $agence->agence_lib;
+			}
+			$retour->Date_cloture=$retour->Date_ouverture;
+
+			$retour->save();
+		}
+
+
+/*
+		$contact=Contact::find($retour->mycontact_id);
+
+		$prenom = $contact->Prenom ?? '';
+		$nom = $contact->Nom ?? '';
+		$retour->Nom_du_contact= $prenom  .' '.$nom;
+*/
+		$retour->name='RC-'.sprintf('%05d',$retour->id);
+		$retour->save();
+/*
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+			$fileNames = [];
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path() . "/retours";
+				$fichier->move($path, $name);
+				$fileNames[] = $name;
+			}
+
+			// Serialize the filenames array
+			$retour->fichier = serialize($fileNames);
+			$retour->save();
+		}
+*/
+
+		if ($request->hasFile('files')) {
+			$fichiers = $request->file('files');
+
+			foreach ($fichiers as $fichier) {
+				$name = $fichier->getClientOriginalName();
+				$path = public_path("fichiers/retours");
+				$fichier->move($path, $name);
+
+				// Store each file in the files table
+				File::create([
+					'name' => $name,
+					'parent_id' => $retour->id,
+					'parent' => 'retours'
+				]);
+			}
+		}
+
+		self::send_mail($retour,'remy.reverbel@saamp.com');
+		self::send_mail($retour,'reyad.bouzeboudja@saamp.com');
+		self::send_mail($retour,'said.el-marouani@saamp.com');
+		self::send_mail($retour,'directeur.qualite@saamp.com');
+		self::send_mail($retour,'ihebsaad@gmail.com');
+
+		if($retour->idclient >0)
+		return redirect()->route('fiche', ['id' => $retour->idclient])->with(['success' => "Réclamation ajoutée "]);
+
+		return redirect()->route('retours.show', $retour->id)
+		->with('success','Réclamtion ajoutée');
+
+
+	}
+
+
 	public function update(Request $request, $id)
     {
 		/*
@@ -125,113 +230,13 @@ class RetoursController extends Controller
 				->with('success', 'Réclamation modifiée');
 	}
 
-	public function store(Request $request)
-    {
-        $request->validate([
-            'Type_retour' => 'required',
-        ]);
-
-        //$retour=RetourClient::create($request->all());
-
-		$retour = RetourClient::create([
-			'idclient' => $request->input('idclient') ?? 0,
-			'user_id' => $request->input('user_id') ?? 0,
-			'Type_retour' => $request->input('Type_retour') ,
-			'Motif_retour' => $request->input('Motif_retour'),
-			'Nom_du_compte' => $request->input('Nom_du_compte'),
-			'Division' => $request->input('Division'),
-			'Date_ouverture' => $request->input('Date_ouverture'),
-			'Date_cloture' => $request->input('Date_cloture'),
-			'cl_id' => $request->input('cl_id'),
-			'Details_des_causes' => $request->input('Details_des_causes'),
-			'Ref_produit_lot_commande_facture' => $request->input('Ref_produit_lot_commande_facture'),
-			'Depot_concerne' => ucfirst($request->input('Depot_concerne')),
-			'Une_reponse_a_ete_apportee_au_client' => $request->input('Une_reponse_a_ete_apportee_au_client'),
-			'Description_c' => $request->input('Description_c'),
-		]);
-
-		$retour->save();
-/*
-		$contact=Contact::find($retour->mycontact_id);
-
-		$prenom = $contact->Prenom ?? '';
-		$nom = $contact->Nom ?? '';
-		$retour->Nom_du_contact= $prenom  .' '.$nom;
-*/
-		$retour->name='RC-'.sprintf('%05d',$retour->id);
-		$retour->save();
-/*
-		if ($request->hasFile('files')) {
-			$fichiers = $request->file('files');
-			$fileNames = [];
-
-			foreach ($fichiers as $fichier) {
-				$name = $fichier->getClientOriginalName();
-				$path = public_path() . "/retours";
-				$fichier->move($path, $name);
-				$fileNames[] = $name;
-			}
-
-			// Serialize the filenames array
-			$retour->fichier = serialize($fileNames);
-			$retour->save();
-		}
-*/
-
-		if ($request->hasFile('files')) {
-			$fichiers = $request->file('files');
-
-			foreach ($fichiers as $fichier) {
-				$name = $fichier->getClientOriginalName();
-				$path = public_path("fichiers/retours");
-				$fichier->move($path, $name);
-
-				// Store each file in the files table
-				File::create([
-					'name' => $name,
-					'parent_id' => $retour->id,
-					'parent' => 'retours'
-				]);
-			}
-		}
-
-		self::send_mail($retour,'remy.reverbel@saamp.com');
-		self::send_mail($retour,'reyad.bouzeboudja@saamp.com');
-		self::send_mail($retour,'said.el-marouani@saamp.com');
-		self::send_mail($retour,'ihebsaad@gmail.com');
-
-/*
-		SendMail::send('remy.reverbel@saamp.com', $sujet, $contenu);
-		SendMail::send('reyad.bouzeboudja@saamp.com', $sujet, $contenu);
-
-		SendMail::send('said.el-marouani@saamp.com', $sujet, $contenu);
-
-		// email qualité
-		SendMail::send('directeur.qualite@saamp.com', $sujet, $contenu);
-
-		// email agence
-		$agence= DB::table('agence')->where('agence_lib',trim($retour->Responsable_de_resolution))->first();
-		if(isset($agence))
-			SendMail::send($agence->mail, $sujet, $contenu);
-
-		if(isset($agence) && isset($agence->mail2))
-			SendMail::send($agence->mail2, $sujet, $contenu);
-*/
-		if($retour->idclient >0)
-		return redirect()->route('fiche', ['id' => $retour->idclient])->with(['success' => "Réclamation ajoutée "]);
-
-		return redirect()->route('retours.show', $retour->id)
-		->with('success','Réclamtion ajoutée');
-
-
-	}
-
 	public static function send_mail($retour,$email){
 		// envoi de mail
 		$sujet='Réclamation '. $retour->id.' - '.$retour->name;
 		$contenu='Bonjour,<br><br>Réclamation: <a href="https://crm.mysaamp.com/retours/show/'.$retour->id.'" target="_blank">'.$retour->id.'</a> - '.$retour->name.' par '.$retour->Nom_du_contact.'<br><br>
 		<b>Client:</b> '. $retour->cl_id.'  -  '. $retour->Nom_du_compte .'<br>
 		<b>Type de retour:</b> '. $retour->Type_retour.'<br>
+		<b>Date d\'ouverture:</b> '. $retour->Date_ouverture.'<br>
 		<b>Motif de retour:</b> '. $retour->Motif_retour.'<br>
 		<b>Division:</b> '. $retour->Division.'<br>
 		<b>Details des causes:</b> '. $retour->Details_des_causes.'<br><br>

@@ -98,6 +98,18 @@
                             </div>
                         </div>
 
+                        <div class="col-md-4">
+                            <div class="">
+                                <label for="Location">Mode:</label>
+                                <select    id="mode_de_rdv" class="form-control" name="mode_de_rdv" required  >
+                                    <option  value=""></option>
+                                    <option  value="Déplacement">Déplacement</option>
+                                    <option  value="À distance">À distance</option>
+                                </select>
+                            </div>
+                        </div>
+
+
                     </div>
 
                     <div class="row pt-1">

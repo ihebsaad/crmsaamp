@@ -680,7 +680,7 @@ if (is_array($commandes) || is_object($commandes)) {
             </div>
 
             <div class="card-body" style="min-height:400px;width:100%">
-                @if($client->etat_id==1  )
+                @if($client->etat_id==1 || auth()->user()->user_type=='admin' )
                     <a href="{{route('contacts.create',['id'=>$client->id])}}" class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-plus"></i> {{__('msg.Add')}}</a>
                 @endif
 

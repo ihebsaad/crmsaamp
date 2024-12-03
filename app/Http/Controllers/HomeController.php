@@ -222,44 +222,7 @@ class HomeController extends Controller
 		return view('agenda',compact('rendezvous','user','users'));
 
 	}
-/*
-	public function print_agenda(Request $request)
-	{
-		$user=$request->get('user');
-		$now = Carbon::now();
-		$annee=$request->get('annee');
-		$mois=$request->get('mois');
-		$month=$annee.'-'.sprintf("%02d", $mois);
-		$name="";
 
-		if($user!= auth()->user()->id && auth()->user()->user_type!='admin' ){
-			return view('welcome');
-		}
-
-
-		if($user>0){
-			$User=User::find($user);
-			$name=$User->name.' '.$User->lastname;
-			$rendezvous=RendezVous::
-			where('user_id', $user)
-			->where('Started_at', 'like',  $month. '%')
- 			->orderBy('Started_at', 'asc')
-			->orderBy('heure_debut','asc')
-			->get();
-
-		}else{
-			$rendezvous=RendezVous::
-			where('user_id', auth()->user()->id)
-			->where('Started_at', 'like',  $month. '%')
- 			->orderBy('Started_at', 'asc')
-			->orderBy('heure_debut','asc')
-			->get();
-		}
-
-		return view('rendezvous.print_list',compact('rendezvous','user','name','mois','annee'));
-
-	}
-*/
 	public function print_agenda(Request $request)
 	{
 		$user = $request->get('user');

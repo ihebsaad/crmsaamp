@@ -511,7 +511,9 @@ class GEDService
 			case 13:
 				$typeDoc = "CONVENTION OCA";
 				break;
-
+			case 14:
+				$typeDoc = "DIVERS DOCUMENTS";
+				break;
 		}
 
 		$subfolderPath = "DOCUMENTS OUVERTURE DE COMPTE/$clientId/$typeDoc"; //

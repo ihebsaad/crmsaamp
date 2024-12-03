@@ -53,6 +53,7 @@
                             <div class="">
                                 <label for="Motif_retour">{{__('msg.Client ID')}}:</label>
                                 {{$contact->cl_ident}}
+                                <input type="hidden" name="cl_ident" value="{{$contact->cl_ident}}" />
                             </div>
                         </div>
                     </div>
@@ -76,7 +77,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Email">{{__('msg.Email')}}:</label>
-                                <input type="text" id="Email" class="form-control" name="Email"  value="{{$contact->email}}"><br><br>
+                                <input type="text" id="Email" class="form-control" name="email"  value="{{$contact->email}}"><br><br>
                             </div>
                         </div>
 

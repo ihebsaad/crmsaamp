@@ -131,6 +131,7 @@ class RendezVousController extends Controller
 			'Location' => $request->input('Location'),
 			'Subject' => $request->input('Subject'),
 			'Description' => $request->input('Description'),
+			'mode_de_rdv' => $request->input('mode_de_rdv'),
 		]);
 
 		$rendezvous->save();

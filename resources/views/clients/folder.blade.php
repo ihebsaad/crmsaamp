@@ -107,6 +107,7 @@
                                     11 => "QUALITE",
                                     12 => "ENQUETE(COMPLIANCE)",
                                     13 => "CONVENTION OCA",
+                                    14 => "DIVERS DOCUMENTS",
                                 ] as $value => $label)
                                     @if(!in_array($label, $folderNames) || $value==11 || 1 )
                                         <option value="{{ $value }}">{{ $label }}</option>

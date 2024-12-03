@@ -24,7 +24,7 @@
 
             <div class="card-body" style="min-height:500px">
 
-                <form action="{{ route('retours.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('retours.store') }}" method="post" enctype="multipart/form-data"  id="form">
                 <input type="hidden" name="idclient" value="{{$client->id}}" >
                 <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
 
@@ -52,7 +52,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Motif_retour">{{__('msg.Reason for return')}}:</label>
-                                <select    id="Motif_retour" class="  form-control" name="Motif_retour"   >
+                                <select    id="Motif_retour" class="  form-control" name="Motif_retour"  required  >
                                     <option></option>
                                     <option  value="Apprêts">Apprêts</option>
                                     <option  value="Autre">Autre</option>
@@ -201,14 +201,14 @@
                         <div class="col-md-6">
                             <div class="">
                                 <label for="Nom_offre">{{__('msg.File(s)')}}:</label>
-                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple required  accept="application/pdf" /><br><br>
+                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple      accept="application/pdf" /><br><br>
                             </div>
                         </div>
                     </div>
 
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right">{{__('msg.Add')}}</button>
+                            <button type="submit" class="btn-primary btn float-right" onclick="disableButton(this);" id="submit" >{{__('msg.Add')}}</button>
                         </div>
                     </div>
 
@@ -221,7 +221,17 @@
     </div>
 
     <script>
-        $(function () {
+        // Sélection du formulaire
+        const form = document.getElementById('form');
+        const submitButton = document.getElementById('submit');
+
+        // Ajout d'un événement sur le formulaire pour désactiver le bouton après envoi
+        form.addEventListener('submit', function() {
+            submitButton.disabled = true; // Désactive le bouton
+            submitButton.innerHTML = "En cours..."; // Modifie le texte pour indiquer le traitement
+        });
+
+       $(function () {
 
             $( ".datepicker" ).datepicker({
 

@@ -31,13 +31,19 @@
                     </thead>
                     <tbody>
                         @foreach ($rendezvous as $rv)
+                            @php
+                                $client=\App\Models\CompteClient::find($rv->mycl_id);
+                                $location='';
+                                if(isset($client))
+                                    $location=$client->ville.' ('.$client->adresse1.')';
+                            @endphp
                             <tr>
                                 <td>{{ $rv->id }}</td>
                                 <td>{{ $rv->Account_Name }}</td>
                                 <td>{{ $rv->Subject }}</td>
                                 <td>{{ date('d/m/Y', strtotime($rv->Started_at)) }}</td>
                                 <td>{{ $rv->heure_debut }}</td>
-                                <td>{{ $rv->Location }}</td>
+                                <td>{{ $rv->Location ?? $location }}</td>
                             </tr>
                         @endforeach
                     </tbody>

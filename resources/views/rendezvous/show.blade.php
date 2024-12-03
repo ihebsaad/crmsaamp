@@ -75,10 +75,17 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="">
                                 <label for="Location">{{__('msg.Place')}}:</label>
                                 <h6>{{$rendezvous->Location}}</h6>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="mode_de_rdv">Mode:</label>
+                                <h6>{{$rendezvous->mode_de_rdv}}</h6>
                             </div>
                         </div>
 
