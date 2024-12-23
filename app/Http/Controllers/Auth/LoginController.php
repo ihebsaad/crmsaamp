@@ -89,14 +89,12 @@ class LoginController extends Controller
 
 	protected function authenticated(Request $request, $user)
 	{
-	if ( $user->user_type=='adv' ||  $user->user_type=='') {
-		return redirect()->route('dashboard');
-	}
-    if ( $user->user_type=='admin' || $user->role=='admin' || $user->role=='dirQUA'  ) {
-		return redirect()->route('adminhome');
-	}
 
-	 return redirect('/dashboard');
+        if ( $user->user_type=='admin' || $user->role=='admin' || $user->role=='dirQUA'  ) {
+            return redirect()->route('adminhome');
+        }
+
+        return redirect('/dashboard');
 	}
 
 }

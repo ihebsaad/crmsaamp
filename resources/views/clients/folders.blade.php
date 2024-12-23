@@ -115,7 +115,13 @@
                     <!--<h3 class="foldername ml-3"><img  width="45" src="{{ URL::asset('img/open-folder.png')}}"> {{$folderName}}</h3><br>-->
                 @endif
 
-
+                @if(isset($folderId) )
+                    <div class="row">
+                        <div class="col-md-12 float-right text-right ">
+                            <span style="cursor:pointer" onclick="return confirm('Êtes-vous sûrs ?')?deleteFolder('{{$folderId}}'):'';"  ><img class="mb-2 mt-2" src="{{ URL::asset('img/delete-folder.png')}}" width="50" title="Supprimer le dossier" style="opacity:0.4"  /></span>
+                        </div>
+                    </div>
+                @endif
 
                 <div class="pl-5" id="folders-container"></div>
                 <div class="row pl-5" id="files-container"></div>
@@ -222,6 +228,42 @@
                                     }
                                 }
                             });
+                        }
+
+
+                        function deleteFolder(itemId) {
+
+                            var _token = $('input[name="_token"]').val();
+                            $.ajax({
+                                url: `https://crm.mysaamp.com/delete_folder/${itemId}`,
+                                method: "get",
+                                //data: {  _token: _token,id:itemId},
+                                success:function(data){
+                                    console.log(data);
+                                    if(data==1){
+                                        $.notify({
+                                            message: 'Dossier supprimé !',
+                                            icon: 'glyphicon glyphicon-check'
+                                        }, {
+                                            type: 'success',
+                                            delay: 2000,
+                                            timer: 1000,
+                                            placement: {
+                                                from: "top",
+                                                align: "right"
+                                            },
+                                        });
+
+                                        setTimeout(function (){
+                                            window.location.href =`https://crm.mysaamp.com/clients/folder/<?php echo $id;?>`;
+                                        }, 3000);
+
+                                    }else{
+                                        alert('erreur lors de suppression du dossier');
+                                    }
+                                }
+                            });
+
                         }
 
                     <?php } ?>

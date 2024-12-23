@@ -23,4 +23,10 @@ class RendezVous extends Model
         }
     }
 
+
+    public function client()
+    {
+        return $this->belongsTo(CompteClient::class, 'AccountId', 'id');
+    }
+
 }

@@ -180,7 +180,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         </div>
                     </div>
                     <div class="row pt-1">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="">
                                 <label for="Phone">{{__('msg.Phone')}}:</label>
                                 <h6>{{$client->Phone ??  $client->Tel}}</h6>
@@ -201,13 +201,19 @@ if (is_array($commandes) || is_object($commandes)) {
                             </div>
                         </div>
                         -->
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="">
                                 <label for="">{{__('msg.Website')}}:</label>
                                 <h6>{{$client->url}}</h6>
                             </div>
                         </div>
-                        <div class="col-md-6 mt-3">
+                        <div class="col-md-4">
+                            <div class="">
+                                <label for="">{{__('msg.Comment')}}:</label>
+                                <h6>{{$client->Commentaire ?? ''}}</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mt-3">
                             <b class="float-right text-info " ><i>{{$login}}</i></b>
                         </div>
                         <!--

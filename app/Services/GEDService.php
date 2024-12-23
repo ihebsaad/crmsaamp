@@ -800,4 +800,52 @@ class GEDService
 			}
 		}
 	}
+
+
+
+    public static function deleteFolder($id) {
+
+		$headers = array(
+			'Content-Type: application/json',
+			'Auth-Token: ' . self::getToken()
+		);
+
+		$url = "https://ged.maileva.com/api/folder/$id";
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_HEADER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+
+        $response = curl_exec($curl);
+
+        if ($response === false) {
+            $err = curl_error($curl);
+            curl_close($curl);
+            throw new Exception("Erreur cURL : $err");
+        }
+
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        // Vérifie le code HTTP
+        if ($httpCode >= 200 && $httpCode < 300) {
+            // Analyse de la réponse JSON
+            //$data = json_decode($response, true);
+			\Log::info("Le dossier a été supprimé avec succès.");
+			return true;
+
+        } else {
+            // Gestion des erreurs
+            \Log::info("Erreur lors de la suppression. Code HTTP : $httpCode ");
+			return false;
+        }
+    }
+
+
 }

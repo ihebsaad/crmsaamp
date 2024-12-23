@@ -33,7 +33,7 @@
                     @method('PUT')
                     <input type="hidden" name="edited_by" value="{{auth()->user()->id}}" >
 
-                    <div class="row pt-1">
+                    <div class="row pt-1 mb-1">
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Name">{{__('msg.Reference')}}:</label>
@@ -55,22 +55,6 @@
                                 <h6>{{$retour->Motif_retour}}</h6>
                             </div>
                         </div>
-                        @if(auth()->user()->user_type=='admin')
-                        <div class="col-md-3">
-                            <div class="">
-                                <label for="Responsable_de_resolution">{{__('msg.Agency')}}:</label>
-                                <select    id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution"    >
-                                    <option></option>
-                                    @foreach($agences as $agence)
-                                        <option @selected($retour->Responsable_de_resolution==$agence->agence_lib) value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
-                                    @endforeach
-                                </select><br><br>
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-
-                    <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Division">{{__('msg.Customer')}}:</label>
@@ -81,6 +65,37 @@
                                 @endif
                             </div>
                         </div>
+                    </div>
+                    @if(auth()->user()->role=='admin' || auth()->user()->role=='dirQUA' )
+                        <div class="row mt-2">
+                            <div class="col-md-3">
+                                <div class="">
+                                    <label for="Responsable_de_resolution">{{__('msg.Agency')}}:</label>
+                                        <select    id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution" onchange="check_email()"  >
+                                            <option></option>
+                                            @foreach($agences as $agence)
+                                                <option @selected($retour->Responsable_de_resolution==$agence->agence_lib) value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                                            @endforeach
+                                        </select><br><br>
+                                </div>
+                            </div>
+
+                                <div class="col-md-3"  @if($retour->Responsable_de_resolution!='LIMONEST' )  style="visibility:hidden"  @endif>
+                                    <label for="Department">{{__('msg.Department')}}:</label>
+                                    <select   name="Departement" class="form-control"  id="Departement" @if($retour->Responsable_de_resolution!='LIMONEST' ) disabled @endif >
+                                            <option>Choisissez</option>
+                                            <option value="FRET">FRET</option>
+                                            <option value="Laboratoire">Laboratoire</option>
+                                            <option value="Fonte">Fonte</option>
+                                            <option value="Production">Production</option>
+                                            <option value="Qualité">Qualité</option>
+                                    </select>
+                                </div>
+
+                        </div>
+                    @endif
+                    <div class="row pt-1">
+
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Division">{{__('msg.Division')}}:</label>
@@ -231,6 +246,23 @@
 
 
     <script>
+        function check_email(){
+            let depot = $( "#Responsable_de_resolution" ).val();
+            if(depot=='LIMONEST'){
+                //$( "#email_responsable" ).show();
+                $( "#Departement" ).css('visibility','visible');
+                $( "#Departement" ).attr("disabled", false);
+                $( "#Departement" ).attr("required", true);
+
+            }else{
+                //$( "#email_responsable" ).hide();
+                $( "#Departement" ).css('visibility','hidden');
+                $( "#Departement" ).attr("disabled", true);
+                $( "#Departement" ).attr("required", false);
+                $( "#Departement" ).val("");
+            }
+        }
+
         $(function () {
 
             $( ".datepicker" ).datepicker({

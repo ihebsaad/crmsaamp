@@ -39,54 +39,52 @@ class ClientsController extends Controller
 	public function create()
 	{
 		$agences = DB::table('agence')->get();
-		return view('clients.create',compact('agences'));
-
+		return view('clients.create', compact('agences'));
 	}
 
 	public function show($id)
 	{
-		$client=CompteClient::find($id);
+		$client = CompteClient::find($id);
 		$agences = DB::table('agence')->get();
 		$representants = DB::table('representant')->get();
 		$etats = DB::table('etat_client')->get();
 
-		return view('clients.show',compact('client','agences','representants','etats'));
+		return view('clients.show', compact('client', 'agences', 'representants', 'etats'));
 	}
 
 
 	public function update(Request $request, $id)
-    {
-        $request->validate([
-            'Nom' => 'required',
-            'adresse1' => 'required',
-            'ville' => 'required',
-            'zip' => 'required',
-        ]);
+	{
+		$request->validate([
+			'Nom' => 'required',
+			'adresse1' => 'required',
+			'ville' => 'required',
+			'zip' => 'required',
+		]);
 
 		$client = CompteClient::find($id);
 
 		$client->update($request->all());
 
 		return redirect()->route('fiche', ['id' =>  $id])
-				->with('success', 'Client modifié');
-
+			->with('success', 'Client modifié');
 	}
 
 	public function store(Request $request)
-    {
-        $request->validate([
-            'Nom' => 'required',
-            'adresse1' => 'required',
-            'ville' => 'required',
-            'zip' => 'required',
+	{
+		$request->validate([
+			'Nom' => 'required',
+			'adresse1' => 'required',
+			'ville' => 'required',
+			'zip' => 'required',
 			'Code_siret' => 'required|string', //|max:14
-        ]);
-/*
+		]);
+		/*
 		if(CompteClient::where('siret',$request->input('siret'))->exists()  ){
 			return back()->withErrors(['msg' => "stocker siret dans la colonne Code siret"]);
 		}*/
 
-		$siret=trim($request->input('Code_siret'));
+		$siret = trim($request->input('Code_siret'));
 		$client = CompteClient::create([
 			'Nom' => $request->input('Nom'),
 			'adresse1' => $request->input('adresse1'),
@@ -97,100 +95,104 @@ class ClientsController extends Controller
 			'pays_code' => $request->input('pays_code'),
 			'latitude' => $request->input('latitude'),
 			'longitude' => $request->input('longitude'),
+			'Commentaire' => $request->input('Commentaire'),
 			'Code_siret' => $siret,
 			'Tel' => $request->input('Tel'),
 			'email' => $request->input('email'),
 			'url' => $request->input('url'),
-			'etat_id'=>1,
-			'Code_siren'=> substr($siret,0,9),
+			'etat_id' => 1,
+			'Code_siren' => substr($siret, 0, 9),
 		]);
 
 		$client->save();
 
 		$contact = Contact::create([
-			'Nom'=> $request->input('nom_contact'),
-			'Prenom'=> $request->input('prenom_contact'),
-			'email'=> $request->input('email_contact'),
-			'mycl_ident'=> $client->id,
+			'Nom' => $request->input('nom_contact'),
+			'Prenom' => $request->input('prenom_contact'),
+			'email' => $request->input('email_contact'),
+			'mycl_ident' => $client->id,
 		]);
 
 		$contact->save();
 
 		return redirect()->route('fiche', $client->id)
-		->with('success','Client ajouté');
-
+			->with('success', 'Client ajouté');
 	}
 
 
 	public function fiche($id)
 	{
-		$client=CompteClient::find($id);
-		$users_id=DB::table('users')->where('client_id',$client->cl_ident)->get();
+		$client = CompteClient::find($id);
+		$login = '';
 
-		$users_ids = DB::table('users')
-			->where('client_id', $client->cl_ident)
-			->pluck('id'); // Get only user IDs
+		if ($client->cl_ident > 0) {
+			$users_id = DB::table('users')->where('client_id', $client->cl_ident)->get();
 
-		// Get the latest login time from the user_logins table for these users
-		$lastLogin = DB::table('user_logins')
-			->whereIn('user_id', $users_ids)
-			->orderBy('login_at', 'desc') // Order by login_at descending
-			->first(); // Get the most recent record
-		$login='';
-		if ($lastLogin) {
-			$login= __('msg.Last login to MySaamp')." : " .  date('d/m/Y H:i', strtotime($lastLogin->login_at));
+			$users_ids = DB::table('users')
+				->where('client_id', $client->cl_ident)
+				->pluck('id'); // Get only user IDs
+
+			// Get the latest login time from the user_logins table for these users
+			$lastLogin = DB::table('user_logins')
+				->whereIn('user_id', $users_ids)
+				->orderBy('login_at', 'desc') // Order by login_at descending
+				->first(); // Get the most recent record
+
+			if ($lastLogin) {
+				$login = __('msg.Last login to MySaamp') . " : " .  date('d/m/Y H:i', strtotime($lastLogin->login_at));
+			} else {
+				$login = __('msg.No connection to MySaamp');
+			}
 		} else {
-			$login= __('msg.No connection to MySaamp') ;
+
 		}
 
-		$contacts=$retours =$taches=array();
+
+		$contacts = $retours = $taches = array();
 		$representants = DB::table('representant')->get();
 
-		$commercial=$support='';
-		$rep_comm= DB::table('representant')->find($client->commercial);
-		if(isset($rep_comm))
-			$commercial=$rep_comm->prenom .' '. $rep_comm->nom;
+		$commercial = $support = '';
+		$rep_comm = DB::table('representant')->find($client->commercial);
+		if (isset($rep_comm))
+			$commercial = $rep_comm->prenom . ' ' . $rep_comm->nom;
 
-		$rep_supp= DB::table('representant')->find($client->commercial_support);
-		if(isset($rep_supp))
-			$support=$rep_supp->prenom .' '. $rep_supp->nom;
+		$rep_supp = DB::table('representant')->find($client->commercial_support);
+		if (isset($rep_supp))
+			$support = $rep_supp->prenom . ' ' . $rep_supp->nom;
 
 		//if($client->Client_Prospect!='COMPTE PROSPECT'){
-			if($client->cl_ident >0){
-				$contacts=Contact::where('cl_ident',$client->cl_ident)->get();
-				$taches=self::getClientTasks($client->cl_ident);
-			}
-			else{
-				$contacts=Contact::where('mycl_ident',$client->id)->get();
-				$taches = Tache::where('ID_Compte', $client->id)->get();
-			}
+		if ($client->cl_ident > 0) {
+			$contacts = Contact::where('cl_ident', $client->cl_ident)->get();
+			$taches = self::getClientTasks($client->cl_ident);
+		} else {
+			$contacts = Contact::where('mycl_ident', $client->id)->get();
+			$taches = Tache::where('ID_Compte', $client->id)->get();
+		}
 
-			$retours=RetourClient::where('cl_id',$client->cl_ident)->get();
+		$retours = RetourClient::where('cl_id', $client->cl_ident)->get();
 		//}
-		$agence_name='';
-		$agence = DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
+		$agence_name = '';
+		$agence = DB::table('agence')->where('agence_ident', $client->agence_ident)->first();
 
-		if(isset($agence))
-			$agence_name=$agence->agence_lib;
+		if (isset($agence))
+			$agence_name = $agence->agence_lib;
 
-		$stats=$commandes=null;
+		$stats = $commandes = null;
 
-		if($client->cl_ident!=''){
+		if ($client->cl_ident != '') {
 			//$taches=Tache::where('mycl_id',$client->cl_ident)->get();
-			try{
+			try {
 
 				DB::select("SET @p0=$client->cl_ident ;");
 				DB::select("SET @p1=1  ;");
-				$stats=  DB::select('call `sp_stats_client`(@p0,@p1); ');
+				$stats =  DB::select('call `sp_stats_client`(@p0,@p1); ');
 
 
 				DB::select("SET @p0='$client->cl_ident'  ;");
 				$commandes =  DB::select(" CALL `sp_accueil_liste_commandes`(@p0); ");
-
-			}catch(\Exception $e){
+			} catch (\Exception $e) {
 				\Log::error($e->getMessage());
 			}
-
 		}
 		/*
 		if($client->Id_Salesforce!='')
@@ -209,14 +211,14 @@ class ClientsController extends Controller
 		//$callData=PhoneService::data($client->token_phone);
 
 
-/*
+		/*
 		$tous_appels=$callData['incoming'] ?? array();
 		$phone=$client->phone;
 		$appels = array_filter($tous_appels, function($appel) use ($phone) {
 			return $appel['number'] === $phone;
 		});
 */
-	/*
+		/*
 		$callData=PhoneService::data($client->token_phone);
 		$appels=$callData['incoming'] ?? array();
 
@@ -234,12 +236,12 @@ class ClientsController extends Controller
                             @endif
                             @endforeach-->
 */
-		$rendezvous=RendezVous::where('Account_Name',$client->Nom)
-		->orWhere('mycl_id', $client->id)
-		->get();
+		$rendezvous = RendezVous::where('Account_Name', $client->Nom)
+			->orWhere('mycl_id', $client->id)
+			->get();
 
 		$now = Carbon::now();
-/*
+		/*
 		$Proch_rendezvous = RendezVous::where(function ($query) use ($client) {
 			$query->where('AccountId', $client->id)
 				->orWhere('AccountId', $client->Id_Salesforce);
@@ -256,7 +258,7 @@ class ClientsController extends Controller
 		->orderBy('Started_at', 'desc')
 		->get();
 */
-/*
+		/*
 		$Proch_rendezvous = RendezVous::where('Account_Name', $client->Nom)
 		->where('Started_at', '>=', $now)
 		->orderBy('Started_at', 'desc')
@@ -266,10 +268,10 @@ class ClientsController extends Controller
 			$query->where('Account_Name', $client->Nom)
 				->orWhere('mycl_id', $client->id);
 		})
-		->where('Started_at', '>=', $now)
-		->orderBy('Started_at', 'desc')
-		->get();
-/*
+			->where('Started_at', '>=', $now)
+			->orderBy('Started_at', 'desc')
+			->get();
+		/*
 		$Anc_rendezvous = RendezVous::where('Account_Name', $client->Nom)
 		->where('Started_at', '<', $now)
 		->orderBy('Started_at', 'desc')
@@ -279,28 +281,27 @@ class ClientsController extends Controller
 			$query->where('Account_Name', $client->Nom)
 				->orWhere('mycl_id', $client->id);
 		})
-		->where('Started_at', '<', $now)
-		->orderBy('Started_at', 'desc')
-		->get();
-		return view('clients.fiche',compact('client','contacts','retours','Proch_rendezvous','Anc_rendezvous','taches','stats','commandes','agence_name','commercial','support','login'));
+			->where('Started_at', '<', $now)
+			->orderBy('Started_at', 'desc')
+			->get();
+		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login'));
 	}
 
 
 	public function finances($id)
 	{
-		$client=CompteClient::find($id);
-		return view('clients.finances',compact('client'));
+		$client = CompteClient::find($id);
+		return view('clients.finances', compact('client'));
 	}
 
 
 	public function phone($id)
 	{
-		$client=CompteClient::find($id);
+		$client = CompteClient::find($id);
 		//$token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1NTk4ODM2IiwiYXVkIjoiKiIsImlzcyI6InR2eCIsImlhdCI6MTcxNjU0NjU5MCwianRpIjoiMTg5OTQ0NjYifQ.4_0fCiH0KqsKHbtI3xnp1VkrRamENo_qf7Uecs_0b4WhczutEMUJZlHzhm4HZqHgKBbCxxyv3E8mX5nl-JQm4Q';
-		$token=$client->token_phone;
- 		$callData=PhoneService::data($token);
-		return view('clients.phone',compact('client','callData','token'));
-
+		$token = $client->token_phone;
+		$callData = PhoneService::data($token);
+		return view('clients.phone', compact('client', 'callData', 'token'));
 	}
 
 
@@ -316,13 +317,13 @@ class ClientsController extends Controller
 			$query->where('cl_ident', 'like', '%' . $request->client_id . '%');
 		}
 		if ($type == 2) {
-			$query->where('etat_id',2);
+			$query->where('etat_id', 2);
 		} elseif ($type == 1) {
 			$query->where('etat_id',  1);
 		}
 
 		if ($request->has('Nom') && $request->Nom) {
-			$query->where('Nom', 'like', '%'. $request->Nom . '%');
+			$query->where('Nom', 'like', '%' . $request->Nom . '%');
 		}
 
 		if ($request->has('adresse1') && $request->adresse1) {
@@ -336,7 +337,7 @@ class ClientsController extends Controller
 		if ($request->has('zip') && $request->zip) {
 			$query->whereRaw("TRIM(zip) LIKE ?", [trim($request->zip) . '%']);
 		}
-/*
+		/*
 		$tri = $request->get('tri');
 		if ($tri == 1) {
 			$query->orderBy('Nom');
@@ -366,29 +367,27 @@ class ClientsController extends Controller
 		$clients = $query->get()->take(1000);
 
 		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
-		if($print)
-			return view('clients.print', compact('clients','request','agences'));
+		if ($print)
+			return view('clients.print', compact('clients', 'request', 'agences'));
 		else
-			return view('clients.search', compact('clients','request','agences'));
-
+			return view('clients.search', compact('clients', 'request', 'agences'));
 	}
 
 	public function prospects(Request $request)
 	{
-		$clients = CompteClient::where('agence_ident',auth()->user()->agence_ident)->where('etat_id',1)->get();
+		$clients = CompteClient::where('agence_ident', auth()->user()->agence_ident)->where('etat_id', 1)->get();
 		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
-		return view('clients.print', compact('clients','request','agences'));
-
+		return view('clients.print', compact('clients', 'request', 'agences'));
 	}
 
 	public function ouverture(Request $request)
 	{
-		$type= $request->get('type');
-		$cl_ident= $request->get('cl_ident');
-		$id= $request->get('id');
+		$type = $request->get('type');
+		$cl_ident = $request->get('cl_ident');
+		$id = $request->get('id');
 		$files = $request->file('files');
 
-		$result=GEDService::Account($cl_ident,$type,$id,$files);
+		$result = GEDService::Account($cl_ident, $type, $id, $files);
 		return $result;
 	}
 
@@ -401,54 +400,48 @@ class ClientsController extends Controller
 
 	public function folder($id)
 	{
-		$client=CompteClient::find($id);
+		$client = CompteClient::find($id);
 
-		try{
-			$clientId=$client->cl_ident;
+		try {
+			$clientId = $client->cl_ident;
 
-			$files=false;
-			$parent=null;
+			$files = false;
+			$parent = null;
 			if (isset($clientId)) {
-				$folders=GEDService::getFolders($clientId);
+				$folders = GEDService::getFolders($clientId);
 				//dd($folders);
 
 			}
-			return view('clients.folder',compact('client','folders','files'));
-
-
+			return view('clients.folder', compact('client', 'folders', 'files'));
 		} catch (\Exception $e) {
-			\Log::info(' erreur GED '.$e->getMessage());
+			\Log::info(' erreur GED ' . $e->getMessage());
 			return "Erreur : " . $e->getMessage();
 		}
-
-
-
 	}
 
-	public function folderContent($folderId,$folderName,$parent=null,$client_id)
+	public function folderContent($folderId, $folderName, $parent = null, $client_id)
 	{
-		try{
+		try {
 			//$clientId=auth()->user()->client_id;
 
 			//if (isset($clientId)) {
-				$folders=GEDService::getFolderList($folderId);
-				$folderContent=GEDService::getFolderContent($folderId);
-				$files=false;
-				if(!$folders){
-					$folders=GEDService::getFolderList($parent);
-					$files=true;
-					//dd($parent);
-				}
+			$folders = GEDService::getFolderList($folderId);
+			$folderContent = GEDService::getFolderContent($folderId);
+			$files = false;
+			if (!$folders) {
+				$folders = GEDService::getFolderList($parent);
+				$files = true;
+				//dd($parent);
+			}
 			//}
 
 		} catch (\Exception $e) {
-			\Log::info(' erreur GED '.$e->getMessage());
+			\Log::info(' erreur GED ' . $e->getMessage());
 			return "Erreur : " . $e->getMessage();
+		} finally {
+			\Log::info('GED folder show ');
 		}
-		finally {
-			\Log::info('GED folder show ' );
-		}
-		return view('clients.folders',compact('folders','folderName','folderContent','parent','files','folderId','client_id'));
+		return view('clients.folders', compact('folders', 'folderName', 'folderContent', 'parent', 'files', 'folderId', 'client_id'));
 	}
 
 
@@ -462,7 +455,7 @@ class ClientsController extends Controller
 			->where('DateTache', '>=', $currentDate->subDays(7)) // Filter for the last 15 days
 			->get();
 
-/*
+		/*
 			$tasks = Tache::where(function ($query) use ($client_id) {
 				$query->where('ID_Compte', $client_id)
 					->orWhere('mycl_id', $client_id);
@@ -542,68 +535,66 @@ class ClientsController extends Controller
 
 	public function download($id)
 	{
-		try{
+		try {
 			//$clientId=auth()->user()->client_id;
 
 			//if (isset($clientId)) {
-				GEDService::downloadItem($id);
+			GEDService::downloadItem($id);
 			//}
 
 		} catch (\Exception $e) {
-			\Log::info(' erreur GED '.$e->getMessage());
+			\Log::info(' erreur GED ' . $e->getMessage());
 			return "Erreur : " . $e->getMessage();
 		}
 	}
 
 	public function view($id)
 	{
-		try{
+		try {
 			//$clientId=auth()->user()->client_id;
 
 			//if (isset($clientId)) {
-				$result = GEDService::getItem($id);
+			$result = GEDService::getItem($id);
 
-				if ($result) {
-					return response($result, 200)
-						->header('Content-Type', 'application/pdf');
-				}
+			if ($result) {
+				return response($result, 200)
+					->header('Content-Type', 'application/pdf');
+			}
 			//}
 
 		} catch (\Exception $e) {
-			\Log::info(' erreur GED '.$e->getMessage());
+			\Log::info(' erreur GED ' . $e->getMessage());
 			return "Erreur : " . $e->getMessage();
 		}
 
 		return "Document not found or access denied.";
-
 	}
 
 	public function delete_file($itemid)
 	{
-		$res=GEDService::deleteFile($itemid);
+		$res = GEDService::deleteFile($itemid);
 		return $res;
 	}
 
 	/** VIEW **/
-	public function edit_file($item,$id,$name)
+	public function edit_file($item, $id, $name)
 	{
-		$client= CompteClient::find($id);
-		return view('clients.edit_file',compact('client','item','id','name'));
-
+		$client = CompteClient::find($id);
+		return view('clients.edit_file', compact('client', 'item', 'id', 'name'));
 	}
 
 
 	public function editFile(Request $request)
 	{
-		$itemId= $request->get('item_id');
-		$attachment=$request->file('file');
-		$id=$request->get('id');
+		$itemId = $request->get('item_id');
+		$attachment = $request->file('file');
+		$id = $request->get('id');
 
-		try{
-			$result = GEDService::editItem($itemId, $attachment, $id,'client');
-			return $result ;
+		try {
+			$result = GEDService::editItem($itemId, $attachment, $id, 'client');
+			return $result;
 		} catch (\Exception $e) {
-			\Log::info(' erreur GED replacement '.$e->getMessage());
+			\Log::info(' erreur GED replacement ' . $e->getMessage());
 			return "Erreur modification de fichier : " . $e->getMessage();
 		}
 	}
@@ -611,12 +602,10 @@ class ClientsController extends Controller
 
 	public function destroy($id)
 	{
- 		$client = CompteClient::find($id);
- 		$client->delete();
+		$client = CompteClient::find($id);
+		$client->delete();
 
 		return redirect()->route('search')
-		->with('success','Supprimé avec succès');
+			->with('success', 'Supprimé avec succès');
 	}
-
-
 } // end class

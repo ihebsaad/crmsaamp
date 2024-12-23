@@ -236,9 +236,9 @@ class HomeController extends Controller
 		}
 
 		// Vérification des permissions
-		if ($user != auth()->user()->id && auth()->user()->user_type != 'admin') {
-			return view('welcome');
-		}
+		//if (auth()->user()->role != 'admin' &&  auth()->user()->role != 'respAG' && auth()->user()->role != 'dirQUA') {
+		//	return view('welcome');
+		//}
 
 		// Récupération des rendez-vous en fonction de l'utilisateur et de la plage de dates
 		if ($user > 0) {
@@ -353,7 +353,7 @@ class HomeController extends Controller
 
 			DB::select("SET @p0='".$agence_id."' ;");
 			$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
-
+/*
 			$query = "
 			SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
 			FROM Statistiques s
@@ -364,12 +364,17 @@ class HomeController extends Controller
 
 			$result = DB::select($query, [auth()->id(), auth()->id()]);
 			$total_clients = $result[0]->total_clients;
+				*/
+			$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
+
+
+			$total_clients= CompteClient::where('etat_id',2)->where('agence_ident',$agence_id)->count();
+			$total1 = DB::select($query, [$agence_id]);
+			$total_1=$total1[0]->total;
 		}
 
 
 		if(auth()->user()->role=='adv'){
-
-
 
 			$client_ids = CompteClient::where('adv',auth()->user()->id)->pluck('id');
 
@@ -379,6 +384,13 @@ class HomeController extends Controller
 			->orderBy('id','desc')
 			->get();
 
+			DB::select("SET @p0='".$agence_id."' ;");
+			$clients =  DB::select("  CALL `sp_stats_agence_client_top5`(@p0); ");
+			$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
+
+			$total_clients= CompteClient::where('etat_id',2)->where('agence_ident',$agence_id)->count();
+			$total1 = DB::select($query, [$agence_id]);
+			$total_1=$total1[0]->total;
 		}else{
 
 
@@ -395,7 +407,7 @@ class HomeController extends Controller
 
 				//$prospects
 				$prospects=CompteClient::where('agence_ident',auth()->user()->agence_ident)->where('etat_id',1)->get();
-
+/*
 				$commerciaux=CompteClient::where('agence_ident',auth()->user()->agence_ident)->pluck('commercial');
 				$commerciaux=$commerciaux->unique();
 				$commerciaux=$commerciaux->filter()->all();
@@ -407,13 +419,13 @@ class HomeController extends Controller
 
 				$commerciaux =array_merge($commerciaux,$commerciaux_support);
 				$commerciaux=array_unique($commerciaux);
-
-
+*/
+				$commerciaux= DB::table("representant")->where('type','Commercial terrain')->pluck('id');
 				foreach($commerciaux as $commercial){
-					//$comm= User::find($commercial);
-					$rep=DB::table("representant")->where('id',$commercial)->first();
+					$rep=DB::table("representant")->find($commercial);
+					$user= User::find($rep->users_id);
 
-					if(isset($rep)){
+					if($user->agence_ident==auth()->user()->agence_ident || auth()->user()->id==10){
 						DB::select("SET @p0='$commercial' ;");
 						$customers[$commercial] =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
 						//}
@@ -433,23 +445,6 @@ class HomeController extends Controller
 					}
 
 				}
-
-/*
-					DB::select("SET @p0=".auth()->user()->id." ;");
-					$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
-
-					$query = "
-					SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
-					FROM Statistiques s
-					WHERE
-						(s.Commercial = ? OR s.Commercial_support = ?)
-						AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
-						AND s.cl_ident <> 0
-					";
-
-					$result = DB::select($query, [auth()->user()->id, auth()->user()->id]);
-					$total_clients = $result[0]->total_clients;
-*/
 
 			}else{
 				$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
@@ -493,7 +488,7 @@ class HomeController extends Controller
 			//StatsController::stats();
 			$agences= DB::table('agence')->get();
 			$users= DB::table('users')->where('user_type','<>','')->get();
-			$representants= DB::table('representant')->orderBy('nom','asc')->get();
+			$representants= DB::table('representant')->whereNull('remplace_par')->orderBy('nom','asc')->get();
 
 			$commercial=false;
 			foreach($representants as $rep){

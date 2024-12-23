@@ -154,7 +154,14 @@
                         </div>
 
                     </div>
-
+                    <div class="row pt-1">
+                        <div class="col-md-4">
+                            <div class="">
+                                <label for="">{{__('msg.Comment')}}:</label>
+                                <textarea type="Commentaire" id="Commentaire" class="form-control" name="Commentaire"></textarea><br><br>
+                            </div>
+                        </div>
+                    </div>
 <!--
                     <div class="row pt-1">
 

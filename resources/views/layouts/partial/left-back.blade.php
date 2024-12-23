@@ -35,7 +35,7 @@ if (Auth::check()) {
 <ul class="navbar-nav bg-dark sidebar sidebar-dark  accordion" id="accordionSidebar" style="background-color:#f3f3f3!important">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('dashboard')}}">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center"   @if(auth()->user()->role=='admin' || auth()->user()->role=='dirQUA' )  href="{{route('adminhome')}}"   @else href="{{route('dashboard')}}"  @endif  >
     <!--<div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div>-->
@@ -70,10 +70,14 @@ if (Auth::check()) {
 
 
     <a class="nav-link" href="{{route('home')}}">
-      <i class="fas fa-home" ></i>
+    <i class="far fa-chart-bar"></i>
       <span><div class="hidemobile"> {{__('msg.My ')}} </div>{{__('msg.Statistics')}}</span>
     </a>
 
+    <a class="nav-link" href="{{route('recap')}}">
+      <i class="fas fa-chart-pie"></i>
+      <span>Mon Récapitulaitf</span>
+    </a>
 
     <a class="nav-link" href="{{route('search')}}">
       <i class="fas fa-users" ></i>
@@ -88,9 +92,9 @@ if (Auth::check()) {
 
     <i class="fas fa-tasks" ></i>
     @if($user->role=='commercial')
-      <span>{{__('msg.Activities of my customers')}}</span>
+      <span style="font-size:10px!important">{{__('msg.Activities of my customers')}}</span>
     @else
-      <span>{{__('msg.Activities tracking')}} </span>
+      <span style="font-size:10px!important">{{__('msg.Activities tracking')}} </span>
     @endif
     </a>
     <!--<hr class="sidebar-divider">
@@ -113,6 +117,13 @@ if (Auth::check()) {
         <span style="font-size:10px!important">{{__('msg.Appointments')}} <div class="hidemobile">{{__('msg.excluding customers')}}</div></span>
       </a>
     @endif
+    @if($user->role=='admin')
+    <a class="nav-link" href="{{route('map.parcours')}}" >
+    <i class="fas fa-map-marker-alt" ></i>
+      <span>Parcours</span>
+    </a>
+    @endif
+
     <a class="nav-link" href="{{route('help')}}" >
     <i class="fas fa-book" ></i>
       <span>{{__('msg.Help')}}</span>

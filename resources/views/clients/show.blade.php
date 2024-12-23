@@ -216,7 +216,12 @@
                                 <input type="url" id="url" class="form-control" name="url" value="{{$client->url}}"><br><br>
                             </div>
                         </div>
-
+                        <div class="col-md-6">
+                            <div class="">
+                                <label for="">{{__('msg.Comment')}}:</label>
+                                <textarea type="Commentaire" id="Commentaire" class="form-control" name="Commentaire">{{$client->Commentaire}}</textarea><br><br>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row pt-1">

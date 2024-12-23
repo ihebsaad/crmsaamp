@@ -643,5 +643,9 @@ return [
 	"Update Ticket"=>"Modifier le ticket",
 	"Submit"=>"Envoyer",
 	"Add files"=>"Ajouter des fichier",
+	"Customer address"=>"Adresse du client",
+	"Add a contact"=>"Ajouter un contact",
+	"Close"=>"Fermer",
+	"No results"=>"Aucun résultat",
 
  ];

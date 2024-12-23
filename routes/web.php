@@ -15,6 +15,9 @@ use App\Http\Controllers\StatsController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FilesController;
+use App\Http\Controllers\CommunicationsController;
+use App\Http\Controllers\MapController;
+use App\Http\Controllers\RecapController;
 
 
 /*
@@ -38,6 +41,11 @@ Route::get('/', function () {
 Route::get('/confid/', 'App\Http\Controllers\HomeController@confid')->name('confid');
 Route::get('/regles/', 'App\Http\Controllers\HomeController@regles')->name('regles');
 
+Route::get('/parcours', [MapController::class, 'parcours'])->name('map.parcours');
+Route::post('/parcours', [MapController::class, 'parcours']);
+
+
+Route::get('/recap', [RecapController::class, 'recap'])->name('recap');
 
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle'])->name('google.auth.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.auth.callback');
@@ -202,12 +210,17 @@ Route::get('/folders/{id}/{name}/{parent}/{client_id}', 'App\Http\Controllers\Cl
 Route::get('/download/{id}', 'App\Http\Controllers\ClientsController@download');
 Route::get('/viewpdf/{id}', 'App\Http\Controllers\ClientsController@view')->name('showPdf');
 Route::get('/delete_file/{id}', 'App\Http\Controllers\ClientsController@delete_file')->name('delete_file');
+Route::get('/delete_folder/{id}', 'App\Http\Controllers\GEDController@delete_folder')->name('delete_folder');
 Route::get('/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\ClientsController@edit_file');
 Route::post('/editFile', 'App\Http\Controllers\ClientsController@editFile')->name('editFile');
 Route::post('/relancer', 'App\Http\Controllers\OffresController@relancer')->name('relancer');
 
 Route::delete('/files/{file}', [FilesController::class, 'destroyFile'])->name('files.destroy');
 
+Route::get('communications/create', [CommunicationsController::class, 'create'])->name('communications.create');
+Route::post('communications', [CommunicationsController::class, 'store'])->name('communications.store');
+Route::get('/communications', [CommunicationsController::class, 'index'])->name('communications.index');
+Route::get('/search-ajax', [CommunicationsController::class, 'searchAjax'])->name('search.ajax');
 
 /*
 use App\Jobs\UpdateSequentialIdsJob;

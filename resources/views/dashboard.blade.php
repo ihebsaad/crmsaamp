@@ -175,6 +175,7 @@
   </div>
   <div class="row">
     <div class="col-md-6 col-lg-6 col-sm-12 text-center  mb-5">
+      <h4 class="black">{{__('msg.Number of customers')}}</h4>
       @if(auth()->user()->role=='adv' )
       <h5>{{$agence->lib}}</small></h5>
       <div class="circle2">
@@ -185,7 +186,6 @@
       </div>
       @else
 
-      <h4 class="black">{{__('msg.Number of customers')}}</h4>
       <div class="circle">
         <p style="margin-top:revert">{{ $total_clients }}</p>
       </div>

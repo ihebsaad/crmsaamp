@@ -28,6 +28,7 @@
 					<div class="card-body">
 						@php $user= \App\Models\User::find($ticket->user_id); @endphp
 						<p><strong>{{ __('msg.By') }}:</strong> {{ $user->name }} {{ $user->lastname }}</p>
+						<p><strong>{{ __('msg.Date') }}:</strong> {{ $ticket->created_at->format('d/m/Y H:i') }}</p>
 						<p><strong>{{ __('msg.Subject') }}:</strong> {{ $ticket->subject }}</p>
 						<p><strong>{{ __('msg.Category') }}:</strong> {{ ucfirst($ticket->category) }}</p>
 						<p><strong>{{ __('msg.Status') }}:</strong>
@@ -91,7 +92,7 @@
 				<div class="list-group mb-4">
 					@foreach($ticket->comments as $comment)
 					<div class="list-group-item">
-						<p><strong>{{ $comment->user->name }}:</strong> {{ $comment->comment }}</p>
+						<p><strong>{{ $comment->user->name ?? '' }} {{ $comment->user->lastname ?? '' }}:</strong> {{ $comment->comment }}</p>
 						<small class="text-muted">{{ $comment->created_at->format('d/m/Y H:i') }}</small>
 						@php  		$files=\App\Models\File::where('parent','comments')->where('parent_id',$comment->id)->get();  @endphp
 						<div class="row pt-1 pb-1">

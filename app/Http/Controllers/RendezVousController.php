@@ -99,12 +99,13 @@ class RendezVousController extends Controller
 	public function print($id)
 	{
 		$rendezvous = RendezVous::find($id);
+		$user=User::find($rendezvous->created_by);
 		if ($rendezvous->AccountId > 0) {
 			$client = CompteClient::find($rendezvous->AccountId);
 		} else {
 			$client = null;
 		}
-		return view('rendezvous.print', compact('rendezvous', 'client'));
+		return view('rendezvous.print', compact('rendezvous', 'client','user'));
 	}
 
 

@@ -8,7 +8,9 @@ use App\Models\Client;
 use App\Models\CompteClient;
 use App\Models\RetourClient;
 use App\Models\Contact;
-use App\Services\PhoneService;
+use App\Models\User;
+use App\Services\SendMail;
+
 use Illuminate\Support\Facades\DB;
 
 
@@ -58,14 +60,16 @@ class ContactsController extends Controller
 	{
 		$request->validate([
 			'Nom' => 'required',
-
+			'email' => 'unique:contact',
 		]);
 
-		$contact = Contact::create($request->all());
+		$contact = Contact::create($request->except(['etat_id']));
 
 		if($request->get('email')!=''){
 			$data['email']=$request->get('email');
 			$data['id_client']=$request->get('cl_ident');
+			$data['Phone']=$request->get('Phone');
+			$data['MobilePhone']=$request->get('MobilePhone');
 			$data['tel']=$request->get('MobilePhone') ?? $request->get('Phone') ;
 			$data['nom']=$request->get('Nom');
 			$data['prenom']=$request->get('Prenom');
@@ -75,12 +79,29 @@ class ContactsController extends Controller
 			else
 				$data['tel']=   $request->get('Phone') ;
 
-			self::insert_as400($data);
+			if($request->get('etat_id')==2)
+				self::insert_as400($data);
+
+			$data['password']=self::randomPassword();
+			self::create_user($data);
 		}
 
 		return redirect()->route('contacts.show', $contact->id)
 			->with('success', ' Contact ajouté');
 	}
+
+
+	function randomPassword() {
+		$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+		$pass = array(); //remember to declare $pass as an array
+		$alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+		for ($i = 0; $i < 8; $i++) {
+			$n = rand(0, $alphaLength);
+			$pass[] = $alphabet[$n];
+		}
+		return implode($pass).date('Y').'*'; //turn the array into a string+ add year & *
+	}
+
 
 	public function update(Request $request, $id)
 	{
@@ -103,12 +124,10 @@ class ContactsController extends Controller
 			else
 				$data['tel']=   $request->get('Phone') ;
 
-			self::insert_as400($data);
+			self::update_as400($data);
 		}
 
-
-		return redirect()->route('contacts.show', $id)
-			->with('success', 'Contact modifié');
+		return redirect()->route('fiche', $contact->mycl_ident)->with('success', 'Contact modifié');
 	}
 
 
@@ -128,6 +147,9 @@ class ContactsController extends Controller
 				$data['id_client']=$cl_id;
 				$data['email']=$contact->email;
 				self::delete_as400($data);
+
+				//Supprimer l'utilisateur
+				User::where('email',$contact->email)->delete();
 			}
 
 			$contact->delete();
@@ -144,7 +166,36 @@ class ContactsController extends Controller
 
 
 
+	//create user
 
+	public function create_user($data){
+
+		$password = bcrypt(trim($data['password']));
+
+		$user = new User([
+			'username' => $data['email'],
+			'email' => $data['email'],
+			'name' => $data['prenom'],
+			'lastname' => $data['nom'],
+			'mobile' => $data['MobilePhone'],
+			'phone' => $data['Phone'],
+			'password' => $password,
+			'client_id' => $data['id_client'],
+		]);
+
+		if ($user->save()) {
+			\Log::info(" User created ID: ".$user->id );
+			$sujet='Votre compte a été créé chez SAAMP';
+			$contenu="Bonjour ".$data['prenom']." ".$data['nom']."<br><br>Votre Compte a été créé chez SAAMP.<br>Voici vos accès:<br><b>Identifiant:</b>". $data['email']." <br><b>Mot de passe:</b> ".$data['password']."<br><br><a target='_blank' href='https://mysaamp.com/login'> Accéder à mon compte </a><br><br><br><i>L'équipe SAAMP</i><br><i>Cordialement</i> ";
+
+			SendMail::send(trim($data['email']), $sujet, $contenu);
+
+		}else{
+			\Log::info(" Error adding user with email ". $data['email']);
+
+		}
+
+	}
 
 
 
@@ -192,11 +243,45 @@ class ContactsController extends Controller
 			\Log::info(' erreur insert contact as400 ' . $e->getMessage());
 			return "Erreur : " . $e->getMessage();
 		} finally {
-			\Log::info(' add / edit  contact as400 terminé ');
+			//\Log::info(' add  contact as400 terminé ');
 		}
 		return  true;
 	}
 
+	public function update_as400($data)
+	{
+		try {
+			\Log::info(" Contact as400 - data :".json_encode($data));
+			$server = config('as400.server');
+			$user = config('as400.user');
+			$pass = config('as400.pass');
+			$dsn = "Driver={IBM i Access ODBC Driver};System=$server;Uid=$user;Pwd=$pass";
+
+			$pdo = new \PDO("odbc:$dsn", $user, $pass);
+			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+			try {
+				$stmt = $pdo->prepare("UPDATE S65DD73D.GESCOMF.CLIMAIP1
+									   SET CLINOC = ?, CLIPRT = ?
+									   WHERE CLINUM = ? AND CLIMAI = ?");
+				$nom_complet = $data['nom'] . ' ' . $data['prenom'];
+				$stmt->execute([$nom_complet, $data['tel'], $data['id_client'], $data['email']]);
+				//$message = 'Contact mis à jour avec succès.';
+				\Log::info('Contact mis à jour avec succès ');
+
+			} catch (PDOException $e) {
+				//$message = 'Erreur lors de la mise à jour : ' . $e->getMessage();
+				\Log::info('Erreur lors de la mise à jour du contact' . $e->getMessage());
+			}
+
+		} catch (\Exception $e) {
+			\Log::info(' erreur insert contact as400 ' . $e->getMessage());
+			return "Erreur : " . $e->getMessage();
+		} finally {
+			//\Log::info('  edit  contact as400 terminé ');
+		}
+		return  true;
+	}
 
 	public function delete_as400($data)
 	{

@@ -29,7 +29,7 @@
     #stats3 tr:first-child,
     #stats4 tr:first-child,
     #stats5 tr:first-child,
-    #stats6 tr:first-child ,
+    #stats6 tr:first-child,
     #stats7 tr:first-child {
         background-color: cornsilk;
     }
@@ -51,18 +51,25 @@
 @section('content')
 
 <div class="row">
-
     <input type="hidden" id="user_id" value="{{ auth()->user()->id }}" />
 
     @if($commercial)
     <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" />
     @else
     @if( auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv' )
-    <div class="col-lg-4">
+    <div class="col-lg-3">
+        <span class=" mr-2">{{__('msg.Type')}}:</span>
+        <select class="form-control mb-20" id="type">
+            <option value="Commercial terrain">Commercial terrain</option>
+            <option value="Contact client siège">Contact client siège</option>
+            <option value="Collecteur Externe">Collecteur Externe</option>
+        </select>
+    </div>
+    <div class="col-lg-3">
         <span class=" mr-2">{{__('msg.Commercial')}}:</span>
         <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">
             @foreach ($representants as $rp)
-            <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}">{{$rp->nom}}  {{$rp->prenom}}</option>
+            <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}" data-type="{{$rp->type}}" >{{$rp->nom}}  {{$rp->prenom}}</option>
             @endforeach
         </select>
     </div>
@@ -150,36 +157,36 @@
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                            <th class="">{{__('msg.Customer')}}</th>
-                            <?php
-                            $mois_francais = [
-                                'Jan' => 'Janvier',
-                                'Feb' => 'Février',
-                                'Mar' => 'Mars',
-                                'Apr' => 'Avril',
-                                'May' => 'Mai',
-                                'Jun' => 'Juin',
-                                'Jul' => 'Juillet',
-                                'Aug' => 'Août',
-                                'Sep' => 'Septembre',
-                                'Oct' => 'Octobre',
-                                'Nov' => 'Novembre',
-                                'Dec' => 'Décembre'
-                            ];
+                                <th class="">{{__('msg.Customer')}}</th>
+                                <?php
+                                $mois_francais = [
+                                    'Jan' => 'Janvier',
+                                    'Feb' => 'Février',
+                                    'Mar' => 'Mars',
+                                    'Apr' => 'Avril',
+                                    'May' => 'Mai',
+                                    'Jun' => 'Juin',
+                                    'Jul' => 'Juillet',
+                                    'Aug' => 'Août',
+                                    'Sep' => 'Septembre',
+                                    'Oct' => 'Octobre',
+                                    'Nov' => 'Novembre',
+                                    'Dec' => 'Décembre'
+                                ];
 
-                            for ($i = 0; $i <= 12; $i++) {
-                                // Calculez la date en fonction du nombre de mois précédents
-                                $month_date = strtotime("-$i months");
+                                for ($i = 0; $i <= 12; $i++) {
+                                    // Calculez la date en fonction du nombre de mois précédents
+                                    $month_date = strtotime("-$i months");
 
-                                // Récupérez le mois (en format court) et l'année
-                                $month = date('M', $month_date);
-                                $year = date('Y', $month_date);
+                                    // Récupérez le mois (en format court) et l'année
+                                    $month = date('M', $month_date);
+                                    $year = date('Y', $month_date);
 
-                                // Affichez le mois en français avec l'année correspondante
-                                echo "<th class='text-center'>{$mois_francais[$month]} $year</th>";
-                            }
-                            ?>
-                            <th class="text-center">TOTAL</th>
+                                    // Affichez le mois en français avec l'année correspondante
+                                    echo "<th class='text-center'>{$mois_francais[$month]} $year</th>";
+                                }
+                                ?>
+                                <th class="text-center">TOTAL</th>
                         </thead>
                         <tbody id="stats7">
 
@@ -299,7 +306,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-4">
-                        <span class=" mr-2">{{__('msg.Inactive since')}} :</span><input type="number" class="form-control mb-20" id="nb_mois" onchange="update_stats();" style="max-width:70px"  value="2"/> {{__('msg.Month')}}
+                        <span class=" mr-2">{{__('msg.Inactive since')}} :</span><input type="number" class="form-control mb-20" id="nb_mois" onchange="update_stats();" style="max-width:70px" value="2" /> {{__('msg.Month')}}
                     </div>
                 </div>
                 <div class="table-container mn5">
@@ -326,6 +333,46 @@
 
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('type');
+        const commercialSelect = document.getElementById('commercial');
+
+        // Vérifier si les selects existent
+        if (typeSelect && commercialSelect) {
+            // Fonction pour filtrer les options
+            function filterRepresentants() {
+                const selectedType = typeSelect.value;
+
+                // Afficher ou masquer les options en fonction du type
+                Array.from(commercialSelect.options).forEach(option => {
+                    if (option.dataset.type === selectedType) {
+                        option.style.display = ''; // Afficher
+                    } else {
+                        option.style.display = 'none'; // Masquer
+                    }
+                });
+
+                // Sélectionner la première option visible
+                const firstVisibleOption = Array.from(commercialSelect.options).find(option => option.style.display === '');
+                if (firstVisibleOption) {
+                    commercialSelect.value = firstVisibleOption.value;
+                }
+
+                // Mettre à jour les stats
+                update_stats();
+            }
+
+            // Appliquer le filtre au chargement de la page et lors du changement
+            filterRepresentants();
+            typeSelect.addEventListener('change', filterRepresentants);
+        } else {
+            update_stats();
+            console.warn('Les éléments #type ou #commercial ne sont pas disponibles dans le DOM.');
+        }
+    });
+
+
+
     function update_stats() {
         var _token = $('input[name="_token"]').val();
         var agence = $('#agence').val();
@@ -354,15 +401,19 @@
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
+                    if (data.length === 0) {
+                        html = '<tr><td colspan="8" class="text-center">Aucune donnée disponible</td></tr>';
+                    } else {
+                        let delta1 = parseFloat((item.delta_1 && item.delta_1.includes('%')) ? item.delta_1.replace('%', '') : '0');
+                        let delta2 = parseFloat((item.delta_2 && item.delta_2.includes('%')) ? item.delta_2.replace('%', '') : '0');
+                        let delta3 = parseFloat((item.delta_3 && item.delta_3.includes('%')) ? item.delta_3.replace('%', '') : '0');
 
-                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
-                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
-                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
-                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
-                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
-                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+                        class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                        class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                        class3 = delta3 < 0 ? 'text-danger' : 'text-success';
 
-                    html += '<tr><td class="text">' + item.metier + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                        html += '<tr><td class="text">' + item.metier + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    }
                 });
                 $("#stats").html(html);
             }
@@ -383,14 +434,19 @@
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
-                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
-                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
-                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
-                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
-                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
-                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
-                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/'+item.id : '#'
-                    html += '<tr><td class="text"><a href='+link+'>' + item.nom + '</a></td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    if (data.length === 0) {
+                        html = '<tr><td colspan="8" class="text-center">Aucune donnée disponible</td></tr>';
+                    } else {
+                        let delta1 = parseFloat((item.delta_1 && item.delta_1.includes('%')) ? item.delta_1.replace('%', '') : '0');
+                        let delta2 = parseFloat((item.delta_2 && item.delta_2.includes('%')) ? item.delta_2.replace('%', '') : '0');
+                        let delta3 = parseFloat((item.delta_3 && item.delta_3.includes('%')) ? item.delta_3.replace('%', '') : '0');
+
+                        class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                        class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                        class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+                        let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/' + item.id : '#'
+                        html += '<tr><td class="text"><a href=' + link + '>' + item.nom + '</a></td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    }
                 });
                 $("#stats2").html(html);
             }
@@ -410,8 +466,8 @@
                 //console.log(data);
                 var html = '';
                 data.forEach(item => {
-                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/'+item.id : '#'
-                    html += '<tr><td class="text"><a href='+link+'>' + item.nom + '</a></td><td>' + item.M + '</td><td>' + item.M_1 + '</td><td>' + item.M_2 + '</td><td>' + item.M_3 + '</td><td>' + item.M_4 + '</td><td>' + item.M_5 + '</td><td>' + item.M_6 + '</td><td>' + item.M_7 + '</td><td>' + item.M_8 + '</td><td>' + item.M_9 + '</td><td>' + item.M_10 + '</td><td>' + item.M_11 + '</td><td>' + item.M_12 + '</td><td>' + item.TOTAL + '</td></tr>';
+                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/' + item.id : '#'
+                    html += '<tr><td class="text"><a href=' + link + '>' + item.nom + '</a></td><td>' + item.M + '</td><td>' + item.M_1 + '</td><td>' + item.M_2 + '</td><td>' + item.M_3 + '</td><td>' + item.M_4 + '</td><td>' + item.M_5 + '</td><td>' + item.M_6 + '</td><td>' + item.M_7 + '</td><td>' + item.M_8 + '</td><td>' + item.M_9 + '</td><td>' + item.M_10 + '</td><td>' + item.M_11 + '</td><td>' + item.M_12 + '</td><td>' + item.TOTAL + '</td></tr>';
                 });
                 $("#stats7").html(html);
             }
@@ -431,13 +487,18 @@
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
-                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
-                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
-                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
-                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
-                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
-                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
-                    html += '<tr><td class="text">' + item.metier + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    if (data.length === 0) {
+                        html = '<tr><td colspan="8" class="text-center">Aucune donnée disponible</td></tr>';
+                    } else {
+                        let delta1 = parseFloat((item.delta_1 && item.delta_1.includes('%')) ? item.delta_1.replace('%', '') : '0');
+                        let delta2 = parseFloat((item.delta_2 && item.delta_2.includes('%')) ? item.delta_2.replace('%', '') : '0');
+                        let delta3 = parseFloat((item.delta_3 && item.delta_3.includes('%')) ? item.delta_3.replace('%', '') : '0');
+
+                        class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                        class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                        class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+                        html += '<tr><td class="text">' + item.metier + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    }
                 });
                 $("#stats3").html(html);
             }
@@ -457,14 +518,19 @@
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
-                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
-                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
-                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
-                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
-                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
-                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
-                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/'+item.id : '#'
-                    html += '<tr><td class="text"><a href='+link+'>' + item.nom + '</a></td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    if (data.length === 0) {
+                        html = '<tr><td colspan="8" class="text-center">Aucune donnée disponible</td></tr>';
+                    } else {
+                        let delta1 = parseFloat((item.delta_1 && item.delta_1.includes('%')) ? item.delta_1.replace('%', '') : '0');
+                        let delta2 = parseFloat((item.delta_2 && item.delta_2.includes('%')) ? item.delta_2.replace('%', '') : '0');
+                        let delta3 = parseFloat((item.delta_3 && item.delta_3.includes('%')) ? item.delta_3.replace('%', '') : '0');
+
+                        class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                        class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                        class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+                        let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/' + item.id : '#'
+                        html += '<tr><td class="text"><a href=' + link + '>' + item.nom + '</a></td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    }
                 });
                 $("#stats4").html(html);
             }
@@ -485,13 +551,18 @@
                 var html = '';
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
-                    let delta1 = parseFloat(item.delta_1.replace('%', ''));
-                    let delta2 = parseFloat(item.delta_2.replace('%', ''));
-                    let delta3 = parseFloat(item.delta_3.replace('%', ''));
-                    class1 = delta1 < 0 ? 'text-danger' : 'text-success';
-                    class2 = delta2 < 0 ? 'text-danger' : 'text-success';
-                    class3 = delta3 < 0 ? 'text-danger' : 'text-success';
-                    html += '<tr><td class="text">' + item.Agence + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    if (data.length === 0) {
+                        html = '<tr><td colspan="8" class="text-center">Aucune donnée disponible</td></tr>';
+                    } else {
+                        let delta1 = parseFloat((item.delta_1 && item.delta_1.includes('%')) ? item.delta_1.replace('%', '') : '0');
+                        let delta2 = parseFloat((item.delta_2 && item.delta_2.includes('%')) ? item.delta_2.replace('%', '') : '0');
+                        let delta3 = parseFloat((item.delta_3 && item.delta_3.includes('%')) ? item.delta_3.replace('%', '') : '0');
+
+                        class1 = delta1 < 0 ? 'text-danger' : 'text-success';
+                        class2 = delta2 < 0 ? 'text-danger' : 'text-success';
+                        class3 = delta3 < 0 ? 'text-danger' : 'text-success';
+                        html += '<tr><td class="text">' + item.Agence + '</td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                    }
                 });
                 $("#stats5").html(html);
             }
@@ -507,15 +578,15 @@
                 user: representant,
             },
             success: function(data) {
-                console.log('stats 6 :'+data);
+                console.log('stats 6 :' + data);
                 var html = '';
                 data.forEach(item => {
                     let mois = item.annee_mois.split(' - ')[1]; // Récupérer le mois
                     mois = mois.length === 1 ? '0' + mois : mois; // Ajouter un zéro si le mois est à un seul chiffre
                     let annee = item.annee_mois.split(' - ')[0]; // Récupérer l'année
                     let annee_mois = mois + '/' + annee; // Formater comme MM/YYYY
-                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/'+item.id : '#'
-                    html += '<tr><td class="text"><a href='+link+'>' + item.nom + '</a></td><td class="text-center">' + annee_mois + '</td><td class="text-center">' + item.N + '</td><td class="text-center">' + item.N_1 + '</td><td class="text-center">' + item.N_2 + '</td><td class="text-center">' + item.N_3 + '</td></tr>';
+                    let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/' + item.id : '#'
+                    html += '<tr><td class="text"><a href=' + link + '>' + item.nom + '</a></td><td class="text-center">' + annee_mois + '</td><td class="text-center">' + item.N + '</td><td class="text-center">' + item.N_1 + '</td><td class="text-center">' + item.N_2 + '</td><td class="text-center">' + item.N_3 + '</td></tr>';
                 });
                 $("#stats6").html(html);
             }
@@ -523,6 +594,6 @@
 
     }
 
-    update_stats();
+    //update_stats();
 </script>
 @endsection

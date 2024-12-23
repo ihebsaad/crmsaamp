@@ -637,6 +637,9 @@ return [
 	"Update Ticket"=>"Update Ticket",
 	"Submit"=>"Submit",
 	"Add files"=>"Add files",
-
+	"Customer address"=>"Customer address",
+	"Add a contact"=>"Add a contact",
+	"Close"=>"Close",
+	"No results"=>"No results",
 
 ];

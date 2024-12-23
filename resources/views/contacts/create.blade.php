@@ -27,6 +27,7 @@
 
                 <input type="hidden" id="mycl_ident"   name="mycl_ident"  value="{{$client->id}}">
                 <input type="hidden" id="cl_ident"   name="cl_ident"  value="{{$client->cl_ident}}">
+                <input type="hidden"    name="etat_id"  value="{{$client->etat_id}}">
 
                     @csrf
 

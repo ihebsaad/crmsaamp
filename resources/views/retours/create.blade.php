@@ -24,12 +24,12 @@
 
             <div class="card-body" style="min-height:500px">
 
-                <form action="{{ route('retours.store') }}" method="post" enctype="multipart/form-data"  id="form">
+                <form action="{{ route('retours.store') }}" method="post" enctype="multipart/form-data"  id="form"  novalidate >
                 <input type="hidden" name="idclient" value="{{$client->id}}" >
                 <input type="hidden" name="user_id" value="{{auth()->user()->id}}" >
 
                     @csrf
-                    <div class="row pt-1">
+                    <div class="row pt-1 mb-1">
                         <!--
                         <div class="col-md-3">
                             <div class="">
@@ -93,15 +93,47 @@
                                 <input type="text" id="Nom_du_compte" class="form-control" name="Nom_du_compte" readonly value="{{trim($client->Nom)}}"><br><br>
                             </div>
                         </div>
-                    </div>
 
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="Title">{{__('msg.Client ID')}}:</label>
+                                <input type="text" id="Title" class="form-control" name="cl_id"  readonly value="{{$client->cl_ident}}"><br><br>
+                            </div>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="row pt-1">
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="Nom_du_compte">{{__('msg.Agency')}}:</label>
+                                <select required  id="Responsable_de_resolution" class="form-control" name="Responsable_de_resolution" onchange="check_email()">
+                                    <option ></option>
+                                    @foreach($agences as $agence)
+                                        <option value="{{$agence->agence_lib}}" >{{$agence->agence_lib}}</option>
+                                    @endforeach
+                                </select><br><br>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="Department">{{__('msg.Department')}}:</label>
+                            <select   name="Departement" class="form-control"  id="Departement" disabled >
+                                    <option>Choisissez</option>
+                                    <option value="FRET">FRET</option>
+                                    <option value="Laboratoire">Laboratoire</option>
+                                    <option value="Fonte">Fonte</option>
+                                    <option value="Production">Production</option>
+                                    <option value="Qualité">Qualité</option>
+                            </select>
+                        </div>
+                    </div>
+                    -->
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Division">{{__('msg.Division')}}:</label>
                                 <select    id="Division" class="  form-control" name="Division"   >
                                     <option></option>
-                                    <option  value="accueil et relation client ">accueil et relation client </option>
+                                    <option  value="accueil et relation client ">Accueil et relation client </option>
                                     <option  value="Affinage">Affinage</option>
                                     <option  value="Apprêts">Apprêts</option>
                                     <option  value="Autre">Autre</option>
@@ -134,12 +166,7 @@
                                 <input type="text" id="Date_cloture" class="form-control datepicker" name="Date_cloture"  value="{{old('Date_cloture')}}"><br><br>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="">
-                                <label for="Title">{{__('msg.Client ID')}}:</label>
-                                <input type="text" id="Title" class="form-control" name="cl_id"  readonly value="{{$client->cl_ident}}"><br><br>
-                            </div>
-                        </div>
+
                     </div>
 
 
@@ -163,6 +190,7 @@
                             <div class="">
                                 <label for="Depot_concerne ">{{__('msg.Deposit concerned')}}:</label>
                                 <input type="text" id="Depot_concerne" class="form-control" name="Depot_concerne"  value="{{old('Depot_concerne')}}"><br><br>
+
                             </div>
 
                         </div>
@@ -208,7 +236,7 @@
 
                     <div class="row pt-1">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-primary btn float-right" onclick="disableButton(this);" id="submit" >{{__('msg.Add')}}</button>
+                            <button type="submit" class="btn-primary btn float-right"   id="submit" >{{__('msg.Add')}}</button>
                         </div>
                     </div>
 
@@ -225,11 +253,37 @@
         const form = document.getElementById('form');
         const submitButton = document.getElementById('submit');
 
-        // Ajout d'un événement sur le formulaire pour désactiver le bouton après envoi
-        form.addEventListener('submit', function() {
-            submitButton.disabled = true; // Désactive le bouton
-            submitButton.innerHTML = "En cours..."; // Modifie le texte pour indiquer le traitement
+        // Ajout d'un événement "submit" sur le formulaire
+        form.addEventListener('submit', function(event) {
+            // Vérifie la validité du formulaire
+            if (!form.checkValidity()) {
+                event.preventDefault(); // Empêche l'envoi si des champs sont invalides
+                form.reportValidity(); // Affiche les erreurs de validation natives du navigateur
+                return;
+            }
+
+            // Désactive le bouton uniquement si tout est valide
+            submitButton.disabled = true;
+            submitButton.innerHTML = "En cours...";
         });
+
+        function check_email(){
+            let depot = $( "#Responsable_de_resolution" ).val();
+            if(depot=='LIMONEST'){
+                //$( "#email_responsable" ).show();
+                //$( "#Departement" ).css('visibility','visible');
+                $( "#Departement" ).attr("disabled", false);
+                $( "#Departement" ).attr("required", true);
+
+            }else{
+                //$( "#email_responsable" ).hide();
+               // $( "#Departement" ).css('visibility','hidden');
+                $( "#Departement" ).attr("disabled", true);
+                $( "#Departement" ).attr("required", false);
+                $( "#Departement" ).val("");
+            }
+        }
+
 
        $(function () {
 

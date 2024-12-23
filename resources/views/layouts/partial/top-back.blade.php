@@ -1,8 +1,12 @@
 @php
 $user = auth()->user();
 $user_id=auth()->user()->id;
-\DB::select("SET @p0='$user->client_id' ;");
-$data= DB::select (" CALL `sp_affiche_cours`(@p0); ");
+try{
+  DB::select("SET @p0='$user_id' ;");
+  $data=  DB::select ("  CALL `sp_affiche_cours`(@p0); ");
+  }catch(\Exception $e){
+    $data=null;
+  }
 
 $lg=$user['lg'];$displayfr='';$displayen='';$displaypl='';
 if($lg=='fr' ||$lg=='' ) { $langue='Français';$displayfr='display:none';}
@@ -107,10 +111,12 @@ if($lg=='pl' ){ $langue='Polski';$displaypl='display:none';}
   </ul>
   <!-- Topbar Navbar -->
   <div class="navbar-nav ml-5 mr-3 hidemobile">
+  @if($data!='')
     <div id="gold" class="pb-10 ml-5">{{__("msg.Gold")}}</div><br><small>{{$data[0]->cours_au}}</small>
     <div id="silver" class="pb-10">{{ __("msg.Silver")}}</div><br><small>{{$data[0]->cours_ag}}</small>
     <div id="platine" class="pb-10">Plat</div><br><small>{{$data[0]->cours_pt}}</small>
     <div id="pallad" style="color:black" class="pb-10">Pall</div><br><small>{{$data[0]->cours_pd}}</small>
+  @endif
   </div>
 
   <div class="  hidepc hidetablette">

@@ -154,8 +154,32 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <!-- Carte (à intégrer avec une API de carte si nécessaire) -->
+                            <!-- Carte (à intégrer avec une API de carte si nécessaire)  text-shadow:1px 1px black  -->
                             <div id="map" style="height: 400px; border: 1px solid #000; margin-top: 20px;">
+                            </div>
+                            <div class="row bg-grey" style="font-size:12px;background-color:#fff">
+                                <div class="col-md-3">
+                                    <span style="color:#ff2e36">Inactif / Fermé</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="color:#2ab62c">Prospect</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span style="color:#2261c4">Client récemment actif entre 0 et 2 mois</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span style="color:#fffa40;text-shadow:1px 1px grey">Client inactif depuis 2 mois à 4 mois</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span style="color:#fe9f2b;">Client inactif depuis 4 mois à 6 mois</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span style="color:#a1058d;">Client inactif depuis 4 mois à 6 mois</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span style="color:#000;">Client inactif depuis 12 mois ou plus</span>
+                                </div>
+
                             </div>
                         </div>
                     </div>

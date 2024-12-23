@@ -105,4 +105,10 @@ class GEDController extends Controller
 	}
 
 
+	public function delete_folder($id){
+		$result= GEDService::deleteFolder($id);
+		return $result;
+	}
+
+
 }

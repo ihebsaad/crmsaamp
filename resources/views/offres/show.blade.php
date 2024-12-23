@@ -224,7 +224,14 @@
                         </div>
                     </div>
 
-                    <div class="row pt-1">
+                    <div class="row pt-3">
+                        @if($offre->valide_par > 0)
+                            @php $creator = \App\Models\User::find($offre->valide_par);  @endphp
+                            <div class="col-md-12 mt-4 mb-4 text-info">
+                                <i>Offre validée par <b>{{$creator->name ?? ''}} {{$creator->lastname ?? ''}}</b> le <b>{{$offre->date_valide}}</b></i>
+                            </div>
+                        @endif
+
                         <div class="col-md-12">
                             @if(auth()->user()->role=='admin' || auth()->user()->id== 10 || auth()->user()->id== 39 || auth()->user()->id== $offre->id)
                             <button type="submit" class="btn-primary btn float-right">{{__('msg.Edit')}}</button>
@@ -234,6 +241,9 @@
                             </a>
                             @endif
                         </div>
+
+
+
                     </div>
 
                 </form>
