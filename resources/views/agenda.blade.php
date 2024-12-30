@@ -1,7 +1,8 @@
 @extends('layouts.back')
 
 @section('content')
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <?php
 
 ?>
@@ -88,17 +89,17 @@
 			<div class="card-body">
 				<div class="row">
 
-						@if( auth()->user()->role=='admin' || auth()->user()->role=='respAG' || auth()->user()->role=='adv' )
+						@if( auth()->user()->role=='admin' || auth()->user()->role=='respAG' || auth()->user()->role=='adv' || auth()->user()->role=='compta' )
 							<div class="col-lg-4">
 								<form  method="get"  action="{{route('agenda')}}"  >
 									<div class="row">
 										<div class="col-lg-12">
 											<span class=" mr-2">{{__('msg.User')}}:</span>
-											<select class="form-control mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="update_user();this.form.submit();" >
+											<select class="form-control select2 mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="update_user();this.form.submit();" >
 												<option  @if($user=="") selected="selected" @endif value=""></option>
 												@foreach ($users as $User)
 													@if(trim($User->lastname)!=='')
-														<option @selected($user >0 && $user==$User->id) value="{{$User->id}}"  >{{$User->name}}  {{$User->lastname}}</option>
+														<option @selected($user >0 && $user==$User->id) value="{{$User->id}}"  >{{$User->lastname}}  {{$User->name}}</option>
 													@endif
 												@endforeach
 											</select>
@@ -244,6 +245,16 @@
 		calendar.updateSize();
 		window.dispatchEvent(new Event('resize'));
 
+    });
+
+
+	$('.select2').select2({
+        filter: true,
+        language: {
+            noResults: function() {
+                return 'Pas de résultats';
+            }
+        }
     });
   </script>
 

@@ -141,6 +141,7 @@ if($lg=='pl' ){ $langue='Polski';$displaypl='display:none';}
       <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="mr-2 d-none d-lg-inline  small" style="color:black"> {{$user['name']}} {{$user['lastname'] }}</span>
         <img class="img-profile rounded-circle" src="{{ URL::asset('img/person.jpg')}}">
+        <img class="img-profile rounded-circle" src="{{ URL::asset('img/noel3.png')}}" style="width: 86px;height: auto;position: fixed;right: 0px;top: -8px;z-index: 99;">
       </a>
       <!-- Dropdown - User Information -->
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

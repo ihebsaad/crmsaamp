@@ -3,12 +3,13 @@
 @section('content')
 
 <?php
-
 ?>
+<link rel="stylesheet" href="{{ asset('sbadmin/summernote/summernote-bs4.min.css')}}">
 
 <style>
-
-
+	#template_body {
+		display: non !important
+	}
 </style>
 <div class="row">
 
@@ -24,15 +25,26 @@
 
 				<form action="{{ route('communications.store') }}" method="POST" enctype="multipart/form-data">
 					@csrf
-
+					<!-- Bouton pour créer un template -->
+					<div class="col-md-6 mb-3 text-right">
+						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#templateModal">
+							<i class="fa fa-plus"></i> Ajouter un template
+						</button>
+					</div>
 					<div class="row">
-						<!-- Objet -->
+						<!-- Sélection d'un template -->
 						<div class="col-md-6 mb-3">
-							<label for="objet" class="form-label">Objet</label>
-							<input type="text" class="form-control" id="objet" name="objet" value="{{ old('objet') }}" required>
-							@error('objet') <span class="text-danger">{{ $message }}</span> @enderror
+							<label for="template_id" class="form-label">Template</label>
+							<select class="form-control" id="template_id" name="template_id">
+								<option value="" selected="selected">Sans template</option>
+								@foreach ($templates as $template)
+								<option value="{{ $template->id }}">
+									{{ $template->name }}
+								</option>
+								@endforeach
+							</select>
+							@error('template_id') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
-
 						<!-- Type -->
 						<div class="col-md-6 mb-3">
 							<label for="type" class="form-label">Type</label>
@@ -43,18 +55,25 @@
 							</select>
 							@error('type') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
-						<!-- Corps du message -->
-						<div class="col-md-6 mb-3">
-							<label for="corps_message" class="form-label">Corps du message</label>
-							<textarea class="form-control" id="corps_message" name="corps_message" rows="5" required>{{ old('corps_message') }}</textarea>
-							@error('corps_message') <span class="text-danger">{{ $message }}</span> @enderror
+						<!-- Objet -->
+						<div class="col-md-6 mb-3 div-objet">
+							<label for="objet" class="form-label">Objet</label>
+							<input type="text" class="form-control" id="objet" name="objet" value="{{ old('objet') }}" >
+							@error('objet') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
 
 						<!-- Fichier -->
 						<div class="col-md-6 mb-3">
 							<label for="fichier" class="form-label">Fichier (optionnel)</label>
-							<input type="file" class="form-control" id="fichier" name="fichier">
+							<input type="file" class="form-control" id="fichier" name="fichier" disabled>
 							@error('fichier') <span class="text-danger">{{ $message }}</span> @enderror
+						</div>
+
+						<!-- Corps du message -->
+						<div class="col-md-6 mb-3 div-corps">
+							<label for="corps_message" class="form-label">Corps du message</label>
+							<textarea class="summernote" id="corps_message" name="corps_message" rows="5" >{{ old('corps_message') }}</textarea>
+							@error('corps_message') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
 
 						<div class="col-md-12 mb-3">
@@ -76,6 +95,7 @@
 						<div class="col-md-3 mb-3">
 							<button type="button" class="btn btn-secondary float-right mb-3" href="#" data-toggle="modal" data-target="#searchClientsModal"><i class="fa fa-search"></i> Chercher des clients</button>
 						</div>
+
 
 						<!-- Bouton de soumission -->
 						<div class="col-md-12 mb-3 text-right">
@@ -167,9 +187,73 @@
 		</div>
 	</div>
 
+
+	<div class="modal fade" id="templateModal" tabindex="-1" role="dialog" aria-labelledby="templateModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Créer un Template</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="templateForm">
+						@csrf
+						<div class="form-group">
+							<label for="template_name">Nom du Template</label>
+							<input type="text" class="form-control" id="template_name" name="name" required>
+						</div>
+						<div class="form-group">
+							<label for="template_subject">Objet</label>
+							<input type="text" class="form-control" id="template_subject" name="subject" required>
+						</div>
+						<div class="form-group">
+							<label for="template_body">Contenu</label>
+							<textarea class="summernote" id="template_body" name="body" required></textarea>
+						</div>
+						<button type="button" class="btn btn-primary" id="saveTemplate">Enregistrer</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+<!--
+	<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js"></script>
+<script>
+    tinymce.init({
+        selector: '#editor'
+    });
+</script>-->
+
+	<script src="{{ asset('sbadmin/summernote/summernote-bs4.min.js') }}"></script>
+
 	<script>
+
+		$('#template_id').change(function() {
+			let template_id = $('#template_id option:selected').val() ;
+
+			if(parseInt(template_id)>0){
+				$('.div-objet').hide('slow');
+				$('.div-corps').hide('slow');
+				//corps_message prop not required
+				//objet  prop not required
+			}else{
+				$('.div-objet').show('slow');
+				$('.div-corps').show('slow');
+				//corps_message prop not required
+
+			}
+		});
+
+
 		$(document).ready(function() {
 
+			$('.summernote').summernote({
+				height: 300
+			});
 
 			document.getElementById('reset-destinataires').addEventListener('click', function() {
 				// Vider le champ destinataires
@@ -196,8 +280,8 @@
 				};
 				let agences = {
 					<?php
-					foreach($agences as $agence){
-					echo '"'.$agence->agence_ident.'": "'.$agence->agence_lib.'",';
+					foreach ($agences as $agence) {
+						echo '"' . $agence->agence_ident . '": "' . $agence->agence_lib . '",';
 					}
 					?>
 				};
@@ -212,7 +296,7 @@
 							data.forEach(client => {
 								rows += `
                             <tr>
-                                <td><input type="checkbox" class="select-client" data-id="${client.id}" data-name="${client.Nom}"></td>
+                                <td><input type="checkbox" class="select-client" data-id="${client.id}" data-name="${client.Nom}"   ></td>
                                 <td>${client.id}</td>
                                 <td>${client.Nom}</td>
                                 <td>${client.ville}</td>
@@ -257,6 +341,28 @@
 
 				$('#searchClientsModal').modal('hide');
 			});
+
+
+			$('#saveTemplate').on('click', function() {
+				let formData = new FormData($('#templateForm')[0]);
+				$.ajax({
+					url: '/add_template',
+					type: 'POST',
+					data: formData,
+					contentType: false,
+					processData: false,
+					success: function(response) {
+						$('#templateModal').modal('hide');
+						alert('Template créé avec succès');
+						location.reload(); // Recharge les templates disponibles
+					},
+					error: function(xhr) {
+						alert('Erreur lors de la création du template.');
+					}
+				});
+			});
+
+
 		});
 	</script>
 	@endsection

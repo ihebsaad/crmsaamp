@@ -22,7 +22,7 @@ class TicketController extends Controller
         if(auth()->user()->user_type=='admin')
             $tickets = Ticket::where(function ($query) {
                     $query->where('status', 'Opened')
-                          ->orWhere('created_at', '>=', Carbon::now()->subDays(15));
+                          ->orWhere('created_at', '>=', Carbon::now()->subDays(30));
                 })
                 ->get();
         else

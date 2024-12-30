@@ -14,6 +14,7 @@
 
     #folders-container {
         display: flex;
+        flex-wrap:wrap;
         gap: 40px;
     }
 

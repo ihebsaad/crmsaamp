@@ -18,7 +18,9 @@ use App\Http\Controllers\FilesController;
 use App\Http\Controllers\CommunicationsController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\RecapController;
+use App\Http\Controllers\EmailTemplateController;
 
+#Route::resource('email-templates', EmailTemplateController::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +45,9 @@ Route::get('/regles/', 'App\Http\Controllers\HomeController@regles')->name('regl
 
 Route::get('/parcours', [MapController::class, 'parcours'])->name('map.parcours');
 Route::post('/parcours', [MapController::class, 'parcours']);
+
+
+Route::post('/add_template', [EmailTemplateController::class, 'store'])->name('templates.store');
 
 
 Route::get('/recap', [RecapController::class, 'recap'])->name('recap');

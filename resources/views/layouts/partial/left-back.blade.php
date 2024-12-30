@@ -4,42 +4,55 @@ if (Auth::check()) {
 
   $user = auth()->user();
   $iduser = $user->id;
-  $user_type = $user->user_type;
+  $user_type = $user->role;
 }
 ?>
 <style>
   #accordionSidebar a:hover {
     color: black !important;
   }
-  .nav-item i{
-    color:#505050!important;
-    padding-left:15px;
+
+  .nav-item i {
+    color: #505050 !important;
+    /*padding-left: 15px;*/
   }
-  .hidemobile{
-    display:contents;
+  .nav-link span{
+    color:black;
   }
 
-	@media (min-width: 481px) and (max-width: 767px) {
-    .fas{
-      margin-left:-15px!important;
-    }
+  .hidemobile {
+    display: contents;
   }
-	@media (min-width: 320px) and (max-width: 480px) {
-    .fas{
-      margin-left:-15px!important;
+  .collapse-item i{
+    margin-right:10px;
+  }
+  .toggled hr{
+    display:none!important;
+  }
+  .toggled .nav-link {
+    margin-bottom:25px!important;
+  }
+  @media (min-width: 481px) and (max-width: 767px) {
+    .fas {
+      margin-left: -15px !important;
     }
   }
 
+  @media (min-width: 320px) and (max-width: 480px) {
+    .fas {
+      margin-left: -15px !important;
+    }
+  }
 </style>
 <!-- Sidebar -->
 <ul class="navbar-nav bg-dark sidebar sidebar-dark  accordion" id="accordionSidebar" style="background-color:#f3f3f3!important">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center"   @if(auth()->user()->role=='admin' || auth()->user()->role=='dirQUA' )  href="{{route('adminhome')}}"   @else href="{{route('dashboard')}}"  @endif  >
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" @if(auth()->user()->role=='admin' || auth()->user()->role=='dirQUA' ) href="{{route('adminhome')}}" @else href="{{route('dashboard')}}" @endif >
     <!--<div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div>-->
-    <div class="sidebar-brand-text mx-3"><img width="100" src="{{ URL::asset('img/logo.png')}}" /></div>
+    <div class="sidebar-brand-text mx-3"><img width="100" src="{{ URL::asset('img/logo2.png')}}" /></div>
   </a>
 
   <!-- Divider -->
@@ -49,115 +62,137 @@ if (Auth::check()) {
   <!-- Divider -->
   <hr class="sidebar-divider">
 
-  <!-- Heading -->
-  <div class="sidebar-heading">
-    <!--{{__('msg.Artisans, Manufacturers, Industrialists')}}-->
-  </div>
-  <hr class="sidebar-divider">
-
-  <li class="nav-item   ">
-  @if($user_type=='admin' || auth()->user()->role=='dirQUA' )
-   <a class="nav-link" href="{{route('adminhome')}}">
-      <i class="fas fa-tachometer-alt"></i>
-      <span><div class="hidemobile">{{__('msg.My')}} </div>{{__('msg.Dashboard')}}</span>
-    </a>
-  @else
-  <a class="nav-link" href="{{route('dashboard')}}">
-      <i class="fas fa-tachometer-alt"></i>
-      <span><div class="hidemobile"> {{__('msg.My')}} </div>{{__('msg.Dashboard')}}</span>
-    </a>
-  @endif
 
 
-    <a class="nav-link" href="{{route('home')}}">
-    <i class="far fa-chart-bar"></i>
-      <span><div class="hidemobile"> {{__('msg.My ')}} </div>{{__('msg.Statistics')}}</span>
-    </a>
 
-    <a class="nav-link" href="{{route('recap')}}">
-      <i class="fas fa-chart-pie"></i>
-      <span>Mon Récapitulaitf</span>
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVG" aria-expanded="true" aria-controls="collapseVG">
+      <i class="fas fa-fw fa-chart-line"></i>
+      <span>Vue générale</span>
     </a>
-
-    <a class="nav-link" href="{{route('search')}}">
-      <i class="fas fa-users" ></i>
-      <span> {{__('msg.Customers')}} </span>
-    </a>
-      <!--<hr class="sidebar-divider">-->
-    @if($user->user_type=='admin')
-    <a class="nav-link" href="{{route('taches.index')}}" >
-    @else
-    <a class="nav-link" href="{{route('mestaches')}}" >
-    @endif
-
-    <i class="fas fa-tasks" ></i>
-    @if($user->role=='commercial')
-      <span style="font-size:10px!important">{{__('msg.Activities of my customers')}}</span>
-    @else
-      <span style="font-size:10px!important">{{__('msg.Activities tracking')}} </span>
-    @endif
-    </a>
-    <!--<hr class="sidebar-divider">
-    <a class="nav-link"  href="{{route('offres.index')}}">
-      <i class="fas fa-file-invoice-dollar" ></i>
-      <span> Offres commerciales </span>
-    </a>-->
-    <!--<hr class="sidebar-divider">-->
-    <a class="nav-link" href="{{route('retours.list')}}" >
-      <i class="fas fa-comments" ></i>
-        <span> {{__('msg.Complaints')}} </span>
-      </a>
-     <a class="nav-link" href="{{route('agenda')}}" >
-    <i class="fas fa-calendar-alt" ></i>
-      <span><div class="hidemobile">{{__('msg.My')}} </div>{{__('msg.Diary')}}</span>
-    </a>
-    @if($user->user_type!='admin')
-      <a class="nav-link" href="{{route('rendezvous.create',['id'=>0])}}" >
-      <i class="fas fa-calendar" ></i>
-        <span style="font-size:10px!important">{{__('msg.Appointments')}} <div class="hidemobile">{{__('msg.excluding customers')}}</div></span>
-      </a>
-    @endif
-    @if($user->role=='admin')
-    <a class="nav-link" href="{{route('map.parcours')}}" >
-    <i class="fas fa-map-marker-alt" ></i>
-      <span>Parcours</span>
-    </a>
-    @endif
-
-    <a class="nav-link" href="{{route('help')}}" >
-    <i class="fas fa-book" ></i>
-      <span>{{__('msg.Help')}}</span>
-    </a>
-    <a class="nav-link" href="{{route('tickets.index')}}" >
-    <i class="fas fa-life-ring" ></i>
-      <span>Support</span>
-    </a>
-  <!--
-    <hr class="sidebar-divider">
-    <a class="nav-link" href="{{route('phone')}}">
-    <i class="fas fa-phone-alt" ></i>
-      <span> Télephonie </span>
-    </a>
--->
+    <div id="collapseVG" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar"  >
+      <div class="bg-dark py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{route('home')}}">
+          <i class="fas fa-fw fa-chart-bar"></i> <div class="hidemobile"> {{__('msg.My ')}} </div>{{__('msg.Statistics')}}
+        </a>
+        <a class="collapse-item" href="{{route('recap')}}">
+          <i class="fas fa-fw fa-chart-pie"></i> Mon Récapitulatif
+        </a>
+      </div>
+    </div>
   </li>
 
-
-
-  <!-- Heading -->
-
-  <div class="sidebar-heading">
-    <!--   {{__('msg.Scrap Gold Buyers, Investors')}}-->
-  </div>
-
-
-
-  <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
 
-  <!-- Sidebar Toggler (Sidebar) -->
+
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClients" aria-expanded="true" aria-controls="collapseClients">
+      <i class="fas fa-fw fa-users"></i>
+      <span>Clients & Prospects</span>
+    </a>
+    <div id="collapseClients" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+      <div class="bg-dark py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{route('search')}}">
+          <i class="fas fa-fw fa-search"></i> {{__('msg.Customers')}}
+        </a>
+        <a class="collapse-item" href="{{route('communications.index')}}">
+          <i class="fas fa-fw fa-envelope-open-text"></i> Communications
+        </a>
+        @if($user->role=='commercial')
+        <a class="collapse-item" href="{{route('mestaches')}}">
+          <i class="fas fa-fw fa-tasks"></i> {{__('msg.Activities of my customers')}}
+        </a>
+        @elseif($user->role=='admin')
+        <a class="collapse-item" href="{{route('taches.index')}}">
+          <i class="fas fa-fw fa-tasks"></i> {{__('msg.Activities tracking')}}
+        </a>
+        @else
+        <a class="collapse-item" href="{{route('mestaches')}}">
+          <i class="fas fa-fw fa-tasks"></i> {{__('msg.Activities tracking')}}
+        </a>
+        @endif
+      </div>
+    </div>
+  </li>
+
+  <hr class="sidebar-divider d-none d-md-block">
+
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGestion" aria-expanded="true" aria-controls="collapseGestion">
+      <i class="fas fa-fw fa-calendar"></i>
+      <span>Gestion interne</span>
+    </a>
+    <div id="collapseGestion" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar" style="">
+      <div class="bg-dark py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{route('retours.list')}}">
+          <i class="fas fa-fw fa-comment-alt"></i>{{__('msg.Complaints')}}
+        </a>
+        <a class="collapse-item" href="{{route('agenda')}}">
+          <div class="hidemobile"><i class="fas fa-calendar-alt"></i> {{__('msg.My')}} </div>{{__('msg.Diary')}}
+        </a>
+        <a class="collapse-item" href="{{route('rendezvous.create',['id'=>0])}}">
+          <i class="fas fa-calendar-day"></i>{{__('msg.Appointments')}}<br>{{__('msg.excluding customers')}}
+        </a>
+      </div>
+    </div>
+  </li>
+  <hr class="sidebar-divider d-none d-md-block">
+  @if($user->role=='admin')
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
+      <i class="fas fa-fw fa-user-tie"></i>
+      <span>Administration</span>
+    </a>
+    <div id="collapseAdmin" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar" >
+      <div class="bg-dark py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{route('map.parcours')}}"><i class="fas fa-map-marker-alt"></i> Parcours </a>
+      </div>
+    </div>
+  </li>
+  <hr class="sidebar-divider d-none d-md-block">
+  @endif
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAssist" aria-expanded="true" aria-controls="collapseAssist">
+      <i class="fas fa-fw fa-life-ring"></i>
+      <span>Assistance</span>
+    </a>
+    <div id="collapseAssist" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar"  >
+      <div class="bg-dark py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{route('help')}}">
+          <i class="fas fa-book"></i> {{__('msg.Help')}}
+        </a>
+        <a class="collapse-item" href="{{route('tickets.index')}}">
+          <i class="fas fa-comments"></i> Support
+        </a>
+      </div>
+    </div>
+  </li>
+
+  <br><br>
   <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
 
 </ul>
-<!-- End of Sidebar -->
+
+
+
+  <!--
+<li class="nav-item">
+  <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+    <i class="fas fa-fw fa-folder"></i>
+    <span>Pages</span>
+  </a>
+  <div id="collapsePages" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar" style="">
+    <div class="bg-white py-2 collapse-inner rounded">
+      <h6 class="collapse-header">Login Screens:</h6>
+      <a class="collapse-item" href="login.html">Login</a>
+      <a class="collapse-item" href="register.html">Register</a>
+      <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+      <div class="collapse-divider"></div>
+      <h6 class="collapse-header">Other Pages:</h6>
+      <a class="collapse-item" href="404.html">404 Page</a>
+      <a class="collapse-item" href="blank.html">Blank Page</a>
+    </div>
+  </div>
+</li>--->

@@ -20,7 +20,7 @@ form{
                 <div class="row mb-5">
 
                     <form method="get" action="{{route('recap')}}">
-                        @if( auth()->user()->role=='admin' || auth()->user()->role=='respAG' || auth()->user()->role=='adv' )
+                        @if( auth()->user()->role=='admin' || auth()->user()->role=='respAG'  )
 
                         <div class="col-lg-2 col-md-6">
                             <span class=" mr-2">{{__('msg.User')}}:</span>

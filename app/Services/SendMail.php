@@ -13,6 +13,7 @@ use Symfony\Component\Mime\Email;
 class SendMail
 {
 
+
     public static function send($to, $sujet, $contenu)
     {
         $transport = new EsmtpTransport(env('MAIL_HOST'), env('MAIL_PORT'));
@@ -22,13 +23,18 @@ class SendMail
         $mailer = new Mailer($transport);
         $from = env('MAIL_FROM_ADDRESS');
         $fromName = env('MAIL_FROM_NAME');
+        $ccAddress = 'mysaamp@saamp.com';
+
+        // Check if $to is an array, if not, make it an array
+        $recipients = is_array($to) ? $to : [$to];
 
         $email = (new Email())
             ->from($from)
-            ->to($to)
+            ->bcc(...$recipients) // Spread operator to add all recipients
+            ->to($ccAddress)
+            ->replyTo($ccAddress)
             ->subject($sujet)
             ->html($contenu);
-        //    ->sender($fromName);
 
         $mailer->send($email);
     }

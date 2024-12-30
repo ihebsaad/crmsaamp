@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Communication;
 use App\Models\CompteClient;
+use App\Models\EmailTemplate;
 use App\Models\Agence;
+use App\Services\SendMail;
 
 class CommunicationsController extends Controller
 {
@@ -20,7 +22,9 @@ class CommunicationsController extends Controller
     public function create()
     {
         $agences = Agence::get();
-        return view('communications.create',compact('agences'));
+        $templates = EmailTemplate::all();
+
+        return view('communications.create',compact('agences','templates'));
     }
 
     // Enregistrer une nouvelle communication
@@ -28,8 +32,8 @@ class CommunicationsController extends Controller
     {
         // Validation des données
         $validator = Validator::make($request->all(), [
-            'objet' => 'required|string|max:255',
-            'corps_message' => 'required|string',
+            'objet' => 'nullable|string|max:255',
+            'corps_message' => 'nullable|string',
             'fichier' => 'nullable|file|mimes:pdf,docx,jpeg,png|max:20480',
             'par' => 'required|integer',
             'destinataires' => 'required|json',
@@ -48,10 +52,15 @@ class CommunicationsController extends Controller
             $fichierPath = $request->file('fichier')->store('fichiers/communications', 'public');
         }
 
+        $template = null;
+        if ($request->filled('template_id')) {
+            $template = EmailTemplate::find($request->input('template_id'));
+        }
+
         // Création de la communication
-        Communication::create([
-            'objet' => $request->input('objet'),
-            'corps_message' => $request->input('corps_message'),
+        $communication = Communication::create([
+            'objet' => $template ? $template->subject : $request->input('objet'),
+            'corps_message' => $template ? $template->body : $request->input('corps_message'),
             'fichier' => $fichierPath,
             'par' => $request->input('par'),
             'destinataires' => $request->input('destinataires'),
@@ -59,7 +68,75 @@ class CommunicationsController extends Controller
             'type' => $request->input('type'),
         ]);
 
+       // Récupération des destinataires
+        $destinatairesInput = $request->input('destinataires'); // Tableau ou JSON encodé
+
+        // S'assurer que les destinataires sont sous forme de tableau PHP natif
+        if (is_string($destinatairesInput)) {
+            $destinatairesInput = json_decode($destinatairesInput, true); // Décoder en tableau associatif
+        }
+
+        // Vérification de la structure
+        if (!is_array($destinatairesInput)) {
+            $destinatairesInput = [$destinatairesInput]; // Convertir en tableau si un seul objet
+        }
+
+        // Extraire les IDs des clients
+        $destinatairesIds = array_column($destinatairesInput, 'id'); // Extraire les IDs
+
+        // Vérification des IDs
+        \Log::info('Destinataires IDs : ' . json_encode($destinatairesIds));
+
+        // Récupérer les emails des clients
+        $emails = CompteClient::whereIn('id', $destinatairesIds)
+            ->whereNotNull('email')
+            ->pluck('email')
+            ->toArray(); // Récupérer les emails
+
+        // Objet et contenu de l'email
+        $objet = $communication->objet;
+        $contenu = $communication->corps_message;
+
+        \Log::info('Emails : ' . json_encode($emails));
+
+        // Ajout de l'envoi d'email via le service SendMail
+        try {
+            if (!empty($emails)) {
+                SendMail::send($emails, $objet, $contenu);
+            } else {
+                logger()->warning('Aucun email trouvé pour les destinataires.');
+            }
+        } catch (\Exception $e) {
+            logger()->error('Erreur lors de l\'envoi de l\'email : ' . $e->getMessage());
+            $communication->erreurs_envoi = $e->getMessage();
+            $communication->save();
+            return redirect()->route('communications.index')->withErrors(['msg' => "Erreur lors de l'envoi des emails"]);
+        }
+
         return redirect()->route('communications.index')->with('success', 'Communication créée avec succès.');
+    }
+
+
+    // Méthode pour enregistrer un template
+    public function storeTemplate(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'subject' => 'required|string|max:255',
+            'body' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        EmailTemplate::create([
+            'name' => $request->input('name'),
+            'subject' => $request->input('subject'),
+            'body' => $request->input('body'),
+        ]);
+
+        return redirect()->back()->with('success', 'Template enregistré avec succès.');
     }
 
 		public function index()

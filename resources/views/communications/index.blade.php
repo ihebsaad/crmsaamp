@@ -32,20 +32,22 @@
                             <th>ID</th>
                             <th>{{__('msg.Date')}}</th>
                             <th>{{__('msg.By')}}</th>
-                            <th>Nombre de destinataires</th>
+                            <th>Destinataires</th>
                             <th>{{__('msg.Status')}}</th>
 							<th>{{__('msg.Type')}}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($communications as $communication)
-						@php $creator = \App\Models\User::find($communication->par);  @endphp
+						@php $creator = \App\Models\User::find($communication->par);
+                        if($communication->statut==1){ $badge='<span class="badge btn-sm btn-success">Succès</span>';  }else{ $badge='<span class="badge btn-sm btn-danger">Echec</span>';  }
+                        @endphp
                             <tr>
                                 <td>{{ $communication->id }}</td>
                                 <td>{{date('d/m/Y', strtotime($communication->created_at))}}</td>
                                 <td>{{$creator->name}} {{$creator->lastname}}</td>
-                                <td></td>
-                                <td></td>
+                                <td>{{ $communication->destinataires }}</td>
+                                <td>{!! $badge !!} </td>
                                 <td></td>
                             </tr>
                         @endforeach

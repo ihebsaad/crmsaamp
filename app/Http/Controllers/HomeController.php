@@ -186,9 +186,9 @@ class HomeController extends Controller
 		$user_id = auth()->user()->id;
 		$agence_id = auth()->user()->agence_ident;
 
-		if($role =='admin' || $role =='respAG' || $role =='adv' ){
+		if($role =='admin' || $role =='respAG' || $role =='adv' || $role =='compta' ){
 			//$representants=DB::table("representant")->get();
-			$users=DB::table("users")->where('username','like','%@saamp.com')->get();
+			$users=DB::table("users")->where('username','like','%@saamp.com')->orderBy('lastname','asc')->get();
 		}
 		if($role =='respAG' || $role =='adv' ){
 			$users=DB::table("users")
