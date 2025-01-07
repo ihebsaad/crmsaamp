@@ -124,10 +124,10 @@
         </div>
         @if($data!='')
         <div class="modal-body text-center"  >
-          <div id="gold" style="width:100%!important" class="pb-10">{{__("msg.Gold")}}</div><br><small class="mb-30">{{$data[0]->cours_au}}</small>
-          <div id="silver"  style="width:100%!important" class="pb-10 mt-30">{{ __("msg.Silver")}}</div><br><small class="mb-30">{{$data[0]->cours_ag}}</small>
-          <div id="platine" style="width:100%!important" class="pb-10 mt-30">Plat</div><br><small class="mb-30">{{$data[0]->cours_pt}}</small>
-          <div id="pallad" style="width:100%!important;color:black" class="pb-10 mt-30">Pall</div><br><small class="mb-30">{{$data[0]->cours_pd}}</small>
+          <div id="gold" style="width:100%!important" class="pb-10">{{__("msg.Gold")}}</div><br><small class="mb-30">{{$data[0]->au}}<br>{{$data[1]->au}}</small>
+          <div id="silver"  style="width:100%!important" class="pb-10 mt-30">{{ __("msg.Silver")}}</div><br><small class="mb-30">{{$data[0]->ag}}<br>{{$data[1]->ag}}</small>
+          <div id="platine" style="width:100%!important" class="pb-10 mt-30">Plat</div><br><small class="mb-30">{{$data[0]->pt}}<br>{{$data[1]->pt}}</small>
+          <div id="pallad" style="width:100%!important;color:black" class="pb-10 mt-30">Pall</div><br><small class="mb-30">{{$data[0]->pd}}<br>{{$data[1]->pd}}</small>
         </div>
         @endif
         <div class="modal-footer">

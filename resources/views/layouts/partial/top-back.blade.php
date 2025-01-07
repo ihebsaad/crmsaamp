@@ -112,23 +112,16 @@ if($lg=='pl' ){ $langue='Polski';$displaypl='display:none';}
   <!-- Topbar Navbar -->
   <div class="navbar-nav ml-5 mr-3 hidemobile">
   @if($data!='')
-    <div id="gold" class="pb-10 ml-5">{{__("msg.Gold")}}</div><br><small>{{$data[0]->cours_au}}</small>
-    <div id="silver" class="pb-10">{{ __("msg.Silver")}}</div><br><small>{{$data[0]->cours_ag}}</small>
-    <div id="platine" class="pb-10">Plat</div><br><small>{{$data[0]->cours_pt}}</small>
-    <div id="pallad" style="color:black" class="pb-10">Pall</div><br><small>{{$data[0]->cours_pd}}</small>
+    <div id="gold" class="pb-10 ml-5">{{__("msg.Gold")}}</div><br><small>{{$data[0]->au}}<br>{{$data[1]->au}}</small>
+    <div id="silver" class="pb-10">{{ __("msg.Silver")}}</div><br><small>{{$data[0]->ag}}<br>{{$data[1]->ag}}</small>
+    <div id="platine" class="pb-10">Plat</div><br><small>{{$data[0]->pt}}<br>{{$data[1]->pt}}</small>
+    <div id="pallad" style="color:black" class="pb-10">Pall</div><br><small>{{$data[0]->pd}}<br>{{$data[1]->pd}}</small>
   @endif
   </div>
 
   <div class="  hidepc hidetablette">
     <a href="#" data-toggle="modal" data-target="#metalsModal"><img class="" src="{{ URL::asset('img/trade.png')}}" width="40" /></a>
-    <!--
-    <ul class="tendances"   >
-      <li> {{__("msg.Gold")}} - <small>{{$data[0]->cours_au}}</small> </li>
-      <li> {{__("msg.Silver")}} - <small>{{$data[0]->cours_ag}}</small> </li>
-      <li> Platine - <small>{{$data[0]->cours_pt}}</small> </li>
-      <li> Palladium - <small>{{$data[0]->cours_pd}}</small> </li>
-    </ul>
--->
+
   </div>
   <div class="navbar-nav ml-auto">
 
@@ -141,7 +134,7 @@ if($lg=='pl' ){ $langue='Polski';$displaypl='display:none';}
       <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="mr-2 d-none d-lg-inline  small" style="color:black"> {{$user['name']}} {{$user['lastname'] }}</span>
         <img class="img-profile rounded-circle" src="{{ URL::asset('img/person.jpg')}}">
-        <img class="img-profile rounded-circle" src="{{ URL::asset('img/noel3.png')}}" style="width: 86px;height: auto;position: fixed;right: 0px;top: -8px;z-index: 99;">
+        <!--<img class="img-profile rounded-circle" src="{{ URL::asset('img/noel3.png')}}" style="width: 86px;height: auto;position: fixed;right: 0px;top: -8px;z-index: 99;">-->
       </a>
       <!-- Dropdown - User Information -->
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

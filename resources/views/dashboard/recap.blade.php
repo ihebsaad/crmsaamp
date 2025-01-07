@@ -38,19 +38,27 @@ form{
                         <input type="hidden" name="user" value="{{$user ?? auth()->user()->id}}" id="user">
                         @endif
 
-                        <div class="col-lg-2 col-md-6">
+                        <div class="col-lg-2 col-md-6 col-sm-12">
+                            <span class="mr-2">Dates:</span><br>
+                            <select class="form-control" name="affichage" id="affichage">
+                                <option value="1" >Mois courant</option>
+                                <option value="2"  {{ $affichage== 2 ? 'selected="selected"' : '' }}>Année courante</option>
+                                <option value="3"  {{ $affichage== 3 ? 'selected="selected"' : '' }}>Personnalisé</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-12"  @if($affichage!= 3 ) style="display:none" @endif id="debut">
                             <span class="mr-2">{{__('msg.Start date')}}:</span><br>
                             <input type="date" class="form-control mr-2" id="date_debut" name="date_debut" value="{{$date_debut ?? date('Y-m-01')}}" style="width:150px">
                         </div>
-                        <div class="col-lg-2 col-md-6">
+                        <div class="col-lg-2 col-md-6 col-sm-12"  @if($affichage!= 3 ) style="display:none" @endif id="fin">
                             <span class="ml-3 mr-2">{{__('msg.End date')}}:</span><br>
                             <input type="date" class="form-control" id="date_fin" name="date_fin" value="{{$date_fin ?? date('Y-m-t')}}" style="width:150px">
                         </div>
-                        <div class="col-lg-2 col-md-6 mt-3"><!--
+                        <div class="col-lg-2 col-md-6 col-sm-12 mt-3 "><!--
                             <span><input type="checkbox" @if( $date_debut=="{{date('Y-m-t')}}" && $date_fin=="{{date('Y-m-t')}}" ) checked="checked" @endif/>Mois courant</span>
                             <span><input type="checkbox" @if( $date_debut=="{{date('Y-m-t')}}" && $date_fin=="{{date('Y-m-t')}}" ) checked="checked" @endif/>Année courante</span>-->
                         </div>
-                        <div class="col-lg-2 col-md-6 mt-2 mb-2">
+                        <div class="col-lg-2 col-md-6 col-sm-12 mt-2 mb-2">
                             <button type="submit" class="btn btn-primary  mr-3 mt-3">
                                 Voir
                             </button>
@@ -60,73 +68,133 @@ form{
                 </div>
 
                 <div class="row">
+                    <!-- Offres -->
                     <div class="col-md-4">
                         <h5>Offres</h5>
                         <table class="table table-striped table-hover">
-                            <tr>
-                                <th>Offres : {{count($offres)}}</th><th> </th><th></th>
-                            </tr>
-                            <tr>
-                                <td>TG : {{$offres_tg}} </td><td>Hors TG : {{$offres_hors_tg}} </td><td>Apprêts/Bij/DP : {{$offres_apprets}}</td>
-                            </tr>
-                            <tr>
-                                <td>Validés : {{$offres_ok}}</td><td>En attente : {{$offres_attente}} </td><td></td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Statistique</th>
+                                    <th>Actuelle</th>
+                                    <th>Précédente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{{ count($offres) }}</td>
+                                    <td>{{ count($prev_offres) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>TG</td>
+                                    <td>{{ $offres_tg }}</td>
+                                    <td>{{ $prev_offres_tg }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Hors TG</td>
+                                    <td>{{ $offres_hors_tg }}</td>
+                                    <td>{{ $prev_offres_hors_tg }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Apprêts</td>
+                                    <td>{{ $offres_apprets }}</td>
+                                    <td>{{ $prev_offres_apprets }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Validés</td>
+                                    <td>{{ $offres_ok }}</td>
+                                    <td>{{ $prev_offres_ok }}</td>
+                                </tr>
+                                <tr>
+                                    <td>En attente</td>
+                                    <td>{{ $offres_attente }}</td>
+                                    <td>{{ $prev_offres_attente }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     <div class="col-md-6">
                         <h5>Statistiques des Offres</h5>
-                        <div>
-                            <button class="btn btn-primary" onclick="showChart('offresPieChart', 'offresBarChart')">Par Type</button>
-                            <button class="btn btn-secondary" onclick="showChart('offresBarChart', 'offresPieChart')">Par Validation</button>
-                        </div>
-                        <div id="offresPieChart" class="chart-container" style="width: 100%; height: 300px;"></div>
-                        <div id="offresBarChart" class="chart-container" style="width: 100%; height: 300px; display: none;"></div>
+                        <div id="offresComparisonChart" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
 
                 <div class="row">
+                    <!-- Rendez-vous -->
                     <div class="col-md-4">
-                        <h5>Rendez vous</h5>
+                        <h5>Rendez-vous</h5>
                         <table class="table table-striped table-hover">
-                            <tr>
-                                <th>Rendez vous : {{count($rendezvous)}}</th><th> </th>
-                            </tr>
-                            <td>Déplacements : {{$rdvs_deplacement}}</td><td>À distance: {{$rdvs_a_distance}}</td>
+                            <thead>
+                                <tr>
+                                    <th>Statistique</th>
+                                    <th>Actuelle</th>
+                                    <th>Précédente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{{ count($rendezvous) }}</td>
+                                    <td>{{ count($prev_rendezvous) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Déplacements</td>
+                                    <td>{{ $rdvs_deplacement }}</td>
+                                    <td>{{ $prev_rdvs_deplacement }}</td>
+                                </tr>
+                                <tr>
+                                    <td>À distance</td>
+                                    <td>{{ $rdvs_a_distance }}</td>
+                                    <td>{{ $prev_rdvs_a_distance }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     <div class="col-md-6">
                         <h5>Statistiques des Rendez-vous</h5>
-                        <div>
-                            <!--
-                            <button class="btn btn-primary" onclick="showChart('rdvsPieChart', 'rdvsBarChart')">Cercles</button>
-                            <button class="btn btn-secondary" onclick="showChart('rdvsBarChart', 'rdvsPieChart')">Barres</button>
-                            -->
-                        </div>
-                        <div id="rdvsPieChart" class="chart-container" style="width: 100%; height: 300px;"></div>
-                        <div id="rdvsBarChart" class="chart-container" style="width: 100%; height: 300px; display: none;"></div>
+                        <div id="rendezvousComparisonChart" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
 
                 <div class="row">
+                    <!-- Retours -->
                     <div class="col-md-4">
                         <h5>Réclamations</h5>
                         <table class="table table-striped table-hover">
-                            <tr>
-                                <th colspan="3">Réclamations initiées : {{count($retours)}}</th>
-                            </tr>
-                            <td>Positifs : {{$retours_positifs}}</td><td>Négatifs: {{$retours_negatifs}}</td><td>Infos : {{$retours_infos}}</td>
+                            <thead>
+                                <tr>
+                                    <th>Statistique</th>
+                                    <th>Actuelle</th>
+                                    <th>Précédente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{{ count($retours) }}</td>
+                                    <td>{{ count($prev_retours) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Positifs</td>
+                                    <td>{{ $retours_positifs }}</td>
+                                    <td>{{ $prev_retours_positifs }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Négatifs</td>
+                                    <td>{{ $retours_negatifs }}</td>
+                                    <td>{{ $prev_retours_negatifs }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Infos</td>
+                                    <td>{{ $retours_infos }}</td>
+                                    <td>{{ $prev_retours_infos }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     <div class="col-md-6">
                         <h5>Statistiques des Réclamations</h5>
-                        <div><!--
-                            <button class="btn btn-primary" onclick="showChart('retoursPieChart', 'retoursBarChart')">Cercles</button>
-                            <button class="btn btn-secondary" onclick="showChart('retoursBarChart', 'retoursPieChart')">Barres</button>
-                            -->
-                        </div>
-                        <div id="retoursPieChart" class="chart-container" style="width: 100%; height: 300px;"></div>
-                        <div id="retoursBarChart" class="chart-container" style="width: 100%; height: 300px; display: none;"></div>
+                        <div id="retoursComparisonChart" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
 
@@ -135,67 +203,43 @@ form{
                     google.charts.load('current', { packages: ['corechart'] });
                     google.charts.setOnLoadCallback(drawAllCharts);
 
-                    const chartColors = ['#e5e7e6', '#EEE6D8', '#DAAB3A', '#B67332', '#93441A'];
-
                     function drawAllCharts() {
-                        drawOffresCharts();
-                        drawRdvsCharts();
-                        drawRetoursCharts();
-                    }
-
-                    function drawOffresCharts() {
-                        const pieData = google.visualization.arrayToDataTable([
-                            ['Catégorie', 'Nombre'],
-                            ['TG', {{$offres_tg}}],
-                            ['Hors TG', {{$offres_hors_tg}}],
-                            ['Apprêts/Bij/DP', {{$offres_apprets}}],
+                        drawComparisonChart('offresComparisonChart', [
+                            ['Catégorie', 'Actuelle', 'Précédente'],
+                            ['TG', {{ $offres_tg }}, {{ $prev_offres_tg }}],
+                            ['Hors TG', {{ $offres_hors_tg }}, {{ $prev_offres_hors_tg }}],
+                            ['Apprêts', {{ $offres_apprets }}, {{ $prev_offres_apprets }}],
+                            ['Validés', {{ $offres_ok }}, {{ $prev_offres_ok }}],
+                            ['En attente', {{ $offres_attente }}, {{ $prev_offres_attente }}],
                         ]);
 
-                        const barData = google.visualization.arrayToDataTable([
-                            ['Catégorie', 'Nombre', { role: 'style' }],
-                            ['Validés', {{$offres_ok}}, chartColors[0]],
-                            ['En attente', {{$offres_attente}}, chartColors[1]],
+                        drawComparisonChart('rendezvousComparisonChart', [
+                            ['Type', 'Actuelle', 'Précédente'],
+                            ['Déplacements', {{ $rdvs_deplacement }}, {{ $prev_rdvs_deplacement }}],
+                            ['À distance', {{ $rdvs_a_distance }}, {{ $prev_rdvs_a_distance }}],
                         ]);
 
-                        const options = { colors: chartColors ,  bars: 'vertical' ,
-                            hAxis: {title: 'Catégories',  },  vAxis: { title: 'Nombre', } };
-
-                        new google.visualization.PieChart(document.getElementById('offresPieChart')).draw(pieData, options);
-                        new google.visualization.BarChart(document.getElementById('offresBarChart')).draw(barData, options);
-                    }
-
-                    function drawRdvsCharts() {
-                        const pieData = google.visualization.arrayToDataTable([
-                            ['Type', 'Nombre'],
-                            ['Déplacements', {{$rdvs_deplacement}}],
-                            ['À distance', {{$rdvs_a_distance}}],
+                        drawComparisonChart('retoursComparisonChart', [
+                            ['Type', 'Actuelle', 'Précédente'],
+                            ['Positifs', {{ $retours_positifs }}, {{ $prev_retours_positifs }}],
+                            ['Négatifs', {{ $retours_negatifs }}, {{ $prev_retours_negatifs }}],
+                            ['Infos', {{ $retours_infos }}, {{ $prev_retours_infos }}],
                         ]);
-
-                        const options = { colors: chartColors , bars: 'vertical' };
-                        new google.visualization.PieChart(document.getElementById('rdvsPieChart')).draw(pieData, options);
-                        new google.visualization.BarChart(document.getElementById('rdvsBarChart')).draw(pieData, options);
                     }
 
-                    function drawRetoursCharts() {
-                        const pieData = google.visualization.arrayToDataTable([
-                            ['Type', 'Nombre'],
-                            ['Positifs', {{$retours_positifs}}],
-                            ['Négatifs', {{$retours_negatifs}}],
-                            ['Infos', {{$retours_infos}}],
-                        ]);
-
-                        const options = { colors: chartColors , bars: 'vertical' };
-                        new google.visualization.PieChart(document.getElementById('retoursPieChart')).draw(pieData, options);
-                        new google.visualization.BarChart(document.getElementById('retoursBarChart')).draw(pieData, options);
-                    }
-
-                    function showChart(showId, hideId) {
-                        document.getElementById(showId).style.display = 'block';
-                        document.getElementById(hideId).style.display = 'none';
+                    function drawComparisonChart(elementId, data) {
+                        const chartData = google.visualization.arrayToDataTable(data);
+                        const options = {
+                            bars: 'vertical',
+                            hAxis: { title: 'Catégories' },
+                            vAxis: { title: 'Quantité' },
+                            isStacked: true,
+                            colors: ['#4285F4', '#EA4335'],
+                        };
+                        const chart = new google.visualization.ColumnChart(document.getElementById(elementId));
+                        chart.draw(chartData, options);
                     }
                 </script>
-
-
             </div>
         </div>
     </div>
@@ -217,6 +261,30 @@ form{
                 return 'Pas de résultats';
             }
         }
+    });
+
+    $("#affichage").change(function(){
+        var option = $(this).find("option:selected").val();
+        if(option==3){
+            $("#debut").show('slow');
+            $("#fin").show('slow');
+            $("#date_debut").val("{{date('Y-m-d')}}");
+            $("#date_fin").val("{{date('Y-m-t')}}");
+        }
+
+        if(option==1){
+            $("#debut").hide('slow');
+            $("#fin").hide('slow');
+            $("#date_debut").val("{{date('Y-m-01')}}");
+            $("#date_fin").val("{{date('Y-m-t')}}");
+        }
+        if(option==2){
+            $("#debut").hide('slow');
+            $("#fin").hide('slow');
+            $("#date_debut").val("{{date('Y-01-01')}}");
+            $("#date_fin").val("{{date('Y-12-31')}}");
+        }
+
     });
 </script>
 

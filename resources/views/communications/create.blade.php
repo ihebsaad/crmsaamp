@@ -64,9 +64,9 @@
 
 						<!-- Fichier -->
 						<div class="col-md-6 mb-3">
-							<label for="fichier" class="form-label">Fichier (optionnel)</label>
-							<input type="file" class="form-control" id="fichier" name="fichier" disabled>
-							@error('fichier') <span class="text-danger">{{ $message }}</span> @enderror
+							<label for="files" class="form-label">{{__('msg.File(s)')}} (optionnel)</label>
+							<input type="file" class="form-control" id="files"   name="fichiers[]"  multiple  />
+							@error('files') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
 
 						<!-- Corps du message -->
@@ -83,8 +83,12 @@
 						<!-- Destinataires -->
 						<div class="col-md-12 mb-3">
 							<label for="destinataires" class="form-label">Destinataires</label>
-							<textarea class="form-control" id="destinataires" name="destinataires" rows="3" required readonly>{{ old('destinataires') }}</textarea>
+							<textarea  style="display:none!important" class="form-control" id="destinataires" name="destinataires" rows="3" required readonly>{{ old('destinataires') }}</textarea>
 							@error('destinataires') <span class="text-danger">{{ $message }}</span> @enderror
+						</div>
+
+						<div class="col-md-12 mb-3">
+							<textarea id="clients" name="clients" class="form-control" placeholder="Liste des noms de clients" readonly></textarea>
 						</div>
 
 						<div class="col-md-6 ">
@@ -267,6 +271,27 @@
 				// Réinitialiser la liste des clients sélectionnés
 				selectedClients = [];
 			});
+/*
+			document.getElementById('destinataires').addEventListener('input', function () {
+				const destinatairesTextarea = this.value.trim();
+				const clientsTextarea = document.getElementById('clients');
+
+				try {
+					// Parse le contenu de destinataires
+					const destinataires = JSON.parse(destinatairesTextarea);
+
+					// Vérifie si c'est un tableau d'objets avec des noms
+					if (Array.isArray(destinataires)) {
+						const clientNames = destinataires.map(dest => dest.name).join(', ');
+						clientsTextarea.value = clientNames;
+					} else {
+						clientsTextarea.value = '';
+					}
+				} catch (error) {
+					// En cas d'erreur, vide le champ clients
+					clientsTextarea.value = '';
+				}
+			});*/
 
 			// Search clients
 			$('#searchClientsBtn').click(function() {
@@ -323,20 +348,28 @@
 			// Add selected clients to the destinatary field
 			$('#addSelectedClients').click(function() {
 				const selectedClients = [];
+				const Clients = [];
 
 				$('.select-client:checked').each(function() {
 					selectedClients.push({
 						id: $(this).data('id'),
-						name: $(this).data('name'),
+						name: $(this).data('name').trim(),
 					});
+					Clients.push(
+						$(this).data('name').trim(),
+					);
 				});
 
 				if (selectedClients.length > 0) {
 					const destinataryField = $('#destinataires'); // Adjust selector as needed
+					const clientsField = $('#clients'); // Adjust selector as needed
 					let destinataryData = destinataryField.val() ? JSON.parse(destinataireField.val()) : [];
+					let clientsData = clientsField.val() ? JSON.parse(clientsField.val()) : [];
 
 					destinataryData = destinataryData.concat(selectedClients);
 					destinataryField.val(JSON.stringify(destinataryData));
+					clientsData= clientsData.concat(Clients);
+					clientsField.val(JSON.stringify(clientsData));
 				}
 
 				$('#searchClientsModal').modal('hide');

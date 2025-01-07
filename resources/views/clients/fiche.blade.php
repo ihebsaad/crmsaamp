@@ -72,10 +72,10 @@ if (is_array($commandes) || is_object($commandes)) {
 </style>
 <div class="row">
 
-    <div class="col-lg-12 col-sm-12 mb-4">
+    <div class="col-lg-8 col-sm-12 mb-4">
 
         <div class="card shadow mb-1">
-            <div class="card-header py-3">
+            <div class="card-header py-4">
                 <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Customer sheet')}} : {{$client->Nom}} - {{$client->cl_ident}} </h6>
             </div>
             <div class="card-body">
@@ -180,7 +180,7 @@ if (is_array($commandes) || is_object($commandes)) {
                         </div>
                     </div>
                     <div class="row pt-1">
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="Phone">{{__('msg.Phone')}}:</label>
                                 <h6>{{$client->Phone ??  $client->Tel}}</h6>
@@ -201,19 +201,14 @@ if (is_array($commandes) || is_object($commandes)) {
                             </div>
                         </div>
                         -->
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="">{{__('msg.Website')}}:</label>
                                 <h6>{{$client->url}}</h6>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="">
-                                <label for="">{{__('msg.Comment')}}:</label>
-                                <h6>{{$client->Commentaire ?? ''}}</h6>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mt-3">
+
+                        <div class="col-md-4 mt-3">
                             <b class="float-right text-info " ><i>{{$login}}</i></b>
                         </div>
                         <!--
@@ -228,6 +223,34 @@ if (is_array($commandes) || is_object($commandes)) {
 
             </div>
         </div>
+    </div>
+
+    <div class="col-lg-4 col-sm-12 mb-4">
+
+        <div class="card shadow mb-1">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Comments')}} <button type="button" class="btn-primary btn float-right" data-toggle="modal" data-target="#ModalComments">+</button></h6>
+            </div>
+
+            <div class="card-body" style="min-height:400px">
+                <table class="table table-bordered table-striped mb-40">
+                    <thead>
+                        <tr id="headtable">
+                            <th class="" style="width:15%">Date</th>
+                            <th class="" style="width:70%">{{__('msg.Comment')}}</th>
+                            <th class="" style="width:15%">{{__('msg.By')}}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comments">
+                        @foreach($commentaires as $comment)
+                            @php  $user= \App\Models\User::find($comment->user); @endphp
+                            <tr><td>{{date('d/m/Y H:i', strtotime($comment->date)) }}</td><td>{{$comment->comment}}</td><td>@if($comment->user > 0) {{$user->name.' '.$user->lastname}} @endif</td></tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     <div class="col-lg-4 col-sm-12 mb-4">
@@ -545,6 +568,33 @@ if (is_array($commandes) || is_object($commandes)) {
                     </div>
                 </div>
 
+                <div class="modal fade" id="ModalComments" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document" style="width: 75%;margin: 0 auto;">
+                        <div class="modal-content" >
+                            <div class="modal-header">
+                                <h5 class="modal-title text-center">Ajouter un commentaire</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <input type="hidden" id="client" value="{{$client->id}}" />
+                                <label>{{__('msg.Comment')}} :</label><br>
+                                <textarea  class="form-control" id="comment" placeholder="Votre commentaire" ></textarea>
+
+                                <div class="col-md-12 mb-3 text-right">
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="add_comment()">Créer</button>
+                                <!--<button class="btn btn-secondary" type="button" data-dismiss="modal">{{__('msg.Close')}}</button>-->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -729,6 +779,35 @@ if (is_array($commandes) || is_object($commandes)) {
     </div>
 
     <script>
+
+        function add_comment() {
+
+        var _token = $('input[name="_token"]').val();
+        var comment = $("#comment").val();
+        var client = parseInt($("#client").val());
+
+        $.ajax({
+            url: "{{ route('add_comment') }}",
+            method: "POST",
+            async: false,
+            data: {
+                client: client,
+                comment: comment,
+                _token: _token
+            },
+            success: function(data) {
+                if (data != '') {
+                    var row = '<tr><td>' + data.date + '</td><td>' + comment + ' </td><td>'+data.user+'</td></tr>';
+                    $('#comments').append(row);
+                    $('#ModalComments').modal('hide');
+                } else {
+                    alert('erreur !')
+                }
+
+            }
+        });
+
+        }
         function show_stats(cl_id){
             var _token = $('input[name="_token"]').val();
             var mois = 1;

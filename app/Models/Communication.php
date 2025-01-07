@@ -11,7 +11,15 @@ class Communication extends Model
 
     protected $table = "communications";
 
-    protected $guarded = [];
+    protected $fillable = [
+        'objet' ,
+        'corps_message' ,
+        'par',
+        'destinataires',
+        'statut' ,
+        'type' ,
+        'clients'
+    ];
 
     public $timestamps = false;
 

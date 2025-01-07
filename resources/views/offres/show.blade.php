@@ -210,7 +210,7 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             @if($offre->date_relance!='')
-                            <label for="Statut">Date relance:</label>
+                            <label for="Statut">Date de relance:</label>
                             <h6>{{date('d/m/Y', strtotime($offre->date_relance))}}</h6>
                             <button type="button" class="btn-info btn" onclick="relancer()" id="relance">Relancer</button>
 

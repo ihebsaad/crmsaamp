@@ -8,6 +8,7 @@ use App\Models\Communication;
 use App\Models\CompteClient;
 use App\Models\EmailTemplate;
 use App\Models\Agence;
+use App\Models\File;
 use App\Services\SendMail;
 
 class CommunicationsController extends Controller
@@ -30,28 +31,29 @@ class CommunicationsController extends Controller
     // Enregistrer une nouvelle communication
     public function store(Request $request)
     {
-        // Validation des données
         $validator = Validator::make($request->all(), [
             'objet' => 'nullable|string|max:255',
             'corps_message' => 'nullable|string',
-            'fichier' => 'nullable|file|mimes:pdf,docx,jpeg,png|max:20480',
+            //'fichier' => 'nullable|file|mimes:pdf,docx,jpeg,png|max:20480',
             'par' => 'required|integer',
             'destinataires' => 'required|json',
             'statut' => 'nullable|integer|in:0,1',
             'type' => 'required|integer|in:1,2', // 1: Email, 2: SMS
+            'files.*' => 'file|mimes:jpeg,png,pdf,doc,docx|max:10240', // 10 MB max
+
         ]);
 
         // Si la validation échoue
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+/*
         // Gestion du fichier uploadé
         $fichierPath = null;
         if ($request->hasFile('fichier')) {
             $fichierPath = $request->file('fichier')->store('fichiers/communications', 'public');
         }
-
+*/
         $template = null;
         if ($request->filled('template_id')) {
             $template = EmailTemplate::find($request->input('template_id'));
@@ -61,11 +63,12 @@ class CommunicationsController extends Controller
         $communication = Communication::create([
             'objet' => $template ? $template->subject : $request->input('objet'),
             'corps_message' => $template ? $template->body : $request->input('corps_message'),
-            'fichier' => $fichierPath,
+            //'fichier' => $fichierPath,
             'par' => $request->input('par'),
             'destinataires' => $request->input('destinataires'),
             'statut' => $request->input('statut', 1), // Par défaut 1 (actif)
             'type' => $request->input('type'),
+            'clients' => $request->input('clients'),
         ]);
 
        // Récupération des destinataires
@@ -87,11 +90,34 @@ class CommunicationsController extends Controller
         // Vérification des IDs
         \Log::info('Destinataires IDs : ' . json_encode($destinatairesIds));
 
+        $attachmentPaths = []; // Tableau pour stocker les chemins des fichiers
+
+        if ($request->hasFile('fichiers')) {
+            $fichiers = $request->file('fichiers');
+
+
+            foreach ($fichiers as $fichier) {
+                $name = $fichier->getClientOriginalName();
+                $path = public_path("fichiers/communications");
+                $fichier->move($path, $name);
+
+                // Ajouter le chemin du fichier au tableau des pièces jointes
+                $attachmentPaths[] = $path . '/' . $name;
+
+                // Enregistrer chaque fichier dans la table files
+                File::create([
+                    'name' => $name,
+                    'parent_id' => $communication->id,
+                    'parent' => 'communication'
+                ]);
+            }
+        }
+
         // Récupérer les emails des clients
         $emails = CompteClient::whereIn('id', $destinatairesIds)
             ->whereNotNull('email')
             ->pluck('email')
-            ->toArray(); // Récupérer les emails
+            ->toArray();
 
         // Objet et contenu de l'email
         $objet = $communication->objet;
@@ -102,12 +128,13 @@ class CommunicationsController extends Controller
         // Ajout de l'envoi d'email via le service SendMail
         try {
             if (!empty($emails)) {
-                SendMail::send($emails, $objet, $contenu);
+                SendMail::send($emails, $objet, $contenu, $attachmentPaths); // Passer les pièces jointes
             } else {
                 logger()->warning('Aucun email trouvé pour les destinataires.');
             }
         } catch (\Exception $e) {
             logger()->error('Erreur lors de l\'envoi de l\'email : ' . $e->getMessage());
+            $communication->statut =2;
             $communication->erreurs_envoi = $e->getMessage();
             $communication->save();
             return redirect()->route('communications.index')->withErrors(['msg' => "Erreur lors de l'envoi des emails"]);

@@ -89,16 +89,23 @@
                     <div class="row pt-1">
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="Description">{{__('msg.Description')}}:</label>
                                 <textarea  id="Description" class="form-control" name="Description"  style="min-height:150px">{{old('Description')}}</textarea><br><br>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="Nom_offre">{{__('msg.File(s)')}}:</label>
                                 <input type="file" id="fichier" class="form-control" name="files[]"  multiple required  accept="application/pdf" /><br><br>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="">
+                                <label for="date_relance">Date de relance :</label>
+                                <input type="text" id="date_relance" class="form-control datepicker" name="date_relance"  value="{{date('Y-m-d', time() + 604800)}}"><br><br>
                             </div>
                         </div>
 

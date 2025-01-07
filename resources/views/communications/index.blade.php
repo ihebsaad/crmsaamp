@@ -46,7 +46,7 @@
                                 <td>{{ $communication->id }}</td>
                                 <td>{{date('d/m/Y', strtotime($communication->created_at))}}</td>
                                 <td>{{$creator->name}} {{$creator->lastname}}</td>
-                                <td>{{ $communication->destinataires }}</td>
+                                <td>{{ $communication->clients ?? $communication->destinataires   }}</td>
                                 <td>{!! $badge !!} </td>
                                 <td></td>
                             </tr>

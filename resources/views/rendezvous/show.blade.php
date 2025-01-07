@@ -89,6 +89,17 @@
                             </div>
                         </div>
 
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="Location">Statut:</label>
+                                <select    id="statut" class="form-control" name="statut" required  >
+                                    <option  value="1"  {{ $rendezvous->statut==1 ? 'selected="selected"' : '' }} >Planifié</option>
+                                    <option  value="2" {{ $rendezvous->statut==2 ? 'selected="selected"' : '' }} >Réalisé</option>
+                                    <option  value="3" {{ $rendezvous->statut==3 ? 'selected="selected"' : '' }} >Annulé</option>
+                                </select>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="row pt-1">

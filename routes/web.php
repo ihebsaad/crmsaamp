@@ -49,6 +49,9 @@ Route::post('/parcours', [MapController::class, 'parcours']);
 
 Route::post('/add_template', [EmailTemplateController::class, 'store'])->name('templates.store');
 
+Route::post('/add_comment',[ClientsController::class, 'add_comment'])->name('add_comment');
+
+
 
 Route::get('/recap', [RecapController::class, 'recap'])->name('recap');
 

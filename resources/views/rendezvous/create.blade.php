@@ -70,7 +70,7 @@
 
                     <div class="row pt-1">
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="">
                             <label for="Type">{{__('msg.Type')}}:</label>
                                 <select    id="Type" class="  form-control" name="Type"   >
@@ -91,14 +91,14 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                         <div class="">
                                 <label for="Location">{{__('msg.Place')}}:</label>
                                 <input type="text" id="Location" class="form-control" name="Location" required value="{{old('Location')}}"><br><br>
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="">
                                 <label for="Location">Mode:</label>
                                 <select    id="mode_de_rdv" class="form-control" name="mode_de_rdv" required  >
@@ -109,6 +109,16 @@
                             </div>
                         </div>
 
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="Location">Statut:</label>
+                                <select    id="statut" class="form-control" name="statut" required  >
+                                    <option  value="1">Planifié</option>
+                                    <option  value="2">Réalisé</option>
+                                    <option  value="3">Annulé</option>
+                                </select>
+                            </div>
+                        </div>
 
                     </div>
 

@@ -133,6 +133,7 @@ class RendezVousController extends Controller
 			'Subject' => $request->input('Subject'),
 			'Description' => $request->input('Description'),
 			'mode_de_rdv' => $request->input('mode_de_rdv'),
+			'statut' => $request->input('statut'),
 		]);
 
 		$rendezvous->save();
@@ -299,7 +300,7 @@ class RendezVousController extends Controller
 			$client_id = $rv->AccountId;
 			$rv->delete();
 
-			if (str_contains($previousUrl, '/show/' . $id) && $client_id > 0) {
+			if (str_contains($previousUrl, '/show/' . $id) && $client_id > 0 || str_contains($previousUrl, 'fiche' ) ) {
 				return redirect()->route('fiche', $client_id)->with('success', 'Supprimé avec succès');
 			}
 		}

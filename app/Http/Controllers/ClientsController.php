@@ -123,6 +123,7 @@ class ClientsController extends Controller
 	public function fiche($id)
 	{
 		$client = CompteClient::find($id);
+		$commentaires = DB::table('commentaire_client')->where('client',$id)->get();
 		$login = '';
 
 		if ($client->cl_ident > 0) {
@@ -139,7 +140,7 @@ class ClientsController extends Controller
 				->first(); // Get the most recent record
 
 			if ($lastLogin) {
-				$login = __('msg.Last login to MySaamp') . " : " .  date('d/m/Y H:i', strtotime($lastLogin->login_at));
+				$login = __('msg.Last login to MySaamp') . ": " .  date('d/m/Y H:i', strtotime($lastLogin->login_at));
 			} else {
 				$login = __('msg.No connection to MySaamp');
 			}
@@ -284,7 +285,7 @@ class ClientsController extends Controller
 			->where('Started_at', '<', $now)
 			->orderBy('Started_at', 'desc')
 			->get();
-		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login'));
+		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login','commentaires'));
 	}
 
 
@@ -608,4 +609,24 @@ class ClientsController extends Controller
 		return redirect()->route('search')
 			->with('success', 'Supprimé avec succès');
 	}
+
+
+
+	public function add_comment(Request $request)
+    {
+
+		DB::table('commentaire_client')->insert([
+			'comment'=>$request->get('comment'),
+			'client'=>$request->get('client'),
+			'user'=>auth()->id(),
+		]);
+
+		$data=array();
+		$data['date']=date('d/m/Y');
+		$data['user']=auth()->user()->name.' '.auth()->user()->lastname;
+		return $data;
+	}
+
+
+
 } // end class

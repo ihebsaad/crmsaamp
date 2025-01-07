@@ -27,6 +27,8 @@
                             <th >{{__('msg.Date')}}</th>
                             <th >{{__('msg.Hour')}}</th>
                             <th >{{__('msg.Place')}}</th>
+                            <th >Mode</th>
+                            <th >{{__('msg.Status')}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,6 +38,8 @@
                                 $location='';
                                 if(isset($client))
                                     $location=$client->ville.' ('.$client->adresse1.')';
+
+                                $status = [1 => "Planifié", 2 => "Réalisé",3=> 'Annulé'];
                             @endphp
                             <tr>
                                 <td>{{ $rv->id }}</td>
@@ -44,6 +48,8 @@
                                 <td>{{ date('d/m/Y', strtotime($rv->Started_at)) }}</td>
                                 <td>{{ $rv->heure_debut }}</td>
                                 <td>{{ $rv->Location ?? $location }}</td>
+                                <td>{{ $rv->mode_de_rdv ?? '' }}</td>
+                                <td>{{ $rv->statut > 0 ? $status[$rv->statut] : '' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

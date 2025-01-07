@@ -14,7 +14,7 @@ class SendMail
 {
 
 
-    public static function send($to, $sujet, $contenu)
+    public static function send($to, $sujet, $contenu, $attachments = [])
     {
         $transport = new EsmtpTransport(env('MAIL_HOST'), env('MAIL_PORT'));
         $transport->setUsername(env('MAIL_USERNAME'));
@@ -35,6 +35,13 @@ class SendMail
             ->replyTo($ccAddress)
             ->subject($sujet)
             ->html($contenu);
+
+        // Ajout des fichiers joints
+        foreach ($attachments as $attachment) {
+            if (file_exists($attachment)) {
+                $email->attachFromPath($attachment);
+            }
+        }
 
         $mailer->send($email);
     }

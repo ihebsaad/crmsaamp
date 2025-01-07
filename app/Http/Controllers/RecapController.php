@@ -24,85 +24,142 @@ class RecapController extends Controller
     // Afficher le formulaire de création
     public function recap(Request $request)
     {
-        // Vérification des permissions
-        //if (auth()->user()->role != 'admin' &&  auth()->user()->role != 'respAG' && auth()->user()->role != 'dirQUA') {
-        //	return view('welcome');
-        //}
-
         $users = DB::table("users")
             ->where('username', 'like', '%@saamp.com')
             ->get();
 
-        $user=auth()->user()->id;
-
-        if($request->get('user')>0)
+        $user = auth()->user()->id;
+        if ($request->get('user') > 0) {
             $user = $request->get('user');
+        }
+
         $date_debut = $request->get('date_debut') ?? date('Y-m-01');
         $date_fin = $request->get('date_fin') ?? date('Y-m-t');
+        $affichage = $request->get('affichage');
         $name = "";
 
-/*
-        // Validation des dates
-        if (!$date_debut || !$date_fin) {
-            return back()->with('error', __('msg.Please provide a valid date range.'));
+        $User = User::find($user);
+        $name = $User->name . ' ' . $User->lastname;
+
+        // Variables pour périodes précédentes
+        $prev_date_debut = null;
+        $prev_date_fin = null;
+
+        if ($affichage == 1) {
+            // Calcul des dates pour le mois précédent
+            $prev_date_debut = date('Y-m-01', strtotime('first day of -1 month', strtotime($date_debut)));
+            $prev_date_fin = date('Y-m-t', strtotime('last day of -1 month', strtotime($date_fin)));
+        } elseif ($affichage == 2) {
+            // Calcul des dates pour l'année précédente
+            $prev_date_debut = date('Y-01-01', strtotime('-1 year', strtotime($date_debut)));
+            $prev_date_fin = date('Y-12-31', strtotime('-1 year', strtotime($date_fin)));
+        } elseif ($affichage == 3) {
+            // Calcul des dates pour une période personnalisée
+            $diff = (new \DateTime($date_debut))->diff(new \DateTime($date_fin));
+            $prev_date_fin = (new \DateTime($date_debut))->modify('-1 day')->format('Y-m-d');
+            $prev_date_debut = (new \DateTime($prev_date_fin))->modify("-{$diff->days} days")->format('Y-m-d');
         }
-*/
-        // Récupération des rendez-vous en fonction de l'utilisateur et de la plage de dates
-        //if ($user > 0) {
-            $User = User::find($user);
-            $name = $User->name . ' ' . $User->lastname;
-            $rendezvous = RendezVous::where('user_id', $user)
-                ->whereBetween('Started_at', [$date_debut, $date_fin])
-                ->orderBy('Started_at', 'asc')
-                ->orderBy('heure_debut', 'asc')
-                ->get();
 
-                $offres=Offre::where('user_id',$user)
-                ->whereBetween('Date_creation', [$date_debut, $date_fin])
-                ->orderBy('Date_creation', 'asc')
-                ->get();
+        // Récupération des données pour la période actuelle
+        $rendezvous = RendezVous::where('user_id', $user)
+            ->whereBetween('Started_at', [$date_debut, $date_fin])
+            ->orderBy('Started_at', 'asc')
+            ->orderBy('heure_debut', 'asc')
+            ->get();
 
-                $retours=RetourClient::where('user_id',$user)
-                ->whereBetween('Date_ouverture', [$date_debut, $date_fin])
-                ->orderBy('Date_ouverture', 'asc')
-                ->get();
-
-/*
-
-        } else {
-            $rendezvous = RendezVous::where('user_id', auth()->user()->id)
-                ->whereBetween('Started_at', [$date_debut, $date_fin])
-                ->orderBy('Started_at', 'asc')
-                ->orderBy('heure_debut', 'asc')
-                ->get();
-
-            $offres=Offre::where('user_id', auth()->user()->id)
+        $offres = Offre::where('user_id', $user)
             ->whereBetween('Date_creation', [$date_debut, $date_fin])
             ->orderBy('Date_creation', 'asc')
             ->get();
 
-            $retours=RetourClient::where('user_id', auth()->user()->id)
+        $retours = RetourClient::where('user_id', $user)
             ->whereBetween('Date_ouverture', [$date_debut, $date_fin])
             ->orderBy('Date_ouverture', 'asc')
             ->get();
-        }
-*/
-        $retours_positifs= $retours->where('Type_retour', 'Positif')->count();
-        $retours_negatifs= $retours->where('Type_retour', 'Négatif')->count();
-        $retours_infos= $retours->where('Type_retour', 'Information générale')->count();
 
-        $rdvs_deplacement= $rendezvous->where('mode_de_rdv', 'Déplacement')->count();
-        $rdvs_a_distance= $rendezvous->where('mode_de_rdv', 'À distance')->count();
+        // Récupération des données pour la période précédente
+        $prev_rendezvous = RendezVous::where('user_id', $user)
+            ->whereBetween('Started_at', [$prev_date_debut, $prev_date_fin])
+            ->orderBy('Started_at', 'asc')
+            ->orderBy('heure_debut', 'asc')
+            ->get();
 
-        $offres_tg= $offres->where('type', 'TG')->count();
-        $offres_hors_tg= $offres->where('type', 'Hors TG')->count();
-        $offres_apprets= $offres->where('type', 'Apprêts/Bij/DP')->count();
+        $prev_offres = Offre::where('user_id', $user)
+            ->whereBetween('Date_creation', [$prev_date_debut, $prev_date_fin])
+            ->orderBy('Date_creation', 'asc')
+            ->get();
 
-        $offres_ok= $offres->where('statut', 'OK')->count();
-        $offres_attente= $offres->whereNull('statut')->count();
+        $prev_retours = RetourClient::where('user_id', $user)
+            ->whereBetween('Date_ouverture', [$prev_date_debut, $prev_date_fin])
+            ->orderBy('Date_ouverture', 'asc')
+            ->get();
 
-        return view('dashboard.recap', compact('rendezvous', 'user', 'name', 'date_debut', 'date_fin','users','offres','retours','retours_infos','retours_positifs','retours_negatifs','rdvs_deplacement','rdvs_a_distance',
-        'offres_tg','offres_hors_tg','offres_apprets','offres_ok','offres_attente',
+        // Calcul des statistiques pour la période actuelle
+        $retours_positifs = $retours->where('Type_retour', 'Positif')->count();
+        $retours_negatifs = $retours->where('Type_retour', 'Négatif')->count();
+        $retours_infos = $retours->where('Type_retour', 'Information générale')->count();
+
+        $rdvs_deplacement = $rendezvous->where('mode_de_rdv', 'Déplacement')->count();
+        $rdvs_a_distance = $rendezvous->where('mode_de_rdv', 'À distance')->count();
+
+        $offres_tg = $offres->where('type', 'TG')->count();
+        $offres_hors_tg = $offres->where('type', 'Hors TG')->count();
+        $offres_apprets = $offres->where('type', 'Apprêts/Bij/DP')->count();
+
+        $offres_ok = $offres->where('statut', 'OK')->count();
+        $offres_attente = $offres->whereNull('statut')->count();
+
+        // Calcul des statistiques pour la période précédente
+        $prev_retours_positifs = $prev_retours->where('Type_retour', 'Positif')->count();
+        $prev_retours_negatifs = $prev_retours->where('Type_retour', 'Négatif')->count();
+        $prev_retours_infos = $prev_retours->where('Type_retour', 'Information générale')->count();
+
+        $prev_rdvs_deplacement = $prev_rendezvous->where('mode_de_rdv', 'Déplacement')->count();
+        $prev_rdvs_a_distance = $prev_rendezvous->where('mode_de_rdv', 'À distance')->count();
+
+        $prev_offres_tg = $prev_offres->where('type', 'TG')->count();
+        $prev_offres_hors_tg = $prev_offres->where('type', 'Hors TG')->count();
+        $prev_offres_apprets = $prev_offres->where('type', 'Apprêts/Bij/DP')->count();
+
+        $prev_offres_ok = $prev_offres->where('statut', 'OK')->count();
+        $prev_offres_attente = $prev_offres->whereNull('statut')->count();
+
+        return view('dashboard.recap', compact(
+            'rendezvous',
+            'prev_rendezvous',
+            'user',
+            'name',
+            'date_debut',
+            'date_fin',
+            'users',
+            'offres',
+            'retours',
+            'retours_infos',
+            'retours_positifs',
+            'retours_negatifs',
+            'rdvs_deplacement',
+            'rdvs_a_distance',
+            'offres_tg',
+            'offres_hors_tg',
+            'offres_apprets',
+            'offres_ok',
+            'offres_attente',
+            'prev_retours',
+            'prev_retours_positifs',
+            'prev_retours_negatifs',
+            'prev_retours_infos',
+            'prev_rdvs_deplacement',
+            'prev_rdvs_a_distance',
+            'prev_offres',
+            'prev_offres_tg',
+            'prev_offres_hors_tg',
+            'prev_offres_apprets',
+            'prev_offres_ok',
+            'prev_offres_attente',
+            'prev_date_debut',
+            'prev_date_fin',
+            'affichage'
         ));
     }
+
 }
