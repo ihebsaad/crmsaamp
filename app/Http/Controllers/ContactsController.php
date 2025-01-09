@@ -82,8 +82,10 @@ class ContactsController extends Controller
 			if($request->get('etat_id')==2)
 				self::insert_as400($data);
 
-			$data['password']=self::randomPassword();
-			self::create_user($data);
+			//$data['password']=self::randomPassword();
+			//self::create_user($data);
+			DB::select ("  CALL `sp_contact_insert_auto`(); ");
+
 		}
 
 		return redirect()->route('contacts.show', $contact->id)
@@ -127,6 +129,8 @@ class ContactsController extends Controller
 			self::update_as400($data);
 		}
 
+		DB::select ("  CALL `sp_contact_insert_auto`(); ");
+
 		return redirect()->route('fiche', $contact->mycl_ident)->with('success', 'Contact modifié');
 	}
 
@@ -148,11 +152,17 @@ class ContactsController extends Controller
 				$data['email']=$contact->email;
 				self::delete_as400($data);
 
-				//Supprimer l'utilisateur
-				User::where('email',$contact->email)->delete();
 			}
 
 			$contact->delete();
+
+			$count=Contact::where('email',$contact->email)
+			->orWhere('email2',$contact->email)
+			->count();
+
+			//Supprimer l'utilisateur
+			if($count==0)
+				User::where('email',$contact->email)->delete();
 
 			$previousUrl = url()->previous();
 

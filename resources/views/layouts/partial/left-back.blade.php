@@ -52,7 +52,7 @@ if (Auth::check()) {
     <!--<div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div>-->
-    <div class="sidebar-brand-text mx-3"><img width="100" src="{{ URL::asset('img/logo2.png')}}" /></div>
+    <div class="sidebar-brand-text mx-3"><img width="100" src="{{ URL::asset('img/logo.png')}}" /></div>
   </a>
 
   <!-- Divider -->

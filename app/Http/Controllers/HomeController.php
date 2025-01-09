@@ -304,6 +304,14 @@ class HomeController extends Controller
 		// stats
 
 		$retours = array();
+
+		$rendezvous_passes=RendezVous::where('Started_at', '<=', $now)
+		->where('user_id', auth()->id())
+		->where('statut', 1)
+		->orderBy('Started_at', 'asc')
+		->orderBy('heure_debut','asc')
+		->get();
+
 		if(auth()->user()->role=='adv'|| auth()->user()->role=='admin' || auth()->user()->role=='respAG' ){
 			$retours = DB::table('CRM_RetourClient as rc')
 			->join('client as c', 'rc.cl_id', '=', 'c.cl_ident')
@@ -471,7 +479,7 @@ class HomeController extends Controller
 			$userToken = GoogleToken::where('user_id', auth()->id())->first();
 
 
- 		return view('dashboard.dashboard',compact('rendezvous','clients','total_clients','total_1','offres','retours','agence','prospects','commerciaux','customers','userToken'));
+ 		return view('dashboard.dashboard',compact('rendezvous','clients','total_clients','total_1','offres','retours','agence','prospects','commerciaux','customers','userToken','rendezvous_passes'));
 	}
 
 	public function help()

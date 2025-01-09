@@ -354,7 +354,34 @@
       <a href="{{route('prospects')}}" target="_blank" class="btn btn-info mr-2 mt-5 float-right"><i class="fa fa-print"></i> {{__('msg.Print')}}</a>
 
     </div>
+    @endif
+  @if(count($rendezvous_passes)>0)
+    <div class="col-md-6 col-lg-6 col-sm-12">
+      <h4 class="text-center">Rendez vous planifiés, mais passés</h4>
 
+      <div class="table-container">
+        <table id="" class="table table-striped" style="width:100%!important">
+          <thead>
+            <tr style="background-color:#2e3e4e;color:white;" id="">
+              <th>ID</th>
+              <th>{{__('msg.Customer')}}</th>
+              <th>{{__('msg.Subject')}}</th>
+              <th>{{__('msg.Date')}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($rendezvous_passes as $rv)
+            <tr>
+              <td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
+              <td>{{ $rv->Account_Name }}</td>
+              <td>{{ $rv->Subject }}</td>
+              <td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
     @endif
   </div>
 
