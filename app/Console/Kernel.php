@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\trading::class,
+        //Commands\trading::class,
     ];
 
     /**
@@ -25,8 +25,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('command:trading')
-        ->everyMinute();
+        //$schedule->command('command:trading')
+        //->everyMinute();
+
+        $schedule->command('send:offers-reminder')->dailyAt('09:00');
     }
 
     /**

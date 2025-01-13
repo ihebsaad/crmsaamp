@@ -267,6 +267,10 @@ class OffresController extends Controller
 			$offre->save();
 		}
 
+		$offre->date_relance=$request->date_relance;
+		$offre->commentaire=$request->commentaire;
+		$offre->save();
+
 		//$offre->update($request->all());
 
 		if ($request->hasFile('files')) {

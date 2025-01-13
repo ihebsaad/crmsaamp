@@ -237,14 +237,15 @@ if (is_array($commandes) || is_object($commandes)) {
                     <thead>
                         <tr id="headtable">
                             <th class="" style="width:15%">Date</th>
-                            <th class="" style="width:70%">{{__('msg.Comment')}}</th>
+                            <th class="" style="width:65%">{{__('msg.Comment')}}</th>
                             <th class="" style="width:15%">{{__('msg.By')}}</th>
+                            <th class="" style="width:5%">{{__('msg.Del')}}</th>
                         </tr>
                     </thead>
                     <tbody id="comments">
                         @foreach($commentaires as $comment)
                             @php  $user= \App\Models\User::find($comment->user); @endphp
-                            <tr><td>{{date('d/m/Y H:i', strtotime($comment->date)) }}</td><td>{{$comment->comment}}</td><td>@if($comment->user > 0) {{$user->name.' '.$user->lastname}} @endif</td></tr>
+                            <tr id="comment-{{ $comment->id}}"><td>{{date('d/m/Y H:i', strtotime($comment->date)) }}</td><td>{{$comment->comment}}</td><td>@if($comment->user > 0) {{$user->name.' '.$user->lastname}} @endif</td><td><a href="#" onclick="delete_comment({{$comment->id}})"><span class="btn btn-sm"><i class="fa fa-trash"></i></span></a></td></tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -784,6 +785,27 @@ if (is_array($commandes) || is_object($commandes)) {
 
 
     <script>
+
+        function delete_comment(comment) {
+            if (!confirm("Êtes vous sûres?")) {
+                return false;
+            }
+
+            var _token = $('input[name="_token"]').val();
+
+            $.ajax({
+                url: "{{ route('delete_comment') }}",
+                method: "POST",
+                data: {
+                    comment: comment,
+                    _token: _token
+                },
+                success: function(data) {
+                    if(data==1)
+                    $('#comment-' + comment).hide('slow');
+                }
+            });
+        }
 
         function add_comment() {
 

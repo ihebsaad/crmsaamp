@@ -116,7 +116,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label for="Type">{{__('msg.Type')}}:</label>
                             <h6>{{$offre->type}}</h6>
                         </div>
@@ -131,12 +131,12 @@
                     </div>
 
 
-                    <div class="row pt-1">
+                    <div class="row pt-1 pb-1">
                         @if(auth()->user()->id== 1 || auth()->user()->id== 10 || auth()->user()->id== 39)
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="">
-                                <label for="Statut">{{__('msg.Status')}}:</label>
-                                <select id="statut" class="form-control" name="statut">
+                                <label for="Statut">{{__('msg.Status')}}:</label><br>
+                                <select id="statut" class="form-control" name="statut" style="width:150px">
                                     <option value=""></option>
                                     <option @selected($offre->statut=='OK') value="OK">OK</option>
                                     <option @selected($offre->statut=='KO') value="KO">KO</option>
@@ -144,14 +144,14 @@
                             </div>
                         </div>
                         @else
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="">
                                 <label for="Statut">{{__('msg.Status')}}:</label>
                                 <h6>{{$offre->Statut}}</h6>
                             </div>
                         </div>
                         @endif
-                        <div class="col-md-4">
+                        <div class="col-md-5">
                             <div class="">
                                 <label for="Description">{{__('msg.Description')}}:</label>
                                 <h6>{{$offre->Description}}</h6>
@@ -207,7 +207,8 @@
                         @endif
                     </div>
 
-                    <div class="row pt-1">
+                    <div class="row pt-2">
+<!--
                         <div class="col-md-4">
                             @if($offre->date_relance!='')
                             <label for="Statut">Date de relance:</label>
@@ -216,8 +217,23 @@
 
                             @endif
                         </div>
+-->
+                        <div class="col-md-3">
+                            <div class="">
+                                <label for="date_relance">Date de relance :</label><br>
+                                <input type="text" id="date_relance" class="form-control datepicker" name="date_relance"  value="{{date('Y-m-d', strtotime($offre->date_relance))}}" style="width:150px"><br>
+                                <button type="button" class="btn-warning btn mt-2" onclick="relancer()" id="relance">Relancer</button>
+                            </div>
+                        </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-5">
+                            <div class="">
+                                <label for="commentaire">Commentaire :</label>
+                                <textarea   id="commentaire" class="form-control" name="commentaire" >{{$offre->commentaire}}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
                             <div class="">
                                 <label for="Nom_offre">{{__('msg.Add files')}}:</label>
                                 <input type="file" id="fichier" class="form-control" name="files[]"  multiple  accept="application/pdf" /><br><br>

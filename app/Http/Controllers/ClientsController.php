@@ -627,6 +627,14 @@ class ClientsController extends Controller
 		return $data;
 	}
 
+	public function delete_comment(Request $request)
+    {
+		DB::table('commentaire_client')->where(
+			'id',$request->get('comment'),
+		)->delete();
+
+		return 1;
+	}
 
 
 } // end class
