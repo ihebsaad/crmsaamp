@@ -230,6 +230,8 @@ Route::get('communications/create', [CommunicationsController::class, 'create'])
 Route::post('communications', [CommunicationsController::class, 'store'])->name('communications.store');
 Route::get('/communications', [CommunicationsController::class, 'index'])->name('communications.index');
 Route::get('/search-ajax', [CommunicationsController::class, 'searchAjax'])->name('search.ajax');
+Route::post('/get_communication', [CommunicationsController::class, 'get_communication'])->name('get_communication');
+
 
 /*
 use App\Jobs\UpdateSequentialIdsJob;

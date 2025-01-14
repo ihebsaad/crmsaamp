@@ -105,7 +105,7 @@
                             @if($client->etat_id==1 || 1 )
                                 <button type="submit" class="btn-primary btn float-right">{{__('msg.Edit')}}</button>
                             @endif
-                            @if(false  )
+                            @if(auth()->user()->role=='admin'  )
                                 <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('contacts.destroy', $contact->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                     <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                                 </a>

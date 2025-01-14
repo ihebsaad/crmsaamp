@@ -200,9 +200,20 @@ class CommunicationsController extends Controller
             $query->whereRaw("TRIM(zip) LIKE ?", [trim($request->zip) . '%']);
         }
 
+        if ($request->has('agence') && $request->agence) {
+            $query->where('agence_ident',  $request->agence);
+        }
+
         $clients = $query->take(100)->get(['id', 'Nom', 'ville', 'cl_ident', 'etat_id','agence_ident']); // Limiter à 100 résultats
         return response()->json($clients);
     }
 
 
+    public function get_communication(Request $request)
+    {
+        $comm=Communication::find($request->get('communication'));
+        $data['sujet']=$comm->objet ;
+        $data['contenu']=$comm->corps_message ;
+        return $data;
+    }
 }

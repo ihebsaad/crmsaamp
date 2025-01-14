@@ -7,9 +7,19 @@
 ?>
 
 <style>
+    .searchfield {
+        width: 100px;
+    }
+
+    #mytable {
+        width: 100% !important;
+        margin-top: 10px !important;
+    }
 
 
 </style>
+<link rel="stylesheet" href="{{ asset('sbadmin/summernote/summernote-bs4.min.css')}}">
+
 <div class="row">
 
     <div class="col-lg-12 col-sm-12 mb-4">
@@ -42,13 +52,13 @@
 						@php $creator = \App\Models\User::find($communication->par);
                         if($communication->statut==1){ $badge='<span class="badge btn-sm btn-success">Succès</span>';  }else{ $badge='<span class="badge btn-sm btn-danger">Echec</span>';  }
                         @endphp
-                            <tr>
+                            <tr style="cursor:pointer" onclick="show_details({{$communication->id}})" title="cliquez pour voir les détails">
                                 <td>{{ $communication->id }}</td>
                                 <td>{{date('d/m/Y', strtotime($communication->created_at))}}</td>
                                 <td>{{$creator->name}} {{$creator->lastname}}</td>
                                 <td>{{ $communication->clients ?? $communication->destinataires   }}</td>
                                 <td>{!! $badge !!} </td>
-                                <td></td>
+                                <td>@if($communication->type==1) Clients @elseif($communication->type==2)  Prospects  @else  Clients & Prospects   @endif </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -60,6 +70,35 @@
 
     </div>
 
+
+    	<!-- Modal -->
+	<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="searchClientsModalLabel">Détails</h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+                    	<div class="form-group">
+							<label for="template_subject">Objet</label>
+							<input type="text" class="form-control" id="sujet" name="subject" >
+						</div>
+						<div class="form-group">
+							<label for="template_body">Contenu</label>
+							<textarea class="summernote" id="contenu" name="body"  ></textarea>
+						</div>
+
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-dismiss="modal">{{__('msg.Close')}}</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
     @endsection
 
@@ -82,21 +121,35 @@
 <script type="text/javascript" src="{{ asset('assets/datatables/js/pdfmake.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/datatables/js/vfs_fonts.js') }}"></script>
 
-<style>
-    .searchfield {
-        width: 100px;
-    }
-
-    #mytable {
-        width: 100% !important;
-        margin-top: 10px !important;
-    }
-</style>
-
-
 <script type="text/javascript">
+
+    function show_details(communication){
+        $('#sujet').val('');
+        $('#contenu').val('');
+        var _token = $('input[name="_token"]').val();
+
+        $.ajax({
+                url: "{{ route('get_communication') }}",
+                method: "POST",
+                data: {
+                    communication: communication,
+                    _token: _token
+                },
+                success: function(data) {
+                    $('#sujet').val(data.sujet);
+                    //$('#contenu').val(data.contenu);
+                    $(".summernote").summernote("code", data.contenu);
+                    $('#detailsModal').modal('show');
+                }
+            });
+    }
+
+
     $(document).ready(function() {
 
+        $('.summernote').summernote({
+				height: 300
+			});
 
         $('#mytable thead tr:eq(1) th').each(function() {
             var title = $('#mytable thead tr:eq(0) th').eq($(this).index()).text();

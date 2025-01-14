@@ -51,7 +51,7 @@
 							<select class="form-control" id="type" name="type" required>
 								<option value="1" {{ old('type') == 1 ? 'selected' : '' }}>Client</option>
 								<option value="2" {{ old('type') == 2 ? 'selected' : '' }}>Prospect</option>
-								<option value="2" {{ old('type') == 3 ? 'selected' : '' }}>Clients & Prospect</option>
+								<option value="3" {{ old('type') == 3 ? 'selected' : '' }}>Clients & Prospect</option>
 							</select>
 							@error('type') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
@@ -138,17 +138,25 @@
 					<!-- Filters -->
 					<form id="searchClientsForm">
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<input type="text" class="form-control" name="Nom" placeholder="Nom">
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<input type="text" class="form-control" name="ville" placeholder="Ville">
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<select class="form-control" name="type">
 									<option value="0">Tous</option>
 									<option value="1">Prospects</option>
 									<option value="2">Clients</option>
+								</select>
+							</div>
+							<div class="col-md-3">
+								<select class="form-control" name="agence">
+									<option>Choisir une agence</option>
+									@foreach ($agences as $agence)
+										<option value="{{$agence->agence_ident}}">{{$agence->agence_lib}}</option>
+									@endforeach
 								</select>
 							</div>
 						</div>
@@ -256,7 +264,7 @@
 		$(document).ready(function() {
 
 			$('.summernote').summernote({
-				height: 300
+				height: 200
 			});
 
 			document.getElementById('reset-destinataires').addEventListener('click', function() {
@@ -363,7 +371,7 @@
 				if (selectedClients.length > 0) {
 					const destinataryField = $('#destinataires'); // Adjust selector as needed
 					const clientsField = $('#clients'); // Adjust selector as needed
-					let destinataryData = destinataryField.val() ? JSON.parse(destinataireField.val()) : [];
+					let destinataryData = destinataryField.val() ? JSON.parse(destinataryField.val()) : [];
 					let clientsData = clientsField.val() ? JSON.parse(clientsField.val()) : [];
 
 					destinataryData = destinataryData.concat(selectedClients);

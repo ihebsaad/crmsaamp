@@ -127,6 +127,8 @@ class ContactsController extends Controller
 				$data['tel']=   $request->get('Phone') ;
 
 			self::update_as400($data);
+			// suprrimer les users avec ancien email
+			User::where('email',$request->get('email'))->delete();
 		}
 
 		DB::select ("  CALL `sp_contact_insert_auto`(); ");
