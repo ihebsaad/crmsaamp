@@ -235,6 +235,7 @@ form{
                             vAxis: { title: 'Quantité' },
                             isStacked: true,
                             colors: ['#4285F4', '#EA4335'],
+                            responsive: true,
                         };
                         const chart = new google.visualization.ColumnChart(document.getElementById(elementId));
                         chart.draw(chartData, options);

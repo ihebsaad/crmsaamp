@@ -102,6 +102,7 @@
   });
   google.charts.setOnLoadCallback(drawChart);
   var options = {
+    responsive: true,
     //title: 'TOP CLIENTS',
     colors: ['#e5e7e6', '#EEE6D8', '#DAAB3A', '#B67332', '#93441A'],
     is3D: true,
@@ -133,7 +134,7 @@
           ['Client', 'Chiffre d\'affaire'],
           <?php
           foreach ($customer as $cl) {
-            echo '[' . json_encode($cl->nom) . ', ' . intval($cl->CA) . '],';
+            echo '[' . json_encode($cl->nom) . ', ' . str_replace(' ','',$cl->CA). '],';
           }
           ?>
 
@@ -154,7 +155,7 @@
       ['Client', 'Chiffre d\'affaire'],
       <?php
       foreach ($clients as $cl) {
-        echo '[' . json_encode($cl->nom) . ', ' . intval($cl->CA) . '],';
+        echo '[' . json_encode($cl->nom) . ', ' . str_replace(' ','',$cl->CA) . '],';
       }
       ?>
 
@@ -168,8 +169,8 @@
 <div class="" style="padding-left:5%;padding-right:5%;padding-top:2%;padding-bottom:2%">
   <div class="row mt-2 mb-3">
     @if(!$userToken)
-    <div class="col-md-12 float-right">
-      <a href="{{ route('google.auth.redirect') }}" class="btn btn-primary float-right"><img width="50" style="width:50" src="{{  URL::asset('img/calendar.png') }}" /> Lier les rendez-vous à mon Agenda Google</a>
+    <div class="col-md-12 float-right mr-2 ml-2">
+      <a href="{{ route('google.auth.redirect') }}" class="btn btn-primary float-right"><img width="40" style="width:40" src="{{  URL::asset('img/calendar.png') }}" /> Lier les rendez-vous à mon Agenda</a>
     </div>
     @endif
   </div>
@@ -238,7 +239,7 @@
       </div>
     </div>
     @if(auth()->user()->role!='respAG')
-    <div class="col-md-6 col-lg-6 col-sm-12 pl-5">
+    <div class="col-md-6 col-lg-6 col-sm-12">
       <h4 class="text-center">  @if(auth()->user()->role=='respAG') {{__('msg.Top customers')}} @endif</h4>
       <table id="" class="table table-striped" style="width:100%!important">
         <thead>

@@ -32,8 +32,13 @@
 
             <div class="card-body" style="min-height:500px">
                 <div class="row">
-                    <div class="col-md-12 text-right">
+                    <div class="col-md-6 text-left">
                         <a href="{{route('communications.create')}}"  class="btn btn-primary mb-3 ml-3"><i class="fas fa-plus"></i> Créer une communication</a>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <a href="{{route('email-templates.index')}}" class="btn btn-secondary"  >
+							Liste des templates
+						</a>
                     </div>
                 </div>
                 <table id="mytable" class="table table-striped" style="width:100%">

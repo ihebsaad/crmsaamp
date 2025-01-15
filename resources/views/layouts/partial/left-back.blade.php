@@ -88,7 +88,7 @@ if (Auth::check()) {
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClients" aria-expanded="true" aria-controls="collapseClients">
       <i class="fas fa-fw fa-users"></i>
-      <span>Clients & Prospects</span>
+      <span>Clients <label class="hidemobile">& Prospects</label></label></span>
     </a>
     <div id="collapseClients" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-dark py-2 collapse-inner rounded">

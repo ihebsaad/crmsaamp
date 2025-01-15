@@ -70,6 +70,18 @@ class ClientsController extends Controller
 			->with('success', 'Client modifié');
 	}
 
+
+	public function update_finances(Request $request, $id)
+	{
+		$client = CompteClient::find($id);
+
+		$client->update($request->all());
+
+		return redirect()->route('fiche', ['id' =>  $id])
+			->with('success', 'Client modifié');
+	}
+
+
 	public function store(Request $request)
 	{
 		$request->validate([
@@ -338,6 +350,11 @@ class ClientsController extends Controller
 		if ($request->has('zip') && $request->zip) {
 			$query->whereRaw("TRIM(zip) LIKE ?", [trim($request->zip) . '%']);
 		}
+
+		if ($request->has('agence') && $request->agence) {
+            $query->where('agence_ident',  $request->agence);
+        }
+
 		/*
 		$tri = $request->get('tri');
 		if ($tri == 1) {

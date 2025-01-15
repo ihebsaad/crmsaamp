@@ -20,7 +20,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\EmailTemplateController;
 
-#Route::resource('email-templates', EmailTemplateController::class);
+Route::resource('email-templates', EmailTemplateController::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +48,8 @@ Route::post('/parcours', [MapController::class, 'parcours']);
 
 
 Route::post('/add_template', [EmailTemplateController::class, 'store'])->name('templates.store');
+Route::post('/ajout_template', [EmailTemplateController::class, 'add'])->name('templates.add');
+
 
 Route::post('/add_comment',[ClientsController::class, 'add_comment'])->name('add_comment');
 Route::post('/delete_comment',[ClientsController::class, 'delete_comment'])->name('delete_comment');
@@ -109,6 +111,7 @@ Route::get('/clients/finances/{id}', [ClientsController::class, 'finances'])->na
 Route::post('/ajoutclient', [ClientsController::class, 'store'])->name('compte_client.store');
 #Route::post('/update', [ClientsController::class, 'update'])->name('compte_client.update');
 Route::put('/compte_client/{id}', [ClientsController::class, 'update'])->name('compte_client.update');
+Route::put('/update_finances/{id}', [ClientsController::class, 'update_finances'])->name('compte_client.update_finances');
 Route::get('/clients/show/{id}', [ClientsController::class, 'show'])->name('compte_client.show');
 Route::get('/clients/folder/{id}', [ClientsController::class, 'folder'])->name('compte_client.folder');
 Route::post('/ouverture', [ClientsController::class, 'ouverture'])->name('ouverture');

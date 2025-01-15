@@ -21,7 +21,7 @@ class EmailTemplateController extends Controller
 
     public function create()
     {
-        return view('email_templates.create');
+        return view('email_templates.edit');
     }
 
     public function store(Request $request)
@@ -35,6 +35,19 @@ class EmailTemplateController extends Controller
         EmailTemplate::create($request->all());
 
         //return redirect()->route('email-templates.index')->with('success', 'Template créé avec succès.');
+    }
+
+    public function add(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'subject' => 'required|string|max:255',
+            'body' => 'required',
+        ]);
+
+        EmailTemplate::create($request->all());
+
+        return redirect()->route('email-templates.index')->with('success', 'Template créé avec succès.');
     }
 
     public function edit(EmailTemplate $emailTemplate)
@@ -59,7 +72,7 @@ class EmailTemplateController extends Controller
     {
         $emailTemplate->delete();
 
-        return redirect()->route('email-templates.index')->with('success', 'Template supprimé avec succès.');
+        return back()->with('success', 'Template supprimé avec succès.');
     }
 
 }

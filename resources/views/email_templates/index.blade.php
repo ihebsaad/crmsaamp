@@ -1,14 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.back')
 
 @section('content')
+
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Liste des templates emails</h6>
     </div>
     <div class="card-body">
-        <h1>Liste des templates</h1>
+
         <a href="{{ route('email-templates.create') }}" class="btn btn-primary mb-3">Créer un nouveau template</a>
-        <table class="table">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Nom</th>

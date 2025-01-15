@@ -18,7 +18,7 @@
 
     #folders-container {
         display: flex;
-        flex-wrap:wrap;
+        flex-wrap: wrap;
         gap: 40px;
     }
 
@@ -208,7 +208,7 @@
                     </div>
 
                     <div class="row pt-2">
-<!--
+                        <!--
                         <div class="col-md-4">
                             @if($offre->date_relance!='')
                             <label for="Statut">Date de relance:</label>
@@ -221,7 +221,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="date_relance">Date de relance :</label><br>
-                                <input type="text" id="date_relance" class="form-control datepicker" name="date_relance"  value="{{date('Y-m-d', strtotime($offre->date_relance))}}" style="width:150px"><br>
+                                <input type="text" id="date_relance" class="form-control datepicker" name="date_relance" @if($offre->date_relance!= '') value="{{date('Y-m-d', strtotime($offre->date_relance))}}" @endif style="width:150px"><br>
                                 <button type="button" class="btn-warning btn mt-2" onclick="relancer()" id="relance">Relancer</button>
                             </div>
                         </div>
@@ -229,24 +229,25 @@
                         <div class="col-md-5">
                             <div class="">
                                 <label for="commentaire">Commentaire :</label>
-                                <textarea   id="commentaire" class="form-control" name="commentaire" >{{$offre->commentaire}}</textarea>
+                                <textarea id="commentaire" class="form-control" name="commentaire">{{$offre->commentaire}}</textarea>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="">
                                 <label for="Nom_offre">{{__('msg.Add files')}}:</label>
-                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple  accept="application/pdf" /><br><br>
+                                <input type="file" id="fichier" class="form-control" name="files[]" multiple accept="application/pdf" /><br><br>
                             </div>
                         </div>
                     </div>
 
+
                     <div class="row pt-3">
                         @if($offre->valide_par > 0)
-                            @php $creator = \App\Models\User::find($offre->valide_par);  @endphp
-                            <div class="col-md-12 mt-4 mb-4 text-info">
-                                <i>Offre validée par <b>{{$creator->name ?? ''}} {{$creator->lastname ?? ''}}</b> le <b>{{$offre->date_valide}}</b></i>
-                            </div>
+                        @php $creator = \App\Models\User::find($offre->valide_par); @endphp
+                        <div class="col-md-12 mt-4 mb-4 text-info">
+                            <i>Offre validée par <b>{{$creator->name ?? ''}} {{$creator->lastname ?? ''}}</b> le <b>{{$offre->date_valide}}</b></i>
+                        </div>
                         @endif
 
                         <div class="col-md-12">
@@ -259,48 +260,74 @@
                             @endif
                         </div>
 
-
-
                     </div>
 
                 </form>
 
-            </div>
-
-            <h3 class="pl-5">{{__('msg.Files')}} </h3>
-            <div class="ged pl-5 pr-5 pb-5 pt-3">
 
 
-                <div class="pl-5" id="folders-container"></div>
-                <div class="row pl-5" id="files-container"></div>
 
-                <script>
-                    <?php
-                    if (isset($folderContent)) { ?>
-                        const apiResponseContent = {
-                            data: <?php echo json_encode($folderContent); ?>
-                        };
 
-                        // Sélectionner l'élément conteneur du contenu
-                        const contentContainer = document.getElementById('files-container');
+                <div class="row pl-2 pb-3 pt-3">
+                    <div class="col-md-6">
+                        <h3>Historique</h3>
+                        <a href="#" class="btn btn-primary mb-3 ml-3 float-right" style="opacity:0.5"><i class="fas fa-plus"></i> {{__('msg.Add')}}</a>
 
-                        // Fonction pour créer un élément de contenu
-                        function createContentItem(item) {
-                            const div = document.createElement('div');
-                            div.id += 'item-' + item.id;
-                            let nom = item.name;
-                            let filename;
-                            <?php if ($offre->old_id != '') { ?>
-                                filename = nom.substring(0, nom.length - 21);
-                            <?php } else { ?>
-                                filename = nom;
-                            <?php } ?>
-                            div.className += 'col-sm-2 ';
-                            div.className += 'mb-3 ';
-                            div.className += 'content-item';
-                            const itemNameEscaped = item.name.replace(/'/g, "\\'");
+                        <table class="table table-striped" style="min-height:150px">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Statut</th>
+                                    <th>Détails</th>
+                                    <th>Date de point</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                            div.innerHTML = `
+                    <div class="col-md-6">
+                        <h3 class="">{{__('msg.Files')}} </h3>
+                        <div class="ged pl-5 pr-5 pb-5 pt-3">
+
+
+                            <div class="" id="folders-container"></div>
+                            <div class="row" id="files-container"></div>
+
+                            <script>
+                                <?php
+                                if (isset($folderContent)) { ?>
+                                    const apiResponseContent = {
+                                        data: <?php echo json_encode($folderContent); ?>
+                                    };
+
+                                    // Sélectionner l'élément conteneur du contenu
+                                    const contentContainer = document.getElementById('files-container');
+
+                                    // Fonction pour créer un élément de contenu
+                                    function createContentItem(item) {
+                                        const div = document.createElement('div');
+                                        div.id += 'item-' + item.id;
+                                        let nom = item.name;
+                                        let filename;
+                                        <?php if ($offre->old_id != '') { ?>
+                                            filename = nom.substring(0, nom.length - 21);
+                                        <?php } else { ?>
+                                            filename = nom;
+                                        <?php } ?>
+                                        div.className += 'col-sm-2 ';
+                                        div.className += 'mb-3 ';
+                                        div.className += 'content-item';
+                                        const itemNameEscaped = item.name.replace(/'/g, "\\'");
+
+                                        div.innerHTML = `
                                 <div class="file" onclick="viewItem(${item.id})"></div>
                                 <div class="file-title"> ${filename}</div>
                                 <div>
@@ -311,53 +338,55 @@
 
                                 </div>
                                 `;
-                            return div;
-                        }
-
-                        // Générer les éléments de contenu à partir des données de l'API
-                        apiResponseContent.data.forEach(item => {
-                            const contentItem = createContentItem(item);
-                            contentContainer.appendChild(contentItem);
-                        });
-
-                        // Fonctions pour les boutons
-                        function viewItem(itemId) {
-                            //window.location.href =`https://mysaamp.com/view/${itemId}`;
-                            window.open(`https://crm.mysaamp.com/viewpdf/${itemId}`, '_blank');
-
-                        }
-
-                        function editItem(itemId, name) {
-                            //window.location.href =`https://mysaamp.com/view/${itemId}`;
-                            window.open(`https://crm.mysaamp.com/offres/edit_file/${itemId}/<?php echo $offre->id; ?>/${name}`, '_self');
-                        }
-
-                        function downloadItem(itemId) {
-                            //window.location.href = `downloadItem.php?id=${itemId}`;
-                            window.location.href = `https://crm.mysaamp.com/download/${itemId}`;
-                        }
-
-
-                        function deleteItem(itemId) {
-                            var _token = $('input[name="_token"]').val();
-                            $.ajax({
-                                url: `https://crm.mysaamp.com/delete_file/${itemId}`,
-                                method: "get",
-                                //data: {  _token: _token,id:itemId},
-                                success: function(data) {
-                                    console.log(data);
-                                    if (data == 1) {
-                                        $('#item-' + itemId).hide('slow');
+                                        return div;
                                     }
-                                }
-                            });
-                        }
 
-                    <?php } ?>
-                </script>
+                                    // Générer les éléments de contenu à partir des données de l'API
+                                    apiResponseContent.data.forEach(item => {
+                                        const contentItem = createContentItem(item);
+                                        contentContainer.appendChild(contentItem);
+                                    });
 
+                                    // Fonctions pour les boutons
+                                    function viewItem(itemId) {
+                                        //window.location.href =`https://mysaamp.com/view/${itemId}`;
+                                        window.open(`https://crm.mysaamp.com/viewpdf/${itemId}`, '_blank');
+
+                                    }
+
+                                    function editItem(itemId, name) {
+                                        //window.location.href =`https://mysaamp.com/view/${itemId}`;
+                                        window.open(`https://crm.mysaamp.com/offres/edit_file/${itemId}/<?php echo $offre->id; ?>/${name}`, '_self');
+                                    }
+
+                                    function downloadItem(itemId) {
+                                        //window.location.href = `downloadItem.php?id=${itemId}`;
+                                        window.location.href = `https://crm.mysaamp.com/download/${itemId}`;
+                                    }
+
+
+                                    function deleteItem(itemId) {
+                                        var _token = $('input[name="_token"]').val();
+                                        $.ajax({
+                                            url: `https://crm.mysaamp.com/delete_file/${itemId}`,
+                                            method: "get",
+                                            //data: {  _token: _token,id:itemId},
+                                            success: function(data) {
+                                                console.log(data);
+                                                if (data == 1) {
+                                                    $('#item-' + itemId).hide('slow');
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                <?php } ?>
+                            </script>
+
+                        </div>
+                    </div>
+                </div>
             </div>
-
         </div>
 
     </div>

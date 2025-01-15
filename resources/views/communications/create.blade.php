@@ -25,11 +25,18 @@
 
 				<form action="{{ route('communications.store') }}" method="POST" enctype="multipart/form-data">
 					@csrf
-					<!-- Bouton pour créer un template -->
-					<div class="col-md-6 mb-3 text-right">
-						<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#templateModal">
-							<i class="fa fa-plus"></i> Ajouter un template
-						</button>
+					<div class="row">
+						<!-- Bouton pour créer un template -->
+						<div class="col-md-6 mb-3 text-left">
+							<button type="button" class="btn btn-success" data-toggle="modal" data-target="#templateModal">
+								<i class="fa fa-plus"></i> Ajouter un template
+							</button>
+						</div>
+						<div class="col-md-6 mb-3 text-right">
+							<a href="{{route('email-templates.index')}}" class="btn btn-secondary"  >
+								Liste des templates
+							</a>
+						</div>
 					</div>
 					<div class="row">
 						<!-- Sélection d'un template -->

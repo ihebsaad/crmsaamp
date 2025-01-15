@@ -55,8 +55,14 @@
                     <div class="row pt-1">
                         <div class="col-lg-3 col-sm-6">
                             <div class="">
-                                <label for="">{{__('msg.Address')}}</label>
-                                <input type="" class="form-control" id="" placeholder="" name="adresse1" value="{{ $request->adresse1 ?? '' }}">
+                                <label for="">{{__('msg.Agency')}}</label>
+                                <select name="agence" class="form-control" >
+                                    <option><option>
+                                    @foreach($agences as $id => $name)
+                                        <option value="{{$id}}" {{$request->agence == $id ? 'selected="selected"'  : '' }}>{{$name}}</option>
+                                    @endforeach
+                                </select>
+                                <!--<input type="" class="form-control" id="" placeholder="" name="adresse1" value="{{ $request->adresse1 ?? '' }}">-->
                             </div>
                         </div>
                         <!--

@@ -293,18 +293,15 @@ class HomeController extends Controller
 
 	public function dashboard()
 	{
-		//$rendezvous=RendezVous::get();
-
 		$agence_id = auth()->user()->agence_ident;
 		$agence =Agence::where('agence_ident',$agence_id)->first();
 		$now = Carbon::now();
 		$prospects=array();
 		$commerciaux=array();
 		$customers=array();
-		// stats
-
 		$retours = array();
 
+		//rendez vous
 		$rendezvous_passes=RendezVous::where('Started_at', '<=', $now)
 		->where('user_id', auth()->id())
 		->where('statut', 1)
@@ -312,7 +309,8 @@ class HomeController extends Controller
 		->orderBy('heure_debut','asc')
 		->get();
 
-		if(auth()->user()->role=='adv'|| auth()->user()->role=='admin' || auth()->user()->role=='respAG' ){
+		//retours
+		if(auth()->user()->role=='adv'|| auth()->user()->role=='admin' || auth()->user()->role=='respAG'  ){
 			$retours = DB::table('CRM_RetourClient as rc')
 			->join('client as c', 'rc.cl_id', '=', 'c.cl_ident')
 			->where(function ($query) {
@@ -324,7 +322,6 @@ class HomeController extends Controller
 			->orderBy('rc.name', 'desc') // Adjust as needed; 'name' should be in `rc` or `c`
 			->get();
 		}
-
 
 
 		$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
@@ -353,36 +350,19 @@ class HomeController extends Controller
 			$total_clients = $result[0]->total_clients;
 
 		}else{
-			//$clients = array();
-			//$total_clients=0;
-
-			//$rep_id=$rep->id;
-			//$rep_id=10;
 
 			DB::select("SET @p0='".$agence_id."' ;");
 			$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
-/*
-			$query = "
-			SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
-			FROM Statistiques s
-			WHERE
-				(s.Commercial = ? OR s.Commercial_support = ?)
-				AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
-				AND s.cl_ident <> 0";
 
-			$result = DB::select($query, [auth()->id(), auth()->id()]);
-			$total_clients = $result[0]->total_clients;
-				*/
 			$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
 
-
 			$total_clients= CompteClient::where('etat_id',2)->where('agence_ident',$agence_id)->count();
-			$total1 = DB::select($query, [$agence_id]);
-			$total_1=$total1[0]->total;
+			//$total1 = DB::select($query, [$agence_id]);
+			//$total_1=$total1[0]->total;
 		}
 
 
-		if(auth()->user()->role=='adv'){
+		if(auth()->user()->role=='adv'    ){
 
 			$client_ids = CompteClient::where('adv',auth()->user()->id)->pluck('id');
 
@@ -397,10 +377,52 @@ class HomeController extends Controller
 			$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
 
 			$total_clients= CompteClient::where('etat_id',2)->where('agence_ident',$agence_id)->count();
-			$total1 = DB::select($query, [$agence_id]);
-			$total_1=$total1[0]->total;
+			//$total1 = DB::select($query, [$agence_id]);
+			//$total_1=$total1[0]->total;
 		}else{
 
+			if(auth()->user()->role=='commercial'){
+/*
+
+				DB::select("SET @p0='".$agence_id."' ;");
+				$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
+
+				$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
+
+				$total_clients= CompteClient::where('etat_id',2)->where('agence_ident',$agence_id)->count();
+				//$total1 = DB::select($query, [$agence_id]);
+				//$total_1=$total1[0]->total;
+*/
+
+				$rep=DB::table("representant")->where('users_id',auth()->user()->id)->first();
+				if(isset($rep)){
+					$rep_id=$rep->id;
+					//$rep_id=10;
+
+					DB::select("SET @p0='$rep_id' ;");
+					$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
+/*
+					$query = "
+					SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
+					FROM Statistiques s
+					WHERE
+						(s.Commercial = ? OR s.Commercial_support = ?)
+						AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
+						AND s.cl_ident <> 0";
+
+					$result = DB::select($query, [$rep_id, $rep_id]);
+					$total_clients = $result[0]->total_clients;
+
+					$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
+
+					*/
+					$total_clients = CompteClient::where(function ($Query) use ($rep_id) {
+						$Query->where('commercial', $rep_id)
+							->orWhere('commercial_support', $rep_id);
+					})->where('etat_id',2)->count();
+
+				}
+			}
 
 			if(auth()->user()->role=='respAG'){
 				// here
@@ -415,19 +437,7 @@ class HomeController extends Controller
 
 				//$prospects
 				$prospects=CompteClient::where('agence_ident',auth()->user()->agence_ident)->where('etat_id',1)->get();
-/*
-				$commerciaux=CompteClient::where('agence_ident',auth()->user()->agence_ident)->pluck('commercial');
-				$commerciaux=$commerciaux->unique();
-				$commerciaux=$commerciaux->filter()->all();
 
-
-				$commerciaux_support=CompteClient::where('agence_ident',auth()->user()->agence_ident)->pluck('commercial_support');
-				$commerciaux_support=$commerciaux_support->unique();
-				$commerciaux_support=$commerciaux_support->filter()->all();
-
-				$commerciaux =array_merge($commerciaux,$commerciaux_support);
-				$commerciaux=array_unique($commerciaux);
-*/
 				$commerciaux= DB::table("representant")->where('type','Commercial terrain')->pluck('id');
 				foreach($commerciaux as $commercial){
 					$rep=DB::table("representant")->find($commercial);
@@ -463,9 +473,6 @@ class HomeController extends Controller
 				->get()->take(5);
 
 			}
-
-
-
 
 		}
 

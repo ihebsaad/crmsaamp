@@ -24,7 +24,9 @@
             <div class="card-body">
                 <a href="{{route('fiche',['id'=>$client->id])}}"  class="btn btn-primary mb-3 ml-3 float-right"><i class="fas fa-user-circle"></i> {{__('msg.Sheet')}}</a><!-- <a href="{{route('phone',['id'=>$client->id])}}"  class="btn btn-primary mb-3 float-right"><i class="fas fa-phone-alt"></i> Télephonie</a>-->
                 <div class="clearfix"></div>
-                <form id="">
+                <form action="{{ route('compte_client.update_finances', $client->id) }}" method="post">
+                    @csrf
+                    @method('PUT')
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
@@ -98,7 +100,11 @@
                         </div>
 
                     </div>
-
+                    <div class="row pt-1">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn-primary btn float-right">{{__('msg.Edit')}}</button>
+                        </div>
+                    </div>
 
                 </form>
 
