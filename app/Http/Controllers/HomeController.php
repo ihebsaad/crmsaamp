@@ -439,11 +439,16 @@ class HomeController extends Controller
 				$prospects=CompteClient::where('agence_ident',auth()->user()->agence_ident)->where('etat_id',1)->get();
 
 				$commerciaux= DB::table("representant")->where('type','Commercial terrain')->pluck('id');
+
+				if(auth()->user()->id==10){
+					$commerciaux= DB::table("representant")->where('type','Commercial terrain')->orWhere('id',26)->pluck('id');
+
+				}
 				foreach($commerciaux as $commercial){
 					$rep=DB::table("representant")->find($commercial);
 					$user= User::find($rep->users_id);
 
-					if($user->agence_ident==auth()->user()->agence_ident || auth()->user()->id==10){
+					if($user->agence_ident==auth()->user()->agence_ident /*|| auth()->user()->id==10*/){
 						DB::select("SET @p0='$commercial' ;");
 						$customers[$commercial] =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
 						//}
@@ -460,9 +465,16 @@ class HomeController extends Controller
 						$result = DB::select($query, [$commercial, $commercial]);
 						$total_c= $result[0]->total_clients;
 						$total_clients+=$total_c;
+						// sebastien
+						if(auth()->user()->id==10){
+							unset($customers[201]);
+							unset($customers[510]);
+						}
 					}
 
 				}
+
+				$total_clients= CompteClient::where('etat_id',2)->where('agence_ident',auth()->user()->agence_ident)->count(); //Paris
 
 			}else{
 				$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)

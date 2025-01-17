@@ -160,7 +160,7 @@
 							</div>
 							<div class="col-md-3">
 								<select class="form-control" name="agence">
-									<option>Choisir une agence</option>
+									<option value="">Agence</option>
 									@foreach ($agences as $agence)
 										<option value="{{$agence->agence_ident}}">{{$agence->agence_lib}}</option>
 									@endforeach

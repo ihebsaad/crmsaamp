@@ -111,12 +111,50 @@ class GEDService
 
 		// URL de l'API pour visualiser l'élément
 		$apiUrl = "https://ged.maileva.com/api/document/$itemId/stream";
-
+/*
 		// Exécution de la requête cURL
-		$response = self::curlExecute($apiUrl);
+		//$response = self::curlExecute($apiUrl);
+
 
 		header('Content-Type: application/pdf');
 		return $response;
+		*/
+		$headers = array(
+			'Content-Type: application/json',
+			'Auth-Token: ' . self::getToken()
+		);
+
+		$curl = curl_init();
+		curl_setopt_array($curl, array(
+			CURLOPT_CUSTOMREQUEST => 'GET',
+			CURLOPT_URL => $apiUrl,
+			CURLOPT_HEADER => true,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER => $headers,
+			CURLOPT_SSL_VERIFYPEER => false
+		));
+		$response = curl_exec($curl);
+		$err = curl_error($curl);
+
+		$headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+		$header = substr($response, 0, $headerSize);
+		$body   = substr($response, $headerSize);
+		curl_close($curl);
+
+		if ($err) {
+			echo "Erreur cURL : " . $err;
+		} else {
+			// Récupération du Content-Type depuis l'hedear
+			$contentType = 'application/octet-stream'; // Valeur par défaut si rien
+			if (preg_match('/Content-Type:\s*([^;\r\n]+)/i', $header, $matches)) {
+				$contentType = trim($matches[1]);
+			}
+
+			$data['type']=$contentType;
+			$data['body']=$body;
+			return $data;
+		}
+
 	}
 
 	public static function editItem($itemId, $attachment, $id, $type)
@@ -560,9 +598,9 @@ class GEDService
 		foreach ($files as $file) {
 			$originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 			$extension = $file->getClientOriginalExtension();
-
+			$date= date('d_m_Y_H_i_s');
 			// Append the client name to the original name
-			$fileName = $originalName . '_' . $client_name . '.' . $extension;
+			$fileName = $originalName . '_' . $client_name . '_' . $date. '.' . $extension;
 			$fileType = $file->getMimeType();
 			$filePath = $file->getPathname();
 

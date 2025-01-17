@@ -119,6 +119,7 @@ class CommunicationsController extends Controller
             ->pluck('email')
             ->toArray();
 
+        array_push($emails,auth()->user()->email);
         // Objet et contenu de l'email
         $objet = $communication->objet;
         $contenu = $communication->corps_message;
@@ -200,7 +201,7 @@ class CommunicationsController extends Controller
             $query->whereRaw("TRIM(zip) LIKE ?", [trim($request->zip) . '%']);
         }
 
-        if ($request->has('agence') && $request->agence) {
+        if ( $request->agence>0) {
             $query->where('agence_ident',  $request->agence);
         }
 

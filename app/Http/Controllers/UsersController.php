@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use App\Models\User;
+use App\Models\Consultation;
 use App\Models\Beneficiaire;
 use DB;
 
@@ -463,4 +464,13 @@ class UsersController extends Controller
 
 		Session::put('famille', $val);
 	}
+
+
+
+    public function consultations()
+    {
+        $consultations = Consultation::where('app',2)->orderBy('id', 'desc')->limit(2000)->get();
+        return view('users.consultations', compact('consultations'));
+    }
+
 }

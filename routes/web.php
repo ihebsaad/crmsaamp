@@ -191,6 +191,7 @@ Route::post('/updatingusertype','App\Http\Controllers\UsersController@updatingus
 Route::get('/users/destroy/{id}','App\Http\Controllers\UsersController@destroy')->name('users.destroy');
 Route::post('/users/updating','App\Http\Controllers\UsersController@updating')->name('users.updating');
 Route::post('/users/famille','App\Http\Controllers\UsersController@famille')->name('users.famille');
+Route::get('/consultations', 'App\Http\Controllers\UsersController@consultations')->name('consultations');
 
 Route::post('/users/updatealliage','App\Http\Controllers\UsersController@updatealliage')->name('users.updatealliage');
 Route::post('/users/updatecurrency','App\Http\Controllers\UsersController@updatecurrency')->name('users.updatecurrency');

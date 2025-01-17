@@ -575,8 +575,8 @@ class ClientsController extends Controller
 			$result = GEDService::getItem($id);
 
 			if ($result) {
-				return response($result, 200)
-					->header('Content-Type', 'application/pdf');
+				return response($result['body'], 200)
+					->header('Content-Type',$result['type']);
 			}
 			//}
 

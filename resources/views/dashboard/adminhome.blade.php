@@ -123,8 +123,8 @@
 	</div>
 	<div class="row mt-2 mb-2">
 		@if(!$userToken)
-		<div class="col-md-12 float-right">
-			<a href="{{ route('google.auth.redirect') }}" class="btn btn-primary float-right"><img width="50" style="width:50" src="{{  URL::asset('img/calendar.png') }}" /> Lier les rendez-vous à mon Agenda Google</a>
+		<div class="col-md-12 float-right ml-2 mr-2">
+			<a href="{{ route('google.auth.redirect') }}" class="btn btn-primary float-right"><img width="40" style="width:40" src="{{  URL::asset('img/calendar.png') }}" /> Lier les rendez-vous à mon Agenda</a>
 		</div>
 		@endif
 	</div>

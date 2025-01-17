@@ -15,7 +15,9 @@
   }
 
   .bg-dark {
-    background-color: #f6c23e30 !important;
+    /*background-color: #f6c23e30 !important;*/
+    background-color: #f4d890 !important;
+    
   }
 
   #sidebarToggleTop{
