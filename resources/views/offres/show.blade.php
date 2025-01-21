@@ -136,7 +136,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Statut">{{__('msg.Status')}}:</label><br>
-                                <select id="statut" class="form-control" name="statut" style="width:150px">
+                                <select  class="form-control" name="statut" style="width:150px">
                                     <option value=""></option>
                                     <option @selected($offre->statut=='OK') value="OK">OK</option>
                                     <option @selected($offre->statut=='KO') value="KO">KO</option>
@@ -271,24 +271,28 @@
                 <div class="row pl-2 pb-3 pt-3">
                     <div class="col-md-6">
                         <h3>Historique</h3>
-                        <a href="#" class="btn btn-primary mb-3 ml-3 float-right" style="opacity:0.5"><i class="fas fa-plus"></i> {{__('msg.Add')}}</a>
-
-                        <table class="table table-striped" style="min-height:150px">
+                        <a href="#" class="btn btn-primary mb-3 ml-3 float-right" data-toggle="modal" data-target="#ModalOffres"><i class="fas fa-plus"></i> {{__('msg.Add')}}</a>
+                        @php $status=array('1'=>"L'offre est trop basse",'2'=>"L'offre n'est pas adaptée",'3'=>"L'offre est validée",);@endphp
+                        <table class="table table-striped" style="min-height:150px" id="offres">
                             <thead>
                                 <tr>
                                     <th>Date</th>
                                     <th>Statut</th>
                                     <th>Détails</th>
                                     <th>Date de point</th>
+                                    <th class="" style="width:5%">{{__('msg.Del')}}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                @foreach($historiques as $hist)
+                                <tr id="hist-{{$hist->id}}">
+                                    <td>{{date('d/m/Y', strtotime($hist->date))}}</td>
+                                    <td>{{$status[$hist->statut]}}</td>
+                                    <td>{{$hist->details}}</td>
+                                    <td>{{ $hist->date_point!= '' ? date('d/m/Y', strtotime($hist->date_point)) : ''}}</td>
+                                    <td><a href="#" onclick="delete_hist({{$hist->id}})"><span class="btn btn-sm"><i class="fa fa-trash"></i></span></a></td>
                                 </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -390,7 +394,100 @@
         </div>
 
     </div>
+
+
+    <div class="modal fade" id="ModalOffres" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="width: 75%;margin: 0 auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center">Ajouter un statut</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" id="offre" value="{{$offre->id}}" />
+                    <label>Statut :</label><br>
+                    <select class="form-control mb-2"   id="statut"  onchange="if($(this).val()==3){$('#point_id').show('slow');}else{$('#point_id').hide('slow')}" >
+                        <option value="1">L'offre est trop basse</option>
+                        <option value="2">L'offre n'est pas adaptée</option>
+                        <option value="3">L'offre est validée</option>
+                    </select>
+                    <label>Détails :</label><br>
+                    <textarea class="form-control mb-2" id="details" placeholder="Votre commentaire"></textarea>
+                    <div id="point_id" style="display:none">
+                        <label>Date de point :</label><br>
+                        <input type="text" id="date_point" class="form-control datepicker" id="date_point">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="add_hist()">Créer</button>
+                    <!--<button class="btn btn-secondary" type="button" data-dismiss="modal">{{__('msg.Close')}}</button>-->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script>
+
+        function add_hist() {
+
+        var _token = $('input[name="_token"]').val();
+        var offre = $("#offre").val();
+        var statut = $("#statut").val();
+        var statut_text = $("#statut").find("option:selected").text();
+        var details = $("#details").val();
+        var date_point = $("#date_point").val();
+        var date = "{{date('d/m/Y')}}";
+
+        $.ajax({
+            url: "{{ route('add_hist') }}",
+            method: "POST",
+            async: false,
+            data: {
+                offre: offre,
+                details: details,
+                statut: statut,
+                date_point: date_point,
+                _token: _token
+            },
+            success: function(data) {
+                if (data != '') {
+                    var row = '<tr><td>' + date + '</td><td>' + statut_text + ' </td><td>'+details+'</td><td>'+data.date_point+'</td><td></td></tr>';
+                    $('#offres').append(row);
+                    $('#ModalOffres').modal('hide');
+                } else {
+                    alert('erreur !')
+                }
+
+            }
+        });
+
+        }
+
+        function delete_hist(hist) {
+            if (!confirm("Êtes vous sûres?")) {
+                return false;
+            }
+
+            var _token = $('input[name="_token"]').val();
+
+            $.ajax({
+                url: "{{ route('delete_hist') }}",
+                method: "POST",
+                data: {
+                    hist: hist,
+                    _token: _token
+                },
+                success: function(data) {
+                    if (data == 1)
+                        $('#hist-' + hist).hide('slow');
+                }
+            });
+        }
+
         function relancer() {
             var _token = $('input[name="_token"]').val();
             var offre = $('#offer').val();

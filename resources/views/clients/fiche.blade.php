@@ -824,7 +824,7 @@ if (is_array($commandes) || is_object($commandes)) {
             },
             success: function(data) {
                 if (data != '') {
-                    var row = '<tr><td>' + data.date + '</td><td>' + comment + ' </td><td>'+data.user+'</td></tr>';
+                    var row = '<tr><td>' + data.date + '</td><td>' + comment + ' </td><td>'+data.user+'</td><td></td></tr>';
                     $('#comments').append(row);
                     $('#ModalComments').modal('hide');
                 } else {

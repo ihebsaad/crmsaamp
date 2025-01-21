@@ -76,7 +76,7 @@ class OffresController extends Controller
 		$folders=array();
 		$files=false;
 		$fichiers=File::where('parent','offres')->where('parent_id',$offre->id)->get();
-
+		$historiques= DB::table('historique_offres')->where('offre',$id)->get();
 		try{
 			if($offre->old_id!=null)
 				$folderContent=GEDService::getFolderParent($offre->old_id);
@@ -93,7 +93,7 @@ class OffresController extends Controller
 		finally {
 			\Log::info('GED folder show ' );
 		}
-		return view('offres.show',compact('offre','folders','files','folderContent','fichiers'));
+		return view('offres.show',compact('offre','folders','files','folderContent','fichiers','historiques'));
 	}
 
 
@@ -354,6 +354,35 @@ class OffresController extends Controller
 		}
 
 		return back()->with('success', 'Supprimée avec succès');
+	}
+
+
+	public function add_hist(Request $request)
+    {
+
+		DB::table('historique_offres')->insert([
+			'offre'=>$request->get('offre'),
+			'details'=>$request->get('details'),
+			'statut'=>$request->get('statut'),
+			'date_point'=>$request->get('date_point'),
+		]);
+
+		$data=array();
+		if($request->get('date_point')!='')
+			$data['date_point']= date('d/m/Y', strtotime($request->get('date_point')));
+		else
+			$data['date_point']=' ';
+
+		return $data;
+	}
+
+	public function delete_hist(Request $request)
+    {
+		DB::table('historique_offres')->where(
+			'id',$request->get('hist'),
+		)->delete();
+
+		return 1;
 	}
 
 } // end class

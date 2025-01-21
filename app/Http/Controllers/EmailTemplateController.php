@@ -15,7 +15,7 @@ class EmailTemplateController extends Controller
 
     public function index()
     {
-        $templates = EmailTemplate::all();
+        $templates = EmailTemplate::where('user',auth()->id())->get();
         return view('email_templates.index', compact('templates'));
     }
 

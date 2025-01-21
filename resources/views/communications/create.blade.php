@@ -40,7 +40,7 @@
 					</div>
 					<div class="row">
 						<!-- Sélection d'un template -->
-						<div class="col-md-6 mb-3">
+						<div class="col-md-4 mb-3">
 							<label for="template_id" class="form-label">Template</label>
 							<select class="form-control" id="template_id" name="template_id">
 								<option value="" selected="selected">Sans template</option>
@@ -52,7 +52,7 @@
 							</select>
 							@error('template_id') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
-						<!-- Type -->
+						<!-- Type
 						<div class="col-md-6 mb-3">
 							<label for="type" class="form-label">Type</label>
 							<select class="form-control" id="type" name="type" required>
@@ -61,16 +61,16 @@
 								<option value="3" {{ old('type') == 3 ? 'selected' : '' }}>Clients & Prospect</option>
 							</select>
 							@error('type') <span class="text-danger">{{ $message }}</span> @enderror
-						</div>
+						</div>-->
 						<!-- Objet -->
-						<div class="col-md-6 mb-3 div-objet">
+						<div class="col-md-4 mb-3 div-objet">
 							<label for="objet" class="form-label">Objet</label>
 							<input type="text" class="form-control" id="objet" name="objet" value="{{ old('objet') }}" >
 							@error('objet') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
 
 						<!-- Fichier -->
-						<div class="col-md-6 mb-3">
+						<div class="col-md-4 mb-3">
 							<label for="files" class="form-label">{{__('msg.File(s)')}} (optionnel)</label>
 							<input type="file" class="form-control" id="files"   name="fichiers[]"  multiple  />
 							@error('files') <span class="text-danger">{{ $message }}</span> @enderror
@@ -107,10 +107,19 @@
 							<button type="button" class="btn btn-secondary float-right mb-3" href="#" data-toggle="modal" data-target="#searchClientsModal"><i class="fa fa-search"></i> Chercher des clients</button>
 						</div>
 
+						<div class="col-md-2">
+						</div>
+						<div class="col-md-6 text-right">
+                            <div class="">
+                                <label for="date_envoi">Planifier l'envoi pour la date :</label>
+                                <input type="text" id="date_envoi" class="form-control datepicker" name="date_envoi" style="max-width:150px" value=""><br><br>
+								<label><input type="checkbox" name="test" value="1" /> Envoyer un test à mon adresse uniquement</label>
 
-						<!-- Bouton de soumission -->
-						<div class="col-md-12 mb-3 text-right">
-							<button type="submit" class="btn btn-primary">Créer</button>
+                            </div>
+                        </div>
+
+						<div class="col-md-4 mb-3 text-left">
+							<button type="submit" class="btn btn-primary">Envoyer</button>
 						</div>
 
 					</div>
@@ -145,20 +154,25 @@
 					<!-- Filters -->
 					<form id="searchClientsForm">
 						<div class="row">
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<input type="text" class="form-control" name="Nom" placeholder="Nom">
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<input type="text" class="form-control" name="ville" placeholder="Ville">
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="zip" placeholder="Département">
+							</div>
+							<input type="hidden"  name="type" value="1"/>
+							<!--
+							<div class="col-md-2">
 								<select class="form-control" name="type">
 									<option value="0">Tous</option>
 									<option value="1">Prospects</option>
 									<option value="2">Clients</option>
 								</select>
-							</div>
-							<div class="col-md-3">
+							</div>-->
+							<div class="col-md-2">
 								<select class="form-control" name="agence">
 									<option value="">Agence</option>
 									@foreach ($agences as $agence)
@@ -166,9 +180,8 @@
 									@endforeach
 								</select>
 							</div>
-						</div>
-						<div class="row mt-3">
-							<div class="col-md-12 text-end">
+
+							<div class="col-md-2">
 								<button type="button" class="btn btn-primary" id="searchClientsBtn">Rechercher</button>
 							</div>
 						</div>
@@ -185,7 +198,7 @@
 										<th>Nom</th>
 										<th>{{__('msg.City')}}</th>
 										<th>Client ID</th>
-										<th>Type</th>
+										<!--<th>Type</th>-->
 										<th>Agence</th>
 									</tr>
 								</thead>
@@ -220,6 +233,7 @@
 					<form id="templateForm">
 						@csrf
 						<div class="form-group">
+							<input type="hidden" name="user" value="{{auth()->id()}}"/>
 							<label for="template_name">Nom du Template</label>
 							<input type="text" class="form-control" id="template_name" name="name" required>
 						</div>
@@ -274,6 +288,25 @@
 				height: 200
 			});
 
+			$(".datepicker").datepicker({
+
+				altField: "#datepicker",
+				closeText: 'Fermer',
+				prevText: 'Précédent',
+				nextText: 'Suivant',
+				currentText: 'Aujourd\'hui',
+				monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+				monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+				dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+				dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+				dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+				weekHeader: 'Sem.',
+				buttonImage: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAATCAYAAAB2pebxAAABGUlEQVQ4jc2UP06EQBjFfyCN3ZR2yxHwBGBCYUIhN1hqGrWj03KsiM3Y7p7AI8CeQI/ATbBgiE+gMlvsS8jM+97jy5s/mQCFszFQAQN1c2AJZzMgA3rqpgcYx5FQDAb4Ah6AFmdfNxp0QAp0OJvMUii2BDDUzS3w7s2KOcGd5+UsRDhbAo+AWfyU4GwnPAYG4XucTYOPt1PkG2SsYTbq2iT2X3ZFkVeeTChyA9wDN5uNi/x62TzaMD5t1DTdy7rsbPfnJNan0i24ejOcHUPOgLM0CSTuyY+pzAH2wFG46jugupw9mZczSORl/BZ4Fq56ArTzPYn5vUA6h/XNVX03DZe0J59Maxsk7iCeBPgWrroB4sA/LiX/R/8DOHhi5y8Apx4AAAAASUVORK5CYII=",
+				firstDay: 1,
+				dateFormat: "yy-mm-dd",
+				minDate:1
+			});
+
 			document.getElementById('reset-destinataires').addEventListener('click', function() {
 				// Vider le champ destinataires
 				document.getElementById('destinataires').value = '';
@@ -311,6 +344,7 @@
 			// Search clients
 			$('#searchClientsBtn').click(function() {
 				const formData = $('#searchClientsForm').serialize();
+				/*
 				let clientTypes = {
 					'1': 'Prospect',
 					'2': 'Client',
@@ -318,6 +352,8 @@
 					'4': 'Inactif',
 					'5': 'Particulier'
 				};
+				//<td>${clientTypes[client.etat_id]}</td>
+				*/
 				let agences = {
 					<?php
 					foreach ($agences as $agence) {
@@ -332,6 +368,7 @@
 					success: function(data) {
 						let rows = '';
 
+
 						if (data.length > 0) {
 							data.forEach(client => {
 								rows += `
@@ -341,7 +378,6 @@
                                 <td>${client.Nom}</td>
                                 <td>${client.ville}</td>
                                 <td>${client.cl_ident ?? 'N/A'}</td>
-                                <td>${clientTypes[client.etat_id]}</td>
                                 <td>${agences[client.agence_ident] ?? 'N/A'}</td>
                             </tr>
                         `;

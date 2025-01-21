@@ -23,7 +23,7 @@ class CommunicationsController extends Controller
     public function create()
     {
         $agences = Agence::get();
-        $templates = EmailTemplate::all();
+        $templates = EmailTemplate::where('user',auth()->id())->get();
 
         return view('communications.create',compact('agences','templates'));
     }
@@ -31,117 +31,150 @@ class CommunicationsController extends Controller
     // Enregistrer une nouvelle communication
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'objet' => 'nullable|string|max:255',
-            'corps_message' => 'nullable|string',
-            //'fichier' => 'nullable|file|mimes:pdf,docx,jpeg,png|max:20480',
-            'par' => 'required|integer',
-            'destinataires' => 'required|json',
-            'statut' => 'nullable|integer|in:0,1',
-            'type' => 'required|integer|in:1,2', // 1: Email, 2: SMS
-            'files.*' => 'file|mimes:jpeg,png,pdf,doc,docx|max:10240', // 10 MB max
+        $test = $request->test ? '1' : '0';
+        if($test){
+            $validator = Validator::make($request->all(), [
+                'objet' => 'nullable|string|max:255',
+                'corps_message' => 'nullable|string',
+                //'fichier' => 'nullable|file|mimes:pdf,docx,jpeg,png|max:20480',
+                'par' => 'required|integer',
+            //    'destinataires' => 'required|json',
+                'statut' => 'nullable|integer|in:0,1',
+                'files.*' => 'file|mimes:jpeg,png,pdf,doc,docx|max:10240', // 10 MB max
+            ]);
+        }else{
+            $validator = Validator::make($request->all(), [
+                'objet' => 'nullable|string|max:255',
+                'corps_message' => 'nullable|string',
+                //'fichier' => 'nullable|file|mimes:pdf,docx,jpeg,png|max:20480',
+                'par' => 'required|integer',
+                'destinataires' => 'required|json',
+                'statut' => 'nullable|integer|in:0,1',
+                'files.*' => 'file|mimes:jpeg,png,pdf,doc,docx|max:10240', // 10 MB max
 
-        ]);
+            ]);
+        }
 
         // Si la validation échoue
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-/*
-        // Gestion du fichier uploadé
-        $fichierPath = null;
-        if ($request->hasFile('fichier')) {
-            $fichierPath = $request->file('fichier')->store('fichiers/communications', 'public');
-        }
-*/
+
         $template = null;
         if ($request->filled('template_id')) {
             $template = EmailTemplate::find($request->input('template_id'));
         }
 
-        // Création de la communication
-        $communication = Communication::create([
-            'objet' => $template ? $template->subject : $request->input('objet'),
-            'corps_message' => $template ? $template->body : $request->input('corps_message'),
-            //'fichier' => $fichierPath,
-            'par' => $request->input('par'),
-            'destinataires' => $request->input('destinataires'),
-            'statut' => $request->input('statut', 1), // Par défaut 1 (actif)
-            'type' => $request->input('type'),
-            'clients' => $request->input('clients'),
-        ]);
+        if($test){
 
-       // Récupération des destinataires
-        $destinatairesInput = $request->input('destinataires'); // Tableau ou JSON encodé
+            $attachmentPaths = []; // Tableau pour stocker les chemins des fichiers
+            if ($request->hasFile('fichiers')) {
+                $fichiers = $request->file('fichiers');
+                foreach ($fichiers as $fichier) {
+                    $name = $fichier->getClientOriginalName();
+                    $path = public_path("fichiers/communications");
+                    $fichier->move($path, $name);
 
-        // S'assurer que les destinataires sont sous forme de tableau PHP natif
-        if (is_string($destinatairesInput)) {
-            $destinatairesInput = json_decode($destinatairesInput, true); // Décoder en tableau associatif
-        }
-
-        // Vérification de la structure
-        if (!is_array($destinatairesInput)) {
-            $destinatairesInput = [$destinatairesInput]; // Convertir en tableau si un seul objet
-        }
-
-        // Extraire les IDs des clients
-        $destinatairesIds = array_column($destinatairesInput, 'id'); // Extraire les IDs
-
-        // Vérification des IDs
-        \Log::info('Destinataires IDs : ' . json_encode($destinatairesIds));
-
-        $attachmentPaths = []; // Tableau pour stocker les chemins des fichiers
-
-        if ($request->hasFile('fichiers')) {
-            $fichiers = $request->file('fichiers');
-
-
-            foreach ($fichiers as $fichier) {
-                $name = $fichier->getClientOriginalName();
-                $path = public_path("fichiers/communications");
-                $fichier->move($path, $name);
-
-                // Ajouter le chemin du fichier au tableau des pièces jointes
-                $attachmentPaths[] = $path . '/' . $name;
-
-                // Enregistrer chaque fichier dans la table files
-                File::create([
-                    'name' => $name,
-                    'parent_id' => $communication->id,
-                    'parent' => 'communication'
-                ]);
+                    // Ajouter le chemin du fichier au tableau des pièces jointes
+                    $attachmentPaths[] = $path . '/' . $name;
+                }
             }
-        }
+            $objet = $template ? $template->subject : $request->input('objet');
+            $contenu = $template ? $template->body : $request->input('corps_message');
 
-        // Récupérer les emails des clients
-        $emails = CompteClient::whereIn('id', $destinatairesIds)
-            ->whereNotNull('email')
-            ->pluck('email')
-            ->toArray();
+            SendMail::send(auth()->user()->email, $objet, $contenu, $attachmentPaths);
+            return redirect()->back()->with('success', 'Test envoyé avec succès.');
 
-        array_push($emails,auth()->user()->email);
-        // Objet et contenu de l'email
-        $objet = $communication->objet;
-        $contenu = $communication->corps_message;
+        }else{
+            $date_envoi=$request->input('date_envoi');
+            $statut = $date_envoi== '' ? 1 : 3;
+            // Création de la communication
+            $communication = Communication::create([
+                'objet' => $template ? $template->subject : $request->input('objet'),
+                'corps_message' => $template ? $template->body : $request->input('corps_message'),
+                //'fichier' => $fichierPath,
+                'par' => $request->input('par'),
+                'destinataires' => $request->input('destinataires'),
+                'statut' => $statut, // Par défaut 1 (actif)
+                'type' => $request->input('type'),
+                'clients' => $request->input('clients'),
+                'date_envoi' =>$date_envoi ,
+            ]);
 
-        \Log::info('Emails : ' . json_encode($emails));
+        // Récupération des destinataires
+            $destinatairesInput = $request->input('destinataires'); // Tableau ou JSON encodé
 
-        // Ajout de l'envoi d'email via le service SendMail
-        try {
-            if (!empty($emails)) {
-                SendMail::send($emails, $objet, $contenu, $attachmentPaths); // Passer les pièces jointes
-            } else {
-                logger()->warning('Aucun email trouvé pour les destinataires.');
+            // S'assurer que les destinataires sont sous forme de tableau PHP natif
+            if (is_string($destinatairesInput)) {
+                $destinatairesInput = json_decode($destinatairesInput, true); // Décoder en tableau associatif
             }
-        } catch (\Exception $e) {
-            logger()->error('Erreur lors de l\'envoi de l\'email : ' . $e->getMessage());
-            $communication->statut =2;
-            $communication->erreurs_envoi = $e->getMessage();
-            $communication->save();
-            return redirect()->route('communications.index')->withErrors(['msg' => "Erreur lors de l'envoi des emails"]);
-        }
 
-        return redirect()->route('communications.index')->with('success', 'Communication créée avec succès.');
+            // Vérification de la structure
+            if (!is_array($destinatairesInput)) {
+                $destinatairesInput = [$destinatairesInput]; // Convertir en tableau si un seul objet
+            }
+
+            // Extraire les IDs des clients
+            $destinatairesIds = array_column($destinatairesInput, 'id'); // Extraire les IDs
+
+            // Vérification des IDs
+            \Log::info('Destinataires IDs : ' . json_encode($destinatairesIds));
+
+            $attachmentPaths = []; // Tableau pour stocker les chemins des fichiers
+
+            if ($request->hasFile('fichiers')) {
+                $fichiers = $request->file('fichiers');
+
+
+                foreach ($fichiers as $fichier) {
+                    $name = $fichier->getClientOriginalName();
+                    $path = public_path("fichiers/communications");
+                    $fichier->move($path, $name);
+
+                    // Ajouter le chemin du fichier au tableau des pièces jointes
+                    $attachmentPaths[] = $path . '/' . $name;
+
+                    // Enregistrer chaque fichier dans la table files
+                    File::create([
+                        'name' => $name,
+                        'parent_id' => $communication->id,
+                        'parent' => 'communication'
+                    ]);
+                }
+            }
+
+            // Récupérer les emails des clients
+            $emails = CompteClient::whereIn('id', $destinatairesIds)
+                ->whereNotNull('email')
+                ->pluck('email')
+                ->toArray();
+
+            array_push($emails,auth()->user()->email);
+            // Objet et contenu de l'email
+            $objet = $communication->objet;
+            $contenu = $communication->corps_message;
+
+            \Log::info('Emails : ' . json_encode($emails));
+
+            // Ajout de l'envoi d'email via le service SendMail
+            try {
+                if($date_envoi==''){
+                    if (!empty($emails)) {
+                        SendMail::send($emails, $objet, $contenu, $attachmentPaths);
+                    } else {
+                        logger()->warning('Aucun email trouvé pour les destinataires.');
+                    }
+                }
+            } catch (\Exception $e) {
+                logger()->error('Erreur lors de l\'envoi de l\'email : ' . $e->getMessage());
+                $communication->statut =2;
+                $communication->erreurs_envoi = $e->getMessage();
+                $communication->save();
+                return redirect()->route('communications.index')->withErrors(['msg' => "Erreur lors de l'envoi des emails"]);
+            }
+
+            return redirect()->route('communications.index')->with('success', 'Communication créée avec succès.');
+        }
     }
 
 
@@ -159,6 +192,7 @@ class CommunicationsController extends Controller
         }
 
         EmailTemplate::create([
+            'user' => $request->input('user'),
             'name' => $request->input('name'),
             'subject' => $request->input('subject'),
             'body' => $request->input('body'),
@@ -181,9 +215,10 @@ class CommunicationsController extends Controller
             $query->where('cl_ident', 'like', '%' . $request->client_id . '%');
         }
 
-        if ($request->has('type') && $request->type != 0) {
-            $query->where('etat_id', $request->type);
-        }
+        //if ($request->has('type') && $request->type != 0) {
+            //$query->where('etat_id', $request->type);
+            $query->where('cl_ident','>',0);
+        //}
 
         if ($request->has('Nom') && $request->Nom) {
             $query->where('Nom', 'like', '%' . $request->Nom . '%');
@@ -205,7 +240,7 @@ class CommunicationsController extends Controller
             $query->where('agence_ident',  $request->agence);
         }
 
-        $clients = $query->take(100)->get(['id', 'Nom', 'ville', 'cl_ident', 'etat_id','agence_ident']); // Limiter à 100 résultats
+        $clients = $query->take(1000)->get(['id', 'Nom', 'ville', 'cl_ident', 'etat_id','agence_ident']); // Limiter à 100 résultats
         return response()->json($clients);
     }
 

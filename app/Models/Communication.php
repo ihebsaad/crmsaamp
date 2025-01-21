@@ -18,7 +18,8 @@ class Communication extends Model
         'destinataires',
         'statut' ,
         'type' ,
-        'clients'
+        'clients',
+        'date_envoi',
     ];
 
     public $timestamps = false;

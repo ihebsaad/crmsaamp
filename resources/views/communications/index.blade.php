@@ -49,13 +49,13 @@
                             <th>{{__('msg.By')}}</th>
                             <th>Destinataires</th>
                             <th>{{__('msg.Status')}}</th>
-							<th>{{__('msg.Type')}}</th>
+							<th>Date d'envoi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($communications as $communication)
 						@php $creator = \App\Models\User::find($communication->par);
-                        if($communication->statut==1){ $badge='<span class="badge btn-sm btn-success">Succès</span>';  }else{ $badge='<span class="badge btn-sm btn-danger">Echec</span>';  }
+                        if($communication->statut==1){ $badge='<span class="badge btn-sm btn-success">Envoyé</span>';  }elseif($communication->statut==2){ $badge='<span class="badge btn-sm btn-danger">Echec</span>';  }else{ $badge='<span class="badge btn-sm btn-primary">Planifié</span>';  }
                         @endphp
                             <tr style="cursor:pointer" onclick="show_details({{$communication->id}})" title="cliquez pour voir les détails">
                                 <td>{{ $communication->id }}</td>
@@ -63,7 +63,7 @@
                                 <td>{{$creator->name}} {{$creator->lastname}}</td>
                                 <td>{{ $communication->clients ?? $communication->destinataires   }}</td>
                                 <td>{!! $badge !!} </td>
-                                <td>@if($communication->type==1) Clients @elseif($communication->type==2)  Prospects  @else  Clients & Prospects   @endif </td>
+                                <td>{{ $communication->date_envoi!='' ? date('d/m/Y', strtotime($communication->date_envoi)) : ''}}</td>
                             </tr>
                         @endforeach
                     </tbody>

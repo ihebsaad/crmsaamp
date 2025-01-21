@@ -19,6 +19,7 @@
             @isset($emailTemplate)
             @method('PUT')
             @endisset
+            <input type="hidden" name="user" value="{{auth()->id()}}"/>
 
             <div class="mb-3">
                 <label for="name" class="form-label">Nom</label>

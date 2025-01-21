@@ -156,6 +156,9 @@ Route::get('/offres/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\OffresC
 Route::post('/offres/editFile', 'App\Http\Controllers\OffresController@editFile')->name('offres.editFile');
 Route::get('/offres/destroy/{id}',[OffresController::class,'destroy'])->name('offres.destroy');
 
+Route::post('/delete_hist',[OffresController::class, 'delete_hist'])->name('delete_hist');
+Route::post('/add_hist',[OffresController::class, 'add_hist'])->name('add_hist');
+
 Route::get('/test', 'App\Http\Controllers\OffresController@test');
 
 Route::get('/rendezvous/show/{id}', [RendezVousController::class, 'show'])->name('rendezvous.show');
