@@ -47,9 +47,39 @@
 
 	$(document).ready(function() {
 
-		$('.summernote').summernote({
-			height: 200
-		});
+        $('.summernote').summernote({
+				height: 200,
+				callbacks: {
+					onImageUpload: function(files) {
+						uploadImages(files, this);
+					}
+				}
+			});
+
+            function uploadImages(files, editor) {
+				var _token = $('input[name="_token"]').val();
+				let data = new FormData();
+				data.append('image', files[0]); // Ajouter la première image
+				data.append('_token', _token);
+
+				// Envoyer l'image au serveur via AJAX
+				$.ajax({
+					url: '/upload-image', // Route Laravel pour gérer le téléchargement
+					method: 'POST',
+					data: data,
+					contentType: false,
+					processData: false,
+					success: function(response) {
+						// Insérer l'URL de l'image dans le contenu de Summernote
+						if (response.url) {
+							$(editor).summernote('insertImage', response.url);
+						}
+					},
+					error: function() {
+						alert('Erreur lors du téléchargement de l\'image.');
+					}
+				});
+			}
 	});
 
 

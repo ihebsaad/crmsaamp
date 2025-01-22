@@ -238,6 +238,7 @@ Route::post('communications', [CommunicationsController::class, 'store'])->name(
 Route::get('/communications', [CommunicationsController::class, 'index'])->name('communications.index');
 Route::get('/search-ajax', [CommunicationsController::class, 'searchAjax'])->name('search.ajax');
 Route::post('/get_communication', [CommunicationsController::class, 'get_communication'])->name('get_communication');
+Route::post('/upload-image', [CommunicationsController::class, 'uploadImage']);
 
 
 /*

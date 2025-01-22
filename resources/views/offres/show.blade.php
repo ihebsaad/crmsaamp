@@ -136,7 +136,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Statut">{{__('msg.Status')}}:</label><br>
-                                <select  class="form-control" name="statut" style="width:150px">
+                                <select  class="form-control" name="statut" id="statut_offre" style="width:150px">
                                     <option value=""></option>
                                     <option @selected($offre->statut=='OK') value="OK">OK</option>
                                     <option @selected($offre->statut=='KO') value="KO">KO</option>
@@ -457,7 +457,16 @@
                 if (data != '') {
                     var row = '<tr><td>' + date + '</td><td>' + statut_text + ' </td><td>'+details+'</td><td>'+data.date_point+'</td><td></td></tr>';
                     $('#offres').append(row);
+
                     $('#ModalOffres').modal('hide');
+                    //console.log(statut.statut);
+                    //$('#statut_offre').val(data.statut);
+                    if(parseInt(statut)<3){
+                        $('#statut_offre').val('KO');
+                    }else{
+                        $('#statut_offre').val('OK');
+                    }
+
                 } else {
                     alert('erreur !')
                 }

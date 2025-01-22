@@ -14,7 +14,7 @@ class SendMail
 {
 
 
-    public static function send($to, $sujet, $contenu, $attachments = [])
+    public static function send($to, $sujet, $contenu, $attachments = [],$reply_to=null)
     {
         $transport = new EsmtpTransport(env('MAIL_HOST'), env('MAIL_PORT'));
         $transport->setUsername(env('MAIL_USERNAME'));
@@ -23,7 +23,10 @@ class SendMail
         $mailer = new Mailer($transport);
         $from = env('MAIL_FROM_ADDRESS');
         $fromName = env('MAIL_FROM_NAME');
-        $ccAddress = 'mysaamp@saamp.com';
+        if($reply_to!='')
+            $ccAddress = $reply_to;
+        else
+            $ccAddress = 'mysaamp@saamp.com';
 
         // Check if $to is an array, if not, make it an array
         $recipients = is_array($to) ? $to : [$to];

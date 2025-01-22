@@ -367,11 +367,25 @@ class OffresController extends Controller
 			'date_point'=>$request->get('date_point'),
 		]);
 
+		$offre=Offre::find($request->get('offre'));
+		if($request->get('statut')==3){
+			$offre->statut='OK';
+		}
+		else{
+			$offre->statut='KO';
+		}
+		$offre->save();
+
 		$data=array();
-		if($request->get('date_point')!='')
+		if($request->get('date_point')!=''){
 			$data['date_point']= date('d/m/Y', strtotime($request->get('date_point')));
-		else
+		}
+		else{
 			$data['date_point']=' ';
+		}
+
+		$data['satut']=$offre->statut;
+
 
 		return $data;
 	}

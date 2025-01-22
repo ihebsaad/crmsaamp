@@ -112,7 +112,7 @@
 						<div class="col-md-6 text-right">
                             <div class="">
                                 <label for="date_envoi">Planifier l'envoi pour la date :</label>
-                                <input type="text" id="date_envoi" class="form-control datepicker" name="date_envoi" style="max-width:150px" value=""><br><br>
+                                <input type="datetime-local" id="date_envoi" class="form-control" name="date_envoi" style="max-width:200px" value=""><br><br>
 								<label><input type="checkbox" name="test" value="1" /> Envoyer un test à mon adresse uniquement</label>
 
                             </div>
@@ -164,14 +164,14 @@
 								<input type="text" class="form-control" name="zip" placeholder="Département">
 							</div>
 							<input type="hidden"  name="type" value="1"/>
-							<!--
+
 							<div class="col-md-2">
 								<select class="form-control" name="type">
 									<option value="0">Tous</option>
 									<option value="1">Prospects</option>
 									<option value="2">Clients</option>
 								</select>
-							</div>-->
+							</div>
 							<div class="col-md-2">
 								<select class="form-control" name="agence">
 									<option value="">Agence</option>
@@ -198,8 +198,8 @@
 										<th>Nom</th>
 										<th>{{__('msg.City')}}</th>
 										<th>Client ID</th>
-										<!--<th>Type</th>-->
 										<th>Agence</th>
+										<th>Type</th>
 									</tr>
 								</thead>
 								<tbody id="clientsResults">
@@ -285,8 +285,39 @@
 		$(document).ready(function() {
 
 			$('.summernote').summernote({
-				height: 200
+				height: 200,
+				callbacks: {
+					onImageUpload: function(files) {
+						uploadImages(files, this);
+					}
+				}
 			});
+
+			function uploadImages(files, editor) {
+				var _token = $('input[name="_token"]').val();
+				let data = new FormData();
+				data.append('image', files[0]); // Ajouter la première image
+				data.append('_token', _token);
+
+				// Envoyer l'image au serveur via AJAX
+				$.ajax({
+					url: '/upload-image', // Route Laravel pour gérer le téléchargement
+					method: 'POST',
+					data: data,
+					contentType: false,
+					processData: false,
+					success: function(response) {
+						// Insérer l'URL de l'image dans le contenu de Summernote
+						if (response.url) {
+							$(editor).summernote('insertImage', response.url);
+						}
+					},
+					error: function() {
+						alert('Erreur lors du téléchargement de l\'image.');
+					}
+				});
+			}
+
 
 			$(".datepicker").datepicker({
 
@@ -344,7 +375,7 @@
 			// Search clients
 			$('#searchClientsBtn').click(function() {
 				const formData = $('#searchClientsForm').serialize();
-				/*
+
 				let clientTypes = {
 					'1': 'Prospect',
 					'2': 'Client',
@@ -352,8 +383,7 @@
 					'4': 'Inactif',
 					'5': 'Particulier'
 				};
-				//<td>${clientTypes[client.etat_id]}</td>
-				*/
+
 				let agences = {
 					<?php
 					foreach ($agences as $agence) {
@@ -379,6 +409,7 @@
                                 <td>${client.ville}</td>
                                 <td>${client.cl_ident ?? 'N/A'}</td>
                                 <td>${agences[client.agence_ident] ?? 'N/A'}</td>
+								<td>${clientTypes[client.etat_id]}</td>
                             </tr>
                         `;
 							});

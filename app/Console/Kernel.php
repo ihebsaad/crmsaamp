@@ -29,6 +29,8 @@ class Kernel extends ConsoleKernel
         //->everyMinute();
 
         $schedule->command('send:offers-reminder')->dailyAt('09:00');
+        $schedule->command('send:communications')->hourly();
+        $schedule->command('send:offers-point')->daily();
     }
 
     /**

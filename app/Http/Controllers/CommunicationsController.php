@@ -10,6 +10,7 @@ use App\Models\EmailTemplate;
 use App\Models\Agence;
 use App\Models\File;
 use App\Services\SendMail;
+use Illuminate\Support\Facades\Storage;
 
 class CommunicationsController extends Controller
 {
@@ -81,8 +82,8 @@ class CommunicationsController extends Controller
             }
             $objet = $template ? $template->subject : $request->input('objet');
             $contenu = $template ? $template->body : $request->input('corps_message');
-
-            SendMail::send(auth()->user()->email, $objet, $contenu, $attachmentPaths);
+            $objet = $objet=='' ? 'Test' : $objet;
+            SendMail::send(auth()->user()->email, $objet, $contenu, $attachmentPaths,auth()->user()->email); //reply en dernir paramètre
             return redirect()->back()->with('success', 'Test envoyé avec succès.');
 
         }else{
@@ -160,7 +161,7 @@ class CommunicationsController extends Controller
             try {
                 if($date_envoi==''){
                     if (!empty($emails)) {
-                        SendMail::send($emails, $objet, $contenu, $attachmentPaths);
+                        SendMail::send($emails, $objet, $contenu, $attachmentPaths,auth()->user()->email);
                     } else {
                         logger()->warning('Aucun email trouvé pour les destinataires.');
                     }
@@ -215,10 +216,11 @@ class CommunicationsController extends Controller
             $query->where('cl_ident', 'like', '%' . $request->client_id . '%');
         }
 
-        //if ($request->has('type') && $request->type != 0) {
-            //$query->where('etat_id', $request->type);
-            $query->where('cl_ident','>',0);
-        //}
+        //$query->where('cl_ident','>',0);
+
+        if ($request->has('type') && $request->type != 0) {
+            $query->where('etat_id', $request->type);
+        }
 
         if ($request->has('Nom') && $request->Nom) {
             $query->where('Nom', 'like', '%' . $request->Nom . '%');
@@ -240,7 +242,7 @@ class CommunicationsController extends Controller
             $query->where('agence_ident',  $request->agence);
         }
 
-        $clients = $query->take(1000)->get(['id', 'Nom', 'ville', 'cl_ident', 'etat_id','agence_ident']); // Limiter à 100 résultats
+        $clients = $query->get(['id', 'Nom', 'ville', 'cl_ident', 'etat_id','agence_ident']);
         return response()->json($clients);
     }
 
@@ -252,4 +254,28 @@ class CommunicationsController extends Controller
         $data['contenu']=$comm->corps_message ;
         return $data;
     }
+
+
+    public function uploadImage(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            // Stocker l'image dans un dossier public
+            $path = $file->store('public/summernote');
+
+            // Obtenir l'URL publique
+            //$url = Storage::url($path);
+            $url = config('app.url') . Storage::url($path);
+
+            return response()->json(['url' => $url]);
+        }
+
+        return response()->json(['error' => 'Aucune image trouvée.'], 400);
+    }
+
+
+
+
+
 }
