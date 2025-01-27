@@ -368,6 +368,8 @@ class OffresController extends Controller
 		]);
 
 		$offre=Offre::find($request->get('offre'));
+		$user=User::find($offre->user_id);
+
 		if($request->get('statut')==3){
 			$offre->statut='OK';
 		}
@@ -386,6 +388,18 @@ class OffresController extends Controller
 
 		$data['satut']=$offre->statut;
 
+		$message="Bonjour $user->name $user->lastname,<br><br>Nouveau staut pour l'offre de prix <a href='https://crm.mysaamp.com/offres/show/$offre->id'>$offre->Nom_offre</a><br><br>";
+		$message.="<b>Client:</b> ".$offre->nom_compte ."<br>";
+		$message.="<b>Date de création:</b> ".date('d/m/Y', strtotime($offre->Date_creation)) ."<br>";
+		$message.="<b>Type:</b>  $offre->type <br>";
+		$message.="<b>Produit:</b> $offre->Produit_Service  <br><br>";
+		$message.="<b>Statut:</b> ". $offre->statut ."  <br>";
+		$message.="<b>Détails:</b> ".  $request->get('details') ." <br>";
+		$message.="<br><br><br>";
+		$message.="<i>Cordialement<br>";
+		$message.="L'équipe CRM SAAMP</i>";
+
+		SendMail::send($user->email,"Nouveau statut pour l'offre de prix $offre->Nom_offre",$message);
 
 		return $data;
 	}

@@ -77,6 +77,13 @@ class RecapController extends Controller
             ->orderBy('Date_ouverture', 'asc')
             ->get();
 
+        $clients=0;
+        $rep=DB::table("representant")->where('users_id',$user)->first();
+        if(isset($rep)){
+            $clients = CompteClient::where('commercial', $rep->id)
+            ->whereBetween('created_at', [$date_debut, $date_fin])
+            ->count();
+        }
         // Récupération des données pour la période précédente
         $prev_rendezvous = RendezVous::where('user_id', $user)
             ->whereBetween('Started_at', [$prev_date_debut, $prev_date_fin])
@@ -132,6 +139,7 @@ class RecapController extends Controller
             'date_debut',
             'date_fin',
             'users',
+            'clients',
             'offres',
             'retours',
             'retours_infos',

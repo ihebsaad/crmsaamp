@@ -48,7 +48,7 @@ class SendOffersReminder extends Command
             SendMail::send($user->email,"Relance pour l'offre de prix $offre->id ",$message);
             $offre->relance_envoye=1;
             $offre->save();
-            \Log::info("Relance pour l'offre $offre->id envoyée à $user->name $user->lastname  - $user->email ");
+            \Log::info("Relance pour l'offre $offre->Nom_offre envoyée à $user->name $user->lastname  - $user->email ");
 
         }
     }

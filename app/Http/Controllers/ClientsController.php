@@ -329,10 +329,15 @@ class ClientsController extends Controller
 		if ($request->has('client_id') && $request->client_id) {
 			$query->where('cl_ident', 'like', '%' . $request->client_id . '%');
 		}
+		/*
 		if ($type == 2) {
 			$query->where('etat_id', 2);
 		} elseif ($type == 1) {
 			$query->where('etat_id',  1);
+		}
+*/
+		if ($request->has('etat_id') && $request->etat_id != 0) {
+			$query->where('etat_id', $request->etat_id);
 		}
 
 		if ($request->has('Nom') && $request->Nom) {

@@ -69,6 +69,9 @@ form{
 
                 <div class="row">
                     <!-- Offres -->
+                    <div class="col-md-12 mb-2">
+                        <h3 @if($clients >0 ) class="text-success" @endif>Clients crées : <strong>{{ $clients }}</strong></h3>
+                    </div>
                     <div class="col-md-4">
                         <h5>Offres</h5>
                         <table class="table table-striped table-hover">

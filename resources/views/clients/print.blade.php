@@ -41,8 +41,8 @@
         switch ($client->etat_id) {
         case 2 : $color='#2660c3'; $type_c='Client' ; break;
         case 1 : $color='#2ab62c'; $type_c='Prospect' ;break;
-        case 3 : $color='#ff2e36'; $type_c='{{__("msg.Closed")}}' ; break;
-        case 4 : $color='#ff2e36'; $type_c='{{__("msg.Inactive")}}' ; break;
+        case 3 : $color='#ff2e36'; $type_c='Fermé' ; break;
+        case 4 : $color='#ff2e36'; $type_c='Inactif' ; break;
         }
 
         $tel= $client->Phone ??  $client->Tel;

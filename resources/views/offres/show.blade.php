@@ -132,7 +132,7 @@
 
 
                     <div class="row pt-1 pb-1">
-                        @if(auth()->user()->id== 1 || auth()->user()->id== 10 || auth()->user()->id== 39)
+                        @if(auth()->user()->role== 'admin' || auth()->user()->id== 10 || auth()->user()->id== 39)
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Statut">{{__('msg.Status')}}:</label><br>
@@ -147,7 +147,7 @@
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Statut">{{__('msg.Status')}}:</label>
-                                <h6>{{$offre->Statut}}</h6>
+                                <h6 @if($offre->statut=='OK')  class="text-success" @elseif($offre->statut=='KO') class="text-danger"  @endif >{{$offre->statut}}</h6>
                             </div>
                         </div>
                         @endif

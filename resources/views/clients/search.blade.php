@@ -53,7 +53,7 @@
 
                     </div>
                     <div class="row pt-1">
-                        <div class="col-lg-3 col-sm-6">
+                        <div class="col-lg-2 col-sm-6">
                             <div class="">
                                 <label for="">{{__('msg.Agency')}}</label>
                                 <select name="agence" class="form-control" >
@@ -79,26 +79,32 @@
 
 
 
-                        <div class="col-lg-2 col-sm-6">
+                        <div class="col-lg-2 col-sm-3">
                             <div class="">
                                 <label for="">{{__('msg.City')}}</label>
                                 <input type="" class="form-control" id="" placeholder="" name="ville" value="{{ $request->ville ?? '' }}">
                             </div>
                         </div>
-                        <div class="col-lg-2 col-sm-6">
+                        <div class="col-lg-2 col-sm-3">
                             <div class="">
                                 <label for="">{{__('msg.Department')}}</label>
                                 <input type="text" class="form-control" id="" placeholder="" name="zip" value="{{ $request->zip ?? '' }}">
                             </div>
                         </div>
-                        <!--
+
                         <div class="col-md-2">
                             <div class="">
-                                <label for="">Pays</label>
-                                <input type="" class="form-control" id="" placeholder="" name="Pays" value="{{ $request->Pays ?? '' }}">
+                                <label for="">Type</label>
+                                <select class="form-control" id="" placeholder="" name="etat_id" >
+                                    <option  value=""> </option>
+                                    <option  {{ $request->etat_id==2 ? 'selected="selected"' : '' }} value="2">Client </option>
+                                    <option  {{ $request->etat_id==1 ? 'selected="selected"' : '' }}  value="1">Prospect</option>
+                                    <option  {{ $request->etat_id==3 ? 'selected="selected"' : '' }}  value="3">Fermé</option>
+                                    <option  {{ $request->etat_id==4 ? 'selected="selected"' : '' }}  value="4">Inactif</option>
+                                </select>
                             </div>
                         </div>
-                        -->
+
                         <div class="col-lg-2 col-md-12 col-sm-12 pt-1">
                             <button type="submit" class="btn btn-primary float-right mt-4"><i class="fa fa-search"></i> {{__('msg.Search')}}</button>
                         </div>

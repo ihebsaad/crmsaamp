@@ -49,7 +49,7 @@ class SendOffersPoint extends Command
 
             DB::table('historique_offres')->where('id',$hist->id)->update(['sent'=>1]);
 
-            \Log::info("Point pour l'offre $offre->id envoyée à $user->name $user->lastname  - $user->email ");
+            \Log::info("Point pour l'offre $offre->Nom_offre envoyée à $user->name $user->lastname  - $user->email ");
 
         }
     }
