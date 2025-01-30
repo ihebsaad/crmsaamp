@@ -84,8 +84,8 @@
 
                     <div class="row pt-1">
                         <div class="col-md-4">
-                            <label for="files">{{__('msg.Select files (PDF only)')}}</label>
-                            <input class="form-control" type="file" id="files" name="files[]" multiple required accept="application/pdf"><br>
+                            <label for="files">{{__('msg.Select files')}}</label>
+                            <input class="form-control" type="file" id="files" name="files[]" multiple required accept="image/jpeg,image/gif,image/png,application/pdf"><br>
                             <label class="text-danger">{{__('msg.(Maximum 5 files per folder)')}}</label>
                         </div>
                         @php

@@ -487,7 +487,7 @@ return [
 	"Customer folder"=>"Customer folder",
 	"Add documents"=>"Add documents",
 	"Edit the document"=>"Edit the documentt",
-	"Select files (PDF only)"=>"Select files (PDF only)",
+	"Select files"=>"Select files",
 	"Client\'s financial statement"=>"Client's financial statement",
 	"Creation date"=>"Creation date",
 	"Name of the manager"=>"Name of the manager",

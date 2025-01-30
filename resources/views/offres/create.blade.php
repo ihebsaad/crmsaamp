@@ -48,33 +48,17 @@
                                 <label for="Type">{{__('msg.Type')}}:</label>
                                 <select    id="type" class="form-control" name="type" required  >
                                     <option  value="TG">TG</option>
-                                    <option  value="Hors TG">Hors TG</option>
-                                    <option  value="Apprêts/Bij/DP">Apprêts/Bij/DP</option>
+                                    <option  value="Hors TG - Affinage">Hors TG - Affinage</option>
+                                    <option  value="Hors TG - Apprêts/Bij/DP">Hors TG - Apprêts/Bij/DP</option>
                                 </select><br><br>
                             </div>
                         </div>
-
+                        <!--
                         <div class="col-md-3">
                             <div >
                                 <label for="Produit_Service">{{__('msg.Service product')}}:</label>
                                 <select    id="Produit_Service" class="  form-control" name="Produit_Service"   >
                                     <option></option>
-<!--
-                                    <option  value="AFFINAGE - OFFRE GLOBALE">AFFINAGE - OFFRE GLOBALE</option>
-                                    <option  value="AFFINAGE - OFFRE GLOBALE;BIJOUTERIE - OFFRE GLOBAL;DP - OFFRE GLOBALE">AFFINAGE - OFFRE GLOBALE;BIJOUTERIE - OFFRE GLOBAL;DP - OFFRE GLOBALE</option>
-                                    <option  value="AFFINAGE - Balayures et déchets Industriels;AFFINAGE - Broutilles;AFFINAGE - Limaille">AFFINAGE - Balayures et déchets Industriels;AFFINAGE - Broutilles;AFFINAGE - Limaille</option>
-                                    <option  value="AFFINAGE - Balayures et déchets Industriels">AFFINAGE - Balayures et déchets Industriels</option>
-                                    <option  value="AFFINAGE - Broutilles">AFFINAGE - Broutilles</option>
-                                    <option  value="AFFINAGE - Limaille">AFFINAGE - Limaille</option>
-                                    <option  value="APPRET - Tiges montées">APPRET - Tiges montées</option>
-                                    <option  value="BIJOUTERIE - Chaînages terminés;BIJOUTERIE - Créoles;BIJOUTERIE - Joncs massifs;BIJOUTERIE - Mailles creuses classiques">BIJOUTERIE - Chaînages terminés;BIJOUTERIE - Créoles;BIJOUTERIE - Joncs massifs;BIJOUTERIE - Mailles creuses classiques</option>
-                                    <option  value="BIJOUTERIE - Chaînages terminés">BIJOUTERIE - Chaînages terminés</option>
-                                    <option  value="DP - Tube">DP - Tube</option>
-                                    <option  value="DP - Fil rond">DP - Fil rond</option>
-                                    <option  value="INVEST - Lingots titrés;INVEST - Pièces monétaire">INVEST - Lingots titrés;INVEST - Pièces monétaire</option>
-                                    <option  value="INVEST - Lingots titrés;">INVEST - Lingots titrés</option>
-                                    <option  value="INVEST - Pièces monétaire">INVEST - Pièces monétaire</option>
--->
                                     <option  value="AFFINAGE">{{__('msg.Refining')}}</option>
                                     <option  value="APPRET">APPRET{{__('msg.Primer')}}</option>
                                     <option  value="BIJOUTERIE">{{__('msg.Jewelry')}}</option>
@@ -82,7 +66,7 @@
                                     <option  value="INVEST">INVEST</option>
                                 </select><br><br>
                             </div>
-                        </div>
+                        </div>-->
 
                     </div>
 

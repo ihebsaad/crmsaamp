@@ -326,6 +326,8 @@ class ClientsController extends Controller
 		$client_id = $request->get('client_id');
 		$print = $request->get('print');
 
+		$representants = DB::table('representant')->orderBy('nom', 'asc')->get();
+
 		if ($request->has('client_id') && $request->client_id) {
 			$query->where('cl_ident', 'like', '%' . $request->client_id . '%');
 		}
@@ -360,6 +362,14 @@ class ClientsController extends Controller
             $query->where('agence_ident',  $request->agence);
         }
 
+
+		if ($request->has('representant') && $request->representant) {
+			$rep= $request->representant;
+			$query->where(function ($q) use ($rep) {
+				$q->where('commercial', $rep)
+					->orWhere('commercial_support', $rep);
+			});
+        }
 		/*
 		$tri = $request->get('tri');
 		if ($tri == 1) {
@@ -391,9 +401,9 @@ class ClientsController extends Controller
 
 		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
 		if ($print)
-			return view('clients.print', compact('clients', 'request', 'agences'));
+			return view('clients.print', compact('clients', 'request', 'agences','representants'));
 		else
-			return view('clients.search', compact('clients', 'request', 'agences'));
+			return view('clients.search', compact('clients', 'request', 'agences','representants'));
 	}
 
 	public function prospects(Request $request)

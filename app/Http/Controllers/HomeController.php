@@ -489,9 +489,9 @@ class HomeController extends Controller
 		}
 
 		if(auth()->user()->id==10 )
-			$offres=Offre::where('type','Hors TG')->where('statut',null)->get();
+			$offres=Offre::where('type','Hors TG - Affinage')->where('statut',null)->get();
 		elseif(auth()->user()->id==39 || auth()->user()->id ==1 )
-			$offres=Offre::where('type','Apprêts/Bij/DP')->where('statut',null)->get();
+			$offres=Offre::where('type','Hors TG - Apprêts/Bij/DP')->where('statut',null)->get();
 		else
 			$offres=Offre::where('statut',null)->get();
 

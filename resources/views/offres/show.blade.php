@@ -120,14 +120,6 @@
                             <label for="Type">{{__('msg.Type')}}:</label>
                             <h6>{{$offre->type}}</h6>
                         </div>
-
-                        <div class="col-md-3">
-                            <div>
-                                <label for="Produit_Service">{{__('msg.Service product')}}:</label>
-                                <h6>{{$offre->Produit_Service}}</h6>
-                            </div>
-                        </div>
-
                     </div>
 
 
@@ -271,7 +263,9 @@
                 <div class="row pl-2 pb-3 pt-3">
                     <div class="col-md-6">
                         <h3>Historique</h3>
+                        @if(auth()->user()->role== 'admin' || auth()->user()->id== 10 || auth()->user()->id== 39)
                         <a href="#" class="btn btn-primary mb-3 ml-3 float-right" data-toggle="modal" data-target="#ModalOffres"><i class="fas fa-plus"></i> {{__('msg.Add')}}</a>
+                        @endif
                         @php $status=array('1'=>"L'offre est trop basse",'2'=>"L'offre n'est pas adaptée",'3'=>"L'offre est validée",);@endphp
                         <table class="table table-striped" style="min-height:150px" id="offres">
                             <thead>
@@ -296,7 +290,7 @@
                             </tbody>
                         </table>
                     </div>
-
+                    @if (isset($folderContent) && count($folderContent)>0)
                     <div class="col-md-6">
                         <h3 class="">{{__('msg.Files')}} </h3>
                         <div class="ged pl-5 pr-5 pb-5 pt-3">
@@ -389,6 +383,7 @@
 
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -6,6 +6,8 @@
 
 ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
 <div class="row">
 
@@ -22,7 +24,7 @@
                 <form action="{{route('search')}}">
                     <input type="hidden" name="sort" value="{{isset(request()->sort) ? request()->sort :'Nom'}}"/>
                     <input type="hidden" name="direction"  value="{{isset(request()->direction) ? request()->direction :'asc'}}"/>
-                    <div class="row pt-1">
+                    <div class="row  pb-2">
                         <div class="col-lg-3">
                             <div class="">
                                 <label for="">{{__('msg.Part of the name')}}</label>
@@ -35,6 +37,16 @@
                                 <input type="number" class="form-control" id="client_id" placeholder="" name="client_id" value="{{ $request->client_id ?? '' }}">
                             </div>
                         </div>
+                        <div class="col-lg-3">
+                            <div style="min-height:32px"><span class="">{{__('msg.Commercial')}}:</span></div>
+                            <select class="form-control  select2" name="representant"  style="max-width:300px;">
+                                <option></option>
+                                @foreach ($representants as $rp)
+                                <option @selected($request->representant==$rp->id) value="{{$rp->id}}" >{{$rp->nom}}  {{$rp->prenom}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <!--
                         <div class="col-lg-6 pt-1">
                             <div class="form-check form-check-inline mb-3 mt-4">
                                 <input class="form-check-input mt-2" type="radio" id="tous" value="0" name="type" @if($request->type==0 || $request->type=='' ) checked @endif  >
@@ -49,7 +61,8 @@
                                 <input class="form-check-input mt-2" type="radio" id="prospectUniquement" value="1" name="type" @if($request->type==1) checked @endif >
                                 <label class="form-check-label mt-2" for="prospectUniquement">{{__('msg.Prospects only')}}</label>
                             </div>
-                        </div>
+                        </div>-->
+
 
                     </div>
                     <div class="row pt-1">
@@ -57,7 +70,7 @@
                             <div class="">
                                 <label for="">{{__('msg.Agency')}}</label>
                                 <select name="agence" class="form-control" >
-                                    <option><option>
+                                    <option></option>
                                     @foreach($agences as $id => $name)
                                         <option value="{{$id}}" {{$request->agence == $id ? 'selected="selected"'  : '' }}>{{$name}}</option>
                                     @endforeach
@@ -171,7 +184,7 @@
                             </div>
                             <div class="row bg-grey" style="font-size:12px;background-color:#fff">
                                 <div class="col-md-3">
-                                    <span style="color:#ff2e36">Inactif / Fermé</span>
+                                    <span style="color:#ff2e36">Fermé</span>
                                 </div>
                                 <div class="col-md-3">
                                     <span style="color:#2ab62c">Prospect</span>
@@ -252,6 +265,17 @@
             }
         });
     });
+
+
+	$('.select2').select2({
+        filter: true,
+        language: {
+            noResults: function() {
+                return 'Pas de résultats';
+            }
+        }
+    });
+
 </script>
 @endsection
 

@@ -492,7 +492,7 @@ return [
 	"Customer folder"=>"Dossier du client",
 	"Add documents"=>"Ajouter des document",
 	"Edit the document"=>"Modifier le document",
-	"Select files (PDF only)"=>"Sélectionnez le fichier : (obligatoirement PDF)",
+	"Select files"=>"Sélectionnez le fichier",
 	"Client\'s financial statement"=>"État financier du client",
 	"Creation date"=>"Date de création",
 	"Name of the manager"=>"Nom du dirigeant",
