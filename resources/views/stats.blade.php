@@ -57,7 +57,7 @@
     @if($commercial)
     <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" />
     @else
-    @if( auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv' )
+    @if( auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv' || auth()->user()->user_type=='respAG'  )
     <div class="col-lg-4">
         <span class=" mr-2">Commercial:</span>
         <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">

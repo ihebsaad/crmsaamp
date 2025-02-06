@@ -114,6 +114,7 @@
                                     <option  {{ $request->etat_id==1 ? 'selected="selected"' : '' }}  value="1">Prospect</option>
                                     <option  {{ $request->etat_id==3 ? 'selected="selected"' : '' }}  value="3">Fermé</option>
                                     <option  {{ $request->etat_id==4 ? 'selected="selected"' : '' }}  value="4">Inactif</option>
+                                    <option  {{ $request->etat_id==5 ? 'selected="selected"' : '' }}  value="5">Particulier</option>
                                 </select>
                             </div>
                         </div>
@@ -167,6 +168,7 @@
                                             case 1 : /*$color='#2ab62c';*/ $type_c='Prospect' ;break;
                                             case 3 : /*$color='#ff2e36';*/ $type_c='Fermé' ; break;
                                             case 4 : /*$color='#ff2e36'; */ $type_c='Inactif' ; break;
+                                            case 5 : /*$color='#ff2e36'; */ $type_c='Particulier' ; break;
 
                                             }
                                             $color= $client->couleur_html ?? '#2660c3';
@@ -183,11 +185,14 @@
                             <div id="map" style="height: 400px; border: 1px solid #000; margin-top: 20px;">
                             </div>
                             <div class="row bg-grey" style="font-size:12px;background-color:#fff">
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <span style="color:#ff2e36">Fermé</span>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <span style="color:#2ab62c">Prospect</span>
+                                </div>
+                                <div class="col-md-2">
+                                    <span style="color:#DAA06D">Particulier</span>
                                 </div>
                                 <div class="col-md-6">
                                     <span style="color:#2261c4">Client récemment actif entre 0 et 2 mois</span>
@@ -235,7 +240,8 @@
             '2': 'blue',
             '1': 'green',
             '3': 'red',
-            '4': 'red'
+            '4': 'red',
+            '5': 'gray'
         };
 
         // Helper function to create an icon

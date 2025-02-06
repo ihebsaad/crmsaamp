@@ -43,6 +43,7 @@
         case 1 : $color='#2ab62c'; $type_c='Prospect' ;break;
         case 3 : $color='#ff2e36'; $type_c='Fermé' ; break;
         case 4 : $color='#ff2e36'; $type_c='Inactif' ; break;
+        case 5 : $color='#DAA06D'; $type_c='Particulier' ; break;
         }
 
         $tel= $client->Phone ??  $client->Tel;
