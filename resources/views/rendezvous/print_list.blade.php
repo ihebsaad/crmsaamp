@@ -29,6 +29,7 @@
                             <th >{{__('msg.Place')}}</th>
                             <th >Mode</th>
                             <th >{{__('msg.Status')}}</th>
+                            <th >Présence d'un CR</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,6 +41,7 @@
                                     $location=$client->ville.' ('.$client->adresse1.')';
 
                                 $status = [1 => "Planifié", 2 => "Réalisé",3=> 'Annulé'];
+                                $files= \App\Models\File::where('parent_id',$rv->id)->where('parent','rendezvous')->count();
                             @endphp
                             <tr>
                                 <td>{{ $rv->id }}</td>
@@ -50,6 +52,7 @@
                                 <td>{{ $rv->Location ?? $location }}</td>
                                 <td>{{ $rv->mode_de_rdv ?? '' }}</td>
                                 <td>{{ $rv->statut > 0 ? $status[$rv->statut] : '' }}</td>
+                                <td>{{ ($files > 1 || $rv->Description!='' )  ? 'Oui' : 'Non' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

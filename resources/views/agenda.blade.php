@@ -115,7 +115,7 @@
 
 
 					<div class="col-lg-8 col-md-12">
-						<form action="{{route('print_agenda')}}">
+						<form action="{{route('print_agenda')}}" id="agendaForm">
 							<input type="hidden" name="user" value="{{$user ?? auth()->user()->id}}" id="user">
 							<div class="row mb-2" style="border:1px solid lightgray;border-radius:20px">
 								<div class="col-lg-9 col-md-12 col-sm-12 float-right mt-2 mb-2">
@@ -126,7 +126,10 @@
 								</div>
 								<div class="col-lg-3 col-md-12 col-sm-4 mt-2 mb-2">
 									<button type="submit" class="btn btn-primary  mr-3">
-										<i class="fas fa-print"></i> {{__('msg.Print')}}
+										<i class="fas fa-print"></i>
+									</button>
+									<button type="button" id="btnPdf" class="btn btn-danger">
+										<i class="fas fa-file-pdf"></i>
 									</button>
 								</div>
 							</div>
@@ -139,7 +142,13 @@
 		</div>
 
 	</div>
-
+	<script>
+	document.getElementById('btnPdf').addEventListener('click', function() {
+		let form = document.getElementById('agendaForm');
+		form.action = "{{ route('pdf_agenda') }}";
+		form.submit();
+	});
+	</script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.min.js" integrity="sha512-xCMh+IX6X2jqIgak2DBvsP6DNPne/t52lMbAUJSjr3+trFn14zlaryZlBcXbHKw8SbrpS0n3zlqSVmZPITRDSQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.global.js" integrity="sha512-3I+0zIxy2IkeeCvvhXUEu+AFT3zAGuHslHLDmM8JBv6FT7IW6WjhGpUZ55DyGXArYHD0NshixtmNUWJzt0K32w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

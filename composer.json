@@ -15,6 +15,8 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^4.2",
+        "maatwebsite/excel": "^3.1",
+        "phpoffice/phpspreadsheet": "1.29.9",
         "phpseclib/bcmath_compat": "^2.0",
         "spatie/laravel-analytics": "^5.0"
     },

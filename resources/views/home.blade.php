@@ -1,5 +1,8 @@
 @extends('layouts.back')
 <style>
+	.card-body i{
+		font-size:10px;
+	}
     table td:not(.text) {
         text-align: right;
     }
@@ -13,6 +16,7 @@
         height: 400px;
         /* Ajustez cette hauteur selon vos besoins */
         overflow-y: auto;
+        margin-bottom:10px;
     }
 
     .table-container thead th {
@@ -113,6 +117,7 @@
                         </tbody>
                     </table>
                 </div>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
             </div>
         </div>
     </div>
@@ -142,6 +147,7 @@
                         </tbody>
                     </table>
                 </div>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
             </div>
         </div>
     </div>
@@ -153,6 +159,9 @@
                 <h6 class="m-0 font-weight-bold text-primary">{{__('msg.12-month rolling customer statistics')}} </h6>
             </div>
             <div class="card-body">
+                <a href="#" id="export-excel-btn" class="btn btn-success" style="background-color:#1cc88a">
+                    <i class="fa fa-file-excel"></i> Exporter en Excel
+                </a>
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
@@ -193,6 +202,7 @@
                         </tbody>
                     </table>
                 </div>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
             </div>
         </div>
     </div>
@@ -236,6 +246,7 @@
                         </tbody>
                     </table>
                 </div>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
             </div>
         </div>
     </div>
@@ -265,6 +276,7 @@
                         </tbody>
                     </table>
                 </div>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
             </div>
         </div>
     </div>
@@ -294,6 +306,7 @@
                         </tbody>
                     </table>
                 </div>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
             </div>
         </div>
     </div>
@@ -326,6 +339,7 @@
                         </tbody>
                     </table>
                 </div>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
             </div>
         </div>
     </div>
@@ -333,6 +347,25 @@
 
 
 <script>
+
+    $(document).ready(function() {
+        $('#export-excel-btn').click(function(e) {
+            e.preventDefault(); // Empêcher la navigation immédiate
+
+            var representant = ($('#commercial').find(':selected').data('id'));
+
+            if (typeof representant === 'undefined') {
+                representant = $('#commercial').val();
+            }
+
+            // Générer l'URL avec le user_id
+            let exportUrl = "{{ route('export.stats.excel') }}?user=" + representant;
+
+            // Rediriger vers l'URL d'exportation
+            window.location.href = exportUrl;
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
         const typeSelect = document.getElementById('type');
         const commercialSelect = document.getElementById('commercial');

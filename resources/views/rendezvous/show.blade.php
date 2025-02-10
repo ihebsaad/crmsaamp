@@ -125,7 +125,7 @@
 
                         <div class="col-md-6">
                             <div>
-                                <label for="Description">{{__('msg.Description')}}:</label>
+                                <label for="Description">Compte Rendu:</label>
                                 <textarea id="Description" class="form-control" name="Description" style="min-height:150px">{{$rendezvous->Description}}</textarea><br><br>
                             </div>
                         </div>

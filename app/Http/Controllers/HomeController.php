@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\App;
 use App\Services\SendMail;
 use  PDO;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class HomeController extends Controller
 {
@@ -176,7 +177,7 @@ class HomeController extends Controller
 			return view('dashboard.dashboard',compact('rendezvous'));
 		}
 	}
-
+/*
 	public function agenda(Request $request)
 	{
 		$user=$request->get('user');
@@ -234,12 +235,6 @@ class HomeController extends Controller
 		if (!$date_debut || !$date_fin) {
 			return back()->with('error', __('msg.Please provide a valid date range.'));
 		}
-
-		// Vérification des permissions
-		//if (auth()->user()->role != 'admin' &&  auth()->user()->role != 'respAG' && auth()->user()->role != 'dirQUA') {
-		//	return view('welcome');
-		//}
-
 		// Récupération des rendez-vous en fonction de l'utilisateur et de la plage de dates
 		if ($user > 0) {
 			$User = User::find($user);
@@ -257,39 +252,43 @@ class HomeController extends Controller
 				->get();
 		}
 
-		// Retourner la vue avec les données
 		return view('rendezvous.print_list', compact('rendezvous', 'user', 'name', 'date_debut', 'date_fin'));
 	}
 
-	public function rendesvous_ext(Request $request)
+	public function pdf_agenda(Request $request)
 	{
-		$representants=DB::table("representant")->get();
-		$user=$request->get('user');
+		$user = $request->get('user');
+		$date_debut = $request->get('date_debut');
+		$date_fin = $request->get('date_fin');
+		$name = "";
 
-		$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
-		where('user_id',auth()->user()->id)
-		->where('AccountId',0)
-		->orderBy('id','desc')->get();
-
-		if($user>0){
-			$User=User::find($user);
-			$rendezvous=RendezVous:://where('Attribue_a',$User->name.' '.$User->lastname)
-			where('user_id',$user)
-			->where('AccountId',0)
-			->orderBy('id','desc')
-			->get();
-		}else{
-			$rendezvous=RendezVous:://where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
-			where('user_id',auth()->user()->id)
-			->where('AccountId',0)
-			->orderBy('id','desc')
-			->get();
+		// Validation des dates
+		if (!$date_debut || !$date_fin) {
+			return back()->with('error', __('msg.Please provide a valid date range.'));
+		}
+		// Récupération des rendez-vous en fonction de l'utilisateur et de la plage de dates
+		if ($user > 0) {
+			$User = User::find($user);
+			$name = $User->name . ' ' . $User->lastname;
+			$rendezvous = RendezVous::where('user_id', $user)
+				->whereBetween('Started_at', [$date_debut, $date_fin])
+				->orderBy('Started_at', 'asc')
+				->orderBy('heure_debut', 'asc')
+				->get();
+		} else {
+			$rendezvous = RendezVous::where('user_id', auth()->user()->id)
+				->whereBetween('Started_at', [$date_debut, $date_fin])
+				->orderBy('Started_at', 'asc')
+				->orderBy('heure_debut', 'asc')
+				->get();
 		}
 
-
-		return view('agenda',compact('rendezvous','representants','user'));
-
+		$date=date('d_m_Y_H_i');
+		$pdf = PDF::loadView('rendezvous.pdf_list', compact('rendezvous', 'user', 'name', 'date_debut', 'date_fin'));
+		return $pdf->stream('rendezvous-' . $name . '-'.$date.'.pdf');
 	}
+
+*/
 
 	public function dashboard()
 	{

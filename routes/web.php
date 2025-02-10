@@ -19,6 +19,7 @@ use App\Http\Controllers\CommunicationsController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\AgendaController;
 
 Route::resource('email-templates', EmailTemplateController::class);
 
@@ -92,12 +93,17 @@ Route::get('/help', 'App\Http\Controllers\HomeController@help')->name('help');
 Route::get('/stats_tasks', 'App\Http\Controllers\HomeController@stats_tasks')->name('stats_tasks');
 
 Route::get('/clients/phone', [HomeController::class, 'phone'])->name('phone');
-Route::get('/agenda', [HomeController::class, 'agenda'])->name('agenda');
-#Route::post('/agenda', [HomeController::class, 'agenda'])->name('agenda');
-Route::get('/print_agenda', [HomeController::class, 'print_agenda'])->name('print_agenda');
-Route::get('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
-#Route::post('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
 
+Route::get('/agenda', [AgendaController::class, 'agenda'])->name('agenda');
+#Route::post('/agenda', [HomeController::class, 'agenda'])->name('agenda');
+Route::get('/print_agenda', [AgendaController::class, 'print_agenda'])->name('print_agenda');
+Route::get('/pdf_agenda', [AgendaController::class, 'pdf_agenda'])->name('pdf_agenda');
+Route::get('/exterieurs', [AgendaController::class, 'rendesvous_ext'])->name('exterieurs');
+#Route::post('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
+/*
+Route::get('/export-excel', [AgendaController::class, 'excel_agenda'])->name('excel_agenda');
+Route::get('/export-agenda', [AgendaController::class, 'export_agenda'])->name('export_agenda');
+*/
 
 Route::get('/refresh', 'App\Http\Controllers\Auth\LoginController@refresh')->name('refresh');
 Route::get('users/loginas/{id}', 'App\Http\Controllers\UsersController@loginas')->name('loginas');
@@ -219,6 +225,7 @@ Route::get('/stats_agences', [StatsController::class, 'stats_agences'])->name('s
 Route::get('/stats_clients_inactifs', [StatsController::class, 'stats_clients_inactifs'])->name('stats_clients_inactifs');
 Route::get('/stats_actvivites', [StatsController::class, 'stats_actvivites'])->name('stats_actvivites');
 Route::get('/stats_actvivites_semaine', [StatsController::class, 'stats_actvivites_semaine'])->name('stats_actvivites_semaine');
+Route::get('/export-stats-excel',  [StatsController::class, 'exportStatsExcel'])->name('export.stats.excel');
 
 
 Route::get('/folders', 'App\Http\Controllers\ClientsController@folders')->name('folders');
