@@ -74,7 +74,13 @@ class RetoursController extends Controller
 		$contact = Contact::where('id', $retour->mycontact_id)->first();
 		$files = File::where('parent', 'retours')->where('parent_id', $retour->id)->get();
 
-		return view('retours.show', compact('retour', 'contact', 'class', 'agences', 'files'));
+		// Récupérer le retour précédent
+		$previousRetour = RetourClient::where('id', '<', $retour->id)->orderBy('id', 'desc')->first();
+
+		// Récupérer le retour suivant
+		$nextRetour = RetourClient::where('id', '>', $retour->id)->orderBy('id', 'asc')->first();
+
+		return view('retours.show', compact('retour', 'contact', 'class', 'agences', 'files','previousRetour','nextRetour'));
 	}
 
 
@@ -109,8 +115,13 @@ class RetoursController extends Controller
 
 		$retour->save();
 
-		// retour positif
-		if (trim($retour->Type_retour) == 'Positif') {
+		$status='';
+		if (trim($retour->Type_retour) == 'Négatif')
+		{
+			$status='infos';
+		}
+		// retour positif ou info
+		if (trim($retour->Type_retour) == 'Positif' || trim($retour->Type_retour) == 'Information générale') {
 			$client = CompteClient::find($request->input('idclient'));
 			if (isset($client)) {
 				$agence = Agence::where('agence_ident', $client->agence_ident)->first();
@@ -118,38 +129,16 @@ class RetoursController extends Controller
 					$retour->Depot_concerne = $agence->agence_lib;
 				$retour->Responsable_de_resolution = $agence->agence_lib;
 			}
-			$retour->Date_cloture = $retour->Date_ouverture;
+			$retour->Date_cloture = date('Y-m-d');
 
 			$retour->save();
+			$status='cloture';
 		}
 
 
-		/*
-		$contact=Contact::find($retour->mycontact_id);
-
-		$prenom = $contact->Prenom ?? '';
-		$nom = $contact->Nom ?? '';
-		$retour->Nom_du_contact= $prenom  .' '.$nom;
-*/
 		$retour->name = 'RC-' . sprintf('%05d', $retour->id);
 		$retour->save();
-		/*
-		if ($request->hasFile('files')) {
-			$fichiers = $request->file('files');
-			$fileNames = [];
 
-			foreach ($fichiers as $fichier) {
-				$name = $fichier->getClientOriginalName();
-				$path = public_path() . "/retours";
-				$fichier->move($path, $name);
-				$fileNames[] = $name;
-			}
-
-			// Serialize the filenames array
-			$retour->fichier = serialize($fileNames);
-			$retour->save();
-		}
-*/
 
 		if ($request->hasFile('files')) {
 			$fichiers = $request->file('files');
@@ -168,11 +157,17 @@ class RetoursController extends Controller
 			}
 		}
 
-		self::send_mail($retour, 'remy.reverbel@saamp.com');
-		self::send_mail($retour, 'reyad.bouzeboudja@saamp.com');
-		self::send_mail($retour, 'said.el-marouani@saamp.com');
-		self::send_mail($retour, 'directeur.qualite@saamp.com');
-		self::send_mail($retour, 'ihebsaad@gmail.com');
+		// Admins
+		self::send_mail($retour, env('Admin_Email'),$status);
+		self::send_mail($retour, env('Admin_reyad'),$status);
+		self::send_mail($retour, env('Admin_iheb'),$status);
+
+		// Direction
+		self::send_mail($retour,  env('Email_jean'),$status);
+		self::send_mail($retour,  env('Email_elisabeth'),$status);
+		self::send_mail($retour,  env('Email_said'),$status);
+		// Dir qualité
+ 		self::send_mail($retour, env('Email_qualite'),$status);
 
 		if ($retour->idclient > 0)
 			return redirect()->route('fiche', ['id' => $retour->idclient])->with(['success' => "Réclamation ajoutée "]);
@@ -192,6 +187,7 @@ class RetoursController extends Controller
 		$retour = RetourClient::find($id);
 		$agence_lib = $retour->Responsable_de_resolution;
 		//$retour->update($request->all());
+		$reponse=$retour->Une_reponse_a_ete_apportee_au_client;
 
 		$retour->update([
 			'edited_by' => $request->input('edited_by') ?? 0,
@@ -231,31 +227,46 @@ class RetoursController extends Controller
 
 				switch ($retour->Departement) {
 					case 'FRET':
-						self::send_mail($retour, 'fret@saamp.com');
+						self::send_mail($retour, 'fret@saamp.com','interv');
 						break;
 					case 'Laboratoire':
-						self::send_mail($retour, 'laboratoire@saamp.com');
+						self::send_mail($retour, 'laboratoire@saamp.com','interv');
 						break;
 					case 'Fonte':
-						self::send_mail($retour,'franck.parent@saamp.com');
+						self::send_mail($retour,'franck.parent@saamp.com','interv');
 						break;
 					case 'Production':
-						self::send_mail($retour, 'jose.dias@saamp.com');
+						self::send_mail($retour, 'jose.dias@saamp.com','interv');
 						break;
 					case 'Qualité':
-						self::send_mail($retour, 'directeur.qualite@saamp.com');
+						self::send_mail($retour, 'directeur.qualite@saamp.com','interv');
 						break;
 				}
 			} else {
 				if(isset($agence))
-					self::send_mail($retour, trim($agence->email_responsable));
+					self::send_mail($retour, trim($agence->email_responsable),'');
+			}
+
+			if(trim($reponse)!=  trim($request->input('Une_reponse_a_ete_apportee_au_client')) ){
+				$status='suite';
+			// Admins
+			self::send_mail($retour, env('Admin_Email'),$status);
+			self::send_mail($retour, env('Admin_reyad'),$status);
+			self::send_mail($retour, env('Admin_iheb'),$status);
+
+			// Direction
+			self::send_mail($retour,  env('Email_jean'),$status);
+			self::send_mail($retour,  env('Email_elisabeth'),$status);
+			self::send_mail($retour,  env('Email_said'),$status);
+			// Dir qualité
+			self::send_mail($retour, env('Email_qualite'),$status);
 			}
 
 		return redirect()->route('retours.show', $id)
 			->with('success', 'Réclamation modifiée');
 	}
 
-	public static function send_mail($retour, $email)
+	public static function send_mail($retour, $email,$status)
 	{
 		// envoi de mail
 		$sujet = 'Réclamation ' . $retour->id . ' - ' . $retour->name;
@@ -265,9 +276,20 @@ class RetoursController extends Controller
 		<b>Date d\'ouverture:</b> ' . $retour->Date_ouverture . '<br>
 		<b>Motif de retour:</b> ' . $retour->Motif_retour . '<br>
 		<b>Division:</b> ' . $retour->Division . '<br>
-		<b>Details des causes:</b> ' . $retour->Details_des_causes . '<br><br>
+		<b>Details des causes:</b> ' . $retour->Details_des_causes . '<br>';
+		if($status=='cloture')
+			$contenu.='<b>Réclamation clôturée</b><br><br>';
 
-		<i>Cordialement</i><br>
+		if($status=='interv')
+			$contenu.='Cette réclamation nécessite votre intervention.<br><br>';
+
+		if($status=='infos')
+			$contenu.='Cette réclamation nécessite une intervention.<br><br>';
+
+		if($status=='suite')
+		$contenu.='Une suite a été apportée à cette réclamation et il faut la clôturer.<br><br>';
+
+		$contenu.='<i>Cordialement</i><br>
 		<i><b>CRM SAAMP</b></i>';
 
 		SendMail::send($email, $sujet, $contenu);

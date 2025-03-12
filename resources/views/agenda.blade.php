@@ -89,7 +89,7 @@
 			<div class="card-body">
 				<div class="row">
 
-						@if( auth()->user()->role=='admin' || auth()->user()->role=='respAG' || auth()->user()->role=='adv' || auth()->user()->role=='compta' )
+						@if( auth()->user()->role=='admin' || auth()->user()->role=='respAG' || auth()->user()->role=='adv' || auth()->user()->role=='compta' || auth()->id() == 334)
 							<div class="col-lg-4">
 								<form  method="get"  action="{{route('agenda')}}"  >
 									<div class="row">
@@ -97,11 +97,16 @@
 											<span class=" mr-2">{{__('msg.User')}}:</span>
 											<select class="form-control select2 mb-20" id="commercial" name="user"    style="max-width:300px"  onchange="update_user();this.form.submit();" >
 												<option  @if($user=="") selected="selected" @endif value=""></option>
-												@foreach ($users as $User)
+												@if(auth()->id() == 334)
+												<option @selected($user >0 && $user==334) value="334"  >Stéphane Devès</option>
+												<option @selected($user >0 && $user==141) value="141"  >Patricia Delmas</option>
+												@else
+												@foreach($users as $User)
 													@if(trim($User->lastname)!=='')
 														<option @selected($user >0 && $user==$User->id) value="{{$User->id}}"  >{{$User->lastname}}  {{$User->name}}</option>
 													@endif
 												@endforeach
+												@endif
 											</select>
 										</div>
 									</div>

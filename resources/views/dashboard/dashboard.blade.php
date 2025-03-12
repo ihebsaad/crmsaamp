@@ -167,6 +167,17 @@
 </script>
 
 <div class="" style="padding-left:5%;padding-right:5%;padding-top:2%;padding-bottom:2%">
+  <div class="row">
+      <div class="col-md-6"></div>
+      <div class="col-md-6 ">
+          @if(session()->get('hasClonedUser') == 1)
+              <div class="alert alert-info">
+                  Connecté en tant que : <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b>
+                  <a href="{{ route('revert.login', session('previoususer')) }}" class="btn btn-warning btn-sm float-right">Revenir à l'utilisateur précédent</a>
+              </div>
+          @endif
+      </div>
+  </div>
   <div class="row mt-2 mb-3">
     @if(!$userToken)
     <div class="col-md-12 float-right mr-2 ml-2">

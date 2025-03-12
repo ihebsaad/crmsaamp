@@ -53,34 +53,50 @@
 
 
 @section('content')
-
+<div class="row">
+    <div class="col-md-6"></div>
+    <div class="col-md-6  ">
+        @if(session()->get('hasClonedUser') == 1)
+            <div class="alert alert-info">
+                Connecté en tant que : <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b>
+                <a href="{{ route('revert.login', session('previoususer')) }}" class="btn btn-warning btn-sm float-right">Revenir à l'utilisateur précédent</a>
+            </div>
+        @endif
+    </div>
+</div>
 <div class="row">
     <input type="hidden" id="user_id" value="{{ auth()->user()->id }}" />
 
-    @if($commercial)
-    <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" />
+    @if($commercial &&  auth()->id() != 334 &&  auth()->id() != 10)
+        <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" />
     @else
-    @if( auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv' )
-    <div class="col-lg-3">
-        <span class=" mr-2">{{__('msg.Type')}}:</span>
-        <select class="form-control mb-20" id="type">
-            <option value="Commercial terrain">Commercial terrain</option>
-            <option value="Contact client siège">Contact client siège</option>
-            <option value="Collecteur Externe">Collecteur Externe</option>
-        </select>
-    </div>
-    <div class="col-lg-3">
-        <span class=" mr-2">{{__('msg.Commercial')}}:</span>
-        <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">
-            @foreach ($representants as $rp)
-            <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}" data-type="{{$rp->type}}" >{{$rp->nom}}  {{$rp->prenom}}</option>
-            @endforeach
-        </select>
-    </div>
+        @if( auth()->user()->role=='admin' || auth()->user()->role=='adv' || auth()->user()->id==10  &&  auth()->id() != 334 )
+        <div class="col-lg-3">
+            <span class=" mr-2">{{__('msg.Type')}}:</span>
+            <select class="form-control mb-20" id="type">
+                <option value="Commercial terrain">Commercial terrain</option>
+                <option value="Contact client siège">Contact client siège</option>
+                <option value="Collecteur Externe">Collecteur Externe</option>
+            </select>
+        </div>
+        <div class="col-lg-3">
+            <span class=" mr-2">{{__('msg.Commercial')}}:</span>
+            <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">
+                @foreach ($representants as $rp)
+                <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}" data-type="{{$rp->type}}" >{{$rp->nom}}  {{$rp->prenom}}</option>
+                @endforeach
+            </select>
+        </div>
 
-    @else
-    <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}">
-    @endif
+        @elseif(auth()->id() == 334)
+        <span class=" mt-4 mr-2">{{__('msg.Commercial')}}:</span>
+            <select class="form-control mb-20 mt-3" id="commercial" onchange="update_stats();" style="max-width:300px">
+                <option  value="334" data-id="400"  data-type="Commercial terrain" >Stéphane Devès</option>
+				<option   value="141" data-id="40"  data-type="Commercial terrain" >Patricia Delmas</option>
+            </select>
+        @else
+            <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}">
+        @endif
     @endif
 
     <div class="col-lg-4 mt-4">
@@ -117,7 +133,8 @@
                         </tbody>
                     </table>
                 </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
             </div>
         </div>
     </div>
@@ -129,7 +146,7 @@
             </div>
             <div class="card-body">
                 <div class="table-container mn5">
-                    <table class="table table-bordered table-striped mb-40">
+                    <table class="table table-bordered -table-striped mb-40">
                         <thead>
                             <tr id="headtable">
                                 <th class="">{{__('msg.Customer')}}</th>
@@ -147,7 +164,9 @@
                         </tbody>
                     </table>
                 </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
+                <div class="row" style="font-size:14px"><div class="col-md-4"><b style="background-color:#f6f13f;padding:3px 3px;">   </b> Commercial support uniquement</div><div class="col-md-4"><b style="background-color:#bef4fe;padding:3px 3px;">   </b> Partagé avec un autre commercial support</div><div class="col-md-4"><b style="border:1px solid black;padding:3px 3px;">   </b> Je suis le seul représentant</div></div>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
             </div>
         </div>
     </div>
@@ -202,7 +221,8 @@
                         </tbody>
                     </table>
                 </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
             </div>
         </div>
     </div>
@@ -246,7 +266,8 @@
                         </tbody>
                     </table>
                 </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
             </div>
         </div>
     </div>
@@ -276,7 +297,8 @@
                         </tbody>
                     </table>
                 </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
             </div>
         </div>
     </div>
@@ -306,7 +328,8 @@
                         </tbody>
                     </table>
                 </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
             </div>
         </div>
     </div>
@@ -339,7 +362,8 @@
                         </tbody>
                     </table>
                 </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i>
+                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
             </div>
         </div>
     </div>
@@ -468,17 +492,18 @@
                 var class1 = class2 = class3 = '';
                 data.forEach(item => {
                     if (data.length === 0) {
-                        html = '<tr><td colspan="8" class="text-center">Aucune donnée disponible</td></tr>';
+                        html = '<tr ><td colspan="8" class="text-center">Aucune donnée disponible</td></tr>';
                     } else {
                         let delta1 = parseFloat((item.delta_1 && item.delta_1.includes('%')) ? item.delta_1.replace('%', '') : '0');
                         let delta2 = parseFloat((item.delta_2 && item.delta_2.includes('%')) ? item.delta_2.replace('%', '') : '0');
                         let delta3 = parseFloat((item.delta_3 && item.delta_3.includes('%')) ? item.delta_3.replace('%', '') : '0');
+                        let bgcolor = item.couleur;
 
                         class1 = delta1 < 0 ? 'text-danger' : 'text-success';
                         class2 = delta2 < 0 ? 'text-danger' : 'text-success';
                         class3 = delta3 < 0 ? 'text-danger' : 'text-success';
                         let link = item.id > 0 ? 'https://crm.mysaamp.com/clients/fiche/' + item.id : '#'
-                        html += '<tr><td class="text"><a href=' + link + '>' + item.nom + '</a></td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
+                        html += '<tr style="background-color:'+bgcolor+'"><td class="text"><a href=' + link + '>' + item.nom + '</a></td><td>' + item.N + '</td><td  class="' + class1 + '">' + item.delta_1 + '</td><td>' + item.N_1 + '</td><td  class="' + class2 + '">' + item.delta_2 + '</td><td>' + item.N_2 + '</td><td  class="' + class3 + '">' + item.delta_3 + '</td><td>' + item.N_3 + '</td></tr>';
                     }
                 });
                 $("#stats2").html(html);

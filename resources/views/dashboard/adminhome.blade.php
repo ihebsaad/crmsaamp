@@ -1,7 +1,8 @@
 @extends('layouts.back')
 
 @section('content')
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <?php
 
 ?>
@@ -121,6 +122,31 @@
 			<span class="text-center mb-2" style="color:black">{{__('msg.Welcome')}} <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b> </span><br><br>
 		</div>
 	</div>
+	@if(auth()->user()->role=='admin')
+		<div class="row">
+			@if(session()->get('hasClonedUser') == 1)
+				<div class="col-md-6">
+					<div class="alert alert-info">
+						Connecté en tant que : <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b>
+						<a href="{{ route('revert.login', session('previoususer')) }}" class="btn btn-warning btn-sm float-right">Revenir à l'utilisateur précédent</a>
+					</div>
+				</div>
+			@else
+				<div class="col-md-6"></div>
+				<div class="col-md-6">
+					<form action="{{ route('loginas') }}" method="POST" class="alert alert-info">
+						@csrf
+						<select name="user_id" class="form-control select2" style="width:220px">
+							@foreach($users as $user)
+								<option value="{{ $user->id }}">{{ $user->lastname }} {{ $user->name }}</option>
+							@endforeach
+						</select>
+						<button type="submit" class="btn btn-success btn-sm">Se connecter en tant que</button>
+					</form>
+				</div>
+			@endif
+		</div>
+	@endif
 	<div class="row mt-2 mb-2">
 		@if(!$userToken)
 		<div class="col-md-12 float-right ml-2 mr-2">
@@ -251,7 +277,7 @@
 		</div>
 
 		@if(auth()->user()->role=='admin')
-
+<!--
 		<div class="col-md-6 col-lg-6 col-sm-12 mb-5">
 			<h4 class="text-center">{{__('msg.Today appointments')}}</h4>
 			<div class="table-container" style="margin-top:36px">
@@ -281,7 +307,7 @@
 				</table>
 			</div>
 		</div>
-
+--->
 
 		<section class="col-md-6 col-lg-6 col-sm-12 mb-3">
 			<h4 class="text-center">{{__('msg.Coming appointments')}}</h4>
@@ -443,6 +469,13 @@
 			});
 		});
 	});
-</script>
-
+	$('.select2').select2({
+        filter: true,
+        language: {
+            noResults: function() {
+                return 'Pas de résultats';
+            }
+        }
+    });
+  </script>
 @endsection

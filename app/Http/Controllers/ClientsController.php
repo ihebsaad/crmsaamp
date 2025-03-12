@@ -135,7 +135,7 @@ class ClientsController extends Controller
 	public function fiche($id)
 	{
 		$client = CompteClient::find($id);
-		$commentaires = DB::table('commentaire_client')->where('client',$id)->get();
+		$commentaires = DB::table('commentaire_client')->where('client', $id)->get();
 		$login = '';
 
 		if ($client->cl_ident > 0) {
@@ -157,7 +157,6 @@ class ClientsController extends Controller
 				$login = __('msg.No connection to MySaamp');
 			}
 		} else {
-
 		}
 
 
@@ -297,7 +296,7 @@ class ClientsController extends Controller
 			->where('Started_at', '<', $now)
 			->orderBy('Started_at', 'desc')
 			->get();
-		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login','commentaires'));
+		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login', 'commentaires'));
 	}
 
 
@@ -331,45 +330,102 @@ class ClientsController extends Controller
 		if ($request->has('client_id') && $request->client_id) {
 			$query->where('cl_ident', 'like', '%' . $request->client_id . '%');
 		}
-		/*
+
 		if ($type == 2) {
 			$query->where('etat_id', 2);
 		} elseif ($type == 1) {
 			$query->where('etat_id',  1);
 		}
-*/
-		if ($request->has('etat_id') && $request->etat_id != 0) {
-			$query->where('etat_id', $request->etat_id);
-		}
 
-		if ($request->has('Nom') && $request->Nom) {
-			$query->where('Nom', 'like', '%' . $request->Nom . '%');
-		}
-
-		if ($request->has('adresse1') && $request->adresse1) {
-			$query->where('adresse1', 'like', '%' . $request->adresse1 . '%');
-		}
-
-		if ($request->has('ville') && $request->ville) {
-			$query->where('ville', 'like', '%' . $request->ville . '%');
-		}
-
-		if ($request->has('zip') && $request->zip) {
-			$query->whereRaw("TRIM(zip) LIKE ?", [trim($request->zip) . '%']);
-		}
-
-		if ($request->has('agence') && $request->agence) {
-            $query->where('agence_ident',  $request->agence);
-        }
+		$query=self::filter_search($query,$request);
 
 
-		if ($request->has('representant') && $request->representant) {
-			$rep= $request->representant;
-			$query->where(function ($q) use ($rep) {
+		if ($request->has('representant')  && $request->representant ) {
+			$rep = $request->representant;
+			$query->where('etat_id', 1)->where(function ($q) use ($rep) {
 				$q->where('commercial', $rep)
-					->orWhere('commercial_support', $rep);
+				  ->orWhere('commercial_support', $rep);
 			});
-        }
+		}else{
+
+			$Rep = DB::table('representant')->where('users_id',auth()->id())->first();
+
+
+		}
+
+/*
+		if(auth()->id() == 141) {  //patricia delmas
+			$Rep = DB::table('representant')->where('users_id',auth()->id())->first();
+
+			$query->where(function ($q) use ($Rep) {
+				$q->where(function ($q1) use ($Rep) {
+					$q1->where('etat_id', 2)
+						->where(function ($q2) use ($Rep) {
+							$q2->where('commercial', $Rep->id)
+								->orWhere('commercial_support', $Rep->id);
+						});
+				})
+				->orWhere('etat_id', 1)
+				->orWhere(function ($q3) {
+					$q3->where('etat_id', 2)
+						->where(function ($q4) {
+							$q4->where('agence_ident', 200)
+								->orWhere('agence_ident', 203);
+						});
+				});
+			});
+
+			$query=self::filter_search($query,$request);
+
+
+		}
+
+		if(auth()->id()==9872){  // Jacek
+
+			$query = self::filter_search($query, $request);
+			$query->where('etat_id', 1)->orWhere(function ($q) use ($Rep) {
+				$q->where('agence_ident', 200)
+					->orWhere('commercial', $Rep->id)
+					->orWhere('commercial_support', $Rep->id);
+			});
+
+			$query=self::filter_search($query,$request);
+
+		}
+
+		if(auth()->id()==142){  // Isabelle Jallabert
+
+			$query->where('etat_id', 1)->orWhere(function ($q) use ($Rep) {
+				$q->where('agence_ident', 43)
+					->orWhere('agence_ident', 201)
+					->orWhere('commercial', $Rep->id)
+					->orWhere('commercial_support', $Rep->id);
+			});
+
+			$query=self::filter_search($query,$request);
+
+		}
+
+		if(auth()->id()==143){  // Reynald
+
+			$query->where('etat_id', 1)->orWhere(function ($q) use ($Rep) {
+				$q->where('agence_ident', 40)
+					->orWhere('commercial', $Rep->id)
+					->orWhere('commercial_support', $Rep->id);
+			});
+		}
+
+		if(auth()->id()==35){  // ADAMA
+
+			$rep = DB::table('representant')->where('users_id',auth()->id())->first();
+			$query->where('etat_id', 2);
+			$query->where('commercial', $rep->id);
+
+			$query=self::filter_search($query,$request);
+
+		}
+
+*/
 		/*
 		$tri = $request->get('tri');
 		if ($tri == 1) {
@@ -401,9 +457,9 @@ class ClientsController extends Controller
 
 		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
 		if ($print)
-			return view('clients.print', compact('clients', 'request', 'agences','representants'));
+			return view('clients.print', compact('clients', 'request', 'agences', 'representants'));
 		else
-			return view('clients.search', compact('clients', 'request', 'agences','representants'));
+			return view('clients.search', compact('clients', 'request', 'agences', 'representants'));
 	}
 
 	public function prospects(Request $request)
@@ -591,7 +647,7 @@ class ClientsController extends Controller
 
 			if ($result) {
 				return response($result['body'], 200)
-					->header('Content-Type',$result['type']);
+					->header('Content-Type', $result['type']);
 			}
 			//}
 
@@ -645,28 +701,173 @@ class ClientsController extends Controller
 
 
 	public function add_comment(Request $request)
-    {
+	{
 
 		DB::table('commentaire_client')->insert([
-			'comment'=>$request->get('comment'),
-			'client'=>$request->get('client'),
-			'user'=>auth()->id(),
+			'comment' => $request->get('comment'),
+			'client' => $request->get('client'),
+			'user' => auth()->id(),
 		]);
 
-		$data=array();
-		$data['date']=date('d/m/Y');
-		$data['user']=auth()->user()->name.' '.auth()->user()->lastname;
+		$data = array();
+		$data['date'] = date('d/m/Y');
+		$data['user'] = auth()->user()->name . ' ' . auth()->user()->lastname;
 		return $data;
 	}
 
 	public function delete_comment(Request $request)
-    {
+	{
 		DB::table('commentaire_client')->where(
-			'id',$request->get('comment'),
+			'id',
+			$request->get('comment'),
 		)->delete();
 
 		return 1;
 	}
 
+	public function activites_client(Request $request)
+	{
+		if ($request->cl_ident > 0) {
+			$taches = self::getClientTasks($request->cl_ident);
+		} else {
+			$taches = Tache::where('ID_Compte', $request->id)->get();
+		}
+		$result = '';
+		$result .= '<div class="table-container">';
+		$result .= '<table class="table table-bordered table-striped mb-40">';
+		$result .= '<thead>
+				<tr id="headtable">
+					<th>Type</th>
+					<th>Date</th>
+					<th>' . __('msg.Subject') . '</th>
+					<th>' . __('msg.Amount') . '</th>
+					<th>' . __('msg.Weight') . '</th>
+				</tr>
+			</thead>
+			<tbody>';
+		foreach ($taches as $tache) {
+			/*
+						$color='';
+						switch ( $tache->Status ) {
+						case 'Not Started':
+						$color = '#82e2e8';$statut='Pas commencée';
+						break;
+						case 'Waiting on someone e':
+						$color = '#ea922b';$statut='En attente  de quelqu\'un';
+						break;
+						case 'In Progress':
+						$color = '#5f9fff';$statut='En cours';
+						break;
+						case 'Deferred':
+						$color = '#a778c9';$statut='Reportée';
+						break;
+						case 'Completed':
+						$color = '#40c157';$statut='Terminée';
+						break;
+						default:
+						$color = '';
+						}
+
+						$class='';
+						switch ( $tache->Priority ) {
+						case 'Normal':
+						$class = 'primary';$priority='Normale';
+						break;
+						case 'High':
+						$class = 'danger';$priority='Haute';
+						break;
+						case 'Low':
+						$class = 'info';$priority='Basse';
+						break;
+
+						default:
+						$class = 'primary';$priority='Normale';
+						}
+
+						$icon='';
+						switch ( $tache->Type ) {
+						case 'Acompte / Demande de paiement':
+						$icon = 'img/invoice.png';
+						break;
+						case 'Appel téléphonique':
+						$icon = 'img/call.png';
+						break;
+						case 'Envoyer email':
+						$icon = 'img/email.png';
+						break;
+
+						case 'Envoyer courrier':
+						$icon = 'img/mail.png';
+						break;
+
+
+						default:
+						$class = '';
+						}
+*/
+			$result .= '
+					<tr>
+						<td>' . $tache->Type . '</td>
+						<td>' . date('d/m/Y', strtotime($tache->DateTache)) . ' ' . $tache->heure_debut . '</td>';
+			$result .= '<td>';
+			if ($tache->as400 == 0) {
+				$result .= '<a href="' . route('taches.show', ['id' => $tache->id]) . '">' . $tache->Subject . '</a>';
+			} else {
+				$result .= $tache->Subject;
+			}
+
+			$result .= '</td>
+						<td style="padding-left:2px!important" class="text-center">
+						' . $tache->montant .' €';
+			$result .= '</td>
+						<td class="text-center">
+							' . $tache->poids . ' g';
+
+			$result .= '</td>
+					</tr>';
+		}
+		$result .= '
+			</tbody>
+		</table>
+	</div>';
+
+
+		return $result;
+	}
+
+
+
+	function filter_search($query,$request){
+
+		if ($request->has('etat_id') && $request->etat_id != 0) {
+			$query->where('etat_id', $request->etat_id);
+		}
+
+		if ($request->has('type_client') && $request->type_client != 0) {
+			$query->where('couleur_html', $request->type_client);
+		}
+
+		if ($request->has('Nom') && $request->Nom) {
+			$query->where('Nom', 'like', '%' . $request->Nom . '%');
+		}
+
+		if ($request->has('adresse1') && $request->adresse1) {
+			$query->where('adresse1', 'like', '%' . $request->adresse1 . '%');
+		}
+
+		if ($request->has('ville') && $request->ville) {
+			$query->where('ville', 'like', '%' . $request->ville . '%');
+		}
+
+		if ($request->has('zip') && $request->zip) {
+			$query->whereRaw("TRIM(zip) LIKE ?", [trim($request->zip) . '%']);
+		}
+
+		if ($request->has('agence') && $request->agence) {
+			$query->where('agence_ident',  $request->agence);
+		}
+
+		return $query;
+	}
 
 } // end class

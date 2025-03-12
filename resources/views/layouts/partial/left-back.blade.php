@@ -8,6 +8,9 @@ if (Auth::check()) {
 }
 ?>
 <style>
+  .sidebar .nav-item .collapse .collapse-inner{
+    font-size:12px;
+  }
   #accordionSidebar a:hover {
     color: black !important;
   }

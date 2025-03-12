@@ -382,7 +382,7 @@ class UsersController extends Controller
 	}
 
 
-
+/*
 	public function loginas($id)
 	{
 		//get the id from the post
@@ -410,8 +410,39 @@ class UsersController extends Controller
 		}
 	}
 
+*/
+	public function loginas(Request $request)
+	{
+		$id = $request->input('user_id');
 
+		// Si une session existe, la supprimer et revenir à l'utilisateur précédent
+		if (session()->get('hasClonedUser') == 1) {
+			session()->remove('hasClonedUser');
+			auth()->loginUsingId(session()->remove('previoususer'));
+			session()->remove('previoususer');
+			return redirect()->back();
+		}
 
+		// Seulement pour l'admin, se connecter en tant qu'un autre utilisateur
+		if (auth()->user()->user_type == 'admin') {
+			Session::put('hasClonedUser', 1);
+			Session::put('previoususer', auth()->user()->id);
+			auth()->loginUsingId($id);
+			return redirect('/home');
+		}
+
+		return redirect()->back();
+	}
+
+	public function revertLogin($id)
+	{
+		if (session()->get('hasClonedUser') == 1) {
+			session()->remove('hasClonedUser');
+			auth()->loginUsingId($id);
+			session()->remove('previoususer');
+		}
+		return redirect()->back();
+	}
 
 	public function verify()
 	{

@@ -106,7 +106,10 @@ Route::get('/export-agenda', [AgendaController::class, 'export_agenda'])->name('
 */
 
 Route::get('/refresh', 'App\Http\Controllers\Auth\LoginController@refresh')->name('refresh');
-Route::get('users/loginas/{id}', 'App\Http\Controllers\UsersController@loginas')->name('loginas');
+//Route::get('users/loginas/{id}', 'App\Http\Controllers\UsersController@loginas')->name('loginas');
+Route::post('users/loginas', 'App\Http\Controllers\UsersController@loginas')->name('loginas');
+// Pour revenir à l'utilisateur précédent (GET)
+Route::get('users/revert-login/{id}', 'App\Http\Controllers\UsersController@revertLogin')->name('revert.login');
 
 Route::get('/search', [ClientsController::class, 'search'])->name('search');
 Route::post('/search', [ClientsController::class, 'search']);
@@ -120,9 +123,10 @@ Route::put('/compte_client/{id}', [ClientsController::class, 'update'])->name('c
 Route::put('/update_finances/{id}', [ClientsController::class, 'update_finances'])->name('compte_client.update_finances');
 Route::get('/clients/show/{id}', [ClientsController::class, 'show'])->name('compte_client.show');
 Route::get('/clients/folder/{id}', [ClientsController::class, 'folder'])->name('compte_client.folder');
-Route::post('/ouverture', [ClientsController::class, 'ouverture'])->name('ouverture');
 Route::get('/prospects', [ClientsController::class, 'prospects'])->name('prospects');
 Route::get('/clients/destroy/{id}',[ClientsController::class,'destroy'])->name('clients.destroy');
+Route::get('/activites_client', [ClientsController::class, 'activites_client'])->name('activites_client');
+Route::post('/ouverture', [ClientsController::class, 'ouverture'])->name('ouverture');
 
 
 

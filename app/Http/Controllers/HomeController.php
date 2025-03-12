@@ -64,6 +64,7 @@ class HomeController extends Controller
 			$offres=Offre::where('statut',null)->get();
 			$now = Carbon::now();
 			$representants=DB::table("representant")->get();
+			$users=DB::table("users")->where('username','like','%@saamp.com')->orderBy('lastname','asc')->get();
 
 			$rendezvous=RendezVous::where('Started_at', '>=', $now)
 			->orderBy('Started_at', 'asc')
@@ -162,7 +163,7 @@ class HomeController extends Controller
 
 			$userToken = GoogleToken::where('user_id', auth()->id())->first();
 
-			return view('dashboard.adminhome',compact('retours','rendezvous','taches','representants','offres','userToken',
+			return view('dashboard.adminhome',compact('retours','rendezvous','taches','representants','offres','userToken','users',
 			'total_clients_1','total_clients_2','total_clients_3','total_clients_4','total_clients_5','total_clients_6','total_clients_7','total_clients_8','total_clients_9',
 			'total_1','total_2','total_3','total_4','total_5','total_6','total_7','total_8','total_9'));
 

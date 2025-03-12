@@ -606,7 +606,7 @@ return [
 	"Last invoice"=>"Last invoice",
 	"My"=>"My",
 	"My "=>"My",
-	"Activities of my customers "=>"Activities of my customers",
+	"Activities of my customers"=>"Activities of my customers",
 	"Activities tracking"=>"Activities tracking",
 	"Diary"=>"Diary",
 	"excluding customers"=>"excluding customers",

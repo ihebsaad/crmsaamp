@@ -296,11 +296,12 @@ class StatsController extends Controller
 
     public function exportStatsExcel(Request $request)
     {
-        $userId = $request->query('user');
-        $user = User::find($userId);
+        $repId = $request->query('user');
+        $representant=DB::table('representant')->where('id',$repId)->first();
+        $user = User::find($representant->users_id);
 
         //$stats = $this->getStatsData($userId);
-        DB::select("SET @p0=$userId;");
+        DB::select("SET @p0=$repId;");
         $stats = DB::select('call `sp_stats_commercial_client_12mois`(@p0);');
 
         return Excel::download(new StatsCommercialExport($stats, $user), ''.$user->name.'_'.$user->lastname.'_stats_commercial.xlsx');

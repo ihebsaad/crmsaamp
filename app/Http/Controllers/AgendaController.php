@@ -53,7 +53,7 @@ class AgendaController extends Controller
 		}
 
 		if($user>0){
-			if($role =='respAG' || $role =='adv' || $role =='admin' || $role =='compta' ){
+			if($role =='respAG' || $role =='adv' || $role =='admin' || $role =='compta'||  auth()->id() == 334 ){
 			$User=User::find($user);
 			$rendezvous=RendezVous::where('Attribue_a',$User->name.' '.$User->lastname)
 			->orWhere('user_id',$user)

@@ -366,6 +366,13 @@ class RendezVousController extends Controller
 				'timeZone' => 'Europe/Paris',
 			],
 			'colorId' => 11, // Couleur personnalisée
+			'reminders' => [
+				'useDefault' => false, // Désactiver les rappels par défaut
+				'overrides' => [
+					['method' => 'popup', 'minutes' => 60], // Notification 1 heure avant
+					//['method' => 'email', 'minutes' => 60]  // Email 1 heure avant (optionnel)
+				],
+			],
 		]);
 
 		$calendarId = 'primary'; // Peut être modifié si nécessaire
