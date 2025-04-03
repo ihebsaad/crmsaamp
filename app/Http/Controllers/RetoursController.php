@@ -35,9 +35,21 @@ class RetoursController extends Controller
 
 	public function index()
 	{
-		//dd('test');
-		$retours = RetourClient::orderBy('id', 'desc')->limit(1000)->get();
-		return view('retours.index', compact('retours'));
+		if( auth()->user()->user_role== 1 || auth()->user()->user_role== 2 ||auth()->user()->user_role== 3 || auth()->user()->user_role == 5){
+			$retours = RetourClient::orderBy('id', 'desc')->limit(1000)->get();
+		}else{
+			//$retours = RetourClient::orderBy('id', 'desc')->get();
+			$retours = DB::table('CRM_RetourClient as rc')
+			->join('client as c', 'rc.cl_id', '=', 'c.cl_ident')
+			->where('c.agence_ident', auth()->user()->agence_ident)
+			->select('rc.*', 'c.agence_ident') // Select fields as needed
+			->orderBy('rc.name', 'desc') // Adjust as needed; 'name' should be in `rc` or `c`
+			->get();
+
+		}
+		$agences = DB::table('agence')->get();
+
+		return view('retours.index', compact('retours','agences'));
 	}
 
 	public function create($id)

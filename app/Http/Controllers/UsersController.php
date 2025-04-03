@@ -31,7 +31,7 @@ class UsersController extends Controller
 
 		if (auth()->user()->user_type != 'admin') {
 
-			return redirect('/home');
+			return redirect('/dashboard');
 		} else {
 
 			$users = User::orderBy('name', 'asc')->get();
@@ -274,6 +274,21 @@ class UsersController extends Controller
 		return redirect('/users')->with('success', ' droits modifiés avec succès');
 	}
 
+
+	public function update_role(Request $request)
+	{
+		$user_id = $request->get('user_id');
+		$user_role = $request->get('user_role');
+
+		DB::table('users')->where('id', $user_id)->update(
+			array(
+				'user_role' => $user_role,
+			)
+		);
+
+		return true;
+	}
+
 	public function updateclient(Request $request)
 	{
 		$user = $request->get('user');
@@ -382,35 +397,6 @@ class UsersController extends Controller
 	}
 
 
-/*
-	public function loginas($id)
-	{
-		//get the id from the post
-		//$id = request('user_id');
-
-		//if session exists remove it and return login to original user
-		if (session()->get('hasClonedUser') == 1) {
-			// auth()->loginUsingId(session()->remove('hasClonedUser'));
-			session()->remove('hasClonedUser');
-			auth()->loginUsingId(session()->remove('previoususer'));
-			session()->remove('previoususer');
-			return redirect()->back();
-		}
-
-		//only run for developer, clone selected user and create a cloned session
-		if (auth()->user()->user_type == 'admin') {
-			//   session()->put('hasClonedUser', auth()->user()->id);
-			//	session(['hasClonedUser' => auth()->user()->id]);
-			//	Session::put('hasClonedUser', auth()->user()->id);
-			Session::put('hasClonedUser', 1);
-			Session::put('previoususer', auth()->user()->id);
-			auth()->loginUsingId($id);
-			//  return redirect()->back();
-			return redirect('/home');
-		}
-	}
-
-*/
 	public function loginas(Request $request)
 	{
 		$id = $request->input('user_id');
@@ -428,7 +414,7 @@ class UsersController extends Controller
 			Session::put('hasClonedUser', 1);
 			Session::put('previoususer', auth()->user()->id);
 			auth()->loginUsingId($id);
-			return redirect('/home');
+			return redirect('/dashboard');
 		}
 
 		return redirect()->back();
@@ -441,7 +427,9 @@ class UsersController extends Controller
 			auth()->loginUsingId($id);
 			session()->remove('previoususer');
 		}
-		return redirect()->back();
+		//return redirect()->back();
+		return redirect('/adminhome');
+
 	}
 
 	public function verify()
@@ -454,47 +442,6 @@ class UsersController extends Controller
 
 
 
-
-	public function beneficiaires()
-	{
-
-		if (auth()->user()->user_type != 'admin' && auth()->user()->user_type != 'adv') {
-
-			return redirect('/home');
-		} else {
-
-			$beneficiaires = Beneficiaire::get();
-			return view('users.beneficiaires', ['beneficiaires' => $beneficiaires]);
-		}
-	}
-
-
-	public function beneficiairesvalides()
-	{
-
-		if (auth()->user()->user_type != 'admin' && auth()->user()->user_type != 'adv') {
-
-			return redirect('/home');
-		} else {
-
-			$beneficiaires = Beneficiaire::get();
-			return view('users.beneficiairesvalides', ['beneficiaires' => $beneficiaires]);
-		}
-	}
-
-
-	public function validatebenef($id)
-	{
-		Beneficiaire::where('bene_ident', $id)->update(array('etat' => 'validé'));
-		return redirect('/beneficiaires')->with('success', '  validé avec succès');
-	}
-
-	public function famille(Request $request)
-	{
-		$val = $request->get('val');
-
-		Session::put('famille', $val);
-	}
 
 
 

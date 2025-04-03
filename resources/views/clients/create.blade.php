@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-md-5">
                             <div class="">
-                                <label for="Rue">{{__('msg.Address')}}:</label>
+                                <label for="Rue">{{__('msg.Address')}}*:</label>
                                 <input type="text" id="adresse1" class="form-control" name="adresse1" required value="{{old('adresse1')}}"><br><br>
                             </div>
                         </div>
@@ -50,38 +50,38 @@
                     <div class="row pt-1">
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Pays">{{__('msg.Country')}}:</label>
+                                <label for="Pays">{{__('msg.Country')}}*:</label>
                                 <input type="text" id="Pays" class="form-control" name="Pays" value="France" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="pays_code">{{__('msg.Country code')}}:</label>
+                                <label for="pays_code">{{__('msg.Country code')}}*:</label>
                                 <input type="text" id="pays_code" class="form-control" name="pays_code" value="FR" maxlength="2" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="zip">{{__('msg.Postal code')}}:</label>
+                                <label for="zip">{{__('msg.Postal code')}}*:</label>
                                 <input type="text" id="zip" class="form-control" name="zip" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="ville">{{__('msg.City')}}:</label>
+                                <label for="ville">{{__('msg.City')}}*:</label>
                                 <input type="text" id="ville" class="form-control" name="ville" required><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="latitude">Latitude:</label>
+                                <label for="latitude">Latitude*:</label>
                                 <input type="text" id="latitude" class="form-control" name="latitude" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="longitude">Longitude:</label>
+                                <label for="longitude">Longitude*:</label>
                                 <input type="text" id="longitude" class="form-control" name="longitude" required><br><br>
                             </div>
                         </div>
@@ -99,8 +99,8 @@
                         <div class="col-md-2">
 
                             <div class="">
-                                <label for="siret">SIRET:</label>
-                                <input type="text" id="Code_siret" class="form-control" name="Code_siret" value="{{old('Code_siret')}}"    ><br><br>
+                                <label for="siret">SIRET*:</label>
+                                <input type="text" id="Code_siret" class="form-control" name="Code_siret" value="{{old('Code_siret')}}"  maxlength="14" minlength="14" required   ><br><br>
                             </div>
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Nom">{{__('msg.Company name')}}:</label>
+                                <label for="Nom">{{__('msg.Company name')}}*:</label>
                                 <input type="text" id="Nom" class="form-control" name="Nom"  value="{{old('Nom')}}" required><br><br>
                             </div>
                         </div>

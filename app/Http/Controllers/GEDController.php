@@ -18,7 +18,7 @@ class GEDController extends Controller
         $this->middleware('auth');
     }
 
-
+/*
 	public function folders()
 	{
 		try{
@@ -47,7 +47,9 @@ class GEDController extends Controller
 
 			if (isset($clientId)) {
 				$folders=GEDService::getFolderList($folderId);
-				$folderContent=GEDService::getFolderContent($folderId);
+				//$folderContent=GEDService::getFolderContent($folderId);
+				$result=GEDService::getFolderContent($folderId);
+				$folderContent=$result['data'] ?? [] ;
 				$files=false;
 				if(!$folders){
 					$folders=GEDService::getFolderList($parent);
@@ -65,7 +67,7 @@ class GEDController extends Controller
 		}
 		return view('ged.folders',compact('folders','folderName','folderContent','parent','files','folderId'));
 	}
-
+*/
 	public function download($id)
 	{
 		try{

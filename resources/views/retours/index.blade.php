@@ -22,6 +22,20 @@
                     <div class="col-md-2">
                         <label class="ml-2 pointer text-primary" for='mycheck2'><input id="mycheck2" type="checkbox"  > {{__('msg.Only open')}}</input></lablel>
                     </div>
+                    @if( auth()->user()->user_role== 1 || auth()->user()->user_role== 2 ||auth()->user()->user_role== 3 || auth()->user()->user_role == 5){
+
+                    <div class="col-md-4">
+                    Agence
+                    <select type="text" id="agence_ident" class="form-control" name="agence_ident" style="width:150px;display:block">
+                        <option value=""></option>
+                        @foreach($agences as $agence)
+                        <option value="{{$agence->agence_lib}}">{{$agence->agence_lib}}</option>
+                        @endforeach
+                    </select>
+                    </div>
+                    @endif
+
+
                 </div>
                 <table id="mytable" class="table table-striped" style="width:100%">
                     <thead>
@@ -195,6 +209,10 @@
             $.fn.dataTable.ext.search.pop();
         }
 
+        // Appliquer le filtre "Only open" au départ
+        $('#mycheck2').prop('checked', true);
+        filter2($('#mycheck2'));
+
         // Attachement des fonctions de filtre aux checkboxes
         $('#mycheck').on('click', function() {
             filter(this);
@@ -202,6 +220,12 @@
 
         $('#mycheck2').on('click', function() {
             filter2(this);
+        });
+
+        // Filtrer par agence
+        $('#agence_ident').on('change', function() {
+            var agence = $(this).val();
+            table.column(5).search(agence).draw(); // La colonne "Agence" est la 6ème colonne (index 5)
         });
     });
 

@@ -63,17 +63,17 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
-			
+
 /*
   ##Device = Tablets, Ipads (portrait)
   ##Screen = B/w 768px to 1024px
 */
 
 @media (min-width: 768px) and (max-width: 1024px) {
- 
+
  #errorimg{width:450px!important;}
  #logo{width:150px!important;}
- 
+
 }
 
 /*
@@ -82,7 +82,7 @@
 */
 
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
- 
+
  #errorimg{width:450px!important;}
   #logo{width:130px!important;}
 
@@ -93,7 +93,7 @@
 */
 
 @media (min-width: 481px) and (max-width: 767px) {
- 
+
  #errorimg{width:300px!important;}
  #logo{display:none;}
 
@@ -105,12 +105,12 @@
 */
 
 @media (min-width: 320px) and (max-width: 480px) {
- 
+
  #errorimg{width:200px!important;}
  #logo{display:none;}
 
 }
-			
+
         </style>
     </head>
     <body>
@@ -120,7 +120,7 @@
          <!--   @if (Route::has('login'))
                 <div class="top-right links">
                     @if (Auth::check())
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/dashboard') }}">Home</a>
                     @else
                         <a href="{{ url('/login') }}">Login</a>
                      @endif
@@ -128,17 +128,17 @@
             @endif
 		-->
             <div class="content">
-			
+
                  <center>   <img style="margin-top:30px" width="600" id="errorimg" src="{{ URL::asset('front/images/error.jpg')}}" alt="error page"/></center>
-			
+
                 <div class="title m-b-md">
 
 					<?php echo json_encode($response['message']); ?><br>
 					<span style="font-size:16px"><i><?php echo 'code: <b>'.json_encode($response['status_code']); ?></b></i></span><br><br>
-					<a style="font-size:14px;background-color:#e6d685;color:black;font-weight:bold;padding:5px 20px 5px 20px; ;border-radius:10px;"  href="{{ url('/home') }}"   >{{__('msg.Home')}}</a>
+					<a style="font-size:14px;background-color:#e6d685;color:black;font-weight:bold;padding:5px 20px 5px 20px; ;border-radius:10px;"  href="{{ url('/dashboard') }}"   >{{__('msg.Home')}}</a>
                 </div>
 
-         
+
             </div>
         </div>
     </body>

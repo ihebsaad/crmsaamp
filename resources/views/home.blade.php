@@ -67,10 +67,7 @@
 <div class="row">
     <input type="hidden" id="user_id" value="{{ auth()->user()->id }}" />
 
-    @if($commercial &&  auth()->id() != 334 &&  auth()->id() != 10)
-        <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}" />
-    @else
-        @if( auth()->user()->role=='admin' || auth()->user()->role=='adv' || auth()->user()->id==10  &&  auth()->id() != 334 )
+        @if( auth()->user()->user_role > 0 && auth()->user()->user_role < 5 || auth()->user()->id==10  &&  auth()->id() != 334 )
         <div class="col-lg-3">
             <span class=" mr-2">{{__('msg.Type')}}:</span>
             <select class="form-control mb-20" id="type">
@@ -97,7 +94,6 @@
         @else
             <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}">
         @endif
-    @endif
 
     <div class="col-lg-4 mt-4">
         <input id="mois" type="checkbox" value="1" onchange="update_stats();">
@@ -178,9 +174,11 @@
                 <h6 class="m-0 font-weight-bold text-primary">{{__('msg.12-month rolling customer statistics')}} </h6>
             </div>
             <div class="card-body">
+                @if( auth()->user()->role=="admin" ||  auth()->user()->role=="dirQUA" )
                 <a href="#" id="export-excel-btn" class="btn btn-success" style="background-color:#1cc88a">
                     <i class="fa fa-file-excel"></i> Exporter en Excel
                 </a>
+                @endif
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>

@@ -34,8 +34,8 @@
                     <div class="row pt-1">
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Nom">{{__('msg.Contact last name')}}:</label>
-                                <input type="text" id="Nom" class="form-control" name="Nom"  value="{{old('Nom')}}"><br><br>
+                                <label for="Nom">{{__('msg.Contact last name')}}*:</label>
+                                <input type="text" id="Nom" class="form-control" name="Nom"  value="{{old('Nom')}}" required><br><br>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -77,8 +77,8 @@
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Email">{{__('msg.Email')}}:</label>
-                                <input type="text" id="Email" class="form-control" name="email"  value="{{old('email')}}"><br><br>
+                                <label for="Email">{{__('msg.Email')}}*:</label>
+                                <input type="text" id="Email" class="form-control" name="email"  value="{{old('email')}}" required><br><br>
                             </div>
                         </div>
 

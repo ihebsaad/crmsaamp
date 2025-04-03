@@ -38,7 +38,9 @@ class AgendaController extends Controller
 		$role = auth()->user()->role;
 		$user_id = auth()->user()->id;
 		$agence_id = auth()->user()->agence_ident;
+		$users=DB::table("users")->where('username','like','%@saamp.com')->orderBy('lastname','asc')->get();
 
+/*
 		if($role =='admin' || $role =='respAG' || $role =='adv' || $role =='compta' ){
 			//$representants=DB::table("representant")->get();
 			$users=DB::table("users")->where('username','like','%@saamp.com')->orderBy('lastname','asc')->get();
@@ -51,18 +53,21 @@ class AgendaController extends Controller
 			//->whereIn('role', ['commercial', 'user'])
 			->get();
 		}
+*/
+		if(auth()->user()->user_role == 4 )
+		{
+			$users_id= DB::table('representant')->whereRaw("FIND_IN_SET(?, agence)", [auth()->user()->agence_ident])->pluck('users_id');
+			$users=DB::table("users")->whereIn('id',$users_id)->orderBy('lastname','asc')->get();
+		}
 
 		if($user>0){
-			if($role =='respAG' || $role =='adv' || $role =='admin' || $role =='compta'||  auth()->id() == 334 ){
 			$User=User::find($user);
 			$rendezvous=RendezVous::where('Attribue_a',$User->name.' '.$User->lastname)
 			->orWhere('user_id',$user)
 			//->where('AccountId','>',0)
 			->orderBy('id','desc')
 			->get();
-			}else{
-				return view('welcome');
-			}
+
 		}else{
 			$rendezvous=RendezVous::where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
 			->orWhere('user_id',auth()->user()->id)

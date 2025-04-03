@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\CompteClient;
-use App\Models\Agence;
+use App\Models\Tache;
 use App\Models\User;
 use App\Models\Offre;
 use App\Models\RendezVous;
@@ -26,6 +26,7 @@ class RecapController extends Controller
     {
         $users = DB::table("users")
             ->where('username', 'like', '%@saamp.com')
+            ->orderBy('lastname')
             ->get();
 
         $user = auth()->user()->id;
@@ -77,10 +78,15 @@ class RecapController extends Controller
             ->orderBy('Date_ouverture', 'asc')
             ->get();
 
+        $taches = Tache::where('user_id', $user)
+            ->whereBetween('DateTache', [$date_debut, $date_fin])
+            ->get();
+
         $clients=0;
         $rep=DB::table("representant")->where('users_id',$user)->first();
         if(isset($rep)){
             $clients = CompteClient::where('commercial', $rep->id)
+            ->whereNotNull('cl_ident')->where('cl_ident','<>',0)
             ->whereBetween('created_at', [$date_debut, $date_fin])
             ->count();
         }
@@ -101,6 +107,10 @@ class RecapController extends Controller
             ->orderBy('Date_ouverture', 'asc')
             ->get();
 
+        $prev_taches = Tache::where('user_id', $user)
+            ->whereBetween('DateTache', [$prev_date_debut, $prev_date_fin])
+            ->get();
+
         // Calcul des statistiques pour la période actuelle
         $retours_positifs = $retours->where('Type_retour', 'Positif')->count();
         $retours_negatifs = $retours->where('Type_retour', 'Négatif')->count();
@@ -108,6 +118,7 @@ class RecapController extends Controller
 
         $rdvs_deplacement = $rendezvous->where('mode_de_rdv', 'Déplacement')->count();
         $rdvs_a_distance = $rendezvous->where('mode_de_rdv', 'À distance')->count();
+        $rdvs_agence = $rendezvous->where('mode_de_rdv', 'En agence')->count();
 
         $offres_tg = $offres->where('type', 'TG')->count();
         $offres_hors_tg = $offres->where('type', 'Hors TG')->count();
@@ -116,6 +127,12 @@ class RecapController extends Controller
         $offres_ok = $offres->where('statut', 'OK')->count();
         $offres_attente = $offres->whereNull('statut')->count();
 
+        $appels = $taches->where('Type', 'Appel téléphonique')->count();
+        $remises = $taches->where('Type', 'Remise de commande')->count();
+        $suivis = $taches->where('Type', 'Suivi client')->count();
+        $autres = $taches->where('Type', 'Autre')->count();
+
+
         // Calcul des statistiques pour la période précédente
         $prev_retours_positifs = $prev_retours->where('Type_retour', 'Positif')->count();
         $prev_retours_negatifs = $prev_retours->where('Type_retour', 'Négatif')->count();
@@ -123,6 +140,7 @@ class RecapController extends Controller
 
         $prev_rdvs_deplacement = $prev_rendezvous->where('mode_de_rdv', 'Déplacement')->count();
         $prev_rdvs_a_distance = $prev_rendezvous->where('mode_de_rdv', 'À distance')->count();
+        $prev_rdvs_agence = $prev_rendezvous->where('mode_de_rdv', 'En agence')->count();
 
         $prev_offres_tg = $prev_offres->where('type', 'TG')->count();
         $prev_offres_hors_tg = $prev_offres->where('type', 'Hors TG')->count();
@@ -130,6 +148,11 @@ class RecapController extends Controller
 
         $prev_offres_ok = $prev_offres->where('statut', 'OK')->count();
         $prev_offres_attente = $prev_offres->whereNull('statut')->count();
+
+        $prev_appels = $prev_taches->where('Type', 'Appel téléphonique')->count();
+        $prev_remises = $prev_taches->where('Type', 'Remise de commande')->count();
+        $prev_suivis = $prev_taches->where('Type', 'Suivi client')->count();
+        $prev_autres = $prev_taches->where('Type', 'Autre')->count();
 
         return view('dashboard.recap', compact(
             'rendezvous',
@@ -147,6 +170,7 @@ class RecapController extends Controller
             'retours_negatifs',
             'rdvs_deplacement',
             'rdvs_a_distance',
+            'rdvs_agence',
             'offres_tg',
             'offres_hors_tg',
             'offres_apprets',
@@ -158,6 +182,7 @@ class RecapController extends Controller
             'prev_retours_infos',
             'prev_rdvs_deplacement',
             'prev_rdvs_a_distance',
+            'prev_rdvs_agence',
             'prev_offres',
             'prev_offres_tg',
             'prev_offres_hors_tg',
@@ -166,7 +191,17 @@ class RecapController extends Controller
             'prev_offres_attente',
             'prev_date_debut',
             'prev_date_fin',
-            'affichage'
+            'affichage',
+            'taches',
+            'prev_taches',
+            'appels',
+            'remises',
+            'suivis',
+            'autres',
+            'prev_appels',
+            'prev_remises',
+            'prev_suivis',
+            'prev_autres',
         ));
     }
 

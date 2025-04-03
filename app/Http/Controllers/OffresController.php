@@ -132,7 +132,7 @@ class OffresController extends Controller
 		$agence=DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
 		$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est créée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
 
-		if($offre->type=='TG')
+		if($offre->type=='TG' || auth()->id()==35)
 		{
 			SendMail::send($user->email,'Offre Créée',$contenu);
 			if(isset($agence))

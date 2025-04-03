@@ -45,7 +45,7 @@
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Type">{{__('msg.Type')}}:</label>
+                                <label for="Type">{{__('msg.Type')}}*:</label>
                                 <select    id="type" class="form-control" name="type" required  >
                                     <option  value="TG">TG</option>
                                     <option  value="Hors TG - Affinage">Hors TG - Affinage</option>
@@ -81,7 +81,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Nom_offre">{{__('msg.File(s)')}}:</label>
+                                <label for="Nom_offre">{{__('msg.File(s)')}}*:</label>
                                 <input type="file" id="fichier" class="form-control" name="files[]"  multiple required  accept="application/pdf" /><br><br>
                             </div>
                         </div>

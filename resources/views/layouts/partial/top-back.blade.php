@@ -7,11 +7,6 @@ try{
   }catch(\Exception $e){
     $data=null;
   }
-
-$lg=$user['lg'];$displayfr='';$displayen='';$displaypl='';
-if($lg=='fr' ||$lg=='' ) { $langue='Français';$displayfr='display:none';}
-if($lg=='en' ){ $langue='English';$displayen='display:none';}
-if($lg=='pl' ){ $langue='Polski';$displaypl='display:none';}
 @endphp
 <style>
   .navbar-nav small {
@@ -73,40 +68,14 @@ if($lg=='pl' ){ $langue='Polski';$displaypl='display:none';}
 </style>
 
 <!-- Topbar -->
-<nav class="navbar navbar-expand navbar-light bg-dark topbar mb-3 static-top shadow" style="height:60px!important">
+<nav class="navbar navbar-expand navbar-light topbar mb-3 static-top shadow" style="height:60px!important">
 
   <!-- Sidebar Toggle (Topbar) -->
   <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
     <i style="color:#f2ba01" class="fa fa-bars"></i>
   </button>
 
-  <ul style="margin-top:10px;" id="" class="nav  ">
-
-    <li class="dropdown menu-item">
-      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        <img <?php if ($lg == 'fr' || $lg == '') { ?> src="{{ URL::asset('img/fr.png')}}" <?php } ?> <?php if ($lg == 'en') { ?> src="{{ URL::asset('img/en.png')}}" <?php } ?> <?php if ($lg == 'pl') { ?> src="{{ URL::asset('img/pl.png')}}" <?php } ?> style="width:25px;margin-right:5px" title="<?php echo $langue; ?>">
-        <span class="lang"><?php echo $langue; ?></span>
-        <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu   dropdown-menu-right shadow animated--grow-in" style="padding-left:20px;padding-top:10px;">
-        <li style="margin-bottom:12px;<?php echo $displayfr; ?>">
-          <div id="lg-fr" style="cursor:pointer;" onclick="setlanguage('fr');">
-            <img src="{{ URL::asset('img/fr.png')}}" style="width:20px;margin-bottom:5px;" title="Français">   Français
-          </div>
-        </li>
-        <li style="margin-bottom:12px;<?php echo $displayen; ?>">
-          <div id="lg-en" style="cursor:pointer" onclick="setlanguage('en');">
-            <img src="{{ URL::asset('img/en.png')}}" style="width:20px" title="English">   English
-          </div>
-        </li><!--
-        <li style="margin-bottom:12px;<?php // echo $displaypl; ?>">
-          <div id="lg-pl" style="cursor:pointer" onclick="setlanguage('pl');">
-            <img src="{{ URL::asset('img/pl.png')}}" style="width:20px;margin-bottom:5px;" title="polski">   Polski
-          </div>
-        </li>-->
-      </ul>
-    </li>
-  </ul>
+  <!--lang was here -->
   <!-- Topbar Navbar -->
   <div class="navbar-nav ml-5 mr-3 hidemobile">
   @if($data!='')
@@ -121,6 +90,7 @@ if($lg=='pl' ){ $langue='Polski';$displaypl='display:none';}
     <a href="#" data-toggle="modal" data-target="#metalsModal"><img class="" src="{{ URL::asset('img/trade.png')}}" width="40" /></a>
 
   </div>
+  <br>
   <div class="navbar-nav ml-auto">
 
     <!-- Nav Item - Messages -->
@@ -157,7 +127,6 @@ if($lg=='pl' ){ $langue='Polski';$displaypl='display:none';}
     </li>
 
     </ul>
-
 </nav>
 <!-- End of Topbar -->
 <script>

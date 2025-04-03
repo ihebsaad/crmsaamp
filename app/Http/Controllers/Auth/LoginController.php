@@ -28,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/dashboard';
     protected $username  ;
 
     /**
@@ -90,7 +90,7 @@ class LoginController extends Controller
 	protected function authenticated(Request $request, $user)
 	{
 
-        if ( $user->user_type=='admin' || $user->role=='admin' || $user->role=='dirQUA'  ) {
+        if ( $user->user_role==1 || $user->user_role==2  ) {
             return redirect()->route('adminhome');
         }
 

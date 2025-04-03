@@ -26,7 +26,7 @@
 					@csrf
  					<!-- Sujet du ticket -->
 					<div class="form-group row">
-						<label for="subject" class="col-md-3 col-form-label">{{ __('msg.Subject') }}:</label>
+						<label for="subject" class="col-md-3 col-form-label">{{ __('msg.Subject') }}*:</label>
 						<div class="col-md-9">
 							<input type="text" id="subject" class="form-control" name="subject" value="{{ old('subject') }}" required>
 						</div>
@@ -34,7 +34,7 @@
 
 					<!-- Description -->
 					<div class="form-group row">
-						<label for="description" class="col-md-3 col-form-label">{{ __('msg.Description') }}:</label>
+						<label for="description" class="col-md-3 col-form-label">{{ __('msg.Description') }}*:</label>
 						<div class="col-md-9">
 							<textarea id="description" class="form-control" name="description" rows="4" required>{{ old('description') }}</textarea>
 						</div>
@@ -42,7 +42,7 @@
 
 					<!-- Catégorie -->
 					<div class="form-group row">
-						<label for="category" class="col-md-3 col-form-label">{{ __('msg.Category') }}:</label>
+						<label for="category" class="col-md-3 col-form-label">{{ __('msg.Category') }}*:</label>
 						<div class="col-md-9">
 							<select id="category" class="form-control" name="category" required>
 								<option value="">{{ __('msg.Category') }}</option>

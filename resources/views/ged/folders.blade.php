@@ -118,7 +118,7 @@
 
 
 
-                <div class="pl-5" id="folders-container"></div>
+                <div class="row pl-5" id="folders-container"></div>
                 <div class="row pl-5" id="files-container"></div>
 
                 <script>
@@ -139,7 +139,7 @@
                         const lastPathId = pathIds[pathIds.length - 1];
 
                         button.textContent = name;
-                        button.className += 'folder-btn';
+                        button.className += 'folder-btn col-md-2 col-sm-6';
                         button.onclick = function() {
                            <?php if(isset($folderName)){ ?>
                             window.location.href = `https://crm.mysaamp.com/folders/${id}/${encodeURIComponent(name)}/${lastPathId}`;

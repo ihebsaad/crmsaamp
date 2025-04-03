@@ -4,8 +4,8 @@
 <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 
 <?php
-
-?>
+$links = isset($folderContent['links']) ? $folderContent['links'] : [];
+ ?>
 <style>
     .foldername{
         width:100%;
@@ -67,6 +67,24 @@
     .download, .view,.replace,.delete{
         cursor:pointer;
     }
+        /* Styles pour la pagination */
+        .pagination {
+            margin-top: 30px;
+        }
+        .pagination a, .pagination span {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 8px 12px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #333;
+        }
+        .pagination span.current {
+            background: #3498db;
+            color: #fff;
+            border-color: #3498db;
+        }
 </style>
 <div class="row">
 
@@ -117,15 +135,74 @@
                 @endif
 
                 @if(isset($folderId) )
+                    @if(auth()->user()->user_role==1 || auth()->user()->user_role==2 || auth()->user()->user_role==5 )
                     <div class="row">
                         <div class="col-md-12 float-right text-right ">
                             <span style="cursor:pointer" onclick="return confirm('Êtes-vous sûrs ?')?deleteFolder('{{$folderId}}'):'';"  ><img class="mb-2 mt-2" src="{{ URL::asset('img/delete-folder.png')}}" width="50" title="Supprimer le dossier" style="opacity:0.4"  /></span>
                         </div>
                     </div>
+                    @endif
                 @endif
 
                 <div class="pl-5" id="folders-container"></div>
+                    <form class="search-form" method="get" action="">
+                        <input type="hidden" name="id" value="<?php echo $folderId; ?>">
+                        <input type="hidden" name="name" value="<?php echo htmlspecialchars($folderName); ?>">
+                        <div class="row mb-3 ml-2 ">
+                            <!-- Champ de recherche pour le numéro de lot -->
+                            <div class="col-md-3">
+                                <input type="text" name="search" class="form-control" placeholder="Rechercher par numéro" value="<?php echo htmlspecialchars($search); ?>">
+                            </div>
+                            <div class="col-md-3">
+                                <select name="month" class="form-control">
+                                    <option value="">-- Choisir un mois --</option>
+                                    <option value="01" <?php if($month=="01") echo "selected"; ?>>Janvier</option>
+                                    <option value="02" <?php if($month=="02") echo "selected"; ?>>Février</option>
+                                    <option value="03" <?php if($month=="03") echo "selected"; ?>>Mars</option>
+                                    <option value="04" <?php if($month=="04") echo "selected"; ?>>Avril</option>
+                                    <option value="05" <?php if($month=="05") echo "selected"; ?>>Mai</option>
+                                    <option value="06" <?php if($month=="06") echo "selected"; ?>>Juin</option>
+                                    <option value="07" <?php if($month=="07") echo "selected"; ?>>Juillet</option>
+                                    <option value="08" <?php if($month=="08") echo "selected"; ?>>Août</option>
+                                    <option value="09" <?php if($month=="09") echo "selected"; ?>>Septembre</option>
+                                    <option value="10" <?php if($month=="10") echo "selected"; ?>>Octobre</option>
+                                    <option value="11" <?php if($month=="11") echo "selected"; ?>>Novembre</option>
+                                    <option value="12" <?php if($month=="12") echo "selected"; ?>>Décembre</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="submit" class="btn btn-success" value="Rechercher">
+                            </div>
+                        </div>
+                    </form>
                 <div class="row pl-5" id="files-container"></div>
+
+                <div class="pagination">
+                    <?php
+                    // Détermine si une recherche est active
+                    $searchActive = ($search !== '' || $month !== '');
+
+                    if ($searchActive) {
+                        for ($i = 1; $i <= $folderContent['totalPages']; $i++) {
+                            if ($i == $page) {
+                                echo '<span class="current">' . $i . '</span>';
+                            } else {
+                                echo '<a href="?id=' . $folderId . '&name=' . urlencode($folderName) . '&page=' . $i . '&search=' . urlencode($search) . '&month=' . urlencode($month) . '">' . $i . '</a>';
+                            }
+                        }
+                    } else {
+                        if (count($links) > 0) {
+                            foreach ($links as $link) {
+                                if ($link == $page) {
+                                    echo '<span class="current">' . $link . '</span>';
+                                } else {
+                                    echo '<a href="?id=' . $folderId . '&name=' . urlencode($folderName) . '&page=' . $link . '">' . $link . '</a>';
+                                }
+                            }
+                        }
+                    }
+                    ?>
+                </div>
 
                 <script>
                     <?php if(isset($folders) && $files==false){ ?>
@@ -166,7 +243,7 @@
                     <?php }
                     if(isset($folderContent)){ ?>
                         const apiResponseContent = {
-                            data: <?php echo json_encode($folderContent); ?>
+                            data: <?php echo json_encode($folderContent['data']); ?>
                         };
 
                         // Sélectionner l'élément conteneur du contenu
@@ -180,7 +257,9 @@
                             div.className += 'mb-3 ';
                             div.className += 'content-item';
                             const itemNameEscaped = item.name.replace(/'/g, "\\'");
-
+                            <?php
+                            if(auth()->user()->user_role==1 || auth()->user()->user_role==2 || auth()->user()->user_role==5 ){
+                            ?>
                             div.innerHTML = `
                                 <div class="file" onclick="viewItem(${item.id})"></div>
                                 <div class="file-title"> ${item.name}</div>
@@ -191,6 +270,20 @@
                                     <span onclick="return confirm('Êtes-vous sûrs ?')?deleteItem('${item.id}'):'';"  ><img class="ml-2 delete" title="Supprimer" width="26" src="{{ URL::asset('img/delete.png')}}"></span>
                                     </div>
                                 `;
+                            <?php
+                            }else{
+                            ?>
+                            div.innerHTML = `
+                                <div class="file" onclick="viewItem(${item.id})"></div>
+                                <div class="file-title"> ${item.name}</div>
+                                <div>
+                                    <span onclick="viewItem(${item.id})"><img class="view mr-2" title="Visualiser" width="25" src="{{ URL::asset('img/view.png')}}"></span>
+                                    <span onclick="downloadItem('${item.id}')"><img class="download mr-2" title="Télecharger" width="25" src="{{ URL::asset('img/download.png')}}"></span>
+                                    </div>
+                                `;
+                                <?php
+                            }
+                            ?>
                             return div;
                         }
 

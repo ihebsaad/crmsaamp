@@ -65,6 +65,7 @@ class HomeController extends Controller
 			$now = Carbon::now();
 			$representants=DB::table("representant")->get();
 			$users=DB::table("users")->where('username','like','%@saamp.com')->orderBy('lastname','asc')->get();
+			$prospects=CompteClient::where('agence_ident',auth()->user()->agence_ident)->where('etat_id',1)->get();
 
 			$rendezvous=RendezVous::where('Started_at', '>=', $now)
 			->orderBy('Started_at', 'asc')
@@ -163,7 +164,9 @@ class HomeController extends Controller
 
 			$userToken = GoogleToken::where('user_id', auth()->id())->first();
 
-			return view('dashboard.adminhome',compact('retours','rendezvous','taches','representants','offres','userToken','users',
+			$stats = DB::select('call `sp_stats_agence_nature_poids`();');
+
+			return view('dashboard.adminhome',compact('retours','rendezvous','taches','representants','offres','userToken','users','stats','prospects',
 			'total_clients_1','total_clients_2','total_clients_3','total_clients_4','total_clients_5','total_clients_6','total_clients_7','total_clients_8','total_clients_9',
 			'total_1','total_2','total_3','total_4','total_5','total_6','total_7','total_8','total_9'));
 
@@ -514,8 +517,16 @@ class HomeController extends Controller
 		} else {
 			//StatsController::stats();
 			$agences= DB::table('agence')->get();
-			$users= DB::table('users')->where('user_type','<>','')->get();
+			$users=DB::table("users")->where('username','like','%@saamp.com')->orderBy('lastname','asc')->get();
 			$representants= DB::table('representant')->whereNull('remplace_par')->orderBy('nom','asc')->get();
+
+			if(auth()->user()->user_role == 4 )
+			{
+				$representants= DB::table('representant')->whereRaw("FIND_IN_SET(?, agence)", [auth()->user()->agence_ident])->get();
+				//$agences = explode(',', $Rep->agence);
+				//$users=DB::table("users")->whereIn('id',$users_id)->orderBy('lastname','asc')->get();
+			}
+
 
 			$commercial=false;
 			foreach($representants as $rep){

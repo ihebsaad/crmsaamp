@@ -32,8 +32,8 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Subject">{{__('msg.Subject')}}:</label>
-                                <input type="text" id="Subject" class="form-control" name="Subject"  value="{{old('Subject')}}"><br><br>
+                                <label for="Subject">{{__('msg.Subject')}}*:</label>
+                                <input type="text" id="Subject" class="form-control" name="Subject"  value="{{old('Subject')}}" required><br><br>
                             </div>
                         </div>
 
@@ -118,7 +118,7 @@
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Agence">{{__('msg.Agency')}}:</label>
+                                <label for="Agence">{{__('msg.Agency')}}*:</label>
                                 <select    id="Agence" class="form-control" name="Agence" required  >
                                     <option></option>
                                     @foreach($agences as $agence)

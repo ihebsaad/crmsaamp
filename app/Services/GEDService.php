@@ -5,7 +5,7 @@ namespace App\Services;
 use DB;
 use Illuminate\Support\Facades\Http;
 use App\Models\CompteClient;
-
+use PDO;
 
 class GEDService
 {
@@ -240,9 +240,15 @@ class GEDService
 			// Conversion JSON a réussi
 			if ($responseArray !== null && $responseArray['success'] === true) {
 				$parFolderId = $responseArray['data']['id'];
-
+				/*
 				$result = self::getFolderContent($parFolderId);
 				//$result=self::getFolderList($parFolderId);
+				return $result;*/
+
+				$result['folders'] = self::getFolderList($parFolderId);
+				$data=self::getFolderContent($parFolderId,1000,1,'','');
+				$folderContent=$data['data'] ?? [] ;
+				$result['files'] = $folderContent;
 				return $result;
 			}
 		}
@@ -338,7 +344,7 @@ class GEDService
 
 
 
-
+/*
 	public static function getFolderContent($folderId)
 	{
 
@@ -353,6 +359,65 @@ class GEDService
 
 			return $data['data'];
 		}
+	}*/
+
+	public static function getFolderContent($folderId,$limit,$page,$searchLot,$month)
+	{
+
+		// Détermine si une recherche est active
+		$searchActive = ($searchLot !== '' || $month !== '');
+
+		if ($searchActive) {
+			$apiLimit = 1000; // Limit élevée pour récup tous les documents
+			$apiUrl = "https://ged.maileva.com/api/document/childrenOf/{$folderId}?p={$folderId}&limit={$apiLimit}";
+		} else {
+			$apiLimit = $limit;
+			$apiUrl = "https://ged.maileva.com/api/document/childrenOf/{$folderId}?p={$folderId}&page={$page}&limit={$apiLimit}";
+		}
+
+
+		$response = self::curlExecute($apiUrl);
+		$data = json_decode($response, true);
+		$result=array();
+		$documents = isset($data['data']) ? $data['data'] : [];
+
+		if ($searchActive) {
+			// Filtrage par numéro de lot
+			if ($searchLot !== '') {
+				$documents = array_filter($documents, function($doc) use ($searchLot) {
+					return stripos($doc['name'], $searchLot) !== false;
+				});
+			}
+			// Filtrage par mois
+			if ($month !== '') {
+				$documents = array_filter($documents, function($doc) use ($month) {
+					if (preg_match('/_(\d{2})_(\d{2})_(\d{4})/', $doc['name'], $matches)) {
+						// $matches[1] correspond au jour, $matches[2] au mois, et $matches[3] à l'année
+						return $matches[2] === $month;
+					}
+					return false;
+				});
+			}
+
+			// Pagination manuelle sur le tableau filtré
+			$totalFiltered = count($documents);
+			$result['totalFiltered']=$totalFiltered;
+			$totalPages = ceil($totalFiltered / $limit);
+			$result['totalPages']=$totalPages;
+
+			// Découpage des documents pour la page actuelle
+			$documents = array_slice($documents, ($page - 1) * $limit, $limit);
+		} else {
+			// Sinon, on utilise la pagination fournie par l'API
+			$links = isset($data['links']) ? $data['links'] : [];
+			$result['links']=$links;
+		}
+
+		$result['data']=$documents;
+
+		\Log::info('folder content : '. json_encode($result));
+		return $result;
+
 	}
 
 	// calculer le nombre de fichiers (à tester)
@@ -884,6 +949,104 @@ class GEDService
 			return false;
         }
     }
+
+
+
+	public static function expireDates($clientId)
+	{
+		try {
+
+			$server = env('AS400_server');
+			$user = env('AS400_user');
+			$pass = env('AS400_pass');
+			$dsn = "Driver={IBM i Access ODBC Driver};System=$server;Uid=$user;Pwd=$pass";
+			//$dsn = "Driver={IBM i Access ODBC Driver};System=82.96.140.216;Uid=BOUREY;Pwd=BOUREY";
+			//$dsn = "DRIVER={iSeries Access ODBC Driver};SYSTEM=82.96.140.216;DBNAME=S65DD73D;UID=BOUREY;PWD=BOUREY;charset=utf8";
+
+			$pdo = new \PDO("odbc:$dsn", $user, $pass);
+			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		} catch (PDOException $e) {
+			dd("Erreur de connexion : " . $e->getMessage());
+			exit;
+		}
+
+		$expDates = array();
+		try {
+			// Requête pour recup les dates dans la table GESCOMF.CLIRJCP1
+			// Les colonnes DTRJC1 à DTRJC9
+			$stmt = $pdo->prepare("SELECT DTRJC1, DTRJC2, DTRJC3, DTRJC4, DTRJC5, DTRJC6, DTRJC7, DTRJC8, DTRJC9 FROM GESCOMF.CLIRJCP1 WHERE NUCLI = :clientId");
+			$stmt->execute([':clientId' => $clientId]);
+			$docDates = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			// Debug : Affichage du résultat brut de la requête
+			// echo "<pre>Résultat brut de la requête : " . print_r($docDates, true) . "</pre>";
+
+			if ($docDates) {
+				// Boucle sur les types de documents de 1 à 9
+				for ($type = 1; $type <= 9; $type++) {
+					$col = "DTRJC" . $type;
+					// On ignore les champs vides ou égaux à "0"
+					if (!empty($docDates[$col]) && $docDates[$col] != "0") {
+						$dateStr = $docDates[$col];
+						// Format AS/400 : YYMMDD (exemple : "260706")
+						$yearAS400 = substr($dateStr, 0, 2);
+						$month = substr($dateStr, 2, 2);
+						$day = substr($dateStr, 4, 2);
+						$year = 2000 + intval($yearAS400);
+						$formatted = "$day/$month/$year";
+
+						// Association du numéro de document au label utilisé pour le dossier
+						switch ($type) {
+							case 1:
+								$label = "DOCUMENTS OUVERTURE DE COMPTE POIDS";
+								break;
+							case 2:
+								$label = "PRINCIPES ET CODE DES PRATIQUES DU RJC ET DE SAAMP";
+								break;
+							case 3:
+								$label = "DECLARATION DUE DILIGENCE";
+								break;
+							case 4:
+								$label = "CNI OU PASSEPORT";
+								break;
+							case 5:
+								$label = "KBIS DE MOINS DE 3 MOIS OU REPERTOIRE DES METIERS";
+								break;
+							case 6:
+								$label = "DECLARATION D'EXISTENCE AUPRES DE LA GARANTIE";
+								break;
+							case 7:
+								$label = "LETTRE DE FUSION";
+								break;
+							case 8:
+								$label = "RIB";
+								break;
+							case 9:
+								$label = "CONVENTION OCA";
+								break;
+							default:
+								$label = "";
+						}
+						// Debug : Affichage du libellé et de la date formatée pour ce document
+						// debug echo "<pre>Document type $type ($label) : Date = $formatted</pre>";
+
+						// Enregistrer la date d'expiration pour ce document
+						$expDates[$label] = $formatted;
+					} else {
+						// debug echo "<pre>Aucune date trouvée pour DTRJC$type</pre>";
+					}
+				}
+
+				// Debug : Affichage du tableau final des dates d'expiration
+				// echo "<pre>Tableau final des dates d'expiration : " . print_r($expDates, true) . "</pre>";
+			} else {
+				//echo "<pre>Aucune donnée retournée pour ce client.</pre>";
+			}
+		} catch (\PDOException $e) {
+			dd("Erreur lors de la requête AS/400 : " . $e->getMessage());
+		}
+		return $expDates;
+	}
 
 
 }

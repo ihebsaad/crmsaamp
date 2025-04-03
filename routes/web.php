@@ -20,6 +20,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\DashboardController;
 
 Route::resource('email-templates', EmailTemplateController::class);
 
@@ -87,8 +88,9 @@ Route::post('/setlanguage', 'App\Http\Controllers\HomeController@setlanguage')->
 
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home')->middleware('verified');
 Route::get('/statistiques', 'App\Http\Controllers\HomeController@statistiques')->name('statistiques');
-Route::get('/adminhome', 'App\Http\Controllers\HomeController@adminhome')->name('adminhome');
-Route::get('/dashboard', 'App\Http\Controllers\HomeController@dashboard')->name('dashboard');
+Route::get('/adminhome', 'App\Http\Controllers\DashboardController@adminhome')->name('adminhome');
+Route::get('/dashboard', 'App\Http\Controllers\DashboardController@dashboard')->name('dashboard');
+Route::get('/supervision', 'App\Http\Controllers\DashboardController@supervision')->name('supervision');
 Route::get('/help', 'App\Http\Controllers\HomeController@help')->name('help');
 Route::get('/stats_tasks', 'App\Http\Controllers\HomeController@stats_tasks')->name('stats_tasks');
 
@@ -200,7 +202,7 @@ Route::post('/checkexiste','App\Http\Controllers\HomeController@checkexiste')->n
 Route::post('/send_demand','App\Http\Controllers\HomeController@send_demand')->name('send_demand');
 Route::post('/registration','App\Http\Controllers\UsersController@registration')->name('registration');
 Route::post('/updatinguser','App\Http\Controllers\UsersController@updatinguser')->name('updatinguser');
-Route::post('/updatingusertype','App\Http\Controllers\UsersController@updatingusertype')->name('updatingusertype');
+Route::post('/update_role','App\Http\Controllers\UsersController@update_role')->name('update_role');
 Route::get('/users/destroy/{id}','App\Http\Controllers\UsersController@destroy')->name('users.destroy');
 Route::post('/users/updating','App\Http\Controllers\UsersController@updating')->name('users.updating');
 Route::post('/users/famille','App\Http\Controllers\UsersController@famille')->name('users.famille');

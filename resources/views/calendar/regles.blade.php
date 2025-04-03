@@ -71,7 +71,7 @@
         <div class="top-right links">
             <a href="{{ url('/') }}">SAAMP</a>
             @if (Auth::check())
-            <a href="{{ url('/home') }}">Accueil</a>
+            <a href="{{ url('/dashboard') }}">Accueil</a>
             @else
             <a href="{{ url('/login') }}">Connexion</a>
             @endif

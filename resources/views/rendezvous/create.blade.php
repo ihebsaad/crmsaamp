@@ -38,31 +38,31 @@
                     <div class="row pt-1">
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Account_Name">{{__('msg.Account name')}} :</label>
+                                <label for="Account_Name">{{__('msg.Account name')}}*:</label>
                                 <input type="text" id="Account_Name" class="form-control" name="Account_Name" @if($client!= null)  readonly @endif value="{{$client->Nom ?? '' }}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Started_at">{{__('msg.Start date')}}:</label>
+                                <label for="Started_at">{{__('msg.Start date')}}*:</label>
                                 <input type="text" id="Started_at" class="form-control datepicker" name="Started_at"  required value="{{old('Started_at')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="heure_debut">{{__('msg.Start hour')}}:</label>
+                                <label for="heure_debut">{{__('msg.Start hour')}}*:</label>
                                 <input type="time" id="heure_debut" class="form-control" name="heure_debut" required value="{{old('heure_debut')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="End_AT">{{__('msg.End date')}}:</label>
+                                <label for="End_AT">{{__('msg.End date')}}*:</label>
                                 <input type="text" id="End_AT" class="form-control datepicker" name="End_AT" required value="{{old('End_AT')}}"><br><br>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="heure_fin">{{__('msg.End hour')}}:</label>
+                                <label for="heure_fin">{{__('msg.End hour')}}*:</label>
                                 <input type="time" id="heure_fin" class="form-control" name="heure_fin" required value="{{old('heure_fin')}}"><br><br>
                             </div>
                         </div>
@@ -93,25 +93,26 @@
 
                         <div class="col-md-3">
                         <div class="">
-                                <label for="Location">{{__('msg.Place')}}:</label>
+                                <label for="Location">{{__('msg.Place')}}*:</label>
                                 <input type="text" id="Location" class="form-control" name="Location" required value="{{old('Location')}}"><br><br>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Location">Mode:</label>
+                                <label for="Location">Mode*:</label>
                                 <select    id="mode_de_rdv" class="form-control" name="mode_de_rdv" required  >
                                     <option  value=""></option>
                                     <option  value="Déplacement">Déplacement</option>
                                     <option  value="À distance">À distance</option>
+                                    <option  value="En agence">En agence</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Location">Statut:</label>
+                                <label for="Location">Statut*:</label>
                                 <select    id="statut" class="form-control" name="statut" required  >
                                     <option  value="1">Planifié</option>
                                     <option  value="2">Réalisé</option>
@@ -132,7 +133,7 @@
 
                         <div class="col-md-4">
                             <div class="">
-                                <label for="Date_creation">{{__('msg.Attributed to')}}:</label>
+                                <label for="Date_creation">{{__('msg.Attributed to')}}*:</label>
                                 <select    id="user_id" class="  form-control" name="user_id" required  >
                                     <option></option>
                                     @foreach($users as $user)

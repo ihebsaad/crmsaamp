@@ -19,12 +19,12 @@
 	.circle {
 		padding: 1%;
 		background-color: #2e3e4e;
-		width: 75px;
-		height: 75px;
+		width: 50px;
+		height: 50px;
 		border-radius: 100%;
 		text-align: center;
-		font-size: 25px;
-		line-height: 25px;
+		font-size: 15px;
+		line-height: 15px;
 		color: white;
 		font-weight: 100;
 		/*
@@ -118,275 +118,290 @@
 <div class="" style="padding-left:5%;padding-right:5%;padding-top:2%;padding-bottom:2%">
 
 	<div class="row">
-		<div class="col-md-12 text-center">
-			<span class="text-center mb-2" style="color:black">{{__('msg.Welcome')}} <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b> </span><br><br>
+		<div class="col-md-12">
+			<span class="  mb-2" style="color:black">{{__('msg.Welcome')}} <b> {{ auth()->user()->lastname }} {{ auth()->user()->name }}</b> </span><br><br>
 		</div>
-	</div>
-	@if(auth()->user()->role=='admin')
-		<div class="row">
-			@if(session()->get('hasClonedUser') == 1)
-				<div class="col-md-6">
-					<div class="alert alert-info">
-						Connecté en tant que : <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b>
-						<a href="{{ route('revert.login', session('previoususer')) }}" class="btn btn-warning btn-sm float-right">Revenir à l'utilisateur précédent</a>
+		@if(auth()->user()->user_role==1 || auth()->user()->user_role==2 )
+
+		<div class="col-lg-5 col-md-12">
+				<div class="row">
+					@if(session()->get('hasClonedUser') == 1)
+						<div class="col-md-6-">
+							<div class="alert alert-info">
+								Connecté en tant que : <b> {{ auth()->user()->lastname }} {{ auth()->user()->name }}</b>
+								<a href="{{ route('revert.login', session('previoususer')) }}" class="btn btn-warning btn-sm float-right">Revenir à l'utilisateur précédent</a>
+							</div>
+						</div>
+					@else
+						<div class="col-md-6-">
+							<form action="{{ route('loginas') }}" method="POST" class="alert alert-info">
+								@csrf
+								<select name="user_id" class="form-control select2" style="width:220px">
+									@foreach($users as $user)
+										<option value="{{ $user->id }}">{{ $user->lastname }} {{ $user->name }}</option>
+									@endforeach
+								</select>
+								<button type="submit" class="btn btn-success btn-sm">Se connecter en tant que</button>
+							</form>
+						</div>
+					@endif
+				</div>
+			<div class="row mt-2 mb-2">
+				@if(!$userToken)
+				<div class="col-md-12 float-right ml-2 mr-2">
+					<a href="{{ route('google.auth.redirect') }}" class="btn btn-primary float-right"><img width="40" style="width:40" src="{{  URL::asset('img/calendar.png') }}" /> Lier les rendez-vous à mon Agenda</a>
+				</div>
+				@endif
+			</div>
+
+
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<h4>{{__('msg.Number of customers')}}</h4>
+				</div>
+			</div>
+			<div class="row mb-5">
+				<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
+					<h5>Paris</small></h5>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_1']  }}</p>
+					</div>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_1']   }}</p>
 					</div>
 				</div>
-			@else
-				<div class="col-md-6"></div>
-				<div class="col-md-6">
-					<form action="{{ route('loginas') }}" method="POST" class="alert alert-info">
-						@csrf
-						<select name="user_id" class="form-control select2" style="width:220px">
-							@foreach($users as $user)
-								<option value="{{ $user->id }}">{{ $user->lastname }} {{ $user->name }}</option>
-							@endforeach
-						</select>
-						<button type="submit" class="btn btn-success btn-sm">Se connecter en tant que</button>
-					</form>
+
+				<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
+					<h5>Lyon</h5>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_2']   }}</p>
+					</div>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_2']   }}</p>
+					</div>
 				</div>
-			@endif
-		</div>
-	@endif
-	<div class="row mt-2 mb-2">
-		@if(!$userToken)
-		<div class="col-md-12 float-right ml-2 mr-2">
-			<a href="{{ route('google.auth.redirect') }}" class="btn btn-primary float-right"><img width="40" style="width:40" src="{{  URL::asset('img/calendar.png') }}" /> Lier les rendez-vous à mon Agenda</a>
-		</div>
-		@endif
-	</div>
-	<div class="row">
-		<div class="col-md-12 text-center">
-			<h4>{{__('msg.Number of customers')}}</h4>
-		</div>
-	</div>
-	<div class="row mb-5">
-		<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
-			<h5>Paris</small></h5>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Total des clients">{{ $total_clients_1 }}</p>
-			</div>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $total_1 }}</p>
-			</div>
-		</div>
 
-		<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
-			<h5>Lyon</h5>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Total des clients">{{ $total_clients_2 }}</p>
-			</div>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $total_2 }}</p>
-			</div>
-		</div>
+				<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
+					<h5> Marseille</h5>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_3']   }}</p>
+					</div>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_3']   }}</p>
+					</div>
+				</div>
 
-		<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
-			<h5> Marseille</h5>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Total des clients">{{ $total_clients_3 }}</p>
-			</div>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $total_3 }}</p>
-			</div>
-		</div>
+				<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
+					<h5> Aubagne</h5>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_4']   }}</p>
+					</div>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_4']   }}</p>
+					</div>
+				</div>
 
-		<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
-			<h5> Aubagne</h5>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Total des clients">{{ $total_clients_4 }}</p>
+				<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
+					<h5> Varsovie</h5>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_5']  }}</p>
+					</div>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_5']   }}</p>
+					</div>
+				</div>
+				<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
+					<h5> Cayenne</h5>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_6']   }}</p>
+					</div>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_6']   }}</p>
+					</div>
+				</div>
+				<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
+					<h5> Nice</h5>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_7']  }}</p>
+					</div>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_7']   }}</p>
+					</div>
+				</div>
+				<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
+					<h5> Toulouse</h5>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_8']   }}</p>
+					</div>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_8']  }}</p>
+					</div>
+				</div>
+				<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
+					<h5> Bordeaux</h5>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_9']  }}</p>
+					</div>
+					<div class="circle">
+						<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_9']  }}</p>
+					</div>
+				</div>
 			</div>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $total_4 }}</p>
-			</div>
-		</div>
 
-		<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
-			<h5> Varsovie</h5>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Total des clients">{{ $total_clients_5 }}</p>
-			</div>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $total_5 }}</p>
-			</div>
-		</div>
-		<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
-			<h5> Cayenne</h5>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Total des clients">{{ $total_clients_6 }}</p>
-			</div>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $total_6 }}</p>
-			</div>
-		</div>
-		<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
-			<h5> Nice</h5>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Total des clients">{{ $total_clients_7 }}</p>
-			</div>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $total_7 }}</p>
-			</div>
-		</div>
-		<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
-			<h5> Toulouse</h5>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Total des clients">{{ $total_clients_8 }}</p>
-			</div>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $total_8 }}</p>
-			</div>
-		</div>
-		<div class="col-md-4 col-lg-4 col-sm-6 text-center  ">
-			<h5> Bordeaux</h5>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Total des clients">{{ $total_clients_9 }}</p>
-			</div>
-			<div class="circle">
-				<p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $total_9 }}</p>
-			</div>
-		</div>
-	</div>
+			<div class="row">
+				<!--
 
-	<div class="row">
-		<div class="col-md-6 col-lg-6 col-sm-12 mb-5">
-			<h4 class="text-center">{{__('msg.Unclosed complaints')}}</h4>
-			<div class="table-container" style="margin-top:36px">
-				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
-					<thead>
-						<tr style="background-color:#2e3e4e;color:white;" id="">
+-->
+<!--
+				@if(auth()->user()->role=='admin')
+
+				<section class="col-md-6- col-lg-6- col-sm-12- mb-3">
+					<h4 class="text-center">{{__('msg.Coming appointments')}}</h4>
+
+					<div class="text-center" style="color:#2e3e4e">{{__('msg.Commercial')}} <select id="commercial" onchange="filter_comm()" class="form-control"></div>
+					<option>Tous</option>
+					@foreach( $representants as $rep )
+					<option value="{{$rep->users_id}}">{{$rep->prenom}} {{$rep->nom}}</option>
+					@endforeach
+					</select>
+					<div class="table-container">
+						<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
+							<thead>
+								<tr style="background-color:#2e3e4e;color:white;" id="">
+									<th>ID</th>
+									<th>{{__('msg.Customer')}}</th>
+									<th>{{__('msg.Subject')}}</th>
+									<th>{{__('msg.Date')}}</th>
+									<th>{{__('msg.Attributed to')}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach($rendezvous as $rv)
+								<tr class="users user-{{$rv->user_id}}">
+									<td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
+									<td>{{ $rv->Account_Name }}</td>
+									<td>{{ $rv->Subject }}</td>
+									<td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
+									<td>
+										@if($rv->user_id > 0 )
+										<?php $user = \App\Models\User::find($rv->user_id); ?>
+										<h6>{{ $user->name}} {{ $user->lastname}}</h6>
+										@else
+										<h6>{{ $rv->Attribue_a}}</h6>
+										@endif
+									</td>
+								</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+				</section>
+				@endif
+-->
+				<div class="col-lg-12 col-md-6- col-lg-6- col-sm-12- mb-3">
+					<h4 class="text-center">{{__('msg.Price offers to be validated')}} <i class="fas fa-exclamation-triangle text-danger"></i></h4>
+					<h4 class=""> </h4>
+					<div class="table-container">
+
+						<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
+							<thead>
+								<tr style="background-color:#2e3e4e;color:white;" id="">
+									<th>ID</th>
+									<th>{{__('msg.Creation')}}</th>
+									<th>{{__('msg.Name')}}</th>
+									<th>{{__('msg.Customer')}}</th>
+									<th>{{__('msg.By')}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach($offres as $offre)
+								@php $user=\App\Models\User::find($offre->user_id); @endphp
+								<tr>
+									<td><a href="{{route('offres.show',['id'=>$offre->id])}}">{{$offre->id}}</a></td>
+									<td>{{ date('d/m/Y', strtotime($offre->Date_creation))}}</td>
+									<td>{{$offre->Nom_offre}}</td>
+									<td>{{$offre->nom_compte}}</td>
+									<td>{{$user->lastname ?? ''}} {{$user->name ?? ''}}</td>
+								</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+
+
+				<div class="col-lg-12 mt-2">
+					<h4 class="text-center">{{__('msg.Unclosed complaints')}}  <i class="fas fa-exclamation-triangle text-danger"></i></h4>
+					<div class="table-container" style="margin-top:10px">
+						<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
+						<thead>
+							<tr style="background-color:#2e3e4e;color:white;" id="">
 							<th>{{__('msg.Title')}}</th>
 							<th>{{__('msg.Open date')}}</th>
 							<th>{{__('msg.Customer')}}</th>
 							<th>{{__('msg.Contact')}}</th>
 							<th>{{__('msg.Reason')}}</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach($retours as $retour)
-						<tr>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach($retours as $retour)
+							<tr>
 							<td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
-							<td data-order="{{ $retour->Date_ouverture ? date('Y-m-d', strtotime($retour->Date_ouverture)) : '' }}">{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+							<td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
 							<td>{{$retour->Nom_du_compte}}</td>
 							<td>{{$retour->Nom_du_contact}}</td>
 							<td>{{$retour->Motif_retour}}</td>
-						</tr>
-						@endforeach
-					</tbody>
-				</table>
+							</tr>
+							@endforeach
+						</tbody>
+						</table>
+					</div>
+				</div>
+
 			</div>
 		</div>
+		<div class="col-lg-7 col-md-12">
 
-		@if(auth()->user()->role=='admin')
-<!--
-		<div class="col-md-6 col-lg-6 col-sm-12 mb-5">
-			<h4 class="text-center">{{__('msg.Today appointments')}}</h4>
-			<div class="table-container" style="margin-top:36px">
-				<table id="appointments-table" class="table table-striped" style="width:90%!important;margin-left:5%">
-					<thead>
-						<tr style="background-color:#2e3e4e;color:white;">
-							<th class="sortable" data-column="heure_debut">   {{__('msg.Subject')}}   </th>
-							<th class="sortable" data-column="Nom_de_compte">Client</th>
-							<th class="sortable" data-column="Agence">{{__('msg.Agency')}}</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach($taches as $tache)
-						<tr>
-							<td>
-								@if($tache->heure_debut){{ $tache->heure_debut }}  @endif
-								@if(isset($tache->id))<a href="{{route('taches.show',['id'=>$tache->id])}}">{{ $tache->Subject }}</a>
-								@else
-								{{$tache->Description}}
-								@endif
-							</td>
-							<td><small>{{ $tache->Nom_de_compte }}</small></td>
-							<td><small>{{ $tache->Agence }}</small></td>
-						</tr>
-						@endforeach
-					</tbody>
-				</table>
-			</div>
-		</div>
---->
-
-		<section class="col-md-6 col-lg-6 col-sm-12 mb-3">
-			<h4 class="text-center">{{__('msg.Coming appointments')}}</h4>
-
-			<div class="text-center" style="color:#2e3e4e">{{__('msg.Commercial')}} <select id="commercial" onchange="filter_comm()" class="form-control"></div>
-			<option>Tous</option>
-			@foreach( $representants as $rep )
-			<option value="{{$rep->users_id}}">{{$rep->prenom}} {{$rep->nom}}</option>
-			@endforeach
-			</select>
-			<div class="table-container">
-				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
-					<thead>
-						<tr style="background-color:#2e3e4e;color:white;" id="">
-							<th>ID</th>
-							<th>{{__('msg.Customer')}}</th>
-							<th>{{__('msg.Subject')}}</th>
-							<th>{{__('msg.Date')}}</th>
-							<th>{{__('msg.Attributed to')}}</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach($rendezvous as $rv)
-						<tr class="users user-{{$rv->user_id}}">
-							<td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
-							<td>{{ $rv->Account_Name }}</td>
-							<td>{{ $rv->Subject }}</td>
-							<td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
-							<td>
-								@if($rv->user_id > 0 )
-								<?php $user = \App\Models\User::find($rv->user_id); ?>
-								<h6>{{ $user->name}} {{ $user->lastname}}</h6>
-								@else
-								<h6>{{ $rv->Attribue_a}}</h6>
-								@endif
-							</td>
-						</tr>
-						@endforeach
-					</tbody>
-				</table>
-			</div>
-		</section>
-		@endif
-		@if(auth()->user()->role=='admin')
-		<div class="col-md-6 col-lg-6 col-sm-12 mb-3">
-			<h4 class="text-center">{{__('msg.Price offers to be validated')}}</h4>
-			<h4 class=""> </h4>
-			<div class="table-container">
-
-				<table id="" class="table table-striped" style="width:90%!important;margin-left:5%">
-					<thead>
-						<tr style="background-color:#2e3e4e;color:white;" id="">
-							<th>ID</th>
-							<th>{{__('msg.Creation')}}</th>
-							<th>{{__('msg.Name')}}</th>
-							<th>{{__('msg.Customer')}}</th>
-							<th>{{__('msg.By')}}</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach($offres as $offre)
-						@php $user=\App\Models\User::find($offre->user_id); @endphp
-						<tr>
-							<td><a href="{{route('offres.show',['id'=>$offre->id])}}">{{$offre->id}}</a></td>
-							<td>{{ date('d/m/Y', strtotime($offre->Date_creation))}}</td>
-							<td>{{$offre->Nom_offre}}</td>
-							<td>{{$offre->nom_compte}}</td>
-							<td>{{$user->name ?? ''}} {{$user->lastname ?? ''}}</td>
-						</tr>
-						@endforeach
-					</tbody>
-				</table>
-			</div>
-
+					<h4 class="text-center ">Gestion des rôles</h4>
+					<div class="table-container">
+						<table class="table table-striped" style="width:90%">
+							<thead style="background-color:lightgray;color:white">
+								<tr><th>Id</th><th>Nom</th><th>Rôle</th></tr>
+							</thead>
+							<tbody>
+								@foreach($users as $user)
+									<tr><td>{{$user->id}}</td><td>{{$user->lastname}} {{$user->name}}</td>
+									<td>
+									<select class="form-control"  onchange="update_role(this,'{{$user->id}}')">
+										<option value="0"></option>
+										<option value="1" {{ $user->user_role==1 ? 'selected="selected"' : '' }} >Administration </option><option value="2" {{ $user->user_role==2 ? 'selected="selected"' : '' }}>Direction</option><option value="3" {{ $user->user_role==3 ? 'selected="selected"' : '' }}>Superviseur</option><option value="4" {{ $user->user_role==4 ? 'selected="selected"' : '' }}>Responsable d'Agence</option><option value="5" {{ $user->user_role==5 ? 'selected="selected"' : '' }}>Qualité</option><option value="6" {{ $user->user_role==6 ? 'selected="selected"' : '' }}>ADV</option><option value="7" {{ $user->user_role==7 ? 'selected="selected"' : '' }}>Commercial</option><option value="8" {{ $user->user_role==8 ? 'selected="selected"' : '' }}>AnimCo</option>
+									</select>
+									</td>
+									</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+					<h4 class="text-center  mt-5">Réception des lots d'or hautes teneurs par agence</h4>
+					<div class="table-container" style="height:420px;max-height:550px;overflow-y:hidden;">
+						<table class="table table-striped" style="width:90%">
+							<thead style="background-color:lightgray;color:white">
+								<tr><th>Agence</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>S6</th><th>S7</th><th>S8</th><th>S9</th><th>S10</th><th>S11</th></tr>
+							</thead>
+							@foreach($stats as $s)
+							<tr>
+								<th>{{$s->agences}}</th><th>{{$s->S1}}</th><th>{{$s->S2}}</th><th>{{$s->S3}}</th><th>{{$s->S4}}</th><th>{{$s->S5}}</th><th>{{$s->S6}}</th><th>{{$s->S7}}</th><th>{{$s->S8}}</th><th>{{$s->S9}}</th><th>{{$s->S10}}</th><th>{{$s->S11}}</th>
+							</tr>
+							@endforeach
+						</table>
+					</div>
 		</div>
 		@endif
+
+
 
 	</div>
-
 </div>
 
 
@@ -409,10 +424,11 @@
 	}
 
 	$(document).ready(function() {
+		/*
 		setTimeout(function() {
 			$('#maintenance').modal('show');
 		}, 5000); // 5000 milliseconds = 5 seconds
-
+*/
 		// Function to detect and parse dates in dd/mm/yyyy format
 		function parseDate(dateString) {
 			const [day, month, year] = dateString.split('/');
@@ -477,5 +493,25 @@
             }
         }
     });
+
+
+	function update_role(select,user_id) {
+        var user_role = $(select).val();
+        var _token = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: "{{ route('update_role') }}",
+            method: "POST",
+            data: {
+                user_id: user_id,
+                user_role: user_role,
+                _token: _token
+            },
+            success: function(data) {
+				$(select).hide('slow');
+				$(select).show();
+            }
+        });
+    }
   </script>
 @endsection

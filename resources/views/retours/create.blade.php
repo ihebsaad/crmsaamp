@@ -39,8 +39,8 @@
                         </div>-->
                         <div class="col-md-3">
                             <div >
-                                <label for="Type_retour">{{__('msg.Return type')}}:</label>
-                                <select    id="Type_retour" class="  form-control" name="Type_retour"   >
+                                <label for="Type_retour">{{__('msg.Return type')}}*:</label>
+                                <select    id="Type_retour" class="  form-control" name="Type_retour"  required >
                                     <option></option>
                                     <option  value="Information générale">{{__('msg.General information')}}</option>
                                     <option  value="Négatif">{{__('msg.Negative')}}</option>
@@ -51,7 +51,7 @@
 
                         <div class="col-md-3">
                             <div class="">
-                                <label for="Motif_retour">{{__('msg.Reason for return')}}:</label>
+                                <label for="Motif_retour">{{__('msg.Reason for return')}}*:</label>
                                 <select    id="Motif_retour" class="  form-control" name="Motif_retour"  required  >
                                     <option></option>
                                     <option  value="Apprêts">Apprêts</option>

@@ -9,6 +9,9 @@ form{
     display:inherit;
     width:100%;
 }
+.bold{
+    font-weight:bold;
+}
 </style>
 <div class="row">
     <div class="col-lg-12 col-sm-12 mb-4">
@@ -17,63 +20,66 @@ form{
                 <h6 class="m-0 font-weight-bold text-primary">Récapitulatif</h6>
             </div>
             <div class="card-body" style="min-height:500px">
-                <div class="row mb-5">
-
-                    <form method="get" action="{{route('recap')}}">
-                        @if( auth()->user()->role=='admin' || auth()->user()->role=='respAG'  )
-
-                        <div class="col-lg-2 col-md-6">
-                            <span class=" mr-2">{{__('msg.User')}}:</span>
-                            <select class="form-control mb-20 select2" id="commercial" name="user" style="max-width:300px" onchange="update_user();this.form.submit();">
-                                <option @if($user=="" ) selected="selected" @endif value=""></option>
-                                @foreach ($users as $User)
-                                @if(trim($User->lastname)!=='')
-                                <option @selected($user>0 && $user==$User->id) value="{{$User->id}}" >{{$User->name}} {{$User->lastname}}</option>
-                                @endif
-                                @endforeach
-                            </select>
-                        </div>
-
-                        @else
-                        <input type="hidden" name="user" value="{{$user ?? auth()->user()->id}}" id="user">
-                        @endif
-
-                        <div class="col-lg-2 col-md-6 col-sm-12">
-                            <span class="mr-2">Dates:</span><br>
-                            <select class="form-control" name="affichage" id="affichage">
-                                <option value="1" >Mois courant</option>
-                                <option value="2"  {{ $affichage== 2 ? 'selected="selected"' : '' }}>Année courante</option>
-                                <option value="3"  {{ $affichage== 3 ? 'selected="selected"' : '' }}>Personnalisé</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-6 col-sm-12"  @if($affichage!= 3 ) style="display:none" @endif id="debut">
-                            <span class="mr-2">{{__('msg.Start date')}}:</span><br>
-                            <input type="date" class="form-control mr-2" id="date_debut" name="date_debut" value="{{$date_debut ?? date('Y-m-01')}}" style="width:150px">
-                        </div>
-                        <div class="col-lg-2 col-md-6 col-sm-12"  @if($affichage!= 3 ) style="display:none" @endif id="fin">
-                            <span class="ml-3 mr-2">{{__('msg.End date')}}:</span><br>
-                            <input type="date" class="form-control" id="date_fin" name="date_fin" value="{{$date_fin ?? date('Y-m-t')}}" style="width:150px">
-                        </div>
-                        <div class="col-lg-2 col-md-6 col-sm-12 mt-3 "><!--
-                            <span><input type="checkbox" @if( $date_debut=="{{date('Y-m-t')}}" && $date_fin=="{{date('Y-m-t')}}" ) checked="checked" @endif/>Mois courant</span>
-                            <span><input type="checkbox" @if( $date_debut=="{{date('Y-m-t')}}" && $date_fin=="{{date('Y-m-t')}}" ) checked="checked" @endif/>Année courante</span>-->
-                        </div>
-                        <div class="col-lg-2 col-md-6 col-sm-12 mt-2 mb-2">
-                            <button type="submit" class="btn btn-primary  mr-3 mt-3">
-                                Voir
-                            </button>
-                        </div>
-
-                    </form>
-                </div>
-
                 <div class="row">
-                    <!-- Offres -->
-                    <div class="col-md-12 mb-2">
+                    <div class="col-lg-9 col-sm-12">
+                        <div class="row mb-5">
+                            <form method="get" action="{{route('recap')}}">
+                                @if( auth()->user()->role=='admin' || auth()->user()->role=='respAG'  )
+
+                                <div class="col-lg-3 col-md-6">
+                                    <span class=" mr-2">{{__('msg.User')}}:</span>
+                                    <select class="form-control mb-20 select2" id="commercial" name="user" style="max-width:300px" onchange="update_user();this.form.submit();">
+                                        <option @if($user=="" ) selected="selected" @endif value=""></option>
+                                        @foreach ($users as $User)
+                                        @if(trim($User->lastname)!=='')
+                                        <option @selected($user>0 && $user==$User->id) value="{{$User->id}}" > {{$User->lastname}} {{$User->name}}</option>
+                                        @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                @else
+                                <input type="hidden" name="user" value="{{$user ?? auth()->user()->id}}" id="user">
+                                @endif
+
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <span class="mr-2">Dates:</span><br>
+                                    <select class="form-control" name="affichage" id="affichage">
+                                        <option value="1" >Mois courant</option>
+                                        <option value="2"  {{ $affichage== 2 ? 'selected="selected"' : '' }}>Année courante</option>
+                                        <!--<option value="3"  {{ $affichage== 3 ? 'selected="selected"' : '' }}>Personnalisé</option>-->
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-md-6 col-sm-12 hidden"  @if($affichage!= 3 ) style="display:none" @endif id="debut">
+                                    <span class="mr-2">{{__('msg.Start date')}}:</span><br>
+                                    <input type="date" class="form-control mr-2" id="date_debut" name="date_debut" value="{{$date_debut ?? date('Y-m-01')}}" style="width:150px">
+                                </div>
+                                <div class="col-lg-2 col-md-6 col-sm-12 hidden"  @if($affichage!= 3 ) style="display:none" @endif id="fin">
+                                    <span class="ml-3 mr-2">{{__('msg.End date')}}:</span><br>
+                                    <input type="date" class="form-control" id="date_fin" name="date_fin" value="{{$date_fin ?? date('Y-m-t')}}" style="width:150px">
+                                </div>
+                                <div class="col-lg-2 col-md-6 col-sm-12 mt-3 hidden "><!--
+                                    <span><input type="checkbox" @if( $date_debut=="{{date('Y-m-t')}}" && $date_fin=="{{date('Y-m-t')}}" ) checked="checked" @endif/>Mois courant</span>
+                                    <span><input type="checkbox" @if( $date_debut=="{{date('Y-m-t')}}" && $date_fin=="{{date('Y-m-t')}}" ) checked="checked" @endif/>Année courante</span>-->
+                                </div>
+                                <div class="col-lg-2 col-md-6 col-sm-12 mt-2 mb-2">
+                                    <button type="submit" class="btn btn-primary  mr-3 mt-3">
+                                        Voir
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-12 ">
                         <h3 @if($clients >0 ) class="text-success" @endif>Clients crées : <strong>{{ $clients }}</strong></h3>
                     </div>
-                    <div class="col-md-4">
-                        <h5>Offres</h5>
+                </div>
+
+                <div class="row pl-3 pr-3">
+                    <!-- Offres -->
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Offres</h5>
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -83,7 +89,7 @@ form{
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="bold">
                                     <td>Total</td>
                                     <td>{{ count($offres) }}</td>
                                     <td>{{ count($prev_offres) }}</td>
@@ -116,16 +122,14 @@ form{
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 hidden">
                         <h5>Statistiques des Offres</h5>
                         <div id="offresComparisonChart" style="width: 100%; height: 400px;"></div>
                     </div>
-                </div>
 
-                <div class="row">
                     <!-- Rendez-vous -->
-                    <div class="col-md-4">
-                        <h5>Rendez-vous</h5>
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Rendez-vous</h5>
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -135,7 +139,7 @@ form{
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="bold">
                                     <td>Total</td>
                                     <td>{{ count($rendezvous) }}</td>
                                     <td>{{ count($prev_rendezvous) }}</td>
@@ -150,19 +154,22 @@ form{
                                     <td>{{ $rdvs_a_distance }}</td>
                                     <td>{{ $prev_rdvs_a_distance }}</td>
                                 </tr>
+                                <tr>
+                                    <td>En agence</td>
+                                    <td>{{ $rdvs_agence }}</td>
+                                    <td>{{ $prev_rdvs_agence }}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 hidden">
                         <h5>Statistiques des Rendez-vous</h5>
                         <div id="rendezvousComparisonChart" style="width: 100%; height: 400px;"></div>
                     </div>
-                </div>
 
-                <div class="row">
                     <!-- Retours -->
-                    <div class="col-md-4">
-                        <h5>Réclamations</h5>
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Interactions</h5>
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -172,7 +179,48 @@ form{
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr class="bold">
+                                    <td>Total</td>
+                                    <td>{{ count($taches) }}</td>
+                                    <td>{{ count($prev_taches) }}</td>
+                                </tr>
                                 <tr>
+                                    <td>Appels téléphoniques</td>
+                                    <td>{{ $appels }}</td>
+                                    <td>{{ $prev_appels }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Remises de commandes</td>
+                                    <td>{{ $remises }}</td>
+                                    <td>{{ $prev_remises }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Suivis clients</td>
+                                    <td>{{ $suivis }}</td>
+                                    <td>{{ $prev_suivis }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Autres</td>
+                                    <td>{{ $autres }}</td>
+                                    <td>{{ $prev_autres }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Retours -->
+                    <div class="col-md-6">
+                        <h5 class="text-primary">Réclamations</h5>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Statistique</th>
+                                    <th>Actuelle</th>
+                                    <th>Précédente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bold">
                                     <td>Total</td>
                                     <td>{{ count($retours) }}</td>
                                     <td>{{ count($prev_retours) }}</td>
@@ -195,7 +243,7 @@ form{
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 hidden">
                         <h5>Statistiques des Réclamations</h5>
                         <div id="retoursComparisonChart" style="width: 100%; height: 400px;"></div>
                     </div>
@@ -220,6 +268,7 @@ form{
                             ['Type', 'Actuelle', 'Précédente'],
                             ['Déplacements', {{ $rdvs_deplacement }}, {{ $prev_rdvs_deplacement }}],
                             ['À distance', {{ $rdvs_a_distance }}, {{ $prev_rdvs_a_distance }}],
+                            ['En agence', {{ $rdvs_agence }}, {{ $prev_rdvs_agence }}],
                         ]);
 
                         drawComparisonChart('retoursComparisonChart', [

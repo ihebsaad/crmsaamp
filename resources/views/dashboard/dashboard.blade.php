@@ -49,9 +49,9 @@
     font-weight: 100;
     /*
 		margin-left: auto;
-		margin-right: auto;*/
+		margin-right: auto;
     margin-left: 50px;
-    margin-right: 50px;
+    margin-right: 50px;*/
     margin-top: 1%;
     margin-bottom: 3%;
     display: inline-block;
@@ -123,7 +123,7 @@
     //chartArea: {width: '90%', height: '90%'}
   };
 
-  <?php if (auth()->user()->role == 'respAG') { ?>
+  <?php if (auth()->user()->user_role == 3 || auth()->user()->user_role == 4 || auth()->user()->user_role == 6 || auth()->user()->user_role == 7 || auth()->user()->user_role == 8) { ?>
 
     function drawChart1() {
 
@@ -134,7 +134,7 @@
           ['Client', 'Chiffre d\'affaire'],
           <?php
           foreach ($customer as $cl) {
-            echo '[' . json_encode($cl->nom) . ', ' . str_replace(' ','',$cl->CA). '],';
+            echo '[' . json_encode($cl->nom) . ', ' . str_replace(' ', '', $cl->CA) . '],';
           }
           ?>
 
@@ -155,7 +155,7 @@
       ['Client', 'Chiffre d\'affaire'],
       <?php
       foreach ($clients as $cl) {
-        echo '[' . json_encode($cl->nom) . ', ' . str_replace(' ','',$cl->CA) . '],';
+        echo '[' . json_encode($cl->nom) . ', ' . str_replace(' ', '', $cl->CA) . '],';
       }
       ?>
 
@@ -168,15 +168,15 @@
 
 <div class="" style="padding-left:5%;padding-right:5%;padding-top:2%;padding-bottom:2%">
   <div class="row">
-      <div class="col-md-6"></div>
-      <div class="col-md-6 ">
-          @if(session()->get('hasClonedUser') == 1)
-              <div class="alert alert-info">
-                  Connecté en tant que : <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b>
-                  <a href="{{ route('revert.login', session('previoususer')) }}" class="btn btn-warning btn-sm float-right">Revenir à l'utilisateur précédent</a>
-              </div>
-          @endif
+    <div class="col-md-6 col-sm-12"></div>
+    <div class="col-md-6 col-sm-12">
+      @if(session()->get('hasClonedUser') == 1)
+      <div class="alert alert-info">
+        Connecté en tant que : <b>{{ auth()->user()->name }} {{ auth()->user()->lastname }}</b>
+        <a href="{{ route('revert.login', session('previoususer')) }}" class="btn btn-warning btn-sm float-right">Revenir à l'utilisateur précédent</a>
       </div>
+      @endif
+    </div>
   </div>
   <div class="row mt-2 mb-3">
     @if(!$userToken)
@@ -185,11 +185,138 @@
     </div>
     @endif
   </div>
+  @if( auth()->user()->user_role==5)
+  @php $totaux_clients=\App\Http\Controllers\DashboardController::totaux_clients(); @endphp
+  <div class="row mb-5">
+    <div class="col-md-6">
+      <div class="col-md-3 col-lg-3 col-sm-6 text-center mb-4 " style="display:inline-block">
+        <h5 class="text-center">Paris</h5>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_1']  }}</p>
+        </div>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_1']   }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-6 text-center mb-4 " style="display:inline-block">
+        <h5 class="text-center">Lyon</h5>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_2']   }}</p>
+        </div>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_2']   }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-6 text-center mb-4 " style="display:inline-block">
+        <h5 class="text-center"> Marseille</h5>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_3']   }}</p>
+        </div>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_3']   }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-6 text-center mb-4 " style="display:inline-block">
+        <h5 class="text-center"> Aubagne</h5>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_4']   }}</p>
+        </div>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_4']   }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-lg-3 col-sm-6 text-center mb-4 " style="display:inline-block">
+        <h5 class="text-center"> Varsovie</h5>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_5']  }}</p>
+        </div>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_5']   }}</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-lg-3 col-sm-6 text-center mb-4 " style="display:inline-block">
+        <h5 class="text-center"> Cayenne</h5>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_6']   }}</p>
+        </div>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_6']   }}</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-lg-3 col-sm-6 text-center mb-4 " style="display:inline-block">
+        <h5 class="text-center"> Nice</h5>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_7']  }}</p>
+        </div>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_7']   }}</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-lg-3 col-sm-6 text-center mb-4 " style="display:inline-block">
+        <h5 class="text-center"> Toulouse</h5>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_8']   }}</p>
+        </div>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_8']  }}</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-lg-3 col-sm-6 text-center mb-4 " style="display:inline-block">
+        <h5 class="text-center"> Bordeaux</h5>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Total des clients">{{ $totaux_clients['total_clients_9']  }}</p>
+        </div>
+        <div class="circle2">
+          <p style="margin-top:revert" data-title="Clients ayant un chiffre d'affaire l'année courante">{{ $totaux_clients['total_9']  }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h4 class="text-center">{{__('msg.Unclosed complaints')}}  <i class="fas fa-exclamation-triangle text-danger"></i></h4>
+      <div class="table-container" style="margin-top:36px">
+        <table id="" class="table table-striped" style="width:100%!important">
+          <thead>
+            <tr style="background-color:#2e3e4e;color:white;" id="">
+              <th>{{__('msg.Title')}}</th>
+              <th>{{__('msg.Open date')}}</th>
+              <th>{{__('msg.Customer')}}</th>
+              <th>{{__('msg.Contact')}}</th>
+              <th>{{__('msg.Reason')}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($retours as $retour)
+            <tr>
+              <td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
+              <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+              <td>{{$retour->Nom_du_compte}}</td>
+              <td>{{$retour->Nom_du_contact}}</td>
+              <td>{{$retour->Motif_retour}}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+  </div>
+  @endif
   <div class="row">
-    <div class="col-md-6 col-lg-6 col-sm-12 text-center  mb-5">
+
+    @if(auth()->user()->user_role==3 || auth()->user()->user_role==4 || auth()->user()->user_role==6 || auth()->user()->user_role== 7 || auth()->user()->user_role== 8)
+      @if( auth()->user()->user_role== 6 || auth()->user()->user_role== 7 || auth()->user()->user_role== 8 )
+        <div class="col-md-6 col-lg-6 col-sm-12 text-center  mb-5">
+      @else
+        <div class="col-md-4 col-lg-4 col-sm-12 text-center  mb-5">
+      @endif
       <h4 class="black">{{__('msg.Number of customers')}}</h4>
-      @if(auth()->user()->role=='adv' || auth()->user()->role=='respAG' )
-      <h5>{{$agence->lib}}</small></h5>
+      @if(auth()->user()->user_role!=7 && auth()->user()->user_role!=8  )
+      <h5>{{$agence->agence_lib}}</small></h5>
       <div class="circle2">
         <p style="margin-top:revert" data-title="Total des clients">{{ $total_clients }}</p>
       </div>
@@ -202,30 +329,70 @@
         <p style="margin-top:revert">{{ $total_clients }}</p>
       </div>
       @endif
-      <!--<h1><b>{{ $total_clients }}</b></h1>-->
     </div>
 
-
-    @if(auth()->user()->role=='respAG')
     @foreach($customers as $rep => $val)
-    <div class="col-md-6 col-lg-6 col-sm-12">
+
       @php $user_id =DB::table("representant")->where('id',$rep)->first()->users_id ?? 0;
       $comm=\App\Models\User::find($user_id) ; @endphp
+      @if(auth()->user()->user_role==7)
+        @if($user_id== auth()->id()  )
+        <div class="col-md-6 col-lg-6 col-sm-12">
+          <h4 class="text-center">{{__('msg.Top customers')}}</h4>
+          <div id="piechart-{{$rep}}" style="width:100%!important; height: 300px;"></div>
+        </div>
+        @endif
+      @else
+        <div class="col-md-4 col-lg-4 col-sm-12">
+          <h4 class="text-center">{{__('msg.Top customers')}} {{__('msg.of')}} {{$comm->name ?? ''}} {{$comm->lastname ?? ''}}</h4>
+          <div id="piechart-{{$rep}}" style="width:100%!important; height: 300px;"></div>
+        </div>
+      @endif
 
-      <h4 class="text-center">{{__('msg.Top customers')}} {{__('msg.of')}} {{$comm->name ?? ''}} {{$comm->lastname ?? ''}} </h4>
-      <div id="piechart-{{$rep}}" style="width:100%!important; height: 300px;"></div>
-    </div>
     @endforeach
-    <div class="col-md-12 col-lg-12 col-sm-12"></div>
     @else
-    <div class="col-md-6 col-lg-6 col-sm-12">
+    <!--
+    <div class="col-md-12 col-lg-12 col-sm-12"></div>
+
+    <div class="col-md-4 col-lg-4 col-sm-12">
       <h4 class="text-center black">{{__('msg.Top customers')}}</h4>
       <div id="piechart" style="width:100%!important; height: 300px;"></div>
     </div>
+    -->
     @endif
 
+    <!--
+
+-->
+    @if(auth()->user()->user_role==3)
+    <!--
+    <div class="col-md-4 col-lg-4 col-sm-12">
+      <h4 class="text-center">  @if(auth()->user()->role=='respAG') {{__('msg.Top customers')}} @endif</h4>
+      <table id="" class="table table-striped" style="width:100%!important">
+        <thead>
+          <tr style="background-color:#2e3e4e;color:white;" id="">
+            <th>{{__('msg.Customer')}}</th>
+            <th>{{__('msg.Turnover')}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($clients as $cl)
+          <tr>
+            <td>{{$cl->nom}}</td>
+            <td>{{$cl->CA}}</td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+
+    </div>
+-->
+    @endif
+    @if(auth()->user()->user_role==6)
+    <div class="col-lg-12"></div>
     <div class="col-md-6 col-lg-6 col-sm-12">
       <h4 class="text-center">{{__('msg.Coming appointments')}}</h4>
+      <br>
       <div class="table-container">
         <table id="" class="table table-striped" style="width:100%!important">
           <thead>
@@ -249,32 +416,37 @@
         </table>
       </div>
     </div>
-    @if(auth()->user()->role!='respAG')
-    <div class="col-md-6 col-lg-6 col-sm-12">
-      <h4 class="text-center">  @if(auth()->user()->role=='respAG') {{__('msg.Top customers')}} @endif</h4>
-      <table id="" class="table table-striped" style="width:100%!important">
-        <thead>
-          <tr style="background-color:#2e3e4e;color:white;" id="">
-            <th>{{__('msg.Customer')}}</th>
-            <th>{{__('msg.Turnover')}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach($clients as $cl)
-          <tr>
-            <td>{{$cl->nom}}</td>
-            <td>{{$cl->CA}}</td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
 
+    <div class="col-md-6 col-lg-6 col-sm-12 mb-5">
+      <h4 class="text-center">{{__('msg.Unclosed complaints')}}  <i class="fas fa-exclamation-triangle text-danger"></i></h4>
+      <div class="table-container" style="margin-top:36px">
+        <table id="" class="table table-striped" style="width:100%!important">
+          <thead>
+            <tr style="background-color:#2e3e4e;color:white;" id="">
+              <th>{{__('msg.Title')}}</th>
+              <th>{{__('msg.Open date')}}</th>
+              <th>{{__('msg.Customer')}}</th>
+              <th>{{__('msg.Contact')}}</th>
+              <th>{{__('msg.Reason')}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($retours as $retour)
+            <tr>
+              <td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
+              <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+              <td>{{$retour->Nom_du_compte}}</td>
+              <td>{{$retour->Nom_du_contact}}</td>
+              <td>{{$retour->Motif_retour}}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
     @endif
-
-    @if(auth()->user()->id== 10 || auth()->user()->id== 39 || auth()->user()->user_type=='admin'|| auth()->user()->role=='admin' )
-    <div class="col-md-6 col-lg-6 col-sm-12">
-      <h4 class="text-center">{{__('msg.Price offers to be validated')}}</h4>
+    @if(auth()->user()->id== 10 || auth()->user()->id== 39 || auth()->user()->user_role < 4 ) <div class="col-md-4 col-lg-4 col-sm-12">
+      <h4 class="text-center">{{__('msg.Price offers to be validated')}} <i class="fas fa-exclamation-triangle text-danger"></i></h4>
       @if(auth()->user()->id== 10 || auth()->user()->id== 39 )
       @if(count($offres)>0)<div class="text-danger">Vous avez <b>{!!count($offres)!!}</b> offres en attente de votre validation ! </div> @endif
       @endif
@@ -304,100 +476,164 @@
         </table>
       </div>
 
-    </div>
-    @endif
-
-    @if( auth()->user()->role=='adv'|| auth()->user()->role=='admin' || auth()->user()->role=='respAG' )
-    <div class="col-md-6 col-lg-6 col-sm-12 mb-5">
-      <h4 class="text-center">{{__('msg.Unclosed complaints')}}</h4>
-      <div class="table-container" style="margin-top:36px">
-        <table id="" class="table table-striped" style="width:100%!important">
-          <thead>
-            <tr style="background-color:#2e3e4e;color:white;" id="">
-              <th>{{__('msg.Title')}}</th>
-              <th>{{__('msg.Open date')}}</th>
-              <th>{{__('msg.Customer')}}</th>
-              <th>{{__('msg.Contact')}}</th>
-              <th>{{__('msg.Reason')}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($retours as $retour)
-            <tr>
-              <td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
-              <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
-              <td>{{$retour->Nom_du_compte}}</td>
-              <td>{{$retour->Nom_du_contact}}</td>
-              <td>{{$retour->Motif_retour}}</td>
-            </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-    </div>
-    @endif
-
-
-    @if(auth()->user()->role=='respAG' || auth()->user()->role=='respAG')
-    <div class="col-md-6 col-lg-6 col-sm-12 mb-5">
-      <h4 class="text-center">Prospects</h4>
-      <div class="table-container">
-        <table id="" class="table table-striped" style="width:100%!important">
-          <thead>
-            <tr style="background-color:#2e3e4e;color:white;" id="">
-              <th>{{__('msg.Name')}}</th>
-              <th>{{__('msg.City')}}</th>
-              <th>{{__('msg.Postal code')}}</th>
-              <th>{{__('msg.Address')}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($prospects as $prospect)
-            <tr>
-              <td><a href="{{route('fiche',['id'=>$prospect->id])}}">{{$prospect->Nom}}</a></td>
-              <td>{{ $prospect->ville }}</td>
-              <td>{{ $prospect->zip }}</td>
-              <td>{{ $prospect->adresse1 }}</td>
-            </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-      <a href="{{route('prospects')}}" target="_blank" class="btn btn-info mr-2 mt-5 float-right"><i class="fa fa-print"></i> {{__('msg.Print')}}</a>
-
-    </div>
-    @endif
-  @if(count($rendezvous_passes)>0)
-    <div class="col-md-6 col-lg-6 col-sm-12">
-      <h4 class="text-center">Rendez vous planifiés, mais passés</h4>
-
-      <div class="table-container">
-        <table id="" class="table table-striped" style="width:100%!important">
-          <thead>
-            <tr style="background-color:#2e3e4e;color:white;" id="">
-              <th>ID</th>
-              <th>{{__('msg.Customer')}}</th>
-              <th>{{__('msg.Subject')}}</th>
-              <th>{{__('msg.Date')}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($rendezvous_passes as $rv)
-            <tr>
-              <td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
-              <td>{{ $rv->Account_Name }}</td>
-              <td>{{ $rv->Subject }}</td>
-              <td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
-            </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-    </div>
-    @endif
   </div>
+  @endif
+
+  @if( auth()->user()->user_role == 3 || auth()->user()->user_role == 4 )
+  <div class="col-md-4 col-lg-4 col-sm-12 mb-5">
+    <h4 class="text-center">{{__('msg.Unclosed complaints')}}  <i class="fas fa-exclamation-triangle text-danger"></i></h4>
+    <div class="table-container" style="margin-top:36px">
+      <table id="" class="table table-striped" style="width:100%!important">
+        <thead>
+          <tr style="background-color:#2e3e4e;color:white;" id="">
+            <th>{{__('msg.Title')}}</th>
+            <th>{{__('msg.Open date')}}</th>
+            <th>{{__('msg.Customer')}}</th>
+            <th>{{__('msg.Contact')}}</th>
+            <th>{{__('msg.Reason')}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($retours as $retour)
+          <tr>
+            <td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
+            <td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+            <td>{{$retour->Nom_du_compte}}</td>
+            <td>{{$retour->Nom_du_contact}}</td>
+            <td>{{$retour->Motif_retour}}</td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
+  @endif
+
+
+  @if(auth()->user()->user_role < 5) <div class="col-md-4 col-lg-4 col-sm-12 mb-5">
+    <h4 class="text-center">Prospects</h4><br>
+    <div class="table-container">
+      <table id="" class="table table-striped" style="width:100%!important">
+        <thead>
+          <tr style="background-color:#2e3e4e;color:white;" id="">
+            <th>{{__('msg.Name')}}</th>
+            <th>{{__('msg.City')}}</th>
+            <th>{{__('msg.Postal code')}}</th>
+            <th>{{__('msg.Address')}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($prospects as $prospect)
+          <tr>
+            <td><a href="{{route('fiche',['id'=>$prospect->id])}}">{{$prospect->Nom}}</a></td>
+            <td>{{ $prospect->ville }}</td>
+            <td>{{ $prospect->zip }}</td>
+            <td>{{ $prospect->adresse1 }}</td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+    <a href="{{route('prospects')}}" target="_blank" class="btn btn-info mr-2 mt-5 float-right"><i class="fa fa-print"></i> {{__('msg.Print')}}</a>
 
 </div>
+@endif
+@if(count($rendezvous_passes)>0 && auth()->user()->user_role==7 )
+<div class="col-md-6 col-lg-6 col-sm-12">
+  <h4 class="text-center">Rendez vous planifiés, mais passés</h4>
+
+  <div class="table-container">
+    <table id="" class="table table-striped" style="width:100%!important">
+      <thead>
+        <tr style="background-color:#2e3e4e;color:white;" id="">
+          <th>ID</th>
+          <th>{{__('msg.Customer')}}</th>
+          <th>{{__('msg.Subject')}}</th>
+          <th>{{__('msg.Date')}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach($rendezvous_passes as $rv)
+        <tr>
+          <td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
+          <td>{{ $rv->Account_Name }}</td>
+          <td>{{ $rv->Subject }}</td>
+          <td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
+        </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
+</div>
+@endif
+
+@if( auth()->user()->user_role==7 || auth()->user()->user_role==8 || auth()->user()->user_role==4 )
+
+  @if( auth()->user()->user_role==7 || auth()->user()->user_role==8 )
+  <div class="col-md-6 col-lg-6 col-sm-12">
+  @endif
+  @if(  auth()->user()->user_role==4 )
+  <div class="col-md-4 col-lg-4 col-sm-12">
+  @endif
+  <h4 class="text-center">{{__('msg.Coming appointments')}}</h4>
+  <br>
+  <div class="table-container">
+    <table id="" class="table table-striped" style="width:100%!important">
+      <thead>
+        <tr style="background-color:#2e3e4e;color:white;" id="">
+          <th>ID</th>
+          <th>{{__('msg.Customer')}}</th>
+          <th>{{__('msg.Subject')}}</th>
+          <th>{{__('msg.Date')}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach($rendezvous as $rv)
+        <tr>
+          <td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
+          <td>{{ $rv->Account_Name }}</td>
+          <td>{{ $rv->Subject }}</td>
+          <td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
+        </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  @if( auth()->user()->user_role==8 )
+  <div class="col-md-6 col-lg-6 col-sm-12">
+    <h4 class="text-center">Rendez vous planifiés, mais passés</h4>
+    <br>
+    <div class="table-container">
+      <table id="" class="table table-striped" style="width:100%!important">
+        <thead>
+          <tr style="background-color:#2e3e4e;color:white;" id="">
+            <th>ID</th>
+            <th>{{__('msg.Customer')}}</th>
+            <th>{{__('msg.Subject')}}</th>
+            <th>{{__('msg.Date')}}</th>
+          </tr>
+        <tbody>
+          @foreach($rendezvous_passes as $rv)
+          <tr>
+            <td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{ $rv->id }}</a></td>
+            <td>{{ $rv->Account_Name }}</td>
+            <td>{{ $rv->Subject }}</td>
+            <td>{{ date('d/m/Y', strtotime($rv->Started_at)) }} {{$rv->heure_debut}}</td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
+  @endif
+
+@endif
+
+</div>
+
+</div><!-- end -->
 
 
 <!-- maintenance Modal-->
@@ -412,23 +648,23 @@
       </div>
       <div class="modal-body  ">
         <div style="font-size:14px;">
-        <h5>1. Workflow pour la gestion des offres dans le CRM</h5>
-Vos offres de prix suivent désormais un scénario précis:<br>
-<b>Si votre offre concerne du "TG"</b>, elle est automatiquement validée.<br>
-<b>Si elle concerne du "Hors TG"</b>, elle sera mise en attente de validation par <b>Sébastien Cannesson</b>. Vous recevrez une notification par mail vous informant si l'offre est validée ou à corriger.<br>
-<b>Si l'offre concerne les apprêts, la bijouterie ou le DP</b>, même principe, mais c’est <b>Christelle Correia</b> qui se chargera de la valider.<br>
-<br>
-<h5>2. Enfin un support !</h5>
-Vous l’avez peut-être remarqué : un nouvel onglet <b>Support</b> est disponible!<br>
-Il vous permet de créer des <b>tickets</b> pour poser vos questions, signaler des bugs ou faire des suggestions.<br>
-<b>Fini les mails et les appels !</b> Vous bénéficiez désormais d’un suivi clair de vos tickets et d’un système de <b>chat intégré</b> pour plus de réactivité.<br>
-<br>
-<h5>3. Votre agenda évolue !</h5>
-<b>Nouveauté 1:</b> Vous pouvez désormais sélectionner une plage de dates et imprimer la liste de vos rendez-vous. Une solution idéale pour joindre cette liste en pièce jointe à vos notes de frais!<br>
-<b>Nouveauté 2:</b> Vous avez sûrement remarqué un nouveau bouton sur votre tableau de bord: il permet de <strong style="color:black">lier votre Google Agenda à votre Agenda CRM</strong>. Désormais, lorsque vous créez un rendez-vous dans la CRM, celui-ci est automatiquement ajouté à votre Google Agenda.<br>
-<b>Et bientôt:</b> Nous travaillons sur une synchronisation dans l’autre sens: les rendez-vous créés dans votre Google Agenda seront automatiquement intégrés à votre Agenda CRM.<br>
-<br>
-<b>Restez connectés pour découvrir encore plus de nouveautés lors de nos prochaines mises à jour!</b><br>
+          <h5>1. Workflow pour la gestion des offres dans le CRM</h5>
+          Vos offres de prix suivent désormais un scénario précis:<br>
+          <b>Si votre offre concerne du "TG"</b>, elle est automatiquement validée.<br>
+          <b>Si elle concerne du "Hors TG"</b>, elle sera mise en attente de validation par <b>Sébastien Cannesson</b>. Vous recevrez une notification par mail vous informant si l'offre est validée ou à corriger.<br>
+          <b>Si l'offre concerne les apprêts, la bijouterie ou le DP</b>, même principe, mais c’est <b>Christelle Correia</b> qui se chargera de la valider.<br>
+          <br>
+          <h5>2. Enfin un support !</h5>
+          Vous l’avez peut-être remarqué : un nouvel onglet <b>Support</b> est disponible!<br>
+          Il vous permet de créer des <b>tickets</b> pour poser vos questions, signaler des bugs ou faire des suggestions.<br>
+          <b>Fini les mails et les appels !</b> Vous bénéficiez désormais d’un suivi clair de vos tickets et d’un système de <b>chat intégré</b> pour plus de réactivité.<br>
+          <br>
+          <h5>3. Votre agenda évolue !</h5>
+          <b>Nouveauté 1:</b> Vous pouvez désormais sélectionner une plage de dates et imprimer la liste de vos rendez-vous. Une solution idéale pour joindre cette liste en pièce jointe à vos notes de frais!<br>
+          <b>Nouveauté 2:</b> Vous avez sûrement remarqué un nouveau bouton sur votre tableau de bord: il permet de <strong style="color:black">lier votre Google Agenda à votre Agenda CRM</strong>. Désormais, lorsque vous créez un rendez-vous dans la CRM, celui-ci est automatiquement ajouté à votre Google Agenda.<br>
+          <b>Et bientôt:</b> Nous travaillons sur une synchronisation dans l’autre sens: les rendez-vous créés dans votre Google Agenda seront automatiquement intégrés à votre Agenda CRM.<br>
+          <br>
+          <b>Restez connectés pour découvrir encore plus de nouveautés lors de nos prochaines mises à jour!</b><br>
 
         </div>
       </div>
@@ -442,10 +678,10 @@ Il vous permet de créer des <b>tickets</b> pour poser vos questions, signaler d
 
 <script>
   $(document).ready(function() {
-    setTimeout(function() {
+    /*setTimeout(function() {
       $('#maintenance').modal('show');
     }, 5000); // 5000 milliseconds = 5 seconds
-
+*/
     // Function to detect and parse dates in various common formats, including dd/mm/yyyy
     function parseDate(dateString) {
       const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;

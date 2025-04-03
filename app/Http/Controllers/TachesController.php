@@ -138,7 +138,9 @@ class TachesController extends Controller
 			})
 			->when($cl_ident, function ($query, $cl_ident) {
 				$client=Client::where('cl_ident',$cl_ident)->first();
+				if($client)
 				return $query->where('ID_Compte', '=', $client->id);
+
 			})
 			->get();
 

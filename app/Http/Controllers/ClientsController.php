@@ -14,7 +14,8 @@ use App\Services\PhoneService;
 use App\Services\GEDService;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use App\Exports\CompteClientsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClientsController extends Controller
 {
@@ -175,7 +176,8 @@ class ClientsController extends Controller
 		//if($client->Client_Prospect!='COMPTE PROSPECT'){
 		if ($client->cl_ident > 0) {
 			$contacts = Contact::where('cl_ident', $client->cl_ident)->get();
-			$taches = self::getClientTasks($client->cl_ident);
+			$taches = Tache::where('mycl_id', $client->cl_ident)->orderBy('id','desc')->get();
+			//$taches = self::getClientTasks($client->cl_ident);
 		} else {
 			$contacts = Contact::where('mycl_ident', $client->id)->get();
 			$taches = Tache::where('ID_Compte', $client->id)->get();
@@ -324,8 +326,12 @@ class ClientsController extends Controller
 		$type = $request->get('type');
 		$client_id = $request->get('client_id');
 		$print = $request->get('print');
+		$excel = $request->get('excel');
 
 		$representants = DB::table('representant')->orderBy('nom', 'asc')->get();
+
+		$clients_ids = DB::table('client')->where('cl_ident','<>','')->pluck('cl_ident');
+		$clients_ids=$clients_ids->unique();
 
 		if ($request->has('client_id') && $request->client_id) {
 			$query->where('cl_ident', 'like', '%' . $request->client_id . '%');
@@ -339,9 +345,51 @@ class ClientsController extends Controller
 
 		$query=self::filter_search($query,$request);
 
+		//RespAG
+		if( auth()->user()->user_role==4)
+			$query->where('agence_ident', auth()->user()->agence_ident);
 
+		//ADV
+		//clients de son agence, ainsi qu’aux clients pour lesquels l’utilisateur est désigné comme ADV
+		if( auth()->user()->user_role==6){
+			$query->where(function ($q)  {
+				$q->orWhere('agence_ident', auth()->user()->agence_ident)
+				->orWhere('ADV', auth()->user()->name.' '.auth()->user()->lastname);
+			});
+		}
+
+		//commercial
+		//  Peut voir ses propres clients (Où il est indiqué comme commercial ou commercial support)
+		// + Peut voir également les clients rattachés à ses agences (via champ agence dans la table representant).
+		//if( auth()->user()->agence_ident==7)
+		if( auth()->user()->user_role==7){
+
+			$Rep = DB::table('representant')->where('users_id',auth()->id())->first();
+/*
+			$query->where(function ($q) use ($Rep) {
+				$q->orWhere('commercial', $Rep->id)
+				->orWhere('commercial_support', $Rep->id)
+				->orWhere("agence_ident", $Rep->agence);
+			});
+*/
+
+			$query->where(function ($q) use ($Rep) {
+				$q->orWhere('commercial', $Rep->id)
+				  ->orWhere('commercial_support', $Rep->id);
+
+				// Gestion des agences multiples
+				$agences = explode(',', $Rep->agence);
+				$q->orWhere(function ($subQuery) use ($agences) {
+					foreach ($agences as $agence) {
+						$subQuery->orWhere('agence_ident', trim($agence));
+					}
+				});
+			});
+		}
+/*
 		if ($request->has('representant')  && $request->representant ) {
 			$rep = $request->representant;
+
 			$query->where('etat_id', 1)->where(function ($q) use ($rep) {
 				$q->where('commercial', $rep)
 				  ->orWhere('commercial_support', $rep);
@@ -352,7 +400,7 @@ class ClientsController extends Controller
 
 
 		}
-
+*/
 /*
 		if(auth()->id() == 141) {  //patricia delmas
 			$Rep = DB::table('representant')->where('users_id',auth()->id())->first();
@@ -455,11 +503,13 @@ class ClientsController extends Controller
 
 		$clients = $query->get()->take(1000);
 
-		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
+		$agences = Agence::orderBy('agence_lib', 'asc')->pluck('agence_lib', 'agence_ident')->toArray();
 		if ($print)
-			return view('clients.print', compact('clients', 'request', 'agences', 'representants'));
+			return view('clients.print', compact('clients', 'request', 'agences', 'representants','clients_ids'));
+		elseif($excel)
+			return Excel::download(new CompteClientsExport($query), 'clients.xlsx');
 		else
-			return view('clients.search', compact('clients', 'request', 'agences', 'representants'));
+			return view('clients.search', compact('clients', 'request', 'agences', 'representants','clients_ids'));
 	}
 
 	public function prospects(Request $request)
@@ -499,9 +549,10 @@ class ClientsController extends Controller
 			if (isset($clientId)) {
 				$folders = GEDService::getFolders($clientId);
 				//dd($folders);
+				$expDates=GEDService::expireDates($clientId);
 
 			}
-			return view('clients.folder', compact('client', 'folders', 'files'));
+			return view('clients.folder', compact('client', 'folders', 'files','expDates'));
 		} catch (\Exception $e) {
 			\Log::info(' erreur GED ' . $e->getMessage());
 			return "Erreur : " . $e->getMessage();
@@ -512,11 +563,17 @@ class ClientsController extends Controller
 	{
 		try {
 			//$clientId=auth()->user()->client_id;
-
+			$page       = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+			$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+			$month     = isset($_GET['month']) ? $_GET['month'] : '';
 			//if (isset($clientId)) {
 			$folders = GEDService::getFolderList($folderId);
-			$folderContent = GEDService::getFolderContent($folderId);
+			//$folderContent = GEDService::getFolderContent($folderId);
+			$result=GEDService::getFolderContent($folderId,20,$page,$search,$month);
+			$folderContent=$result ?? [] ;
 			$files = false;
+			$expDates=GEDService::expireDates($client_id);
+
 			if (!$folders) {
 				$folders = GEDService::getFolderList($parent);
 				$files = true;
@@ -530,7 +587,7 @@ class ClientsController extends Controller
 		} finally {
 			\Log::info('GED folder show ');
 		}
-		return view('clients.folders', compact('folders', 'folderName', 'folderContent', 'parent', 'files', 'folderId', 'client_id'));
+		return view('clients.folders', compact('folders', 'folderName', 'folderContent', 'parent', 'files', 'folderId', 'client_id','expDates','page','month','search'));
 	}
 
 
@@ -844,7 +901,12 @@ class ClientsController extends Controller
 		}
 
 		if ($request->has('type_client') && $request->type_client != 0) {
-			$query->where('couleur_html', $request->type_client);
+			if($request->type_client=='clients'){
+				$query->where('etat_id', 2);
+			}
+			else{
+				$query->where('couleur_html', $request->type_client);
+			}
 		}
 
 		if ($request->has('Nom') && $request->Nom) {
@@ -865,6 +927,14 @@ class ClientsController extends Controller
 
 		if ($request->has('agence') && $request->agence) {
 			$query->where('agence_ident',  $request->agence);
+		}
+
+		if ($request->has('pays_code') && $request->pays_code) {
+			$query->where('pays_code',  $request->pays_code);
+		}
+
+		if ($request->has('representant') && $request->representant) {
+			$query->where('commercial',  $request->representant);
 		}
 
 		return $query;

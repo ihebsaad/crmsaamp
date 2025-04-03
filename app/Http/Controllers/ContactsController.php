@@ -113,25 +113,28 @@ class ContactsController extends Controller
 
 		$contact = Contact::find($id);
 		$contact->update($request->all());
-
+		$client=CompteClient::find($contact->mycl_iden);
 		$data=array();
-		if($request->get('email')!=''){
-			$data['email']=$request->get('email');
-			$data['id_client']=$request->get('cl_ident');
-			$data['nom']=$request->get('Nom');
-			$data['prenom']=$request->get('Prenom');
 
-			if($request->get('MobilePhone')!='')
-				$data['tel']=   $request->get('MobilePhone') ;
-			else
-				$data['tel']=   $request->get('Phone') ;
+		if($client && $client->etat_id==2){
+			if($request->get('email')!=''){
+				$data['email']=$request->get('email') ?? '';
+				$data['id_client']=$request->get('cl_ident');
+				$data['nom']=$request->get('Nom') ?? '';
+				$data['prenom']=$request->get('Prenom') ?? '';
 
-			self::update_as400($data);
-			// suprrimer les users avec ancien email
-			User::where('email',$request->get('email'))->delete();
+				if($request->get('MobilePhone')!='')
+					$data['tel']=   $request->get('MobilePhone') ?? '' ;
+				else
+					$data['tel']=   $request->get('Phone') ?? '' ;
+
+				self::update_as400($data);
+				// suprrimer les users avec ancien email
+				User::where('email',$request->get('email'))->delete();
+			}
+
+			DB::select ("  CALL `sp_contact_insert_auto`(); ");
 		}
-
-		DB::select ("  CALL `sp_contact_insert_auto`(); ");
 
 		return redirect()->route('fiche', $contact->mycl_ident)->with('success', 'Contact modifié');
 	}
