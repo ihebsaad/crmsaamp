@@ -230,7 +230,9 @@ function activites_client(cl_ident) {
                                 @if(auth()->user()->user_role==1 || auth()->user()->user_role ==2 || auth()->user()->user_role== 5)
                                     <button type="submit" name="excel" value="true" class="btn btn-success float-right mt-2 mr-2 ml-2" style="background-color:#1cc88a"><i class="fa fa-file-excel"></i> Excel </button>
                                 @endif
+                                @if(auth()->user()->user_role==1 || auth()->user()->user_role ==2 || auth()->user()->user_role== 3 || auth()->user()->user_role== 4 || auth()->user()->user_role== 5)
                                 <button type="submit" name="print" value="true" class="btn btn-secondary float-right mt-2 mr-2 ml-2"><i class="fa fa-print"></i> {{__('msg.Print')}}</button>
+                                @endif
                             </div>
                             <div class="col-md-12 col-sm-12">
                                 <!-- Carte (à intégrer avec une API de carte si nécessaire)  text-shadow:1px 1px black  -->

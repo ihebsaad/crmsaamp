@@ -61,20 +61,30 @@ if (isset($pdf)) {
     @php
     $i++;
     $client=\App\Models\CompteClient::find($rv->mycl_id);
-    $location='';
-    if(isset($client))
-    $location=$client->ville.' ('.$client->adresse1.')';
-
+    $location = $color='';
+    $type_c='Agence';
+    if(isset($client)){
+        $location=$client->ville.' ('.$client->adresse1.')';
+        $color=$client->couleur_html;
+        switch ($client->etat_id) {
+            case 2 :  $color='#2660c3'; $type_c='Client' ; break;
+            case 1 : $color='#2ab62c'; $type_c='Prospect' ;break;
+            case 3 : $color='#ff2e36'; $type_c='Client Fermé' ; break;
+            case 4 : $color='#d32230';  $type_c='Client Inactif' ; break;
+        }
+    }
     $status = [1 => "Planifié", 2 => "Réalisé",3=> 'Annulé'];
     $files= \App\Models\File::where('parent_id',$rv->id)->where('parent','rendezvous')->count();
     @endphp
     <ul class="event">
         <b style="color:#808080;font-size:19px;margin-left:-25px">{{ $i }}. Rendez vous du {{ date('d/m/Y', strtotime($rv->Started_at)) }}</b><br>
-        <li><b>Heure: </b> {{ $rv->heure_debut }} - {{ $rv->heure_fin ?? 'N/A' }}</li>
-        <li><b>Client: </b>{{ $rv->Account_Name }} {{$client!='' ? $client->cl_ident : ''}}</li>
+        <li><i><b>Heure: </b> {{ $rv->heure_debut }} - {{ $rv->heure_fin ?? 'N/A' }}</i></li>
+        <li><b >{{$type_c}}</b> : <span style="color:{{$color ?? 'gray'}}"> {{ $rv->Account_Name }} {{$client!='' ? $client->cl_ident : ''}} </span> </li>
         <li><b>Lieu: </b>{{ $rv->Location ?? $location }}</li>
         <li><b>Statut: </b>{{ $rv->statut > 0 ? $status[$rv->statut] : '' }}</li>
-        <li><b>Sujet: </b>{{ $rv->Subject }}</li>
+        <li><b>Type: </b>{{ $rv->Type }}</li>
+        <!--<li><b>Sujet: </b>{{ $rv->Subject }}</li>-->
+        <!--<li><b>Sujet: </b>{{ $rv->Subject }}</li>-->
         @if($rv->Description!='') <li style="margin-left:15px;list-style:none"><b>Compte Rendu: </b> {{$rv->Description}} </li> @endif
     </ul>
     @endforeach
