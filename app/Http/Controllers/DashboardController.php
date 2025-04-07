@@ -7,6 +7,7 @@ use App\Models\Agence;
 use App\Models\User;
 use App\Models\CompteClient;
 use App\Models\Offre;
+use App\Models\Consultation;
 use App\Models\RendezVous;
 use App\Models\RetourClient;
 use App\Models\Tache;
@@ -685,6 +686,7 @@ class DashboardController extends Controller
 		*/
 		$userToken = GoogleToken::where('user_id', auth()->id())->first();
 
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Tableau de bord"]);
 
 		return view('dashboard.dashboard', compact('totaux_clients', 'rendezvous', 'clients', 'total_clients', 'total_1','offres', 'retours', 'agence', 'prospects', 'commerciaux', 'customers', 'userToken', 'rendezvous_passes'));
 	}

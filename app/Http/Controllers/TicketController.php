@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Services\SendMail;
 use App\Models\File;
+use App\Models\Consultation;
 
 class TicketController extends Controller
 {
@@ -31,12 +32,16 @@ class TicketController extends Controller
         else
             $tickets = Ticket::where('user_id', auth()->user()->id)->get();
 
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Liste des tickets"]);
+
         return view('tickets.index', compact('tickets'));
     }
 
     // Affiche le formulaire de création d'un nouveau ticket
     public function create()
     {
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Création des tickets de support"]);
+
         return view('tickets.create');
     }
 
@@ -111,6 +116,9 @@ class TicketController extends Controller
     {
         $ticket = Ticket::with('comments.user')->findOrFail($id);
 		$fichiers=File::where('parent','tickets')->where('parent_id',$ticket->id)->get();
+
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Affichage de ticket"]);
+
         return view('tickets.show', compact('ticket','fichiers'));
     }
 
@@ -118,6 +126,8 @@ class TicketController extends Controller
     public function edit($id)
     {
         $ticket = Ticket::findOrFail($id);
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Modificaton des ticket"]);
+
         return view('tickets.edit', compact('ticket'));
     }
 

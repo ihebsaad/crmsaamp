@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Services\RouteService;
 use DB;
 use Illuminate\Support\Facades\Http;
+use App\Models\Consultation;
 
 class MapController extends Controller
 {
@@ -73,6 +74,7 @@ class MapController extends Controller
                 }
             }
         }
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Parcours Map"]);
 
         return view('map.parcours', compact('commercial_id', 'date', 'rdvs', 'total_distance', 'total_duration', 'coordinates','users'));
     }

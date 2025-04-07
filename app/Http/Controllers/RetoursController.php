@@ -12,6 +12,7 @@ use App\Models\Contact;
 use App\Models\File;
 use App\Services\SendMail;
 use Illuminate\Support\Facades\DB;
+use App\Models\Consultation;
 
 
 class RetoursController extends Controller
@@ -48,6 +49,7 @@ class RetoursController extends Controller
 
 		}
 		$agences = DB::table('agence')->get();
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Liste des réclamations"]);
 
 		return view('retours.index', compact('retours','agences'));
 	}
@@ -58,6 +60,8 @@ class RetoursController extends Controller
 		$retour = RetourClient::where('cl_id', $client->cl_ident)->first();
 		$contacts = Contact::where('cl_ident', $client->cl_ident)->get();
 		$agences = DB::table('agence')->get();
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Création du réclamation"]);
 
 		return view('retours.create', compact('retour', 'client', 'contacts', 'agences'));
 	}
@@ -91,6 +95,8 @@ class RetoursController extends Controller
 
 		// Récupérer le retour suivant
 		$nextRetour = RetourClient::where('id', '>', $retour->id)->orderBy('id', 'asc')->first();
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Réclamation"]);
 
 		return view('retours.show', compact('retour', 'contact', 'class', 'agences', 'files','previousRetour','nextRetour'));
 	}

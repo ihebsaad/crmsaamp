@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Exports\CompteClientsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Consultation;
 
 class ClientsController extends Controller
 {
@@ -40,6 +41,8 @@ class ClientsController extends Controller
 	public function create()
 	{
 		$agences = DB::table('agence')->get();
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Création Client"]);
+
 		return view('clients.create', compact('agences'));
 	}
 
@@ -49,6 +52,8 @@ class ClientsController extends Controller
 		$agences = DB::table('agence')->get();
 		$representants = DB::table('representant')->get();
 		$etats = DB::table('etat_client')->get();
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Affichage Client $client->Nom - $client->cl_ident"]);
 
 		return view('clients.show', compact('client', 'agences', 'representants', 'etats'));
 	}
@@ -298,6 +303,9 @@ class ClientsController extends Controller
 			->where('Started_at', '<', $now)
 			->orderBy('Started_at', 'desc')
 			->get();
+
+			Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Fiche Client $client->Nom -  $client->cl_ident"]);
+
 		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login', 'commentaires'));
 	}
 
@@ -305,6 +313,8 @@ class ClientsController extends Controller
 	public function finances($id)
 	{
 		$client = CompteClient::find($id);
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Finances du Client $client->Nom"]);
+
 		return view('clients.finances', compact('client'));
 	}
 
@@ -504,11 +514,17 @@ class ClientsController extends Controller
 		$clients = $query->get()->take(1000);
 
 		$agences = Agence::orderBy('agence_lib', 'asc')->pluck('agence_lib', 'agence_ident')->toArray();
-		if ($print)
+		if ($print){
+			Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Impression liste des clients"]);
+
 			return view('clients.print', compact('clients', 'request', 'agences', 'representants','clients_ids'));
-		elseif($excel)
+		}
+		if($excel){
+			Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Export excel liste des clients"]);
 			return Excel::download(new CompteClientsExport($query), 'clients.xlsx');
-		else
+		}
+			Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Recherche des clients"]);
+
 			return view('clients.search', compact('clients', 'request', 'agences', 'representants','clients_ids'));
 	}
 
@@ -552,6 +568,9 @@ class ClientsController extends Controller
 				$expDates=GEDService::expireDates($clientId);
 
 			}
+
+			Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "GED Client $client->Nom -  $client->cl_ident"]);
+
 			return view('clients.folder', compact('client', 'folders', 'files','expDates'));
 		} catch (\Exception $e) {
 			\Log::info(' erreur GED ' . $e->getMessage());
@@ -587,6 +606,8 @@ class ClientsController extends Controller
 		} finally {
 			\Log::info('GED folder show ');
 		}
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "GED dossier $folderId"]);
+
 		return view('clients.folders', compact('folders', 'folderName', 'folderContent', 'parent', 'files', 'folderId', 'client_id','expDates','page','month','search'));
 	}
 

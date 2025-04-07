@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.back')
 
 
 @section('content')
@@ -36,7 +36,7 @@ use App\Http\Controllers\UsersController;
                 </a>
             </div>
             <div class="card-body">
-
+ 
                 <div class="row">
                     <div class="col-lg-8 col-sm-6">
                         <form method="GET" action="{{ route('logins') }}" style="width:100%;display:flex">
@@ -57,12 +57,8 @@ use App\Http\Controllers\UsersController;
                             </div>
                         </form>
                     </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <form method="GET" action="{{ route('export-user-logins') }}">
-                                <input type="hidden" name="debut" value="{{ request('debut') }}">
-                                <input type="hidden" name="fin" value="{{ request('fin') }}">
-                                <button type="submit"  class="btn btn-success float-right mr-3"><i class="fa fa-file-excel"></i>   Exporter </button>
-                        </form>
+                    <div class="col-lg-4 col-sm-6 text-right">
+                        <a href="{{route('consultations')}}" class="btn btn-success" style=" "><i class="fas fa-chalkboard-teacher"></i> Historique des activités</a>
                     </div>
 
                 </div>
@@ -70,20 +66,48 @@ use App\Http\Controllers\UsersController;
                     <thead>
                         <tr id="headtable">
                             <th>ID </th>
-                            <th>Client ID</th>
                             <th>Nom complet</th>
                             <th>Email</th>
-                            <th>Type</th>
+                            <th>Rôle</th>
                             <th>Date de connexion</th>
                             <th>Date de déconnexion</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($logins as $login)
+						    @php   
+                            $role='';
+                            switch ($login->user->user_role) {
+                                case 1:
+                                    $role= "Admin";
+                                    break;
+                                case 2:
+                                    $role= "Direction";
+                                    break;
+                                case 3:
+                                    $role= "Superviseur";
+                                    break;
+                                case 4:
+                                    $role= "Responsable d'agence";
+                                    break;
+                                case 5:
+                                    $role= "Qualité";
+                                    break;
+                                case 6:
+                                    $role= "Adv";
+                                    break;   
+                                case 7:
+                                    $role= "Commercial";
+                                    break;     
+                                case 8:
+                                    $role= "Animateur commercial";
+                                    break;                                                                                                       
+                            }
+                            
+                            @endphp
                             <tr>
                                 <td>{{ $login->user->id ?? '' }}</td>
-                                <td>{{ $login->user->client_id  ?? ''}}</td>
-                                <td>@if($login->user !='') <a   href="{{route('pages',['id'=>$login->user->id ])}}"  >{{ $login->user->name }} {{ $login->user->lastname }}</a>  @endif</td>
+                                <td>@if($login->user !='')  {{ $login->user->name }} {{ $login->user->lastname }}   @endif</td>
                                 <td>{{ $login->user->email ?? '' }}</td>
                                 <td>{{ $login->user->user_type ?? '' }}</td>
                                 <td>{{ date('d/m/Y H:i', strtotime($login->login_at)) ?? ''}}</td>
@@ -92,6 +116,14 @@ use App\Http\Controllers\UsersController;
                         @endforeach
                     </tbody>
                 </table>
+
+                    <div class="col-lg-12 col-sm-6">
+                        <form method="GET" action="{{ route('export-user-logins') }}">
+                                <input type="hidden" name="debut" value="{{ request('debut') }}">
+                                <input type="hidden" name="fin" value="{{ request('fin') }}">
+                                <button type="submit" style="background-color:#1cc88a" class="btn btn-success float-right mr-3"><i class="fa fa-file-excel"></i>   Exporter </button>
+                        </form>
+                    </div>
             </div>
         </div>
     </div>
@@ -149,6 +181,8 @@ use App\Http\Controllers\UsersController;
 
         var table = $('#mytable').DataTable({
             orderCellsTop: true,
+            pageLength: 50, // Affiche 10 lignes par défaut
+            lengthMenu: [[20, 50,75,100, -1], [20, 50,75,100, "Tout"]],
             dom: '<"top"flp<"clear">>rt<"bottom"ip<"clear">>',
             responsive: true,
             aaSorting: [],

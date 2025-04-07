@@ -11,6 +11,7 @@ use App\Models\Tache;
 use App\Models\Agence;
 use App\Services\PhoneService;
 use Illuminate\Support\Facades\DB;
+use App\Models\Consultation;
 
 
 class TachesController extends Controller
@@ -216,6 +217,8 @@ class TachesController extends Controller
 
 		$agences = DB::table('agence')->get();
 		$title = "Suivi d'activité";
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Liste des tâches"]);
 
 		return view('taches.list', compact('taches', 'agences', 'title','nom','cl_ident','debut','fin'));
 	}
@@ -497,6 +500,8 @@ class TachesController extends Controller
 
 		$taches = $tasks->merge($prises);
 
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Liste des activités"]);
+
 		return view('taches.list', compact('taches', 'title','nom','cl_ident','debut','fin'));
 	}
 
@@ -505,6 +510,8 @@ class TachesController extends Controller
 		$client = CompteClient::find($id);
 		$agences = DB::table('agence')->get();
 
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Créaton d'une activité"]);
+
 		return view('taches.create', compact('client', 'agences'));
 	}
 
@@ -512,6 +519,7 @@ class TachesController extends Controller
 	{
 		$client = CompteClient::find($id);
 		$taches = Tache::where('mycl_id', $client->cl_ident)->get();
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Liste des activiés"]);
 		return view('taches.list', compact('taches', 'client'));
 	}
 
@@ -520,6 +528,8 @@ class TachesController extends Controller
 		$tache = Tache::find($id);
 		$client = CompteClient::find($tache->ID_Compte);
 		$agences = DB::table('agence')->get();
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Affichage de l'activité"]);
 
 		return view('taches.show', compact('tache', 'client', 'agences'));
 	}

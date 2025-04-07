@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\EmailTemplate;
+use App\Models\Consultation;
 
 class EmailTemplateController extends Controller
 {
@@ -16,11 +17,15 @@ class EmailTemplateController extends Controller
     public function index()
     {
         $templates = EmailTemplate::where('user',auth()->id())->get();
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Liste de emails templates"]);
+
         return view('email_templates.index', compact('templates'));
     }
 
     public function create()
     {
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Création email template"]);
+
         return view('email_templates.edit');
     }
 
@@ -52,6 +57,8 @@ class EmailTemplateController extends Controller
 
     public function edit(EmailTemplate $emailTemplate)
     {
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Modification email template"]);
+
         return view('email_templates.edit', compact('emailTemplate'));
     }
 

@@ -20,6 +20,7 @@ use App\Services\SendMail;
 use  PDO;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Consultation;
 
 class HomeController extends Controller
 {
@@ -506,6 +507,8 @@ class HomeController extends Controller
 
 	public function help()
 	{
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Aide"]);
+
  		return view('help');
 	}
 
@@ -537,6 +540,7 @@ class HomeController extends Controller
 			}
 
 			$stats=$stats2=$stats3=$stats4=$stats5=$stats6= null;
+			Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Statistiques"]);
 
 			return view('home',compact('agences','users','stats','stats2','stats3','stats4','stats5','stats6','representants','commercial'));
 		}
@@ -673,6 +677,9 @@ class HomeController extends Controller
 	{
 		$commande=self::detailscommandeprod($id);
 		$commandes=self::detailscommandeprod($id);
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Commande $id"]);
+
 		return view('products.commande',compact('commande','commandes'));
 	}
 

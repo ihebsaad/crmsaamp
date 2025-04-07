@@ -11,6 +11,7 @@ use App\Models\Offre;
 use App\Models\RendezVous;
 use App\Models\RetourClient;
 use DB;
+use App\Models\Consultation;
 
 class RecapController extends Controller
 {
@@ -153,6 +154,8 @@ class RecapController extends Controller
         $prev_remises = $prev_taches->where('Type', 'Remise de commande')->count();
         $prev_suivis = $prev_taches->where('Type', 'Suivi client')->count();
         $prev_autres = $prev_taches->where('Type', 'Autre')->count();
+
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Récapitulatif"]);
 
         return view('dashboard.recap', compact(
             'rendezvous',

@@ -259,13 +259,14 @@ Route::post('/upload-image', [CommunicationsController::class, 'uploadImage']);
 Route::get('/logins', 'App\Http\Controllers\UserLoginController@index')->name('logins');
 Route::get('/pages/{id}', 'App\Http\Controllers\UserLoginController@pages')->name('pages');
 Route::get('/consultations', 'App\Http\Controllers\UserLoginController@consultations')->name('consultations');
+Route::post('/delete-old-consultations', 'App\Http\Controllers\UserLoginController@deleteOldConsultations')->name('deleteOldConsultations');
 
 Route::get('export-user-logins', function (Request $request) {
     $debut = $request->get('debut');
     $fin = $request->get('fin');
     $date = date('d-m-Y H_i');
 
-    return Excel::download(new UserLoginsExport($debut, $fin), 'MySaamp_Access_' . $date . '.xlsx');
+    return Excel::download(new UserLoginsExport($debut, $fin), 'CRM_Saamp_Access_' . $date . '.xlsx');
 })->name('export-user-logins');
 
 

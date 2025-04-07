@@ -10,6 +10,7 @@ use App\Models\RetourClient;
 use App\Models\Contact;
 use App\Models\User;
 use App\Services\SendMail;
+use App\Models\Consultation;
 
 use Illuminate\Support\Facades\DB;
 
@@ -38,6 +39,8 @@ class ContactsController extends Controller
 	{
 		$client = CompteClient::find($id);
 		$contact = Contact::where('cl_ident', $client->id)->first();
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Création de contact"]);
+
 		return view('contacts.create', compact('contact', 'client'));
 	}
 
@@ -51,6 +54,8 @@ class ContactsController extends Controller
 		else
 			$client = Client::where('id', $contact->mycl_ident)
 				->first();
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Affichage de contact"]);
 
 		return view('contacts.show', compact('contact', 'client'));
 	}

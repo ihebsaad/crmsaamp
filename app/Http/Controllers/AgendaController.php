@@ -7,6 +7,7 @@ use DB;
 
 use App\Models\User;
 use App\Models\RendezVous;
+use App\Models\Consultation;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\RendezVousExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -75,7 +76,7 @@ class AgendaController extends Controller
 			->orderBy('id','desc')
 			->get();
 		}
-
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Agenda"]);
 
 		return view('agenda',compact('rendezvous','user','users'));
 
@@ -108,6 +109,8 @@ class AgendaController extends Controller
 				->orderBy('heure_debut', 'asc')
 				->get();
 		}
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Agenda impression"]);
 
 		return view('rendezvous.print_list', compact('rendezvous', 'user', 'name', 'date_debut', 'date_fin'));
 	}
@@ -142,6 +145,9 @@ class AgendaController extends Controller
 
 		$date=date('d_m_Y_H_i');
 		$pdf = PDF::loadView('rendezvous.pdf_list', compact('rendezvous', 'user', 'name', 'date_debut', 'date_fin'));
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Agenda PDF"]);
+
 		return $pdf->stream('rendezvous-' . $name . '-'.$date.'.pdf');
 	}
 
@@ -171,6 +177,8 @@ class AgendaController extends Controller
 				->orderBy('heure_debut', 'asc')
 				->get();
 		}
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Agenda Excel"]);
 
 		return Excel::download(new RendezVousExport($rendezvous), 'agenda_' . date('d_m_Y_H_i') . '.xlsx');
 	}
@@ -242,6 +250,7 @@ class AgendaController extends Controller
 			->get();
 		}
 
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Agenda Rdv extérieurs"]);
 
 		return view('agenda',compact('rendezvous','representants','user'));
 

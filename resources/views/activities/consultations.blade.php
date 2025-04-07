@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.back')
 
 
 @section('content')
@@ -33,15 +33,20 @@ use App\Http\Controllers\UsersController;
         <div class="card shadow mb-4">
             <div class="  ">
                 <a href="#div1" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                    <h6 class="m-0 font-weight-bold text-primary">Consultations des pages</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Historique des activités</h6>
                 </a>
             </div>
             <div class="card-body">
 
                 <div class="row mb-2">
-                    <div class="col-lg-8 col-sm-6"> </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <a href="#" class="btn btn-danger" style="opacity:0.5">Supprimer les données des années précédentes</a>
+                    <div class="col-lg-4 col-md-12 col-sm-12"> </div>
+                    <div class="col-lg-3 col-md-12 col-sm-12 mb-1"> <a href="{{route('logins')}}" class="btn btn-primary" style=" "><i class="fas fa-sign-in-alt"></i> Historique des connexions</a></div>
+                    <div class="col-lg-3 col-md-12 col-sm-12">
+                        <form action="{{ route('deleteOldConsultations') }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer toutes les consultations de plus de 3 mois ?');">
+                            @csrf
+                            @method('POST')
+                            <button type="submit" class="btn btn-danger" title="Supprimer les activités de plus de 3 mois"><i class="fas fa-trash"></i> Supprimer les anciennes activités</button>
+                        </form>
                     </div>
                 </div>
                 <table id="mytable" class="table table-striped" style="width:100%">
@@ -55,11 +60,40 @@ use App\Http\Controllers\UsersController;
                     </thead>
                     <tbody>
                         @foreach ($consultations as $cons)
-                            @php $user=\App\Models\User::find($cons->user); @endphp
+                            @php $user=\App\Models\User::find($cons->user); 
+                            $role='';
+                            switch ($user->user_role) {
+                                case 1:
+                                    $role= "Admin";
+                                    break;
+                                case 2:
+                                    $role= "Direction";
+                                    break;
+                                case 3:
+                                    $role= "Superviseur";
+                                    break;
+                                case 4:
+                                    $role= "Responsable d'agence";
+                                    break;
+                                case 5:
+                                    $role= "Qualité";
+                                    break;
+                                case 6:
+                                    $role= "Adv";
+                                    break;   
+                                case 7:
+                                    $role= "Commercial";
+                                    break;     
+                                case 8:
+                                    $role= "Animateur commercial";
+                                    break;                                                                                                       
+                            }
+                            
+                            @endphp
                             <tr>
                                 <td>{{ date('d/m/Y H:i', strtotime($cons->created_at)) }}</td>
                                 <td>{{ isset($user) ? $user->id .' - '.$user->name .' '. $user->lastname : '' }}</td>
-                                <td> </td>
+                                <td> {{$role}}</td>
                                 <td>{{ $cons->page  }}</td>
                             </tr>
                         @endforeach
@@ -71,11 +105,7 @@ use App\Http\Controllers\UsersController;
 </div>
 
 
-
-
-
-
-
+ 
 
 @endsection
 
@@ -121,6 +151,8 @@ use App\Http\Controllers\UsersController;
         });
 
         var table = $('#mytable').DataTable({
+            pageLength: 50, // Affiche 10 lignes par défaut
+            lengthMenu: [[20, 50,75,100, -1], [20, 50,75,100, "Tout"]],
             orderCellsTop: true,
             dom: '<"top"flp<"clear">>rt<"bottom"ip<"clear">>',
             responsive: true,
@@ -129,34 +161,13 @@ use App\Http\Controllers\UsersController;
 
                 'csv', 'excel', 'pdf', 'print'
             ],
+            language: {
+                "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json" // Fichier de traduction pour le français
+            },
             "columnDefs": [{
                 "targets": 'no-sort',
                 "orderable": false,
-            }],
-            "language": {
-                "decimal": "",
-                "emptyTable": "Pas de données",
-                "info": "affichage de  _START_ à _END_ de _TOTAL_ entrées",
-                "infoEmpty": "affichage 0 à 0 de 0 entrées",
-                "infoFiltered": "(Filtrer de _MAX_ total d`entrées)",
-                "infoPostFix": "",
-                "thousands": ",",
-                "lengthMenu": "affichage de _MENU_ entrées",
-                "loadingRecords": "chargement...",
-                "processing": "chargement ...",
-                "search": "Recherche:",
-                "zeroRecords": "Pas de résultats",
-                "paginate": {
-                    "first": "Premier",
-                    "last": "Dernier",
-                    "next": "Suivant",
-                    "previous": "Précédent"
-                },
-                "aria": {
-                    "sortAscending": ": activer pour un tri ascendant",
-                    "sortDescending": ": activer pour un tri descendant"
-                }
-            }
+            }]
 
         });
 

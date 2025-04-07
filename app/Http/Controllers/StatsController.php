@@ -6,6 +6,7 @@ use DB;
 use App\Exports\StatsCommercialExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\User;
+use App\Models\Consultation;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -24,7 +25,7 @@ class StatsController extends Controller
 
 
 
-    public function stats_client(Request $request)
+public function stats_client(Request $request)
 	{
 		$cl_id=$request->get('cl_id');
 		$mois=$request->get('mois');
@@ -55,6 +56,8 @@ class StatsController extends Controller
             DB::rollBack();
             throw $e;
         }
+
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Statistiques"]);
 
         return view('home', compact('stats', 'stats2', 'stats3', 'stats4', 'stats5'));
     }

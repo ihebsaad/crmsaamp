@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\GEDService;
 use App\Services\SendMail;
 use App\Models\File;
+use App\Models\Consultation;
 
 
 class OffresController extends Controller
@@ -40,7 +41,7 @@ class OffresController extends Controller
 	{
 		//$offres=Offre::where('id','<>',null)->limit(1000)->orderBy('id','desc')->get();
 		$offres=Offre::limit(100)->orderBy('id','desc')->get();
-		//dd($offres);
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "liste des offres"]);
 		return view('offres.index',compact('offres'));
 	}
 
@@ -59,6 +60,8 @@ class OffresController extends Controller
 		else
 			$offres=Offre::where('nom_compte',trim($client->Nom))->get();
 
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "liste des offres"]);
+
 		return view('offres.index',compact('offres','client'));
 	}
 
@@ -66,6 +69,9 @@ class OffresController extends Controller
 	{
 		$client=CompteClient::find($id);
 		$contact=Contact::where('cl_ident',$client->cl_ident)->first();
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Ajouter une offre"]);
+
 		return view('offres.create',compact('client','contact'));
 	}
 
@@ -93,6 +99,8 @@ class OffresController extends Controller
 		finally {
 			\Log::info('GED folder show ' );
 		}
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Affichage de l'offre $offre->Nom_offre"]);
+
 		return view('offres.show',compact('offre','folders','files','folderContent','fichiers','historiques'));
 	}
 

@@ -11,6 +11,7 @@ use App\Models\Agence;
 use App\Models\File;
 use App\Services\SendMail;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Consultation;
 
 class CommunicationsController extends Controller
 {
@@ -25,6 +26,8 @@ class CommunicationsController extends Controller
     {
         $agences = Agence::get();
         $templates = EmailTemplate::where('user',auth()->id())->get();
+
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Création de communication"]);
 
         return view('communications.create',compact('agences','templates'));
     }
@@ -205,6 +208,9 @@ class CommunicationsController extends Controller
 		public function index()
 	{
 		$communications = Communication::orderBy('id', 'desc')->limit(1000)->get();
+
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "liste des communications"]);
+
 		return view('communications.index', compact('communications'));
 	}
 

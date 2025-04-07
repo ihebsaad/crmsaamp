@@ -17,7 +17,7 @@ use Google_Client;
 use Google_Service_Calendar;
 use Google_Service_Calendar_Event;
 use Google_Service_Calendar_EventDateTime;
-
+use App\Models\Consultation;
 use Illuminate\Support\Facades\Log;
 
 class RendezVousController extends Controller
@@ -46,6 +46,9 @@ class RendezVousController extends Controller
 		$rendezvous = RendezVous::where('Attribue_a', auth()->user()->name . ' ' . auth()->user()->lastname)
 			->orWhere('user_id', auth()->user()->id)
 			->orderBy('id', 'desc')->get();
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Liste des rendez vous"]);
+
 		return view('rendezvous.list', compact('rendezvous'));
 	}
 
@@ -56,6 +59,9 @@ class RendezVousController extends Controller
 		$rendezvous = RendezVous::where('Attribue_a', auth()->user()->name . ' ' . auth()->user()->lastname)
 			->orWhere('user_id', auth()->user()->id)
 			->orderBy('id', 'desc')->get();
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Mes rendez vous"]);
+
 		return view('rendezvous.list', compact('rendezvous'));
 	}
 
@@ -69,6 +75,9 @@ class RendezVousController extends Controller
 		$userToken = GoogleToken::where('user_id', auth()->id())->first();
 
 		$users = User::where('user_type', '<>', '')->get();
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Création du rendez vous"]);
+
 		return view('rendezvous.create', compact('client', 'users','userToken'));
 	}
 
@@ -92,6 +101,7 @@ class RendezVousController extends Controller
 			$client = null;
 			$adresse = '';
 		}
+        Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Affichage du rendez vous"]);
 
 		return view('rendezvous.show', compact('rendezvous', 'client', 'adresse', 'files'));
 	}
@@ -105,6 +115,9 @@ class RendezVousController extends Controller
 		} else {
 			$client = null;
 		}
+
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Impression du rendez vous"]);
+
 		return view('rendezvous.print', compact('rendezvous', 'client','user'));
 	}
 

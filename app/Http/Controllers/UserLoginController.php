@@ -7,7 +7,7 @@ use App\Models\UserLogin;
 use App\Models\User;
 use App\Models\Consultation;
 use Spatie\Activitylog\Models\Activity;
-
+use Carbon\Carbon;
 
 class UserLoginController extends Controller
 {
@@ -50,5 +50,17 @@ class UserLoginController extends Controller
         return view('activities.consultations', compact('consultations'));
     }
 
-
+    public function deleteOldConsultations()
+    {
+        // Calculer la date limite pour 3 mois en arrière
+        $threeMonthsAgo = Carbon::now()->subMonths(3);
+    
+        // Supprimer les consultations créées avant cette date
+        Consultation::where('app', 2)
+                    ->where('created_at', '<', $threeMonthsAgo)
+                    ->delete();
+    
+        // Rediriger vers la page des consultations après suppression
+        return redirect()->route('consultations')->with('success', 'Consultations supprimées avec succès');
+    }
 }
