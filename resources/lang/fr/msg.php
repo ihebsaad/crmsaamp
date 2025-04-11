@@ -544,7 +544,7 @@ return [
 	"Start hour"=>"Heure de début",
 	"End hour"=>"Heure de fin",
 	"Place"=>"Lieu",
-	"Attributed to"=>"Attributé à",
+	"Attributed to"=>"Attribué à",
 	"Account name"=>"Nom du compte",
 	"Appointments list"=>"Liste des rendez vous",
 	"Appointments"=>"Rendez vous",

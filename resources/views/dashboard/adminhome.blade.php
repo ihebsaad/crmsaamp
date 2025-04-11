@@ -362,7 +362,9 @@
 			</div>
 		</div>
 		<div class="col-lg-7 col-md-12">
-
+			<div class="text-right">
+				<a href="{{route('consultations')}}" class="btn btn-primary mb-2" style=" "><i class="fas fa-chalkboard-teacher"></i> Activités des utilisateurs</a>
+			</div>
 					<h4 class="text-center ">Gestion des rôles</h4>
 					<div class="table-container">
 						<table class="table table-striped" style="width:90%">
@@ -384,17 +386,48 @@
 						</table>
 					</div>
 					<h4 class="text-center  mt-5">Réception des lots d'or hautes teneurs par agence</h4>
-					<div class="table-container" style="height:420px;max-height:550px;overflow-y:hidden;">
-						<table class="table table-striped" style="width:90%">
-							<thead style="background-color:lightgray;color:white">
-								<tr><th>Agence</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>S6</th><th>S7</th><th>S8</th><th>S9</th><th>S10</th><th>S11</th></tr>
-							</thead>
-							@foreach($stats as $s)
-							<tr>
-								<th>{{$s->agences}}</th><th>{{$s->S1}}</th><th>{{$s->S2}}</th><th>{{$s->S3}}</th><th>{{$s->S4}}</th><th>{{$s->S5}}</th><th>{{$s->S6}}</th><th>{{$s->S7}}</th><th>{{$s->S8}}</th><th>{{$s->S9}}</th><th>{{$s->S10}}</th><th>{{$s->S11}}</th>
-							</tr>
-							@endforeach
-						</table>
+					<ul class="nav nav-tabs card-header" id="myTab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="week-tab" data-toggle="tab" href="#week" role="tab" aria-controls="week" aria-selected="true" style="color:#4e73df;width:250px;text-align:center"><i class="fas fa-calendar-week "></i>  Par semaine </a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="month-tab" data-toggle="tab" href="#month" role="tab" aria-controls="month" aria-selected="false" style="color:#4e73df;width:250px;text-align:center"><i class="fas fa-calendar "></i>  Par mois </a>
+						</li>
+
+					</ul>
+
+
+					<div class="tab-content" style="padding-left:15px;padding-right:15px">
+
+						<div class="tab-pane active" id="week" role="tabpanel" aria-labelledby="week-tab">
+							<div class="table-container" style="height:420px;max-height:550px;">
+								<table class="table table-striped" style="width:90%">
+									<thead style="background-color:lightgray;color:white">
+										<tr><th>Agence</th><th>S0</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>S6</th><th>S7</th><th>S8</th><th>S9</th><th>S10</th><th>S11</th></tr>
+									</thead>
+									@foreach($stats as $s)
+									<tr>
+										<th>{{$s->agences}}</th><th>{{$s->S0}}</th><th>{{$s->S1}}</th><th>{{$s->S2}}</th><th>{{$s->S3}}</th><th>{{$s->S4}}</th><th>{{$s->S5}}</th><th>{{$s->S6}}</th><th>{{$s->S7}}</th><th>{{$s->S8}}</th><th>{{$s->S9}}</th><th>{{$s->S10}}</th><th>{{$s->S11}}</th>
+									</tr>
+									@endforeach
+								</table>
+							</div>
+						</div>
+
+						<div class="tab-pane" id="month" role="tabpanel" aria-labelledby="month-tab">
+							<div class="table-container" style="height:420px;max-height:550px;">
+								<table class="table table-striped" style="width:90%">
+									<thead style="background-color:lightgray;color:white">
+										<tr><th>Agence</th><th>M</th><th>M1</th><th>M2</th><th>M3</th><th>M4</th></tr>
+									</thead>
+									@foreach($stats_mois as $s)
+									<tr>
+										<th>{{$s->agences}}</th><th>{{$s->M}}</th><th>{{$s->M_1}}</th><th>{{$s->M_2}}</th><th>{{$s->M_3}}</th><th>{{$s->M_4}}</th></th>
+									</tr>
+									@endforeach
+								</table>
+							</div>
+						</div>
 					</div>
 		</div>
 		@endif

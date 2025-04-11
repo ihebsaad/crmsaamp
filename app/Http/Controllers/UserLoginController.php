@@ -11,6 +11,10 @@ use Carbon\Carbon;
 
 class UserLoginController extends Controller
 {
+    public function __construct()
+	{
+		$this->middleware('auth');
+	}
 
     public function index(Request $request)
     {
@@ -54,12 +58,12 @@ class UserLoginController extends Controller
     {
         // Calculer la date limite pour 3 mois en arrière
         $threeMonthsAgo = Carbon::now()->subMonths(3);
-    
+
         // Supprimer les consultations créées avant cette date
         Consultation::where('app', 2)
                     ->where('created_at', '<', $threeMonthsAgo)
                     ->delete();
-    
+
         // Rediriger vers la page des consultations après suppression
         return redirect()->route('consultations')->with('success', 'Consultations supprimées avec succès');
     }

@@ -113,6 +113,9 @@ class DashboardController extends Controller
 			$userToken = GoogleToken::where('user_id', auth()->id())->first();
 
 			$stats = DB::select('call `sp_stats_agence_reception_poids`();');
+			$stats_mois = DB::select('call `sp_stats_agence_reception_mois`();');
+
+
 
 			$totaux_clients = self::totaux_clients();
 
@@ -125,6 +128,7 @@ class DashboardController extends Controller
 				'userToken',
 				'users',
 				'stats',
+				'stats_mois',
 				'prospects',
 				'totaux_clients'
 			));

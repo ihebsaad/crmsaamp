@@ -9,10 +9,6 @@
 
 
 
-@php
-use App\Http\Controllers\UsersController;
-@endphp
-
 <style>
     .uper {
         margin-top: 10px;
@@ -36,7 +32,7 @@ use App\Http\Controllers\UsersController;
                 </a>
             </div>
             <div class="card-body">
- 
+
                 <div class="row">
                     <div class="col-lg-8 col-sm-6">
                         <form method="GET" action="{{ route('logins') }}" style="width:100%;display:flex">
@@ -75,7 +71,7 @@ use App\Http\Controllers\UsersController;
                     </thead>
                     <tbody>
                         @foreach ($logins as $login)
-						    @php   
+						    @php
                             $role='';
                             switch ($login->user->user_role) {
                                 case 1:
@@ -95,15 +91,15 @@ use App\Http\Controllers\UsersController;
                                     break;
                                 case 6:
                                     $role= "Adv";
-                                    break;   
+                                    break;
                                 case 7:
                                     $role= "Commercial";
-                                    break;     
+                                    break;
                                 case 8:
                                     $role= "Animateur commercial";
-                                    break;                                                                                                       
+                                    break;
                             }
-                            
+
                             @endphp
                             <tr>
                                 <td>{{ $login->user->id ?? '' }}</td>

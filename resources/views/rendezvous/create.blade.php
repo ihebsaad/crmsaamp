@@ -86,7 +86,8 @@
                                     <option  value="Visite sur salon">Visite sur salon</option>
                                     <option  value="Formation">Formation</option>
                                     <option  value="Home Office">Home Office</option>
-                                    <option  value="Enlèvement / Livraison">Enlèvement / Livraison</option>
+                                    <option  value="Enlèvement">Enlèvement</option>
+                                    <option  value="Livraison">Livraison</option>
                                     <option  value="Dépot">Dépot</option>
                                     <option  value="Ouverture de compte">Ouverture de compte</option>
                                     <option  value="Meeting">Meeting</option>

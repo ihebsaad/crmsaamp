@@ -187,6 +187,8 @@ class RetoursController extends Controller
 		// Dir qualité
  		self::send_mail($retour, env('Email_qualite'),$status);
 
+ 		self::send_mail($retour, env('Email_lea'),$status);
+
 		if ($retour->idclient > 0)
 			return redirect()->route('fiche', ['id' => $retour->idclient])->with(['success' => "Réclamation ajoutée "]);
 

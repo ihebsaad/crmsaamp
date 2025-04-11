@@ -2,7 +2,7 @@
 
 @section('content')
 
-<?php
+<div?php
 
 ?>
 
@@ -132,6 +132,21 @@
 
                     </div>
                     <div class="row">
+                        @if(auth()->user()->user_role==1)
+                        <div class="col-md-3">
+                            <label for="Date_creation">Ressenti client:</label>
+                            <select    id="statut" class="form-control" name="ressenti_client" required  >
+                                <option  value=""  {{ $rendezvous->ressenti_client==0 ? 'selected="selected"' : '' }} >Choisir</option>
+                                <option  value="1"  {{ $rendezvous->ressenti_client==1 ? 'selected="selected"' : '' }} >😠 Très mauvais</option>
+                                <option  value="2" {{ $rendezvous->ressenti_client==2 ? 'selected="selected"' : '' }} >🙁 Mauvais</option>
+                                <option  value="3" {{ $rendezvous->ressenti_client==3 ? 'selected="selected"' : '' }} >😐 Neutre</option>                            
+                                <option  value="4" {{ $rendezvous->ressenti_client==4 ? 'selected="selected"' : '' }} >🙂 Bon</option>
+                                <option  value="5" {{ $rendezvous->ressenti_client==5 ? 'selected="selected"' : '' }} >😄 Très bon</option>
+                            </select>
+                        </div>
+                        @endif
+                        
+
                         @if($rendezvous->fichier!= null)
                         <div class="col-md-4">
 

@@ -103,7 +103,13 @@
                                 <input type="text" id="Code_siret" class="form-control" name="Code_siret" value="{{old('Code_siret')}}"  maxlength="14" minlength="14" required   ><br><br>
                             </div>
                         </div>
-                    </div>
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="siret">Origine du propesct*:</label>
+                                <input type="text" id="origine" class="form-control" name="origine" value="{{old('origine')}}"   required   ><br><br>
+                            </div>
+                            </div>
+                        </div>
 
                     <div class="row pt-1">
                         <div class="col-md-4">

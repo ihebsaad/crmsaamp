@@ -118,6 +118,7 @@ class ClientsController extends Controller
 			'Tel' => $request->input('Tel'),
 			'email' => $request->input('email'),
 			'url' => $request->input('url'),
+			'origine' => $request->input('origine'),
 			'etat_id' => 1,
 			'Code_siren' => substr($siret, 0, 9),
 		]);
@@ -143,6 +144,27 @@ class ClientsController extends Controller
 		$client = CompteClient::find($id);
 		$commentaires = DB::table('commentaire_client')->where('client', $id)->get();
 		$login = '';
+
+		$ressenti_client=intval(RendezVous::where('ressenti_client','>',0)->where('mycl_id', $client->id)->avg('ressenti_client'));
+		$ressenti='';
+		
+		switch ($ressenti_client) {
+			case 1:
+				$ressenti='😠 Très mauvais';
+				break;
+			case 2:
+				$ressenti='🙁 Mauvais';
+				break;
+			case 3:
+				$ressenti='😐 Neutre';
+				break;
+			case 4:
+				$ressenti='🙂 Bon';
+				break;
+			case 5:
+				$ressenti='😄 Très bon';
+				break;				
+		}
 
 		if ($client->cl_ident > 0) {
 			$users_id = DB::table('users')->where('client_id', $client->cl_ident)->get();
@@ -306,7 +328,7 @@ class ClientsController extends Controller
 
 			Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Fiche Client $client->Nom -  $client->cl_ident"]);
 
-		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login', 'commentaires'));
+		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login', 'commentaires','ressenti'));
 	}
 
 

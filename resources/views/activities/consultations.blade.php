@@ -8,11 +8,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/datatables/css/scroller.bootstrap.css') }}" />
 
 
-
-@php
-use App\Http\Controllers\UsersController;
-@endphp
-
 <style>
     .uper {
         margin-top: 10px;
@@ -21,7 +16,7 @@ use App\Http\Controllers\UsersController;
     .no-sort input {
         display: none;
     }
- }
+
 </style>
 
 
@@ -60,7 +55,7 @@ use App\Http\Controllers\UsersController;
                     </thead>
                     <tbody>
                         @foreach ($consultations as $cons)
-                            @php $user=\App\Models\User::find($cons->user); 
+                            @php $user=\App\Models\User::find($cons->user);
                             $role='';
                             switch ($user->user_role) {
                                 case 1:
@@ -80,15 +75,15 @@ use App\Http\Controllers\UsersController;
                                     break;
                                 case 6:
                                     $role= "Adv";
-                                    break;   
+                                    break;
                                 case 7:
                                     $role= "Commercial";
-                                    break;     
+                                    break;
                                 case 8:
                                     $role= "Animateur commercial";
-                                    break;                                                                                                       
+                                    break;
                             }
-                            
+
                             @endphp
                             <tr>
                                 <td>{{ date('d/m/Y H:i', strtotime($cons->created_at)) }}</td>
@@ -105,7 +100,7 @@ use App\Http\Controllers\UsersController;
 </div>
 
 
- 
+
 
 @endsection
 

@@ -104,7 +104,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
         <div class="card shadow mb-1">
             <div class="card-header py-4">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Customer sheet')}} : {{$client->Nom}} - {{$client->cl_ident}}  <b class="float-right text-info " ><i>{{$login}}</i></b> </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Customer sheet')}} : {{$client->Nom}} - {{$client->cl_ident}}   {{ $ressenti }} <b class="float-right text-info " ><i>{{$login}}</i></b> </h6>
             </div>
             <div class="card-body">
                 <div class="row" id="">
