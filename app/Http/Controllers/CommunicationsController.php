@@ -44,6 +44,7 @@ class CommunicationsController extends Controller
                 'par' => 'required|integer',
             //    'destinataires' => 'required|json',
                 'statut' => 'nullable|integer|in:0,1',
+                'cci' => 'nullable|string',
                 'files.*' => 'file|mimes:jpeg,png,pdf,doc,docx|max:10240', // 10 MB max
             ]);
         }else{
@@ -54,6 +55,7 @@ class CommunicationsController extends Controller
                 'par' => 'required|integer',
                 'destinataires' => 'required|json',
                 'statut' => 'nullable|integer|in:0,1',
+                'cci' => 'nullable|string',
                 'files.*' => 'file|mimes:jpeg,png,pdf,doc,docx|max:10240', // 10 MB max
 
             ]);
@@ -103,6 +105,7 @@ class CommunicationsController extends Controller
                 'type' => $request->input('type'),
                 'clients' => $request->input('clients'),
                 'date_envoi' =>$date_envoi ,
+                'cci' => $request->input('cci'),
             ]);
 
         // Récupération des destinataires
@@ -161,10 +164,14 @@ class CommunicationsController extends Controller
             \Log::info('Emails : ' . json_encode($emails));
 
             // Ajout de l'envoi d'email via le service SendMail
+            $cciEmails = $request->input('cci') ? 
+            array_map('trim', explode(',', $request->input('cci'))) : 
+            [];
+
             try {
                 if($date_envoi==''){
                     if (!empty($emails)) {
-                        SendMail::send($emails, $objet, $contenu, $attachmentPaths,auth()->user()->email);
+                        SendMail::send($emails, $objet, $contenu, $attachmentPaths,auth()->user()->email,$cciEmails);
                     } else {
                         logger()->warning('Aucun email trouvé pour les destinataires.');
                     }

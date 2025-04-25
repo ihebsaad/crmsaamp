@@ -144,11 +144,19 @@ class ClientsController extends Controller
 		$client = CompteClient::find($id);
 		$commentaires = DB::table('commentaire_client')->where('client', $id)->get();
 		$login = '';
+		$complet=0;
+		$averageRessenti = intval(
+			RendezVous::where('ressenti_client', '>', 0)
+				->where('mycl_id', $client->id)
+				->orderBy('id', 'desc') 
+				->limit(3)
+				->pluck('ressenti_client') 
+				->avg() // Calcule la moyenne
+		);
 
-		$ressenti_client=intval(RendezVous::where('ressenti_client','>',0)->where('mycl_id', $client->id)->avg('ressenti_client'));
 		$ressenti='';
 		
-		switch ($ressenti_client) {
+		switch ($averageRessenti) {
 			case 1:
 				$ressenti='😠 Très mauvais';
 				break;
@@ -169,6 +177,11 @@ class ClientsController extends Controller
 		if ($client->cl_ident > 0) {
 			$users_id = DB::table('users')->where('client_id', $client->cl_ident)->get();
 
+			if($client->dossier_complet==0)
+				$complet=GEDService::checkFolder( $client->cl_ident);
+			 else 
+				$complet=1;
+			
 			$users_ids = DB::table('users')
 				->where('client_id', $client->cl_ident)
 				->pluck('id'); // Get only user IDs
@@ -203,8 +216,8 @@ class ClientsController extends Controller
 		//if($client->Client_Prospect!='COMPTE PROSPECT'){
 		if ($client->cl_ident > 0) {
 			$contacts = Contact::where('cl_ident', $client->cl_ident)->get();
-			$taches = Tache::where('mycl_id', $client->cl_ident)->orderBy('id','desc')->get();
-			//$taches = self::getClientTasks($client->cl_ident);
+			//$taches = Tache::where('mycl_id', $client->cl_ident)->orderBy('id','desc')->get();
+			$taches = self::getClientTasks($client->cl_ident,1);
 		} else {
 			$contacts = Contact::where('mycl_ident', $client->id)->get();
 			$taches = Tache::where('ID_Compte', $client->id)->get();
@@ -328,7 +341,7 @@ class ClientsController extends Controller
 
 			Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Fiche Client $client->Nom -  $client->cl_ident"]);
 
-		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login', 'commentaires','ressenti'));
+		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login', 'commentaires','ressenti','complet'));
 	}
 
 
@@ -634,31 +647,35 @@ class ClientsController extends Controller
 	}
 
 
-	public function getClientTasks($client_id)
+	public function getClientTasks($client_id,$last_24 = null)
 	{
 		// Get the current date
 		$currentDate = now();
-
+		
 		// Get tasks from Tache within the last 15 days
 		$tasks = Tache::where('mycl_id', $client_id)
 			->where('DateTache', '>=', $currentDate->subDays(7)) // Filter for the last 15 days
 			->get();
 
-		/*
-			$tasks = Tache::where(function ($query) use ($client_id) {
-				$query->where('ID_Compte', $client_id)
-					->orWhere('mycl_id', $client_id);
-			})
-			->where('DateTache', '>=', $currentDate->subDays(7)) // Filter for the last 15 days
-			->get();
-*/
-		// Reset the date calculation
-		$currentDate = now();
-
-		// Get records from prise_contact_as400 within the last 7 days
-		$prises = DB::table('prise_contact_as400')
-			->where('prise_contact_as400.cl_ident', $client_id)
-			->where('prise_contact_as400.date_pr', '>=', $currentDate->subDays(7)) // Filter for the last 7 days
+			// Déterminer la date limite selon $last_24
+			if ($last_24) {
+				$dateLimit = $currentDate->copy()->subDay()->format('Y-m-d'); // Hier
+				$today = $currentDate->copy()->format('Y-m-d'); // Aujourd'hui
+			} else {
+				$dateLimit = $currentDate->copy()->subDays(7)->format('Y-m-d');
+			}
+		
+			$prisesQuery = DB::table('prise_contact_as400')
+				->where('prise_contact_as400.cl_ident', $client_id);
+		
+			if ($last_24) {
+				// On récupère uniquement les enregistrements de la date d’aujourd’hui
+				$prisesQuery->where('prise_contact_as400.date_pr', '=', $today);
+			} else {
+				$prisesQuery->where('prise_contact_as400.date_pr', '>=', $dateLimit);
+			}
+		
+			$prises = $prisesQuery
 			->join('client', 'prise_contact_as400.cl_ident', '=', 'client.cl_ident')
 			->join('agence', 'prise_contact_as400.agence_id', '=', 'agence.agence_ident')
 			->join('sujet', 'prise_contact_as400.id_sujet', '=', 'sujet.sujet_ident')

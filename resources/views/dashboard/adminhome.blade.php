@@ -377,7 +377,7 @@
 									<td>
 									<select class="form-control"  onchange="update_role(this,'{{$user->id}}')">
 										<option value="0"></option>
-										<option value="1" {{ $user->user_role==1 ? 'selected="selected"' : '' }} >Administration </option><option value="2" {{ $user->user_role==2 ? 'selected="selected"' : '' }}>Direction</option><option value="3" {{ $user->user_role==3 ? 'selected="selected"' : '' }}>Superviseur</option><option value="4" {{ $user->user_role==4 ? 'selected="selected"' : '' }}>Responsable d'Agence</option><option value="5" {{ $user->user_role==5 ? 'selected="selected"' : '' }}>Qualité</option><option value="6" {{ $user->user_role==6 ? 'selected="selected"' : '' }}>ADV</option><option value="7" {{ $user->user_role==7 ? 'selected="selected"' : '' }}>Commercial</option><option value="8" {{ $user->user_role==8 ? 'selected="selected"' : '' }}>AnimCo</option>
+										<option value="1" {{ $user->user_role==1 ? 'selected="selected"' : '' }} >Administration </option><option value="2" {{ $user->user_role==2 ? 'selected="selected"' : '' }}>Direction</option><option value="3" {{ $user->user_role==3 ? 'selected="selected"' : '' }}>Superviseur</option><option value="4" {{ $user->user_role==4 ? 'selected="selected"' : '' }}>Responsable d'Agence</option><option value="5" {{ $user->user_role==5 ? 'selected="selected"' : '' }}>Qualité</option><option value="6" {{ $user->user_role==6 ? 'selected="selected"' : '' }}>ADV</option><option value="7" {{ $user->user_role==7 ? 'selected="selected"' : '' }}>Commercial</option><option value="8" {{ $user->user_role==8 ? 'selected="selected"' : '' }}>AnimCo</option><option value="9" {{ $user->user_role==9 ? 'selected="selected"' : '' }}>Out</option>
 									</select>
 									</td>
 									</tr>

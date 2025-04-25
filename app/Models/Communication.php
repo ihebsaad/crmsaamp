@@ -20,6 +20,7 @@ class Communication extends Model
         'type' ,
         'clients',
         'date_envoi',
+        'cci',
     ];
 
     public $timestamps = false;

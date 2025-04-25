@@ -49,19 +49,27 @@
                             <th>{{__('msg.By')}}</th>
                             <th>Destinataires</th>
                             <th>{{__('msg.Status')}}</th>
-							<th>Date d'envoi</th>
+                            <th>Date d'envoi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($communications as $communication)
-						@php $creator = \App\Models\User::find($communication->par);
+                        @php $creator = \App\Models\User::find($communication->par);
                         if($communication->statut==1){ $badge='<span class="badge btn-sm btn-success">Envoyé</span>';  }elseif($communication->statut==2){ $badge='<span class="badge btn-sm btn-danger">Echec</span>';  }elseif($communication->statut==3){ $badge='<span class="badge btn-sm btn-primary">Planifié</span>';  }else{ $badge='<span class="badge btn-sm btn-secondary">Envoyé auto</span>';}
                         @endphp
                             <tr style="cursor:pointer" onclick="show_details({{$communication->id}})" title="cliquez pour voir les détails">
                                 <td>{{ $communication->id }}</td>
                                 <td>{{date('d/m/Y', strtotime($communication->created_at))}}</td>
                                 <td>{{$creator->name}} {{$creator->lastname}}</td>
-                                <td>{{ $communication->clients ?? $communication->destinataires   }}</td>
+                                <td>
+                                    @php
+                                        $destinataires = $communication->clients ?? $communication->destinataires;
+                                        $max = 10; // Nombre maximum de destinataires à afficher
+                                        $destArray = explode(',', $destinataires);
+                                        $display = implode(', ', array_slice($destArray, 0, $max));
+                                        echo count($destArray) > $max ? $display . '...' : $display;
+                                    @endphp
+                                </td>
                                 <td>{!! $badge !!} </td>
                                 <td>{{ $communication->date_envoi!='' ? date('d/m/Y H:i', strtotime($communication->date_envoi)) : ''}}</td>
                             </tr>

@@ -83,8 +83,10 @@
 							@error('corps_message') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
 
-						<div class="col-md-12 mb-3">
-							<!-- Button to trigger modal -->
+ 						<div class="col-md-12 mb-3">
+							<label for="cci" class="form-label">CCI (Copie cachée - emails séparés par des virgules)</label>
+							<input type="text" class="form-control" id="cci" name="cci" value="{{ old('cci') }}" placeholder="email1@example.com, email2@example.com">
+							@error('cci') <span class="text-danger">{{ $message }}</span> @enderror
 						</div>
 
 						<!-- Destinataires -->

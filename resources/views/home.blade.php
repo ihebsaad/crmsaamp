@@ -228,12 +228,17 @@
 
 <div class="row">
     <div class="col-lg-4">
-        <span class=" mr-2">{{__('msg.Agency')}}:</span><select class="form-control mb-20" id="agence" onchange="update_stats();" style="max-width:300px">
+        @if(auth()->user()->user_role==1|| auth()->user()->user_role==2|| auth()->user()->user_role==3)
+        <span class=" mr-2">{{__('msg.Agency')}}:</span>
+        <select class="form-control mb-20" id="agence" onchange="update_stats();" style="max-width:300px">
             <option></option>
             @foreach ($agences as $agence)
             <option @selected(auth()->user()->agence_ident==$agence->agence_ident) value="{{$agence->agence_ident}}">{{$agence->agence_lib}}    |  <small>{{$agence->adresse1}}</small></option>
             @endforeach
         </select>
+        @else
+            <input type="hidden" id="agence" value="{{ auth()->user()->agence_ident }}"/>
+        @endif
     </div>
 </div>
 

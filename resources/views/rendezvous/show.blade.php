@@ -11,6 +11,38 @@
         color: black;
         font-weight: bold;
     }
+
+    [data-title]:hover:after {
+		opacity: 1;
+		transition: all 0.1s ease 0.5s;
+		visibility: visible;
+	}
+
+	[data-title]:after {
+		content: attr(data-title);
+		position: absolute;
+		/*bottom: -1.6em;*/
+		left: 100%;
+		padding: 4px 4px 4px 8px;
+		white-space: nowrap;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
+		-moz-box-shadow: 0px 0px 4px #222;
+		-webkit-box-shadow: 0px 0px 4px #222;
+		box-shadow: 0px 0px 4px #222;
+		opacity: 0;
+		z-index: 99999;
+		visibility: hidden;
+		background-color: #2e3e4e;
+		color: white;
+		padding: 5px 5px;
+		font-size: 15px;
+	}
+
+	[data-title] {
+		position: relative;
+	}
 </style>
 <div class="row">
 
@@ -131,10 +163,11 @@
                         </div>
 
                     </div>
+                                                            
                     <div class="row">
-                        @if(auth()->user()->user_role==1)
-                        <div class="col-md-3">
-                            <label for="Date_creation">Ressenti client:</label>
+                        @if (isset($clent) && $client->etat_id==2)
+                        <div class="col-md-3"  data-title="c'est le ressenti du client et non votre ressenti par rapport au client">
+                            <label for="Date_creation" >Ressenti client*:</label>
                             <select    id="statut" class="form-control" name="ressenti_client" required  >
                                 <option  value=""  {{ $rendezvous->ressenti_client==0 ? 'selected="selected"' : '' }} >Choisir</option>
                                 <option  value="1"  {{ $rendezvous->ressenti_client==1 ? 'selected="selected"' : '' }} >😠 Très mauvais</option>
@@ -145,7 +178,6 @@
                             </select>
                         </div>
                         @endif
-                        
 
                         @if($rendezvous->fichier!= null)
                         <div class="col-md-4">

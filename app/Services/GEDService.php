@@ -1049,4 +1049,49 @@ class GEDService
 	}
 
 
+
+
+	public static function checkFolder($cl_ident){
+
+		$folders = self::getFolders($cl_ident);
+
+		// Liste des noms de dossiers requis (sans PHOTOS_FONTES qui est optionnel)
+		$requiredFolderNames = [
+			"DOCUMENTS OUVERTURE DE COMPTE POIDS",
+			"DECLARATION DUE DILIGENCE",
+			"LETTRE DE FUSION",
+			"PRINCIPES ET CODE DES PRATIQUES DU RJC ET DE SAAMP",
+			"KBIS DE MOINS DE 3 MOIS OU REPERTOIRE DES METIERS",
+			"CNI OU PASSEPORT",
+			"RIB",
+			"DECLARATION DEXISTENCE AUPRES DE LA GARANTIE"
+		];
+
+		// Vérification du nombre de dossiers
+		if (is_array($folders) && count($folders) >= 8) {
+			$folderNames = array_column($folders, 'name');
+			
+			// Vérification des noms de dossiers
+			$missingFolders = array_diff($requiredFolderNames, $folderNames);
+			
+			if (empty($missingFolders)) {
+				// Tous les dossiers requis sont présents
+				\Log::info('Tous les dossiers requis sont présents');
+				CompteClient::where('cl_ident', $cl_ident)->update(['dossier_complet'=>1]);
+				return true;
+				// Faire ce que vous voulez quand la condition est satisfaite
+			} else {
+				// Certains dossiers requis manquent
+				\Log::warning('Dossiers manquants: ' . implode(', ', $missingFolders));
+				// Gérer le cas où des dossiers manquent
+				return false;
+			}
+		} else {
+			// Pas assez de dossiers
+			//\Log::warning('Nombre insuffisant de dossiers: ' . count($folders) . ' au lieu de 8 minimum');
+			// Gérer le cas où il n'y a pas assez de dossiers
+			return false;
+		}
+	}
+
 }

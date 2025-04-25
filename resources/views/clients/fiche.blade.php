@@ -2,46 +2,6 @@
 
 @section('content')
 
-<?php
-
-// Traitement d'un appel
-if (isset($_GET['call'])) {
-    $number = $_GET['number'];
-    $autoanswer = isset($_GET['autoanswer']) ? 'false' : 'true';
-
-    $callUrl = "https://api.telavox.se/dial/{$number}?autoanswer={$autoanswer}";
-
-    $callCh = curl_init($callUrl);
-    curl_setopt($callCh, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $client->token_phone));
-    curl_setopt($callCh, CURLOPT_RETURNTRANSFER, true);
-
-    $callResponse = curl_exec($callCh);
-    $callResult = json_decode($callResponse, true);
-    curl_close($callCh);
-
-    if ($callResult && $callResult['message'] === 'OK') {
-        echo '<p class="text-success">Appel initié avec succès !</p>';
-    } else {
-        echo '<p class="text-danger">Échec de l\'initiation de l\'appel.</p>';
-    }
-}
-/*
-function compare_func($a, $b)
-{
-    // CONVERT $a AND $b to DATE AND TIME using strtotime() function
-    $t1 = strtotime($a->date_cmde);
-    $t2 = strtotime($b->date_cmde);
-
-    return ($t2 - $t1);
-}
-
-if (is_array($commandes) || is_object($commandes)) {
-    usort($commandes, "compare_func");
-}
-*/
-?>
-
-
 <style>
     h6,#stats {
         color: black;
@@ -90,8 +50,8 @@ if (is_array($commandes) || is_object($commandes)) {
 </style>
 
 <div class="pt-2 pl-2 pr-2" style="background-color:#fef2d8">
-    <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day hidemobile"></i> {{__('msg.Appointment')}}</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks hidemobile"></i> {{__('msg.Tasks')}}</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-sm  btn-primary mb-3 mr-3 float-left"><i class="fas fa-gift hidemobile"></i> {{__('msg.Offers')}}</a>                 <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-comment-alt"></i> {{__('msg.Complaint')}}</a>
-        @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-user-edit hidemobile"></i> {{__('msg.Edit')}}</a> @endif @if($client->cl_ident > 0 )<a href="{{route('compte_client.folder',['id'=>$client->id])}}" class="btn btn-sm  btn-primary mb-3 ml-3 float-left"><i class="fas fa-folder hidemobile"></i> {{__('msg.My folder')}}</a>  <a  href="#" data-toggle="modal" data-target="#ModalTrading" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-coins hidemobile"></i> Trading</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-sm  btn-primary mb-3 ml-3 float-left"><i class="fas fa-money-bill-wave hidemobile"></i> {{__('msg.Finances')}}</a>
+    <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day hidemobile"></i> {{__('msg.Appointment')}}</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks hidemobile"></i> {{__('msg.Tasks')}}</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-sm  btn-primary mb-3  float-left"><i class="fas fa-gift hidemobile"></i> {{__('msg.Offers')}}</a>                 <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-comment-alt"></i> {{__('msg.Complaint')}}</a>
+        @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-user-edit hidemobile"></i> {{__('msg.Edit')}}</a> @endif @if($client->cl_ident > 0 ) <a  href="#" data-toggle="modal" data-target="#ModalTrading" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-coins hidemobile"></i> Trading</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-sm  btn-primary mb-3 ml-3 float-left"><i class="fas fa-money-bill-wave hidemobile"></i> {{__('msg.Finances')}}</a> @if($client->cl_ident > 0)  @if($complet) <a  href="{{route('compte_client.folder',['id'=>$client->id])}}"  class="btn btn-sm btn-success ml-4"> ✅ Dossier Complet </a> @else <a href="{{route('compte_client.folder',['id'=>$client->id])}}"  class="btn btn-sm btn-secondary ml-4"> ❌ Dossier incomplet </a>   @endif   @endif
         @if(  $client->etat_id==1  )
             <a title="{{__('msg.Delete')}}"   onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('clients.destroy', $client->id )}}" class="btn btn-sm  btn-danger btn-sm btn-responsive ml-3 mr-2 float-left" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                 <span class="fa fa-fw fa-trash-alt hidemobile"></span> {{__('msg.Delete')}}
@@ -104,7 +64,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
         <div class="card shadow mb-1">
             <div class="card-header py-4">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Customer sheet')}} : {{$client->Nom}} - {{$client->cl_ident}}   {{ $ressenti }} <b class="float-right text-info " ><i>{{$login}}</i></b> </h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Customer sheet')}} : {{$client->Nom}} - {{$client->cl_ident}}    <b data-title="Ressenti du client">{{ $ressenti }}</b> <b class="float-right text-info " ><i>{{$login}}</i></b> </h6>
             </div>
             <div class="card-body">
                 <div class="row" id="">
@@ -362,7 +322,7 @@ if (is_array($commandes) || is_object($commandes)) {
 
         <div class="card shadow mb-1">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Historique des interactions</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Historique des interactions<a class="btn btn-sm btn-primary float-right" target="_blank" href="{{ route('taches.index') }}">Voir plus</a></h6>
             </div>
 
             <div class="card-body" style="min-height:400px">

@@ -22,7 +22,7 @@
                     <div class="col-md-2">
                         <label class="ml-2 pointer text-primary" for='mycheck2'><input id="mycheck2" type="checkbox"  > {{__('msg.Only open')}}</input></lablel>
                     </div>
-                    @if( auth()->user()->user_role== 1 || auth()->user()->user_role== 2 ||auth()->user()->user_role== 3 || auth()->user()->user_role == 5){
+                    @if( auth()->user()->user_role== 1 || auth()->user()->user_role== 2 ||auth()->user()->user_role== 3 || auth()->user()->user_role == 5)
 
                     <div class="col-md-4">
                     Agence

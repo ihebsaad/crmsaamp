@@ -57,6 +57,7 @@
                         @foreach ($consultations as $cons)
                             @php $user=\App\Models\User::find($cons->user);
                             $role='';
+                            if(isset($user)){
                             switch ($user->user_role) {
                                 case 1:
                                     $role= "Admin";
@@ -82,6 +83,7 @@
                                 case 8:
                                     $role= "Animateur commercial";
                                     break;
+                            }
                             }
 
                             @endphp

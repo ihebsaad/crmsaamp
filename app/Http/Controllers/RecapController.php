@@ -83,14 +83,16 @@ class RecapController extends Controller
             ->whereBetween('DateTache', [$date_debut, $date_fin])
             ->get();
 
-        $clients=0;
+        $clients=0; $clients_list=array();
         $rep=DB::table("representant")->where('users_id',$user)->first();
         if(isset($rep)){
-            $clients = CompteClient::where('commercial', $rep->id)
+            $clients_list = CompteClient::where('commercial', $rep->id)
             ->whereNotNull('cl_ident')->where('cl_ident','<>',0)
             ->whereBetween('created_at', [$date_debut, $date_fin])
-            ->count();
+            ->get();
+            $clients=count($clients_list);
         }
+
         // Récupération des données pour la période précédente
         $prev_rendezvous = RendezVous::where('user_id', $user)
             ->whereBetween('Started_at', [$prev_date_debut, $prev_date_fin])
@@ -205,6 +207,7 @@ class RecapController extends Controller
             'prev_remises',
             'prev_suivis',
             'prev_autres',
+            'clients_list'
         ));
     }
 

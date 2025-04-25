@@ -105,7 +105,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
-                                <label for="siret">Origine du propesct*:</label>
+                                <label for="siret">Canal d'acquisition*:</label>
                                 <input type="text" id="origine" class="form-control" name="origine" value="{{old('origine')}}"   required   ><br><br>
                             </div>
                             </div>

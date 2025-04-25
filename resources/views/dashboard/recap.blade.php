@@ -47,20 +47,20 @@ form{
                                     <select class="form-control" name="affichage" id="affichage">
                                         <option value="1" >Mois courant</option>
                                         <option value="2"  {{ $affichage== 2 ? 'selected="selected"' : '' }}>Année courante</option>
-                                        <!--<option value="3"  {{ $affichage== 3 ? 'selected="selected"' : '' }}>Personnalisé</option>-->
+                                        <option value="3"  {{ $affichage== 3 ? 'selected="selected"' : '' }}>Personnalisé</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-2 col-md-6 col-sm-12 hidden"  @if($affichage!= 3 ) style="display:none" @endif id="debut">
+                                <div class="col-lg-2 col-md-6 col-sm-12 "  @if($affichage!= 3 ) style="display:none" @endif id="debut">
                                     <span class="mr-2">{{__('msg.Start date')}}:</span><br>
                                     <input type="date" class="form-control mr-2" id="date_debut" name="date_debut" value="{{$date_debut ?? date('Y-m-01')}}" style="width:150px">
                                 </div>
-                                <div class="col-lg-2 col-md-6 col-sm-12 hidden"  @if($affichage!= 3 ) style="display:none" @endif id="fin">
+                                <div class="col-lg-2 col-md-6 col-sm-12 "  @if($affichage!= 3 ) style="display:none" @endif id="fin">
                                     <span class="ml-3 mr-2">{{__('msg.End date')}}:</span><br>
                                     <input type="date" class="form-control" id="date_fin" name="date_fin" value="{{$date_fin ?? date('Y-m-t')}}" style="width:150px">
                                 </div>
-                                <div class="col-lg-2 col-md-6 col-sm-12 mt-3 hidden "><!--
+                                <div class="col-lg-2 col-md-6 col-sm-12 mt-3 hidden ">
                                     <span><input type="checkbox" @if( $date_debut=="{{date('Y-m-t')}}" && $date_fin=="{{date('Y-m-t')}}" ) checked="checked" @endif/>Mois courant</span>
-                                    <span><input type="checkbox" @if( $date_debut=="{{date('Y-m-t')}}" && $date_fin=="{{date('Y-m-t')}}" ) checked="checked" @endif/>Année courante</span>-->
+                                    <span><input type="checkbox" @if( $date_debut=="{{date('Y-m-t')}}" && $date_fin=="{{date('Y-m-t')}}" ) checked="checked" @endif/>Année courante</span>
                                 </div>
                                 <div class="col-lg-2 col-md-6 col-sm-12 mt-2 mb-2">
                                     <button type="submit" class="btn btn-primary  mr-3 mt-3">
@@ -72,7 +72,7 @@ form{
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-12 ">
-                        <h3 @if($clients >0 ) class="text-success" @endif>Clients crées : <strong>{{ $clients }}</strong></h3>
+                        <h3 ><a href="#" @if($clients >0 ) class="text-success" @endif title="Voir la liste des clients" data-toggle="modal" data-target="#ModalClients"> Clients crées : <strong>{{ $clients }}</strong></a></h3>
                     </div>
                 </div>
 
@@ -300,7 +300,39 @@ form{
 
 
 
+<div class="modal fade" id="ModalClients" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 75%;margin: 0 auto;">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <h5 class="modal-title text-center">Liste des clients</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
 
+                    <table class="table table-bordered table-striped mb-40 pd2">
+                        <thead>
+                            <tr id="headtable">
+                                <th class="" style="">Nom</th>
+                                <th class="" style="">CL Ident</th>
+                            </tr>
+                        </thead>
+                            <tbody  >
+                                @foreach($clients_list as $cl)
+                                    <tr><td><a href="{{route('fiche',['id'=>$cl->id])}}">{{$cl->Nom}}</a></td><td>{{$cl->cl_ident}}</td></tr>
+                                @endforeach
+                            </tbody>
+                    </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">{{__('msg.Close')}}</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 

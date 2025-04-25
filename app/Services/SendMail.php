@@ -14,7 +14,7 @@ class SendMail
 {
 
 
-    public static function send($to, $sujet, $contenu, $attachments = [],$reply_to=null)
+    public static function send($to, $sujet, $contenu, $attachments = [],$reply_to=null, $cci = [])
     {
         $transport = new EsmtpTransport(env('MAIL_HOST'), env('MAIL_PORT'));
         $transport->setUsername(env('MAIL_USERNAME'));
@@ -39,6 +39,14 @@ class SendMail
             ->subject($sujet)
             ->html($contenu);
 
+                // Ajout des adresses CCI
+        if (!empty($cci)) {
+            foreach ($cci as $cciEmail) {
+                if (filter_var(trim($cciEmail), FILTER_VALIDATE_EMAIL)) {
+                    $email->addBcc(trim($cciEmail));
+                }
+            }
+        }
         // Ajout des fichiers joints
         foreach ($attachments as $attachment) {
             if (file_exists($attachment)) {

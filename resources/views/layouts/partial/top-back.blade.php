@@ -40,6 +40,7 @@ try{
     overflow-y: auto;
     /* Activez le défilement vertical si le contenu dépasse la hauteur définie */
     width: 100%;
+    margin-bottom: 15px;;
   }
 
   .navbar small {
