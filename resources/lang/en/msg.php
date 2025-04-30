@@ -640,6 +640,7 @@ return [
 	"Customer address"=>"Customer address",
 	"Add a contact"=>"Add a contact",
 	"Close"=>"Close",
-	"No results"=>"No results",
+	"No results"=>"No results",	
+	"Resolution deadline has been exceeded!"=>"Resolution deadline has been exceeded!",
 
 ];

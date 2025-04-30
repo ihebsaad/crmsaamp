@@ -19,7 +19,8 @@
       <!-- Main Content -->
       <div id="content">
 
-@include('layouts.partial.admin-back')
+      @include('layouts.partial.admin-back')
+      <!-- Popup conditions -->
 
         <!-- Begin Page Content -->
         <div class="container-fluid" style="min-height:600px">

@@ -13,6 +13,7 @@ use App\Models\RetourClient;
 use App\Models\Tache;
 use App\Models\GoogleToken;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -694,186 +695,21 @@ class DashboardController extends Controller
 
 		return view('dashboard.dashboard', compact('totaux_clients', 'rendezvous', 'clients', 'total_clients', 'total_1','offres', 'retours', 'agence', 'prospects', 'commerciaux', 'customers', 'userToken', 'rendezvous_passes'));
 	}
+    public function check()
+    {
+		return auth()->user()->popup_accepted ;
+    }
 
-/*
-	public function dashboard()
-	{
-		$agence_id = auth()->user()->agence_ident;
-		$agence = Agence::where('agence_ident', $agence_id)->first();
-		$now = Carbon::now();
-		$prospects = array();
-		$commerciaux = array();
-		$customers = array();
-		$retours = array();
+    public function accept(Request $request)
+    {
+        if (auth()->check()) {
+            $user = auth()->user();
+            $user->popup_accepted = true;
+            $user->save();
+			return 1;
+        }
+		
+        
+    }
 
-		//rendez vous
-		$rendezvous_passes = RendezVous::where('Started_at', '<=', $now)
-			->where('user_id', auth()->id())
-			->where('statut', 1)
-			->orderBy('Started_at', 'asc')
-			->orderBy('heure_debut', 'asc')
-			->get();
-
-		//retours
-		if (auth()->user()->role == 'adv' || auth()->user()->role == 'admin' || auth()->user()->role == 'respAG') {
-			$retours = DB::table('CRM_RetourClient as rc')
-				->join('client as c', 'rc.cl_id', '=', 'c.cl_ident')
-				->where(function ($query) {
-					$query->where('rc.Date_cloture', '0000-00-00')
-						->orWhereNull('rc.Date_cloture');
-				})
-				->where('c.agence_ident', auth()->user()->agence_ident)
-				->select('rc.*', 'c.agence_ident') // Select fields as needed
-				->orderBy('rc.name', 'desc') // Adjust as needed; 'name' should be in `rc` or `c`
-				->get();
-		}
-
-
-		$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
-
-		$total_clients = CompteClient::where('etat_id', 2)->where('agence_ident', $agence_id)->count();
-		$total1 = DB::select($query, [$agence_id]);
-		$total_1 = $total1[0]->total;
-
-		$rep = DB::table("representant")->where('users_id', auth()->user()->id)->first();
-		if (isset($rep)) {
-			$rep_id = $rep->id;
-			//$rep_id=10;
-
-			DB::select("SET @p0='$rep_id' ;");
-			$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
-
-			$query = "
-			SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
-			FROM Statistiques s
-			WHERE
-				(s.Commercial = ? OR s.Commercial_support = ?)
-				AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
-				AND s.cl_ident <> 0";
-
-			$result = DB::select($query, [$rep_id, $rep_id]);
-			$total_clients = $result[0]->total_clients;
-		} else {
-
-			DB::select("SET @p0='" . $agence_id . "' ;");
-			$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
-
-			$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
-
-			$total_clients = CompteClient::where('etat_id', 2)->where('agence_ident', $agence_id)->count();
-			//$total1 = DB::select($query, [$agence_id]);
-			//$total_1=$total1[0]->total;
-		}
-
-
-		if (auth()->user()->role == 'adv') {
-
-			$client_ids = CompteClient::where('adv', auth()->user()->id)->pluck('id');
-
-			$rendezvous = RendezVous::whereIn('mycl_id', $client_ids)
-				->where('Started_at', '>=', $now)
-				->orderBy('Started_at', 'desc')
-				->orderBy('id', 'desc')
-				->get();
-
-			DB::select("SET @p0='" . $agence_id . "' ;");
-			$clients =  DB::select("  CALL `sp_stats_agence_client_top5`(@p0); ");
-			$query = "SELECT COUNT(DISTINCT cl_ident) as total FROM Statistiques WHERE agence_ident = ? AND annee = YEAR(CURDATE())";
-
-			$total_clients = CompteClient::where('etat_id', 2)->where('agence_ident', $agence_id)->count();
-			//$total1 = DB::select($query, [$agence_id]);
-			//$total_1=$total1[0]->total;
-		} else {
-
-			if (auth()->user()->role == 'commercial') {
-
-				$rep = DB::table("representant")->where('users_id', auth()->user()->id)->first();
-				if (isset($rep)) {
-					$rep_id = $rep->id;
-					//$rep_id=10;
-
-					DB::select("SET @p0='$rep_id' ;");
-					$clients =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
-
-					$total_clients = CompteClient::where(function ($Query) use ($rep_id) {
-						$Query->where('commercial', $rep_id)
-							->orWhere('commercial_support', $rep_id);
-					})->where('etat_id', 2)->count();
-				}
-			}
-
-			if (auth()->user()->role == 'respAG') {
-				// here
-				$users_ids = User::where('agence_ident', auth()->user()->agence_ident)->pluck('id');
-
-				$rendezvous = RendezVous:: //where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
-					whereIn('user_id', $users_ids)
-					->where('Started_at', '>=', $now)
-					->orderBy('Started_at', 'desc')
-					->orderBy('id', 'desc')
-					->get();
-
-				//$prospects
-				$prospects = CompteClient::where('agence_ident', auth()->user()->agence_ident)->where('etat_id', 1)->get();
-
-				$commerciaux = DB::table("representant")->where('type', 'Commercial terrain')->pluck('id');
-
-				if (auth()->user()->id == 10) {
-					$commerciaux = DB::table("representant")->where('type', 'Commercial terrain')->orWhere('id', 26)->pluck('id');
-				}
-				foreach ($commerciaux as $commercial) {
-					$rep = DB::table("representant")->find($commercial);
-					$user = User::find($rep->users_id);
-
-					if ($user->agence_ident == auth()->user()->agence_ident ) {
-						DB::select("SET @p0='$commercial' ;");
-						$customers[$commercial] =  DB::select("  CALL `sp_stats_commercial_client_top5`(@p0); ");
-						//}
-
-						$query = "
-						SELECT COUNT(DISTINCT s.cl_ident) AS total_clients
-						FROM Statistiques s
-						WHERE
-							(s.Commercial = ? OR s.Commercial_support = ?)
-							AND s.Mois < (CASE WHEN 1 THEN MONTH(CURDATE()) ELSE 13 END)
-							AND s.cl_ident <> 0
-						";
-
-						$result = DB::select($query, [$commercial, $commercial]);
-						$total_c = $result[0]->total_clients;
-						$total_clients += $total_c;
-						// sebastien
-						if (auth()->user()->id == 10) {
-							unset($customers[201]);
-							unset($customers[510]);
-						}
-					}
-				}
-
-				$total_clients = CompteClient::where('etat_id', 2)->where('agence_ident', auth()->user()->agence_ident)->count(); //Paris
-
-			} else {
-				$rendezvous = RendezVous:: //where('Attribue_a',auth()->user()->name.' '.auth()->user()->lastname)
-					where('user_id', auth()->user()->id)
-					->where('Started_at', '>=', $now)
-					->orderBy('Started_at', 'desc')
-					->orderBy('id', 'desc')
-					->get()->take(5);
-			}
-		}
-
-		if (auth()->user()->id == 10)
-			$offres = Offre::where('type', 'Hors TG - Affinage')->where('statut', null)->get();
-		elseif (auth()->user()->id == 39 || auth()->user()->id == 1)
-			$offres = Offre::where('type', 'Hors TG - Apprêts/Bij/DP')->where('statut', null)->get();
-		else
-			$offres = Offre::where('statut', null)->get();
-
-		$userToken = GoogleToken::where('user_id', auth()->id())->first();
-
-
-		return view('dashboard.dashboard', compact('rendezvous', 'clients', 'total_clients', 'total_1', 'offres', 'retours', 'agence', 'prospects', 'commerciaux', 'customers', 'userToken', 'rendezvous_passes'));
-	}
-
-	*/
 } // end class

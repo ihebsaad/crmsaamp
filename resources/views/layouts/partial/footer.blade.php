@@ -1,4 +1,4 @@
- <!-- Footer -->
+<!-- Footer -->
 <footer class="page-footer font-small lighten-3 bg-1" style="border-top: 2px solid #31c5ff;background-image: url({{  URL::asset('site/img/footer-bg.jpg') }});">
 
   <!-- Footer Links -->

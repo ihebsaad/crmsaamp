@@ -2,7 +2,7 @@
 
 @section('content')
 
-<?php
+<i?php
 
 ?>
 
@@ -65,7 +65,25 @@
             </div>
 
             <div class="card-body" style="min-height:500px">
-
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        @if($retour->Date_cloture!='' )
+                            @if($resolutionDelay>0)
+                            <div class="text-primary"><i class="fas fa-clock"></i> Résolu en: <b>{{ $resolutionDelay }}</b> jours <i>  </div>
+                            @endif
+                        @elseif($resolutionDelay>0)
+                            <div class="text-primary"><i class="fas fa-clock"></i> Délais de résolution : <b>{{ $resolutionDelay }}</b> jours ouvrés <i> ( {{ date('d/m/Y', strtotime($retour->date_max))}}</i> )</div>
+                        @endif
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        @if($isDeadlineExceeded)
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle"></i> 
+                                {{ __('msg.Resolution deadline has been exceeded!') }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
                 <form action="{{ route('retours.update', $retour->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -82,6 +100,12 @@
                         </div>
                         <div class="col-md-2">
                             <div class="">
+                                <label for="Motif_retour">Type de demande:</label>
+                                <h6>{{$types[$retour->Type_Demande]}}</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="">
                                 <label for="Motif_retour">{{__('msg.Reason for return')}}:</label>
                                 <h6>{{$retour->Motif_retour}}</h6>
                             </div>
@@ -89,22 +113,8 @@
 
                         <div class="col-md-2">
                             <div class="">
-                                <label for="Division">{{__('msg.Division')}}:</label>
-                                <h6>{{$retour->Division}}</h6>
-                            </div>
-                        </div>
-                        <!--
-                        <div class="col-md-2">
-                            <div class="">
-                                <label for="Date_ouverture">{{__('msg.Open date')}}:</label>
-                                <h6>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</h6>
-                            </div>
-                        </div>
---->
-                        <div class="col-md-2">
-                            <div class="">
-                                <label for="Date_cloture">{{__('msg.Closing date')}}:</label>
-                                <input type="text" id="Date_cloture" class="form-control datepicker" name="Date_cloture" value="{{$retour->Date_cloture}}"><br><br>
+                                <label for="Motif_retour">Nature:</label>
+                                <h6>{{$natures[$retour->Nature]}}</h6>
                             </div>
                         </div>
 
@@ -130,6 +140,7 @@
                             @endif
                         </div>
 
+
                         <div class="col-md-1 col-sm-12">
                             @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com' || auth()->user()->email=='stephane.hamel@saamp.com')
 
@@ -138,12 +149,37 @@
                                 <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                             </a>
                             <div class="clearfix"></div>
+                            @if(auth()->id()== $retour->user_id || auth()->user()->user_role==1 || auth()->user()->user_role==3 || auth()->user()->user_role== 5  )
                             <button type="submit" class="btn-primary btn btn-sm float-right mt-3 mr-2"><span class="fa fa-fw fa-pen"></span>  Modifier  </button>
-
+                            @endif
 
                             @endif
                         </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="Division">{{__('msg.Division')}}:</label>
+                                <h6>{{$retour->Division}}</h6>
+                            </div>
+                        </div>
                         <!--
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="Date_ouverture">{{__('msg.Open date')}}:</label>
+                                <h6>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</h6>
+                            </div>
+                        </div>
+--->
+                        <div class="col-md-2">
+                            <div class="">
+                                <label for="Date_cloture">{{__('msg.Closing date')}}:</label>
+                                <input type="text" id="Date_cloture" class="form-control datepicker" name="Date_cloture" value="{{$retour->Date_cloture}}"><br><br>
+                            </div>
+                        </div>
+
+
+                        <!-- here
                         <div class="col-md-3">
                             <div class="">
                                 <label for="Division">{{__('msg.Customer')}}:</label>
@@ -156,6 +192,7 @@
                         </div>
 -->
                     </div>
+
 
                     <div class="row mt-2">
 

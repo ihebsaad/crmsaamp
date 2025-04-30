@@ -9,6 +9,7 @@ use App\Models\CompteClient;
 use App\Models\RetourClient;
 use App\Models\Agence;
 use App\Models\Contact;
+use App\Models\User;
 use App\Models\File;
 use App\Services\SendMail;
 use Illuminate\Support\Facades\DB;
@@ -71,6 +72,8 @@ class RetoursController extends Controller
 		$agences = DB::table('agence')->get();
 		$retour = RetourClient::find($id);
 		$class = '';
+		$types=array(''=>'',1=>'Affinage',2=>'Condition de prix',3=>'Produits',4=>'Reard de livraison');
+		$natures=array(''=>'',1=>'Titrage',2=>'Lot haute teneure sur des cendres',3=>'Autres');
 		switch ($retour->Type_retour) {
 			case 'Négatif':
 				$class = 'danger';
@@ -86,6 +89,28 @@ class RetoursController extends Controller
 				$class = '';
 		}
 
+
+		$resolutionDelay = null;
+		if (!empty($retour->date_max)) {
+			$startDate = $retour->Date_ouverture;
+			
+			if($retour->Date_cloture != '') {
+				$endDate = $retour->Date_cloture;
+			} else {
+				$endDate = $retour->date_max;
+			}
+			
+			$workingDays = self::getWorkingDays($startDate, $endDate);
+			$resolutionDelay = $workingDays ;
+		}
+
+		// Check if deadline is exceeded
+		$isDeadlineExceeded = false;
+		if (!empty($retour->date_max)) {
+			$currentDate = new \DateTime();
+			$deadlineDate = new \DateTime($retour->date_max);
+			$isDeadlineExceeded = $currentDate > $deadlineDate;
+		}
 		//orWhere
 		$contact = Contact::where('id', $retour->mycontact_id)->first();
 		$files = File::where('parent', 'retours')->where('parent_id', $retour->id)->get();
@@ -98,7 +123,7 @@ class RetoursController extends Controller
 
 		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Réclamation"]);
 
-		return view('retours.show', compact('retour', 'contact', 'class', 'agences', 'files','previousRetour','nextRetour'));
+		return view('retours.show', compact('retour', 'contact', 'class', 'agences', 'files','previousRetour','nextRetour','resolutionDelay','isDeadlineExceeded','types','natures'));
 	}
 
 
@@ -111,7 +136,11 @@ class RetoursController extends Controller
 		]);
 
 		//$retour=RetourClient::create($request->all());
-
+		$delais=array(1=>8 , 2=>15 , 3=>5); //delais ici
+		$days=$delais[$request->input('Nature')];
+		$date_ouverture= $request->input('Date_ouverture') ; 
+		$date_max = date('Y-m-d', strtotime($date_ouverture . " + $days days"));
+ 
 		$retour = RetourClient::create([
 			'idclient' => $request->input('idclient') ?? 0,
 			'user_id' => $request->input('user_id') ?? 0,
@@ -128,29 +157,33 @@ class RetoursController extends Controller
 			//'Responsable_de_resolution' => $request->input('Responsable_de_resolution'),
 			'Une_reponse_a_ete_apportee_au_client' => $request->input('Une_reponse_a_ete_apportee_au_client'),
 			'Description_c' => $request->input('Description_c'),
-			//'Departement' => $request->input('Departement'),
+			'Type_Demande' => $request->input('Type_Demande'),
+			'Nature' => $request->input('Nature'),
+			'date_max' => $date_max,
 		]);
 
 		$retour->save();
 
-		$status='';
+		$status='creation';
+		/*
 		if (trim($retour->Type_retour) == 'Négatif')
 		{
 			$status='infos';
-		}
+		}*/
 		// retour positif ou info
 		if (trim($retour->Type_retour) == 'Positif' || trim($retour->Type_retour) == 'Information générale') {
 			$client = CompteClient::find($request->input('idclient'));
 			if (isset($client)) {
 				$agence = Agence::where('agence_ident', $client->agence_ident)->first();
-				if (isset($agence))
+				if (isset($agence)){
 					$retour->Depot_concerne = $agence->agence_lib;
-				$retour->Responsable_de_resolution = $agence->agence_lib;
+					$retour->Responsable_de_resolution = $agence->agence_lib;
+				}
 			}
 			$retour->Date_cloture = date('Y-m-d');
 
 			$retour->save();
-			$status='cloture';
+			//$status='cloture';
 		}
 
 
@@ -175,11 +208,13 @@ class RetoursController extends Controller
 			}
 		}
 
+ 
 		// Admins
-		self::send_mail($retour, env('Admin_Email'),$status);
-		self::send_mail($retour, env('Admin_reyad'),$status);
 		self::send_mail($retour, env('Admin_iheb'),$status);
 
+		self::send_mail($retour, env('Admin_reyad'),$status);
+
+		
 		// Direction
 		self::send_mail($retour,  env('Email_jean'),$status);
 		self::send_mail($retour,  env('Email_elisabeth'),$status);
@@ -188,7 +223,8 @@ class RetoursController extends Controller
  		self::send_mail($retour, env('Email_qualite'),$status);
 
  		self::send_mail($retour, env('Email_lea'),$status);
-
+ 		self::send_mail($retour, env('Email_patrick'),$status);
+		
 		if ($retour->idclient > 0)
 			return redirect()->route('fiche', ['id' => $retour->idclient])->with(['success' => "Réclamation ajoutée "]);
 
@@ -270,9 +306,11 @@ class RetoursController extends Controller
 			if(trim($reponse)!=  trim($request->input('Une_reponse_a_ete_apportee_au_client')) ){
 				$status='suite';
 			// Admins
+
+			self::send_mail($retour, env('Admin_iheb'),$status);
+
 			self::send_mail($retour, env('Admin_Email'),$status);
 			self::send_mail($retour, env('Admin_reyad'),$status);
-			self::send_mail($retour, env('Admin_iheb'),$status);
 
 			// Direction
 			self::send_mail($retour,  env('Email_jean'),$status);
@@ -288,28 +326,43 @@ class RetoursController extends Controller
 
 	public static function send_mail($retour, $email,$status)
 	{
+		$creator =  User::find($retour->user_id);
+		$types=array(1=>'Affinage',2=>'Condition de prix',3=>'Produits',4=>'Reard de livraison');
+		$delais=array(1=>8 , 2=>15 , 3=>5); //delais ici
+		$client=CompteClient::find($retour->idclient);
 		// envoi de mail
 		$sujet = 'Réclamation ' . $retour->id . ' - ' . $retour->name;
-		$contenu = 'Bonjour,<br><br>Réclamation: <a href="https://crm.mysaamp.com/retours/show/' . $retour->id . '" target="_blank">' . $retour->id . '</a> - ' . $retour->name . ' par ' . $retour->Nom_du_contact . '<br><br>
-		<b>Client:</b> ' . $retour->cl_id . '  -  ' . $retour->Nom_du_compte . '<br>
+		$contenu = 'Bonjour,<br><br>Réclamation: <a href="https://crm.mysaamp.com/retours/show/' . $retour->id . '" target="_blank">'    . $retour->name . '</a> <br><br>
+		<b>Client:</b> ' . $client->cl_ident . '  -  ' . $client->Nom . '<br>
+		<b>Créée par:</b> ' . $creator->name . ' ' .$creator->lastname. '<br>
 		<b>Type de retour:</b> ' . $retour->Type_retour . '<br>
+		<b>Type de demande:</b> ' . $types[$retour->Type_Demande] . '<br>
 		<b>Date d\'ouverture:</b> ' . $retour->Date_ouverture . '<br>
 		<b>Motif de retour:</b> ' . $retour->Motif_retour . '<br>
 		<b>Division:</b> ' . $retour->Division . '<br>
-		<b>Details des causes:</b> ' . $retour->Details_des_causes . '<br>';
+		<b>Détails des causes:</b> ' . $retour->Details_des_causes . '<br>';
+		if($status=='creation')
+		$contenu.='<br>Vous devez apporter une réponse sur un délais de ' . $delais[$retour->Nature] . ' jours ouvrés.<br>';
+
+		if($retour->Date_cloture!=''){
+			$contenu.='<br><b>Suite:</b> ' . $retour->Une_reponse_a_ete_apportee_au_client . '<br>';
+			$contenu.='<b>Finalité:</b> ' . $retour->Description_c . '<br>';		
+			$contenu.='<br>Cette réclamation est clôturée.<br>';
+		}
+/*
 		if($status=='cloture')
-			$contenu.='<b>Réclamation clôturée</b><br><br>';
+			$contenu.='<br><b>Réclamation clôturée</b><br><br>';
 
 		if($status=='interv')
-			$contenu.='Cette réclamation nécessite votre intervention.<br><br>';
+			$contenu.='<br>Cette réclamation nécessite votre intervention.<br><br>';
 
 		if($status=='infos')
-			$contenu.='Cette réclamation nécessite une intervention.<br><br>';
+			$contenu.='<br>Cette réclamation nécessite une intervention.<br><br>';
 
 		if($status=='suite')
-		$contenu.='Une suite a été apportée à cette réclamation et il faut la clôturer.<br><br>';
-
-		$contenu.='<i>Cordialement</i><br>
+		$contenu.='<br>Une suite a été apportée à cette réclamation et il faut la clôturer.<br><br>';
+*/
+		$contenu.='<br><i>Cordialement</i><br>
 		<i><b>CRM SAAMP</b></i>';
 
 		SendMail::send($email, $sujet, $contenu);
@@ -330,8 +383,8 @@ class RetoursController extends Controller
 		$retour = RetourClient::find($id);
 
 		if ($retour) {
-			$cl_id = $retour->cl_id;
-			$client = Client::where('cl_ident', $cl_id)->first();
+			$cl_id = $retour->idclient;
+			$client = Client::where('id', $cl_id)->first();
 			$retour->delete();
 
 			$previousUrl = url()->previous();
@@ -343,4 +396,31 @@ class RetoursController extends Controller
 
 		return back()->with('success', 'Supprimée avec succès');
 	}
+
+
+	function getWorkingDays($startDate, $endDate) {
+		$start = new \DateTime($startDate);
+		$end = new \DateTime($endDate);
+		
+		// Si la date de fin est antérieure à la date de début, on inverse
+		if ($start > $end) {
+			return 0;
+		}
+		
+		$interval = new \DateInterval('P1D');
+		$period = new \DatePeriod($start, $interval, $end->modify('+1 day')); // +1 jour pour inclure la date de fin
+		
+		$workingDays = 0;
+		
+		foreach ($period as $date) {
+			$dayOfWeek = $date->format('N'); // 1 (lundi) à 7 (dimanche)
+			if ($dayOfWeek <= 5) { // Lundi à vendredi seulement
+				$workingDays++;
+			}
+		}
+		
+		return $workingDays;
+	}
+
+
 } // end class

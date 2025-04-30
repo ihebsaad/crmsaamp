@@ -647,5 +647,5 @@ return [
 	"Add a contact"=>"Ajouter un contact",
 	"Close"=>"Fermer",
 	"No results"=>"Aucun résultat",
-
+	"Resolution deadline has been exceeded!"=>"Date de résolution a été dépassée !",
  ];

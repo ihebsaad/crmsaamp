@@ -223,7 +223,7 @@ class ClientsController extends Controller
 			$taches = Tache::where('ID_Compte', $client->id)->get();
 		}
 
-		$retours = RetourClient::where('cl_id', $client->cl_ident)->get();
+		$retours = RetourClient::where('cl_id', $client->cl_ident)->orWhere('idclient', $client->id)->get();
 		//}
 		$agence_name = '';
 		$agence = DB::table('agence')->where('agence_ident', $client->agence_ident)->first();
@@ -580,14 +580,8 @@ class ClientsController extends Controller
 		$result = GEDService::Account($cl_ident, $type, $id, $files);
 		return $result;
 	}
-
-
-
-
-
+ 
 	/** GED  **/
-
-
 	public function folder($id)
 	{
 		$client = CompteClient::find($id);
