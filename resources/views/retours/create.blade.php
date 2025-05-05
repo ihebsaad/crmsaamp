@@ -34,7 +34,7 @@
                         <div class="col-md-2 col-sm-6">
                             <div >
                                 <label for="Type_retour">{{__('msg.Return type')}}*:</label>
-                                <select    id="Type_retour" class="  form-control" name="Type_retour"  required >
+                                <select    id="Type_retour" class="  form-control" name="Type_retour"  required  onchange="set_message()" >
                                     <option></option>
                                     <option  value="Information générale">{{__('msg.General information')}}</option>
                                     <option  value="Négatif">{{__('msg.Negative')}}</option>
@@ -226,10 +226,8 @@
                     <div class="row pt-1 pb-1">
                         <div class="col-md-6 col-sm-6">
                             <div class="">
-                                <label for="fichier">{{__('msg.File(s)')}}*:</label>
-                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple    required  accept="application/pdf, image/jpeg, image/png, image/gif" /><br><br>                            
-                                <div id="message" class="text-danger text-bold" style="font-weight:bold">
-                                </div>
+                                <label for="fichier">{{__('msg.File(s)')}}:</label><div id="message" class="text-bold" style="font-weight:bold"></div>
+                                <input type="file" id="fichier" class="form-control" name="files[]"  multiple    accept="application/pdf, image/jpeg, image/png, image/gif" /><br><br>                                                            
                             </div>
                         </div>
                     </div>
@@ -251,22 +249,35 @@
     <script>
 
         function set_message(){
+            let retour =$('#Type_retour').val(); 
             let type =$('#Type_Demande').val();
+
+
+            if(type==1){
+                    $('#message').html("Veillez insérer : Lot + Facture d'affinage + Bordereau d'achat (si applicable)");
+                }
+                else if(type==2){
+                    $('#message').html("Veillez insérer : Facture + Conditions de vente");
+                }
+                else if(type==3){
+                    $('#message').html("Veillez insérer : Facture + Photo de produit ");
+                }
+                else if(type==4){
+                    $('#message').html("Veillez insérer  : Bon de commande + Bon de livraison");
+                }
+
             if(type==""){
                 $('#message').html("");
             }
-            if(type==1){
-                $('#message').html("Veillez insérer : Lot + Facture d'affinage + Bordereau d'achat (si applicable)");
+
+
+            if( retour=='Négatif'){
+                $('#fichier').prop('required',true); 
+
+            }else{
+                $('#fichier').prop('required',false); 
             }
-            else if(type==2){
-                $('#message').html("Veillez insérer : Facture + Conditions de vente");
-            }
-            else if(type==3){
-                $('#message').html("Veillez insérer : Facture + Photo de produit ");
-            }
-            else if(type==4){
-                $('#message').html("Veillez insérer  : Bon de commande + Bon de livraison");
-            }
+
         }
         
         // Sélection du formulaire

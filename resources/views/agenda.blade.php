@@ -130,11 +130,14 @@
 									<input type="date" class="form-control" id="date_fin" name="date_fin" value="{{date('Y-m-t')}}" style="width:150px">
 								</div>
 								<div class="col-lg-3 col-md-12 col-sm-4 mt-2 mb-2">
-									<button type="submit" class="btn btn-primary  mr-3">
+									<button type="submit" class="btn btn-primary  mr-3" title="Impression">
 										<i class="fas fa-print"></i>
 									</button>
-									<button type="button" id="btnPdf" class="btn btn-danger">
+									<button type="button" id="btnPdf" class="btn mr-3 btn-danger" title="Liste PDF">
 										<i class="fas fa-file-pdf"></i>
+									</button>
+									<button type="button" id="btnSynthese" class="btn btn-success" title="Synthèse par type">
+										<i class="fas fa-list-alt"></i>
 									</button>
 								</div>
 							</div>
@@ -151,6 +154,12 @@
 	document.getElementById('btnPdf').addEventListener('click', function() {
 		let form = document.getElementById('agendaForm');
 		form.action = "{{ route('pdf_agenda') }}";
+		form.submit();
+	});
+	
+	document.getElementById('btnSynthese').addEventListener('click', function() {
+		let form = document.getElementById('agendaForm');
+		form.action = "{{ route('pdf_synthese') }}";
 		form.submit();
 	});
 	</script>

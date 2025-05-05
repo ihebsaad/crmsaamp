@@ -161,8 +161,8 @@ if (Auth::check()) {
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="{{route('rendezvous.create',['id'=>0])}}" style="font-size:12px">
-        <i class="fas fa-calendar-day"></i> {{__('msg.Appointments')}} {{__('msg.excluding customers')}}
+      <a class="nav-link" href="{{route('rendezvous.create',['id'=>0])}}" >
+        <i class="fas fa-calendar-day"></i> {{__('msg.Appointments')}}
       </a>
     </li>
     @endif

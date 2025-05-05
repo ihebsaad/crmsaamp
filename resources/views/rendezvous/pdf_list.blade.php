@@ -95,8 +95,10 @@ if (isset($pdf)) {
         <li><b>Statut: </b>{{ $rv->statut > 0 ? $status[$rv->statut] : '' }}</li>
         <li><b>Type: </b>{{ $rv->Type }}</li>
         <li><b>Pièces jointes: </b>{{ $pieces }}</li>
+        
         <!--<li><b>Sujet: </b>{{ $rv->Subject }}</li>-->
         @if($rv->Description!='') <li style="margin-left:15px;list-style:none"><b>Compte Rendu: </b> {{$rv->Description}} </li> @endif
+        @if($rv->suggestion_texte!='') <li style="margin-left:15px;list-style:none"><u><b>Suggestion du client: </b></u> {{$rv->suggestion_texte}} </li> @endif
     </ul>
     @endforeach
 </div>

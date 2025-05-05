@@ -71,9 +71,12 @@ class RetoursController extends Controller
 	{
 		$agences = DB::table('agence')->get();
 		$retour = RetourClient::find($id);
+		if($retour==null)
+		return redirect('/dashboard');
 		$class = '';
 		$types=array(''=>'',1=>'Affinage',2=>'Condition de prix',3=>'Produits',4=>'Reard de livraison');
 		$natures=array(''=>'',1=>'Titrage',2=>'Lot haute teneure sur des cendres',3=>'Autres');
+
 		switch ($retour->Type_retour) {
 			case 'Négatif':
 				$class = 'danger';
@@ -122,8 +125,12 @@ class RetoursController extends Controller
 		$nextRetour = RetourClient::where('id', '>', $retour->id)->orderBy('id', 'asc')->first();
 
 		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Réclamation"]);
+		if($retour->idclient>0)
+			$client=CompteClient::find($retour->idclient);
+		else
+		$client=null;
 
-		return view('retours.show', compact('retour', 'contact', 'class', 'agences', 'files','previousRetour','nextRetour','resolutionDelay','isDeadlineExceeded','types','natures'));
+		return view('retours.show', compact('retour', 'contact', 'class', 'agences', 'files','previousRetour','nextRetour','resolutionDelay','isDeadlineExceeded','types','natures','client'));
 	}
 
 
@@ -212,19 +219,19 @@ class RetoursController extends Controller
 		// Admins
 		self::send_mail($retour, env('Admin_iheb'),$status);
 
-		self::send_mail($retour, env('Admin_reyad'),$status);
+		if($retour->user_id!=1){
+			self::send_mail($retour, env('Admin_reyad'),$status);
+			// Direction
+			self::send_mail($retour,  env('Email_jean'),$status);
+			self::send_mail($retour,  env('Email_elisabeth'),$status);
+			self::send_mail($retour,  env('Email_said'),$status);
+			// Dir qualité
+			self::send_mail($retour, env('Email_qualite'),$status);
 
-		
-		// Direction
-		self::send_mail($retour,  env('Email_jean'),$status);
-		self::send_mail($retour,  env('Email_elisabeth'),$status);
-		self::send_mail($retour,  env('Email_said'),$status);
-		// Dir qualité
- 		self::send_mail($retour, env('Email_qualite'),$status);
+			self::send_mail($retour, env('Email_lea'),$status);
+			self::send_mail($retour, env('Email_patrick'),$status);
+		}
 
- 		self::send_mail($retour, env('Email_lea'),$status);
- 		self::send_mail($retour, env('Email_patrick'),$status);
-		
 		if ($retour->idclient > 0)
 			return redirect()->route('fiche', ['id' => $retour->idclient])->with(['success' => "Réclamation ajoutée "]);
 

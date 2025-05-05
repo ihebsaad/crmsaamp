@@ -152,6 +152,50 @@ class AgendaController extends Controller
 	}
 
 
+		
+	// Ajouter cette nouvelle méthode dans le contrôleur RendezVousController
+	public function pdf_synthese(Request $request)
+	{
+		$user = $request->get('user');
+		$date_debut = $request->get('date_debut');
+		$date_fin = $request->get('date_fin');
+		$name = "";
+		
+		// Validation des dates
+		if (!$date_debut || !$date_fin) {
+			return back()->with('error', __('msg.Please provide a valid date range.'));
+		}
+		
+		// Récupération des rendez-vous en fonction de l'utilisateur et de la plage de dates
+		if ($user > 0) {
+			$User = User::find($user);
+			$name = $User->name . ' ' . $User->lastname;
+			$rendezvous = RendezVous::where('user_id', $user)
+				->whereBetween('Started_at', [$date_debut, $date_fin])
+				->orderBy('Type', 'asc')  // Trier d'abord par Type
+				->orderBy('Started_at', 'asc')
+				->orderBy('heure_debut', 'asc')
+				->get();
+		} else {
+			$name = auth()->user()->name . ' ' . auth()->user()->lastname;
+			$rendezvous = RendezVous::where('user_id', auth()->user()->id)
+				->whereBetween('Started_at', [$date_debut, $date_fin])
+				->orderBy('Type', 'asc')  // Trier d'abord par Type
+				->orderBy('Started_at', 'asc')
+				->orderBy('heure_debut', 'asc')
+				->get();
+		}
+		
+		// Regrouper les rendez-vous par type
+		$rendezVousByType = $rendezvous->groupBy('Type');
+		
+		$date = date('d_m_Y_H_i');
+		$pdf = PDF::loadView('rendezvous.pdf_synthese', compact('rendezVousByType', 'user', 'name', 'date_debut', 'date_fin'));
+		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Synthèse Agenda PDF"]);
+		
+		return $pdf->stream('synthese-rendezvous-' . $name . '-' . $date . '.pdf');
+	}
+
 	public function excel_agenda(Request $request)
 	{
 		$user = $request->get('user');

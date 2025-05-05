@@ -73,12 +73,12 @@ class RendezVousController extends Controller
 			$client = null;
 
 		$userToken = GoogleToken::where('user_id', auth()->id())->first();
-
+		$clients = CompteClient::get();
 		$users = User::where('user_type', '<>', '')->get();
 
 		Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Création du rendez vous"]);
 
-		return view('rendezvous.create', compact('client', 'users','userToken'));
+		return view('rendezvous.create', compact('client', 'users','userToken','clients'));
 	}
 
 	public function show($id)
@@ -126,9 +126,16 @@ class RendezVousController extends Controller
 	{
 		$request->validate([
 			'Subject' => 'required',
-
+			'AccountId' => 'required',
 		]);
 
+		if($request->input('AccountId')>0){
+			$client = CompteClient::find($request->input('AccountId'));
+			$Account_Name=$client->Nom;
+		}else{
+			$Account_Name=$request->input('Account_Name');
+		}
+		
 		//$rendezvous=RendezVous::create($request->all());
 
 		$rendezvous = RendezVous::create([
@@ -136,7 +143,7 @@ class RendezVousController extends Controller
 			'created_by' => $request->input('created_by'),
 			'mycl_id' => $request->input('mycl_id'),
 			'user_id' => $request->input('user_id'),
-			'Account_Name' => $request->input('Account_Name'),
+			'Account_Name' => $Account_Name,
 			'Started_at' => $request->input('Started_at'),
 			'heure_debut' => $request->input('heure_debut'),
 			'End_AT' => $request->input('End_AT'),
@@ -150,12 +157,8 @@ class RendezVousController extends Controller
 		]);
 
 		$rendezvous->save();
-		if ($request->input('AccountId') > 0) {
-			$client = CompteClient::find($rendezvous->AccountId);
 
-			$rendezvous->Account_Name = $client->Nom;
-			$rendezvous->save();
-		}
+		
 
 		// Synchroniser avec Google Calendar
 		$googleEventId = $this->addToGoogleCalendar($rendezvous);
@@ -215,7 +218,6 @@ class RendezVousController extends Controller
 */
 		$rendezvous = RendezVous::find($id);
 		$rendezvous->update($request->all());
-
 
 		if ($request->hasFile('files')) {
 			$fichiers = $request->file('files');

@@ -30,7 +30,7 @@
 
                         <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Complaint')}} {{$retour->id}}    
                             @if($retour->idclient > 0)
-                            <a href="{{route('fiche',['id'=>$retour->idclient])}}">{{$retour->cl_id}} - {{$retour->Nom_du_compte}}</a>
+                            <a href="{{route('fiche',['id'=>$retour->idclient])}}">{{$client->cl_ident}} - {{$client->Nom}}</a>
                             @else
                             {{$retour->cl_id}} - {{$retour->Nom_du_compte}}
                             @endif
@@ -76,8 +76,8 @@
                         @endif
                     </div>
                     <div class="col-md-6 col-sm-12">
-                        @if($isDeadlineExceeded)
-                            <div class="alert alert-danger">
+                        @if($isDeadlineExceeded && $retour->Date_cloture=='')
+                            <div class="alert alert-danger"     style="display: ruby-text;">
                                 <i class="fas fa-exclamation-triangle"></i> 
                                 {{ __('msg.Resolution deadline has been exceeded!') }}
                             </div>

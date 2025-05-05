@@ -2,14 +2,20 @@
 
 @section('content')
 
-<?php
+<b?php
 
 ?>
 
 <style>
-
+    .pointer{
+        cursor: pointer;
+    }
 
 </style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
 <div class="row">
 
     <div class="col-lg-12 col-sm-12 mb-4">
@@ -29,81 +35,108 @@
                     </div>
                     @endif
                 </div>
-
                 <form action="{{ route('rendezvous.store') }}" method="post"   enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="AccountId" value="{{$client->id ?? 0}}" >
-                    <input type="hidden" name="mycl_id" value="{{$client->id ?? 0}}" >
+                    <input type="hidden" name="AccountId" value="{{$client->id ?? 0}}" id="AccountId"  >
+                    <input type="hidden" name="mycl_id" value="{{$client->id ?? 0}}"  id="mycl_id">
                     <input type="hidden" name="created_by" value="{{auth()->user()->id}}" >
+                    @if($client== null) 
+                    <div class="row pt-1 pb-2" style="padding-left:30px!important;padding-top:15px!important">
+                        <label for="hors_clientele " class="pr-3 pointer"><input type="radio" id="hors_clientele" name="type_rv" value="1" class="" onchange="$('#customer_name').show(); $('#customers_list').hide();initClient()" checked> <b>Hors clientèle</b></labe>
+                        <label for="clientele " class="pl-3 pointer"><input type="radio" id="clientele" name="type_rv" value="2" class="" onchange="$('#customer_name').hide(); $('#customers_list').show(); " >  <b>Clientèle</b></label>
+                    </div>
+                    @endif
                     <div class="row pt-1">
-                        <div class="col-md-4">
+                        @if($client== null) 
+                        <div class="col-md-2 col-sm-6" id="customers_list" style="display:none;">
+                            <div class="">
+                                <label for="Account_Name">{{__('msg.Account name')}}*:</label>
+                                <select   class="form-control" id="clients_list" style="width:100%" onchange="setClient()"  >
+                                    <option></option>
+                                    @foreach($clients as $cl)
+                                    <option value="{{ $cl->id }}"   >{{ $cl->Nom}} ( {{ $cl->cl_ident}}) </option>
+                                    @endforeach
+                                </select><br><br>
+                            </div>
+                        </div>
+                        @endif
+                        <div class="col-md-2 col-sm-6" id="customer_name" >
                             <div class="">
                                 <label for="Account_Name">{{__('msg.Account name')}}*:</label>
                                 <input type="text" id="Account_Name" class="form-control" name="Account_Name" @if($client!= null)  readonly @endif value="{{$client->Nom ?? '' }}"><br><br>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Started_at">{{__('msg.Start date')}}*:</label>
-                                <input type="text" id="Started_at" class="form-control datepicker" name="Started_at"  required value="{{old('Started_at')}}"><br><br>
+                                <input type="text" id="Started_at" class="form-control datepicker" name="Started_at"  required value="{{old('Started_at')}}">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1 col-sm-6">
                             <div class="">
-                                <label for="heure_debut">{{__('msg.Start hour')}}*:</label>
-                                <input type="time" id="heure_debut" class="form-control" name="heure_debut" required value="{{old('heure_debut')}}"><br><br>
+                                <label for="heure_debut">Heure*:</label>
+                                <input type="time" id="heure_debut" class="form-control" name="heure_debut" required value="{{old('heure_debut')}}">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="End_AT">{{__('msg.End date')}}*:</label>
-                                <input type="text" id="End_AT" class="form-control datepicker" name="End_AT" required value="{{old('End_AT')}}"><br><br>
+                                <input type="text" id="End_AT" class="form-control datepicker" name="End_AT" required value="{{old('End_AT')}}">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1 col-sm-6">                            
                             <div class="">
-                                <label for="heure_fin">{{__('msg.End hour')}}*:</label>
-                                <input type="time" id="heure_fin" class="form-control" name="heure_fin" required value="{{old('heure_fin')}}"><br><br>
+                                <label for="heure_fin">Heure*:</label>
+                                <input type="time" id="heure_fin" class="form-control" name="heure_fin" required value="{{old('heure_fin')}}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="">
+                                <label for="Subject">{{__('msg.Subject')}}:</label>
+                                <input type="text" id="Subject" class="form-control" name="Subject"  value="{{old('Subject')}}"><br><br>
                             </div>
                         </div>
                     </div>
 
                     <div class="row pt-1">
 
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
-                            <label for="Type">{{__('msg.Type')}}:</label>
-                                <select    id="Type" class="  form-control" name="Type"   >
+                            <label for="Type">{{__('msg.Type')}}*:</label>
+                                <select    id="Type" class="  form-control" name="Type" required  >
                                     <option  value=""></option>
-                                    <option  value="Rdv téléphonique / visio">Rdv téléphonique / visio</option>
-                                    <option  value="Rdv Fidélisation">Rdv Fidélisation</option>
-                                    <option  value="Rdv Prospection">Rdv Prospection</option>
-                                    <option  value="Rdv Reconquête">Rdv Reconquête</option>
-                                    <option  value="Rdv Règlement Réclamation">Rdv Règlement Réclamation</option>
-                                    <option  value="Rdv suite envoi offre de prix">Rdv suite envoi offre de prix</option>
-                                    <option  value="Rdv suivi de commande">Rdv suivi de commande</option>
-                                    <option  value="Visite du client en agence">Visite du client en agence</option>
-                                    <option  value="Visite sur salon">Visite sur salon</option>
-                                    <option  value="Formation">Formation</option>
-                                    <option  value="Home Office">Home Office</option>
-                                    <option  value="Enlèvement">Enlèvement</option>
-                                    <option  value="Livraison">Livraison</option>
-                                    <option  value="Dépot">Dépot</option>
-                                    <option  value="Ouverture de compte">Ouverture de compte</option>
-                                    <option  value="Meeting">Meeting</option>
-                                    <option  value="Other">Other</option>
+                                    @if($client==null)
+                                        <option value="Déplacement-Trajet">Déplacement-Trajet</option>
+                                    @endif
+                                    <option value="Prospection">Prospection</option>
+                                    <option value="Fidélisation">Fidélisation</option>
+                                    <option value="Reconquête">Reconquête</option>
+                                    <option value="Suite à une réclamation">Suite à une réclamation</option>
+                                    <option value="Suite à une Offre de prix">Suite à une Offre de prix</option>
+                                    <option value="Suite à une commande">Suite à une commande</option>
+                                    <option value="Visite d’un client">Visite d’un client</option>
+                                    <option value="Visite d’un client dans notre agence">Visite d’un client dans notre agence</option>
+                                    <option value="Visite sur salon">Visite sur salon</option>
+                                    <option value="Formation">Formation</option>
+                                    <option value="Home Office">Home Office</option>
+                                    <option value="Enlèvement">Enlèvement</option>
+                                    <option value="Livraison">Livraison</option>
+                                    <option value="Dépôt">Dépôt</option>
+                                    <option value="Pour une ouverture de compte">Pour une ouverture de compte</option>
+                                    <option value="Autres">Autres</option>
                                 </select><br><br>
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-sm-6">
                         <div class="">
                                 <label for="Location">{{__('msg.Place')}}*:</label>
                                 <input type="text" id="Location" class="form-control" name="Location" required value="{{old('Location')}}"><br><br>
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Location">Mode*:</label>
                                 <select    id="mode_de_rdv" class="form-control" name="mode_de_rdv" required  >
@@ -115,7 +148,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Location">Statut*:</label>
                                 <select    id="statut" class="form-control" name="statut" required  >
@@ -126,17 +159,18 @@
                             </div>
                         </div>
 
-                    </div>
-
-                    <div class="row pt-1">
-                        <div class="col-md-4">
-                            <div class="">
-                                <label for="Subject">{{__('msg.Subject')}}:</label>
-                                <input type="text" id="Subject" class="form-control" name="Subject"  value="{{old('Subject')}}"><br><br>
+                        <div class="col-md-4 col-sm-12">
+                            <div >
+                                <label for="Description">{{__('msg.Description')}} :</label>
+                                <textarea id="Description" class="form-control" name="Description" style="min-height:150px">{{old('Description')}}</textarea><br><br>
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                    </div>
+
+                    <div class="row ">
+
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Date_creation">{{__('msg.Attributed to')}}*:</label>
                                 <select    id="user_id" class="  form-control" name="user_id" required  >
@@ -148,22 +182,16 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div >
-                                <label for="Description">{{__('msg.Description')}} :</label>
-                                <textarea id="Description" class="form-control" name="Description" style="min-height:150px">{{old('Description')}}</textarea><br><br>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3 col-sm-6">
                             <div class="">
                                 <label for="file">{{__('msg.File(s)')}}:</label>
                                 <input type="file" id="fichier" class="form-control" name="files[]"  multiple     /><br><br>
                             </div>
                         </div>
+
                     </div>
+
+                    
                     <div class="row pt-1">
                         <div class="col-md-12">
                             <button type="submit" class="btn-primary btn float-right" >{{__('msg.Add')}}</button>
@@ -179,8 +207,29 @@
     </div>
 
     <script>
+
+        function setClient(){
+            let cl_id=$('#clients_list').val();            
+            $('#AccountId').val(cl_id);
+            $('#mycl_id').val(cl_id);
+        }
+
+        function initClient(){
+            $('#AccountId').val(0);
+            $('#mycl_id').val(0);
+        }
+
         $(function () {
 
+            
+            $('#clients_list').select2({
+                filter: true,
+                language: {
+                    noResults: function() {
+                        return 'Pas de résultats';
+                    }
+                }
+            });
             $( ".datepicker" ).datepicker({
 
                 altField: "#datepicker",

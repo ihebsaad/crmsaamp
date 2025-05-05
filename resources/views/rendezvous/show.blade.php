@@ -43,6 +43,10 @@
 	[data-title] {
 		position: relative;
 	}
+    .pointer{
+        cursor: pointer;
+    }
+    
 </style>
 <div class="row">
 
@@ -61,7 +65,7 @@
                     <input type="hidden" name="edited_by" value="{{auth()->user()->id}}">
 
                     <div class="row pt-1">
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Account_Name">@if($client!= null) {{__('msg.Customer')}}: @else {{__('msg.Name')}}: @endif </label>
                                 @if($rendezvous->mycl_id>0)
@@ -72,56 +76,64 @@
                                 <h6><small>{{$adresse ?? ''}} </small></h6>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Started_at">{{__('msg.Start date')}}:</label>
                                 <input type="text" id="Started_at" class="form-control datepicker"  required name="Started_at" value="{{date('Y-m-d', strtotime($rendezvous->Started_at))}}"><br><br>
 
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1 col-sm-6">
                             <div class="">
-                                <label for="heure_fin">{{__('msg.Start hour')}}:</label>
+                                <label for="heure_fin">Heure:</label>
                                 <input type="time" id="heure_debut" class="form-control" name="heure_debut"  required value="{{$rendezvous->heure_debut}}"><br><br>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="End_at">{{__('msg.End date')}}:</label>
                                 <input type="text" id="End_at" class="form-control datepicker" name="End_at" required value="{{ $rendezvous->End_at !='' ? date('Y-m-d', strtotime($rendezvous->End_at)) : '' }}"><br><br>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1 col-sm-6">
                             <div class="">
-                                <label for="heure_fin">{{__('msg.End hour')}}:</label>
+                                <label for="heure_fin">Heure:</label>
                                 <input type="time" id="heure_fin" class="form-control" name="heure_fin" required value="{{$rendezvous->heure_fin}}"><br><br>
                             </div>
                         </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="">
+                                <label for="Subject">{{__('msg.Subject')}}:</label>
+                                <input type="text" id="Subject" class="form-control" name="Subject" value="{{$rendezvous->Subject}}"><br><br>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="row pt-1">
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Type">{{__('msg.Type')}}:</label>
                                 <h6>{{$rendezvous->Type}}</h6>
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Location">{{__('msg.Place')}}:</label>
                                 <h6>{{$rendezvous->Location}}</h6>
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="mode_de_rdv">Mode:</label>
                                 <h6>{{$rendezvous->mode_de_rdv}}</h6>
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Location">Statut:</label>
                                 <select    id="statut" class="form-control" name="statut" required  >
@@ -132,17 +144,18 @@
                             </div>
                         </div>
 
-                    </div>
-
-                    <div class="row pt-1">
-                        <div class="col-md-3">
-                            <div class="">
-                                <label for="Subject">{{__('msg.Subject')}}:</label>
-                                <input type="text" id="Subject" class="form-control" name="Subject" value="{{$rendezvous->Subject}}"><br><br>
+                        <div class="col-md-4 col-sm-12">
+                            <div>
+                                <label for="Description">Compte Rendu:</label>
+                                <textarea id="Description" class="form-control" name="Description" style="min-height:150px">{{$rendezvous->Description}}</textarea><br><br>
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                    </div>
+                            
+                    <div class="row">
+
+                        <div class="col-md-2 col-sm-6">
                             <div class="">
                                 <label for="Date_creation">{{__('msg.Attributed to')}}:</label>
                                 @if($rendezvous->user_id > 0 )
@@ -155,18 +168,8 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div>
-                                <label for="Description">Compte Rendu:</label>
-                                <textarea id="Description" class="form-control" name="Description" style="min-height:150px">{{$rendezvous->Description}}</textarea><br><br>
-                            </div>
-                        </div>
-
-                    </div>
-                                                            
-                    <div class="row">
                         @if (isset($clent) && $client->etat_id==2)
-                        <div class="col-md-3"  data-title="c'est le ressenti du client et non votre ressenti par rapport au client">
+                        <div class="col-md-3 col-sm-6"  data-title="c'est le ressenti du client et non votre ressenti par rapport au client">
                             <label for="Date_creation" >Ressenti client*:</label>
                             <select    id="statut" class="form-control" name="ressenti_client" required  >
                                 <option  value=""  {{ $rendezvous->ressenti_client==0 ? 'selected="selected"' : '' }} >Choisir</option>
@@ -180,7 +183,7 @@
                         @endif
 
                         @if($rendezvous->fichier!= null)
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-sm-6">
 
                             @php $fileNames = unserialize($rendezvous->fichier); @endphp
                             <div class="">
@@ -210,7 +213,7 @@
 
                         @if(count($files)>0)
 
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-sm-6">
                             <label for="Description">{{ __('msg.File(s)') }}:</label><br>
                             <table style="border:none;width:100%">
                                 @foreach ($files as $file)
@@ -231,6 +234,18 @@
                         </div>
                         @endif
 
+                    </div>
+
+                    <div class="row pt-1 pb-2" style=" ">
+                        <div class="col-md-4 col-sm-6">
+                            Le client a-t-il une suggestion à formuler ?<br>
+                            <label for="yes" class="pr-3 pointer"><input type="radio" id="yes" name="suggestion_demande" value="1" class="" onchange="show_suggestion(1)" required  @if($rendezvous->suggestion_demande==1) checked @endif  > <b>Oui</b></label>
+                            <label for="no" class="pl-3 pointer" ><input type="radio" id="no" name="suggestion_demande" value="2" class="" onchange="show_suggestion(0)" @if($rendezvous->suggestion_demande==2) checked @endif >  <b>Non</b></label>
+                        </div>
+                        <div class="col-md-4 col-sm-6" @if($rendezvous->suggestion_demande!=1) style="display:none" @endif id="suggestion-div">
+                            <label for="suggestion">Suggestion du client:</label><br>
+                            <textarea name="suggestion_texte"  id="suggestion" class="form-control" >{{ $rendezvous->suggestion_texte }}</textarea>
+                        </div>
                     </div>
 
                     <div class="row pt-3">
@@ -279,6 +294,18 @@
 
     </div>
     <script>
+
+        function show_suggestion(show){
+            if(show==1){
+                $('#suggestion-div').show();
+                $('#suggestion').prop('required',true);
+
+            }else{
+                $('#suggestion-div').hide();
+                $('#suggestion').prop('required',false);
+
+            }
+        }
         $(function() {
 
             $(".datepicker").datepicker({

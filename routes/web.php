@@ -105,6 +105,7 @@ Route::get('/agenda', [AgendaController::class, 'agenda'])->name('agenda');
 #Route::post('/agenda', [HomeController::class, 'agenda'])->name('agenda');
 Route::get('/print_agenda', [AgendaController::class, 'print_agenda'])->name('print_agenda');
 Route::get('/pdf_agenda', [AgendaController::class, 'pdf_agenda'])->name('pdf_agenda');
+Route::get('/pdf-synthese', [AgendaController::class, 'pdf_synthese'])->name('pdf_synthese');
 Route::get('/exterieurs', [AgendaController::class, 'rendesvous_ext'])->name('exterieurs');
 #Route::post('/exterieurs', [HomeController::class, 'rendesvous_ext'])->name('exterieurs');
 /*
