@@ -30,16 +30,26 @@ class SendMail
 
         // Check if $to is an array, if not, make it an array
         $recipients = is_array($to) ? $to : [$to];
+        $recipients = array_filter(is_array($to) ? $to : [$to], function($email) {
+            return !is_null($email) && trim($email) !== '';
+        });
 
         $email = (new Email())
             ->from($from)
-            ->bcc(...$recipients) // Spread operator to add all recipients
             ->to($ccAddress)
             ->replyTo($ccAddress)
             ->subject($sujet)
             ->html($contenu);
 
-                // Ajout des adresses CCI
+        // Traitement des destinataires (BCC)
+        $recipients = is_array($to) ? $to : [$to];
+        foreach ($recipients as $recipient) {
+            if (!is_null($recipient) && trim($recipient) !== '' && filter_var(trim($recipient), FILTER_VALIDATE_EMAIL)) {
+                $email->addBcc(trim($recipient));
+            }
+        }
+        
+        // Ajout des adresses CCI
         if (!empty($cci)) {
             foreach ($cci as $cciEmail) {
                 if (filter_var(trim($cciEmail), FILTER_VALIDATE_EMAIL)) {

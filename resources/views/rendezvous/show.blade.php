@@ -71,7 +71,7 @@
                                 @if($rendezvous->mycl_id>0)
                                 <h6><a href="{{route('fiche',['id'=>$rendezvous->mycl_id])}}">{{$rendezvous->Account_Name}}</a></h6>
                                 @else
-                                <h6>{{$rendezvous->Account_Name}}</h6>
+                                <h6>{{$rendezvous->Account_Name ?? 'Hors clienèle'}}</h6>
                                 @endif
                                 <h6><small>{{$adresse ?? ''}} </small></h6>
                             </div>

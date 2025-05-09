@@ -67,38 +67,83 @@ if (isset($pdf)) {
         h3{
             color:#808080;
         }
+        .category-header {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #333;
+            border-left: 4px solid #c3af7a;
+        }
+
 </style>
 
-<b style="font-size:22px;width:100%">Synthèse des rendez vous {{__('msg.of')}}  {{$name}} <img style="width:150px;position:fixed;right:0px;" src="{{ URL::asset('img/logo.png')}}" /></b>
+<b style="font-size:22px;width:100%">Synthèse des rendez vous {{__('msg.of')}} {{$name}} <img style="width:150px;position:fixed;right:0px;" src="{{ URL::asset('img/logo.png')}}" /></b>
 <b style="position:fixed;top:35px;font-size:18px;">Période : @if($date_debut!=$date_fin) du {{date('d/m/Y', strtotime($date_debut))}} au {{ date('d/m/Y', strtotime($date_fin))}} @else le <b>{{date('d/m/Y', strtotime($date_debut))}} @endif </b><br>
-
-
+<br>
 <div class="events">
+    <!-- 1. Rendez-vous hors clientèles -->
+    <div class="category-header">1. Rendez-vous hors clientèles</div>
     <ul class="event">
-    @foreach($rendezVousByType as $type => $rendezVous)
-        <div class="rdv-list">
-            <h3>Rendez-vous de type : <u>{{ $type ?: 'Non défini' }}</u></h3>
-            <ul>
-                @foreach($rendezVous as $rdv)
-                    <li class="rdv-item">
-                        {{ date('d/m/y', strtotime($rdv->Started_at)) }} @if( $rdv->Started_a != $rdv->End_AT) - {{ date('d/m/y', strtotime($rdv->End_AT)) }} @endif
-                        {{ $rdv->Subject }} 
-                        @if( $rdv->AccountId >0 ) - 
-                        @php $client=\App\Models\CompteClient::find($rdv->AccountId); @endphp
-                        <b>{{ $rdv->Account_Name }} | {{ $client->cl_ident  ?? ''}} </b>@endif - 
-                        {{ $rdv->heure_debut }} à {{ $rdv->heure_fin }}
-                    </li>
-                @endforeach
-            </ul>
-            <div class="total">Total : <b>{{ count($rendezVous) }}</b> Rendez-vous</div>
-        </div>
-        @if(!$loop->last)
-            <hr>
-        @endif
-    @endforeach
+    @if(count($rendezVousHorsClientelesByType) > 0)
+        @foreach($rendezVousHorsClientelesByType as $type => $rendezVous)
+            <div class="rdv-list">
+                <h3>Rendez-vous de type : <u>{{ $type ?: 'Non défini' }}</u></h3>
+                <ul>
+                    @foreach($rendezVous as $rdv)
+                        <li class="rdv-item">
+                            {{ date('d/m/y', strtotime($rdv->Started_at)) }} @if($rdv->Started_at != $rdv->End_AT &&  $rdv->End_AT!='' ) - {{ date('d/m/y', strtotime($rdv->End_AT)) }} @endif
+                            {{ $rdv->Subject }} - 
+                            {{ $rdv->heure_debut }} à {{ $rdv->heure_fin }}
+                        </li>
+                    @endforeach
+                </ul>
+                <div class="total">Total : <b>{{ count($rendezVous) }}</b> Rendez-vous</div>
+            </div>
+            @if(!$loop->last)
+                <hr>
+            @endif
+        @endforeach
+    @else
+        <p style="margin-left: 20px; font-style: italic;">Aucun rendez-vous hors clientèles pour cette période.</p>
+    @endif
+    </ul>
+
+    <div style="height: 30px;"></div>
+
+    <!-- 2. Rendez-vous clientèles -->
+    <div class="category-header">2. Rendez-vous clientèles</div>
+    <ul class="event">
+    @if(count($rendezVousClientelesByType) > 0)
+        @foreach($rendezVousClientelesByType as $type => $rendezVous)
+            <div class="rdv-list">
+                <h3>Rendez-vous de type : <u>{{ $type ?: 'Non défini' }}</u></h3>
+                <ul>
+                    @foreach($rendezVous as $rdv)
+                        <li class="rdv-item">
+                            {{ date('d/m/y', strtotime($rdv->Started_at)) }} @if($rdv->Started_at != $rdv->End_AT &&  $rdv->End_AT!='') - {{ date('d/m/y', strtotime($rdv->End_AT)) }} @endif
+                            {{ $rdv->Subject }} - 
+                            <b>{{ $rdv->Account_Name }} | 
+                            @php $client=\App\Models\CompteClient::find($rdv->AccountId); @endphp
+                            {{ $client->cl_ident ?? '' }}</b> - 
+                            {{ $rdv->heure_debut }} à {{ $rdv->heure_fin }}
+                        </li>
+                    @endforeach
+                </ul>
+                <div class="total">Total : <b>{{ count($rendezVous) }}</b> Rendez-vous</div>
+            </div>
+            @if(!$loop->last)
+                <hr>
+            @endif
+        @endforeach
+    @else
+        <p style="margin-left: 20px; font-style: italic;">Aucun rendez-vous avec des clients pour cette période.</p>
+    @endif
     </ul>
 </div>
+
 <footer>
 CRM SAAMP - Document généré le {{date('d/m/Y H:i')}}
 </footer>
+
 @endsection

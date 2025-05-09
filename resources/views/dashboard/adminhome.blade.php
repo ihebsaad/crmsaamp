@@ -112,6 +112,21 @@
 	th {
 		cursor: pointer;
 	}
+	.tab-pane{
+        padding-top:25px;
+        padding-bottom:25px;
+        padding-left:15px;
+        padding-right:15px;
+    }
+    .nav-link{
+        color:#4e73df;width:250px;text-align:center;font-weight:bold;
+    }
+    #myTab1 .nav-link i {
+        color: #ed1b24 !important;
+    }
+    .nav-link.active{
+        color:#4e73df!important;
+    }
 </style>
 
 
@@ -297,7 +312,80 @@
 					</div>
 				</section>
 				@endif
--->
+				-->
+				<div class="col-lg-12 col-md-6- col-lg-6- col-sm-12- mb-3">
+					<ul class="nav nav-tabs card-header" id="myTab1" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="offers-tab" data-toggle="tab" href="#offers" role="tab" aria-controls="offers" aria-selected="true" style="">{{__('msg.Price offers to be validated')}} <i class="fas fa-exclamation-triangle text-danger"></i></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="comps-tab" data-toggle="tab" href="#comps" role="tab" aria-controls="comps" aria-selected="false" style="">{{__('msg.Unclosed complaints')}} <i class="fas fa-exclamation-triangle text-danger"></i></a>
+						</li>
+					</ul>
+
+					<div class="tab-content" style="padding-left:15px;padding-right:15px">
+						<div class="tab-pane active" id="offers" role="tabpanel" aria-labelledby="offers-tab">
+
+							<div class="table-container">
+
+								<table id="" class="table table-striped" style="" >
+									<thead>
+										<tr style="background-color:#2e3e4e;color:white;" id="">
+											<th>ID</th>
+											<th>{{__('msg.Creation')}}</th>
+											<th>{{__('msg.Name')}}</th>
+											<th>{{__('msg.Customer')}}</th>
+											<th>{{__('msg.By')}}</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach($offres as $offre)
+										@php $user=\App\Models\User::find($offre->user_id); @endphp
+										<tr>
+											<td><a href="{{route('offres.show',['id'=>$offre->id])}}">{{$offre->id}}</a></td>
+											<td>{{ date('d/m/Y', strtotime($offre->Date_creation))}}</td>
+											<td>{{$offre->Nom_offre}}</td>
+											<td>{{$offre->nom_compte}}</td>
+											<td>{{$user->lastname ?? ''}} {{$user->name ?? ''}}</td>
+										</tr>
+										@endforeach
+									</tbody>
+								</table>
+							</div>
+
+						</div>
+
+						<div class="tab-pane" id="comps" role="tabpanel" aria-labelledby="comps-tab">
+							<div class="table-container" style=" ">
+								<table id="" class="table table-striped" style="">
+								<thead>
+									<tr style="background-color:#2e3e4e;color:white;" id="">
+									<th>{{__('msg.Title')}}</th>
+									<th>Ouverture</th>
+									<th>{{__('msg.Customer')}}</th>
+									<th>{{__('msg.Created by')}}</th>
+									<th>{{__('msg.Reason')}}</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($retours as $retour)
+									@php $creator = \App\Models\User::find($retour->user_id); @endphp
+									<tr>
+									<td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
+									<td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
+									<td>{{$retour->Nom_du_compte}}</td>
+									<td>{{$creator->name ?? '' }} {{$creator->lastname ?? '' }}</td>
+									<td>{{$retour->Motif_retour}}</td>
+									</tr>
+									@endforeach
+								</tbody>
+								</table>
+							</div>
+
+						</div>
+					</div>
+				</div>
+<!--
 				<div class="col-lg-12 col-md-6- col-lg-6- col-sm-12- mb-3">
 					<h4 class="text-center">{{__('msg.Price offers to be validated')}} <i class="fas fa-exclamation-triangle text-danger"></i></h4>
 					<h4 class=""> </h4>
@@ -358,7 +446,7 @@
 						</table>
 					</div>
 				</div>
-
+			-->
 			</div>
 		</div>
 		<div class="col-lg-7 col-md-12">

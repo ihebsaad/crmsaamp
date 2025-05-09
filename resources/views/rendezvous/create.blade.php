@@ -42,8 +42,8 @@
                     <input type="hidden" name="created_by" value="{{auth()->user()->id}}" >
                     @if($client== null) 
                     <div class="row pt-1 pb-2" style="padding-left:30px!important;padding-top:15px!important">
-                        <label for="hors_clientele " class="pr-3 pointer"><input type="radio" id="hors_clientele" name="type_rv" value="1" class="" onchange="$('#customer_name').show(); $('#customers_list').hide();initClient()" checked> <b>Hors clientèle</b></labe>
-                        <label for="clientele " class="pl-3 pointer"><input type="radio" id="clientele" name="type_rv" value="2" class="" onchange="$('#customer_name').hide(); $('#customers_list').show(); " >  <b>Clientèle</b></label>
+                        <label for="hors_clientele" class="pr-3 pointer"><input type="radio" id="hors_clientele" name="type_rv" value="1" class="" onchange="$('#customer_name').show(); $('#customers_list').hide();initClient();filterTypeOptions(true)" checked> <b>Hors clientèle</b></label>
+                        <label for="clientele" class="pl-3 pointer"><input type="radio" id="clientele" name="type_rv" value="2" class="" onchange="$('#customer_name').hide(); $('#customers_list').show();filterTypeOptions(false) " >  <b>Clientèle</b></label>
                     </div>
                     @endif
                     <div class="row pt-1">
@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         @endif
-                        <div class="col-md-2 col-sm-6" id="customer_name" >
+                        <div class="col-md-2 col-sm-6" id="customer_name" @if($client==null) style="display:none;" @endif>
                             <div class="">
                                 <label for="Account_Name">{{__('msg.Account name')}}*:</label>
                                 <input type="text" id="Account_Name" class="form-control" name="Account_Name" @if($client!= null)  readonly @endif value="{{$client->Nom ?? '' }}"><br><br>
@@ -107,24 +107,23 @@
                                 <select    id="Type" class="  form-control" name="Type" required  >
                                     <option  value=""></option>
                                     @if($client==null)
-                                        <option value="Déplacement-Trajet">Déplacement-Trajet</option>
+                                        <option class="hors-clientele" value="Déplacement-Trajet">Déplacement-Trajet</option>
+                                        <option class="hors-clientele" value="Home Office">Home Office</option>
+                                        <option class="hors-clientele" value="Visite sur salon">Visite sur salon</option>
+                                        <option class="hors-clientele" value="Interne">Interne</option>
                                     @endif
-                                    <option value="Prospection">Prospection</option>
-                                    <option value="Fidélisation">Fidélisation</option>
-                                    <option value="Reconquête">Reconquête</option>
-                                    <option value="Suite à une réclamation">Suite à une réclamation</option>
-                                    <option value="Suite à une Offre de prix">Suite à une Offre de prix</option>
-                                    <option value="Suite à une commande">Suite à une commande</option>
-                                    <option value="Visite d’un client">Visite d’un client</option>
-                                    <option value="Visite d’un client dans notre agence">Visite d’un client dans notre agence</option>
-                                    <option value="Visite sur salon">Visite sur salon</option>
-                                    <option value="Formation">Formation</option>
-                                    <option value="Home Office">Home Office</option>
-                                    <option value="Enlèvement">Enlèvement</option>
-                                    <option value="Livraison">Livraison</option>
-                                    <option value="Dépôt">Dépôt</option>
-                                    <option value="Pour une ouverture de compte">Pour une ouverture de compte</option>
-                                    <option value="Autres">Autres</option>
+                                        <option class="clientele" value="Prospection">Prospection</option>
+                                        <option class="clientele" value="Fidélisation">Fidélisation</option>
+                                        <option class="clientele" value="Reconquête">Reconquête</option>
+                                        <option class="clientele" value="Courtoisie">Courtoisie</option>
+                                        <option class="clientele" value="Suite à une réclamation">Suite à une réclamation</option>
+                                        <option class="clientele" value="Suite à une Offre de prix">Suite à une Offre de prix</option>
+                                        <option class="clientele" value="Suite à une commande">Suite à une commande</option>
+                                        <option class="clientele" value="Formation">Formation</option>
+                                        <option class="clientele" value="Enlèvement">Enlèvement</option>
+                                        <option class="clientele" value="Livraison">Livraison</option>
+                                        <option class="clientele" value="Dépôt">Dépôt</option>
+                                        <option class="clientele" value="Pour une ouverture de compte">Pour une ouverture de compte</option>                                
                                 </select><br><br>
                             </div>
                         </div>
@@ -207,16 +206,52 @@
     </div>
 
     <script>
-
+    function filterTypeOptions(isHorsClientele) {
+        const select = document.getElementById('Type');
+        const allOptions = select.querySelectorAll('option');
+        
+        // Cacher toutes les options sauf la première (vide)
+        allOptions.forEach(option => {
+            if (option.value !== "") {
+                option.style.display = 'none';
+            }
+        });
+        
+        // Afficher les options appropriées
+        if (isHorsClientele) {
+            // Afficher les options hors clientèle
+            const horsClienteleOptions = select.querySelectorAll('.hors-clientele');
+            horsClienteleOptions.forEach(option => {
+                option.style.display = 'block';
+            });
+        } else {
+            // Afficher les options clientèle
+            const clienteleOptions = select.querySelectorAll('.clientele');
+            clienteleOptions.forEach(option => {
+                option.style.display = 'block';
+            });
+        }
+        
+        // Réinitialiser la sélection
+        select.value = "";
+    }
+    @if($client==null)
+    // Initialiser les options au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+        filterTypeOptions(true); // Par défaut, "Hors clientèle" est cochée
+    });
+    @endif
         function setClient(){
             let cl_id=$('#clients_list').val();            
             $('#AccountId').val(cl_id);
             $('#mycl_id').val(cl_id);
+           
         }
 
         function initClient(){
             $('#AccountId').val(0);
             $('#mycl_id').val(0);
+            $('#customer_name').hide();            
         }
 
         $(function () {
