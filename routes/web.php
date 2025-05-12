@@ -96,6 +96,8 @@ Route::get('/dashboard', 'App\Http\Controllers\DashboardController@dashboard')->
 Route::get('/supervision', 'App\Http\Controllers\DashboardController@supervision')->name('supervision');
 Route::get('/help', 'App\Http\Controllers\HomeController@help')->name('help');
 Route::get('/stats_tasks', 'App\Http\Controllers\HomeController@stats_tasks')->name('stats_tasks');
+Route::get('/stats_spot/{type}', [DashboardController::class, 'stats_spot'])->name('stats_spot');
+
 Route::get('/terms/check', [DashboardController::class, 'check'])->name('terms.check');
 Route::post('/terms/accept', [DashboardController::class, 'accept'])->name('terms.accept');
 

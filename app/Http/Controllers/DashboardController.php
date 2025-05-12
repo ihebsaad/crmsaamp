@@ -38,6 +38,7 @@ class DashboardController extends Controller
 	{
 		if (auth()->user()->user_type == 'admin' || auth()->user()->role == 'admin' || auth()->user()->role == 'dirQUA') {
 
+			$stats_spot=self::stats_spot('jour');
 			$offres = Offre::where('statut', null)->get();
 			$now = Carbon::now();
 			$representants = DB::table("representant")->get();
@@ -131,7 +132,8 @@ class DashboardController extends Controller
 				'stats',
 				'stats_mois',
 				'prospects',
-				'totaux_clients'
+				'totaux_clients',
+				'stats_spot'
 			));
 		} else {
 			$rendezvous = RendezVous::where('Attribue_a', auth()->user()->name . ' ' . auth()->user()->lastname)
@@ -711,5 +713,12 @@ class DashboardController extends Controller
 		
         
     }
+
+	function stats_spot($type)
+	{
+ 		DB::select("SET @p0='$type' ;");
+		$result = DB::select("  CALL `sp_stats_spot_operations`(@p0); ");
+		return $result;
+	}
 
 } // end class

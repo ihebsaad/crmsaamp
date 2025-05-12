@@ -453,25 +453,61 @@
 			<div class="text-right">
 				<a href="{{route('consultations')}}" class="btn btn-primary mb-2" style=" "><i class="fas fa-chalkboard-teacher"></i> Activités des utilisateurs</a>
 			</div>
-					<h4 class="text-center ">Gestion des rôles</h4>
-					<div class="table-container">
-						<table class="table table-striped" style="width:90%">
-							<thead style="background-color:lightgray;color:white">
-								<tr><th>Id</th><th>Nom</th><th>Rôle</th></tr>
-							</thead>
-							<tbody>
-								@foreach($users as $user)
-									<tr><td>{{$user->id}}</td><td>{{$user->lastname}} {{$user->name}}</td>
-									<td>
-									<select class="form-control"  onchange="update_role(this,'{{$user->id}}')">
-										<option value="0"></option>
-										<option value="1" {{ $user->user_role==1 ? 'selected="selected"' : '' }} >Administration </option><option value="2" {{ $user->user_role==2 ? 'selected="selected"' : '' }}>Direction</option><option value="3" {{ $user->user_role==3 ? 'selected="selected"' : '' }}>Superviseur</option><option value="4" {{ $user->user_role==4 ? 'selected="selected"' : '' }}>Responsable d'Agence</option><option value="5" {{ $user->user_role==5 ? 'selected="selected"' : '' }}>Qualité</option><option value="6" {{ $user->user_role==6 ? 'selected="selected"' : '' }}>ADV</option><option value="7" {{ $user->user_role==7 ? 'selected="selected"' : '' }}>Commercial</option><option value="8" {{ $user->user_role==8 ? 'selected="selected"' : '' }}>AnimCo</option><option value="9" {{ $user->user_role==9 ? 'selected="selected"' : '' }}>Out</option>
-									</select>
-									</td>
+					<ul class="nav nav-tabs card-header" id="myTab0" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="stats-tab" data-toggle="tab" href="#stats" role="tab" aria-controls="stats" aria-selected="true" style="">{{__('msg.Statistics')}}</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="roles-tab" data-toggle="tab" href="#roles" role="tab" aria-controls="roles" aria-selected="false" style="">Gestion des rôles</a>
+						</li>
+					</ul>
+
+					<div class="tab-content" style="padding-left:15px;padding-right:15px">
+						<div class="tab-pane active" id="stats" role="tabpanel" aria-labelledby="stats-tab">
+							<label>Type: </label>
+							<select class="form-control mb-1" id="type" onchange="update_stats()" style="width:150px">
+								<option value="jour" selected="selected">Jour</option>
+								<option value="mois">Mois</option>
+								<option value="client">Client</option>
+								<option value="metal">Métal</option>
+							</select>
+							<div class="table-container" id="tabstats">
+								<table class="table table-striped" style="width:90%">
+									<thead style="color:white">
+										<tr><th>Jour</th><th>Métal</th><th>Type</th><th>Nb Opérations</th><th>Poids moyen</th></tr>
+									</thead>
+									<tbody id="tab-stats">
+									@foreach($stats_spot as $s)
+									<tr>
+										<td>{{ $s->periode }}</td><td>{{$s->metal}}</td><td>{{$s->type_utilisateur}}</td><td>{{$s->nb_operations_spot}}</td><td>{{$s->poids_moyen}} g</td></td>
 									</tr>
-								@endforeach
-							</tbody>
-						</table>
+									@endforeach
+									</tbody>
+								</table>
+							</div>
+						</div>	
+						<div class="tab-pane" id="roles" role="tabpanel" aria-labelledby="roles-tab">							
+							<!--<h4 class="text-center ">Gestion des rôles</h4>-->
+							<div class="table-container">
+								<table class="table table-striped" style="width:90%">
+									<thead style="background-color:lightgray;color:white">
+										<tr><th>Id</th><th>Nom</th><th>Rôle</th></tr>
+									</thead>
+									<tbody>
+										@foreach($users as $user)
+											<tr><td>{{$user->id}}</td><td>{{$user->lastname}} {{$user->name}}</td>
+											<td>
+											<select class="form-control"  onchange="update_role(this,'{{$user->id}}')">
+												<option value="0"></option>
+												<option value="1" {{ $user->user_role==1 ? 'selected="selected"' : '' }} >Administration </option><option value="2" {{ $user->user_role==2 ? 'selected="selected"' : '' }}>Direction</option><option value="3" {{ $user->user_role==3 ? 'selected="selected"' : '' }}>Superviseur</option><option value="4" {{ $user->user_role==4 ? 'selected="selected"' : '' }}>Responsable d'Agence</option><option value="5" {{ $user->user_role==5 ? 'selected="selected"' : '' }}>Qualité</option><option value="6" {{ $user->user_role==6 ? 'selected="selected"' : '' }}>ADV</option><option value="7" {{ $user->user_role==7 ? 'selected="selected"' : '' }}>Commercial</option><option value="8" {{ $user->user_role==8 ? 'selected="selected"' : '' }}>AnimCo</option><option value="9" {{ $user->user_role==9 ? 'selected="selected"' : '' }}>Out</option>
+											</select>
+											</td>
+											</tr>
+										@endforeach
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 					<h4 class="text-center  mt-5">Réception des lots d'or hautes teneurs par agence</h4>
 					<ul class="nav nav-tabs card-header" id="myTab" role="tablist">
@@ -809,5 +845,35 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+	    function update_stats() {
+			var _token = $('input[name="_token"]').val();
+			var type = $('#type').val();
+	
+			$.ajax({
+				url: "https://crm.mysaamp.com/stats_spot/"+type,
+				method: "get",
+				data: {
+					_token: _token,
+					type: type,
+				},
+				success: function(data) {
+					var html = '';
+					data.forEach(item => {
+						if (data.length === 0) {
+							html = '<tr><td colspan="5" class="text-center">Aucune donnée disponible</td></tr>';
+						} else {
+							let  periode = item.periode ?? '' ;
+							let  metal = item.metal ?? '' ;
+							let  type_utilisateur = item.type_utilisateur ?? '' ;
+							
+							html += '<tr><td>' + periode + '</td><td>' + metal + '</td><td>' + type_utilisateur + '</td><td>' + item.nb_operations_spot + '</td><td>' + item.poids_moyen + ' g</td></tr>';
+						}
+					});
+					$("#tab-stats").html(html);
+				}
+			});
+		}
+
   </script>
 @endsection
