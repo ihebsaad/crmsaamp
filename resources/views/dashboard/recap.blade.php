@@ -12,6 +12,18 @@ form{
 .bold{
     font-weight:bold;
 }
+
+  @media (min-width: 481px) and (max-width: 767px) {
+    .recap{
+    display: block;
+    }
+  }
+
+  @media (min-width: 320px) and (max-width: 480px) {
+    .recap{
+    display: block;
+    }
+  }
 </style>
 <div class="row">
     <div class="col-lg-12 col-sm-12 mb-4">
@@ -23,10 +35,10 @@ form{
                 <div class="row">
                     <div class="col-lg-9 col-sm-12">
                         <div class="row mb-5">
-                            <form method="get" action="{{route('recap')}}">
+                            <form method="get" action="{{route('recap')}}" class="recap">
                                 @if( auth()->user()->role=='admin' || auth()->user()->role=='respAG'  )
 
-                                <div class="col-lg-3 col-md-6">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
                                     <span class=" mr-2">{{__('msg.User')}}:</span>
                                     <select class="form-control mb-20 select2" id="commercial" name="user" style="max-width:300px" onchange="update_user();this.form.submit();">
                                         <option @if($user=="" ) selected="selected" @endif value=""></option>
@@ -150,14 +162,14 @@ form{
                                     <td>{{ $prev_rdvs_deplacement }}</td>
                                 </tr>
                                 <tr>
-                                    <td>À distance</td>
-                                    <td>{{ $rdvs_a_distance }}</td>
-                                    <td>{{ $prev_rdvs_a_distance }}</td>
-                                </tr>
-                                <tr>
                                     <td>En agence</td>
                                     <td>{{ $rdvs_agence }}</td>
                                     <td>{{ $prev_rdvs_agence }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Home Office</td>
+                                    <td>{{ $rdvs_office }}</td>
+                                    <td>{{ $prev_rdvs_office }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -267,7 +279,6 @@ form{
                         drawComparisonChart('rendezvousComparisonChart', [
                             ['Type', 'Actuelle', 'Précédente'],
                             ['Déplacements', {{ $rdvs_deplacement }}, {{ $prev_rdvs_deplacement }}],
-                            ['À distance', {{ $rdvs_a_distance }}, {{ $prev_rdvs_a_distance }}],
                             ['En agence', {{ $rdvs_agence }}, {{ $prev_rdvs_agence }}],
                         ]);
 

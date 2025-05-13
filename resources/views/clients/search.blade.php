@@ -87,7 +87,8 @@ function activites_client(cl_ident) {
                                         <option value=""> </option>
                                         <option {{ $request->type_client=="clients" ? 'selected="selected"' : '' }}  value="clients">Tous les clients</option>
                                         <option {{ $request->type_client=="#2660c3" ? 'selected="selected"' : '' }}  value="#2660c3">Actif entre 0 et 2 mois</option>
-                                        <option {{ $request->type_client=="#2ab62c" ? 'selected="selected"' : '' }} value="#2ab62c">Prospect</option>
+                                        <option {{ $request->type_client=="prospects" ? 'selected="selected"' : '' }} value="prospects">Prospect</option>
+                                        <option {{ $request->type_client=="fournisseurs" ? 'selected="selected"' : '' }} value="fournisseurs">Fournisseur</option>
                                         <option {{ $request->type_client=="#ff2e36" ? 'selected="selected"' : '' }} value="#ff2e36">Fermé</option>
                                         <option {{ $request->type_client=="#DAA06D" ? 'selected="selected"' : '' }} value="#DAA06D">Particulier</option>
                                         <option {{ $request->type_client=="#fffc33" ? 'selected="selected"' : '' }} value="#fffc33">Inactif depuis 2 à 4 mois</option>
@@ -246,12 +247,16 @@ function activites_client(cl_ident) {
                                     <div class="col-md-2">
                                         <span style="color:#ff2e36">Fermé</span>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <span style="color:#2ab62c">Prospect</span>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <span style="color:#DAA06D">Particulier</span>
                                     </div>
+                                    <div class="col-md-3">
+                                        <span style="color:#C0C0C0">Fournisseur</span>
+                                    </div>
+                                     
                                     <div class="col-md-6">
                                         <span style="color:#2261c4">Client récemment actif entre 0 et 2 mois</span>
                                     </div>

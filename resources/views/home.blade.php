@@ -175,7 +175,7 @@
             </div>
             <div class="card-body">
                 @if( auth()->user()->role=="admin" ||  auth()->user()->role=="dirQUA" )
-                <a href="#" id="export-excel-btn" class="btn btn-success" style="background-color:#1cc88a">
+                <a href="#" id="export-excel-btn" class="btn btn-success mb-1" style="background-color:#1cc88a">
                     <i class="fa fa-file-excel"></i> Exporter en Excel
                 </a>
                 @endif

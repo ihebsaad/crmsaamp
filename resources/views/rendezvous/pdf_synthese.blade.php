@@ -75,7 +75,18 @@ if (isset($pdf)) {
             color: #333;
             border-left: 4px solid #c3af7a;
         }
-
+        .text-primary{
+          color: #4e73dc ;
+          font-size:12px;
+        }
+        .text-danger{
+           color: #e74a37;
+           font-size:12px;
+        }
+        .text-success{
+            color:#1cc88a;
+            font-size:12px;
+        }
 </style>
 
 <b style="font-size:22px;width:100%">Synthèse des rendez vous {{__('msg.of')}} {{$name}} <img style="width:150px;position:fixed;right:0px;" src="{{ URL::asset('img/logo.png')}}" /></b>
@@ -94,7 +105,8 @@ if (isset($pdf)) {
                         <li class="rdv-item">
                             {{ date('d/m/y', strtotime($rdv->Started_at)) }} @if($rdv->Started_at != $rdv->End_AT &&  $rdv->End_AT!='' ) - {{ date('d/m/y', strtotime($rdv->End_AT)) }} @endif
                             {{ $rdv->Subject }} - 
-                            {{ $rdv->heure_debut }} à {{ $rdv->heure_fin }}
+                            {{ $rdv->heure_debut }} à {{ $rdv->heure_fin }}  
+                            @if($rdv->statut==2) <span class="text-success"> Réalisé</span>  @elseif($rdv->statut==3) <span class="text-danger"> Annulé</span>  @else <span class="text-primary"> Planifié</span> @endif
                         </li>
                     @endforeach
                 </ul>
@@ -126,7 +138,8 @@ if (isset($pdf)) {
                             <b>{{ $rdv->Account_Name }} | 
                             @php $client=\App\Models\CompteClient::find($rdv->AccountId); @endphp
                             {{ $client->cl_ident ?? '' }}</b> - 
-                            {{ $rdv->heure_debut }} à {{ $rdv->heure_fin }}
+                            {{ $rdv->heure_debut }} à {{ $rdv->heure_fin }}  
+                            @if($rdv->statut==2) <span class="text-success"> Réalisé</span>  @elseif($rdv->statut==3) <span class="text-danger"> Annulé</span>  @else <span class="text-primary"> Planifié</span> @endif
                         </li>
                     @endforeach
                 </ul>

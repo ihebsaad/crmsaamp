@@ -151,12 +151,12 @@
 						<div class="col-md-6-">
 							<form action="{{ route('loginas') }}" method="POST" class="alert alert-info">
 								@csrf
-								<select name="user_id" class="form-control select2" style="width:220px">
+								<select name="user_id" class="form-control select2 mb-1" style="width:220px;margin-bottom:10px">
 									@foreach($users as $user)
 										<option value="{{ $user->id }}">{{ $user->lastname }} {{ $user->name }}</option>
 									@endforeach
 								</select>
-								<button type="submit" class="btn btn-success btn-sm">Se connecter en tant que</button>
+								<button type="submit" class="btn btn-success btn-sm mt-1">Se connecter en tant que</button>
 							</form>
 						</div>
 					@endif
@@ -455,7 +455,7 @@
 			</div>
 					<ul class="nav nav-tabs card-header" id="myTab0" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link active" id="stats-tab" data-toggle="tab" href="#stats" role="tab" aria-controls="stats" aria-selected="true" style="">{{__('msg.Statistics')}}</a>
+							<a class="nav-link active" id="stats-tab" data-toggle="tab" href="#stats" role="tab" aria-controls="stats" aria-selected="true" style="">{{__('msg.Statistics')}} SPOT MySaamp</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" id="roles-tab" data-toggle="tab" href="#roles" role="tab" aria-controls="roles" aria-selected="false" style="">Gestion des rôles</a>
@@ -474,12 +474,12 @@
 							<div class="table-container" id="tabstats">
 								<table class="table table-striped" style="width:90%">
 									<thead style="color:white">
-										<tr><th>Jour</th><th>Métal</th><th>Type</th><th>Nb Opérations</th><th>Poids moyen</th></tr>
+										<tr><th>PERIODE</th><th>METAL</th><th>TYPE UTILISATEUR</th><th>CLIENT_ID</th><th>NB OPERATIONS SPOT </th><th>POIDS MOYEN</th></tr>
 									</thead>
 									<tbody id="tab-stats">
 									@foreach($stats_spot as $s)
 									<tr>
-										<td>{{ $s->periode }}</td><td>{{$s->metal}}</td><td>{{$s->type_utilisateur}}</td><td>{{$s->nb_operations_spot}}</td><td>{{$s->poids_moyen}} g</td></td>
+										<td>{{ $s->periode }}</td><td>{{$s->metal}}</td><td>{{$s->type_utilisateur}}</td><td>{{$s->client_id}}</td><td>{{$s->nb_operations_spot}}</td><td>{{$s->poids_moyen}} g</td></td>
 									</tr>
 									@endforeach
 									</tbody>
@@ -866,13 +866,42 @@ document.addEventListener('DOMContentLoaded', function() {
 							let  periode = item.periode ?? '' ;
 							let  metal = item.metal ?? '' ;
 							let  type_utilisateur = item.type_utilisateur ?? '' ;
+							let  client = item.client_id ?? '' ;
 							
-							html += '<tr><td>' + periode + '</td><td>' + metal + '</td><td>' + type_utilisateur + '</td><td>' + item.nb_operations_spot + '</td><td>' + item.poids_moyen + ' g</td></tr>';
+							html += '<tr><td>' + periode + '</td><td>' + metal + '</td><td>' + type_utilisateur + '</td><td>' + client + '</td><td>' + item.nb_operations_spot + '</td><td>' + item.poids_moyen + ' g</td></tr>';
 						}
 					});
 					$("#tab-stats").html(html);
+					updateColumnVisibility(type);
 				}
 			});
+		}
+
+		function updateColumnVisibility(type) {
+    		// Reset all columns to visible first
+			$('#tab-stats tr, table thead tr').find('th, td').show();
+			
+			switch(type) {
+				case 'mois':
+				case 'jour':
+					// Hide 4th column (client_id) for 'mois' and 'jour'
+					$('#tab-stats tr, table thead tr').find('th:nth-child(4), td:nth-child(4)').hide();
+					break;
+				
+				case 'client':
+					// Hide columns 1, 2, and 3 (periode, metal, type_utilisateur) for 'client'
+					$('#tab-stats tr, table thead tr').find('th:nth-child(1), td:nth-child(1), th:nth-child(2), td:nth-child(2), th:nth-child(3), td:nth-child(3)').hide();
+					break;
+				
+				case 'metal':
+					// Hide columns 1 and 4 (periode, client_id) for 'metal'
+					$('#tab-stats tr, table thead tr').find('th:nth-child(1), td:nth-child(1), th:nth-child(4), td:nth-child(4)').hide();
+					break;
+				
+				default:
+					// If no specific type, show all columns
+					break;
+			}
 		}
 
   </script>

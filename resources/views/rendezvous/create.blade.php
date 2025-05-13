@@ -107,11 +107,12 @@
                                 <select    id="Type" class="  form-control" name="Type" required  >
                                     <option  value=""></option>
                                     @if($client==null)
-                                        <option class="hors-clientele" value="Déplacement-Trajet">Déplacement-Trajet</option>
-                                        <option class="hors-clientele" value="Home Office">Home Office</option>
-                                        <option class="hors-clientele" value="Visite sur salon">Visite sur salon</option>
+                                        <option class="hors-clientele" value="Administratif">Administratif</option>
+                                        <option class="hors-clientele" value="Déplacement-Trajet">Déplacement-Trajet</option>      
+                                        <option class="hors-clientele" value="Déplacement en Agence">Déplacement en Agence</option>
                                         <option class="hors-clientele" value="Interne">Interne</option>
-                                    @endif
+                                        <option class="hors-clientele" value="Visite sur salon">Visite sur salon</option>                                                                                
+                                    @endif                                        
                                         <option class="clientele" value="Prospection">Prospection</option>
                                         <option class="clientele" value="Fidélisation">Fidélisation</option>
                                         <option class="clientele" value="Reconquête">Reconquête</option>
@@ -141,8 +142,8 @@
                                 <select    id="mode_de_rdv" class="form-control" name="mode_de_rdv" required  >
                                     <option  value=""></option>
                                     <option  value="Déplacement">Déplacement</option>
-                                    <option  value="À distance">À distance</option>
                                     <option  value="En agence">En agence</option>
+                                    <option value="Home Office">Home Office</option>
                                 </select>
                             </div>
                         </div>

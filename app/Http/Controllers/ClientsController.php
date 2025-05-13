@@ -958,6 +958,12 @@ class ClientsController extends Controller
 			if($request->type_client=='clients'){
 				$query->where('etat_id', 2);
 			}
+			elseif($request->type_client=='prospects'){
+				$query->where('etat_id', 1);
+			}
+			elseif($request->type_client=='fournisseurs'){
+				$query->where('etat_id', 6);
+			}			
 			else{
 				$query->where('couleur_html', $request->type_client);
 			}

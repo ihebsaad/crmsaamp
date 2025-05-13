@@ -120,8 +120,9 @@ class RecapController extends Controller
         $retours_infos = $retours->where('Type_retour', 'Information générale')->count();
 
         $rdvs_deplacement = $rendezvous->where('mode_de_rdv', 'Déplacement')->count();
-        $rdvs_a_distance = $rendezvous->where('mode_de_rdv', 'À distance')->count();
+        //$rdvs_a_distance = $rendezvous->where('mode_de_rdv', 'À distance')->count();
         $rdvs_agence = $rendezvous->where('mode_de_rdv', 'En agence')->count();
+        $rdvs_office = $rendezvous->where('mode_de_rdv', 'Home Office')->count();
 
         $offres_tg = $offres->where('type', 'TG')->count();
         $offres_hors_tg = $offres->where('type', 'Hors TG')->count();
@@ -142,8 +143,9 @@ class RecapController extends Controller
         $prev_retours_infos = $prev_retours->where('Type_retour', 'Information générale')->count();
 
         $prev_rdvs_deplacement = $prev_rendezvous->where('mode_de_rdv', 'Déplacement')->count();
-        $prev_rdvs_a_distance = $prev_rendezvous->where('mode_de_rdv', 'À distance')->count();
+        //$prev_rdvs_a_distance = $prev_rendezvous->where('mode_de_rdv', 'À distance')->count();
         $prev_rdvs_agence = $prev_rendezvous->where('mode_de_rdv', 'En agence')->count();
+        $prev_rdvs_office = $prev_rendezvous->where('mode_de_rdv', 'Home Office')->count();
 
         $prev_offres_tg = $prev_offres->where('type', 'TG')->count();
         $prev_offres_hors_tg = $prev_offres->where('type', 'Hors TG')->count();
@@ -174,8 +176,8 @@ class RecapController extends Controller
             'retours_positifs',
             'retours_negatifs',
             'rdvs_deplacement',
-            'rdvs_a_distance',
             'rdvs_agence',
+            'rdvs_office',
             'offres_tg',
             'offres_hors_tg',
             'offres_apprets',
@@ -186,8 +188,8 @@ class RecapController extends Controller
             'prev_retours_negatifs',
             'prev_retours_infos',
             'prev_rdvs_deplacement',
-            'prev_rdvs_a_distance',
             'prev_rdvs_agence',
+            'prev_rdvs_office',
             'prev_offres',
             'prev_offres_tg',
             'prev_offres_hors_tg',

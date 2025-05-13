@@ -239,7 +239,7 @@
                     <div class="row pt-1 pb-2" style=" ">
                         <div class="col-md-4 col-sm-6">
                             Le client a-t-il une suggestion à formuler ?<br>
-                            <label for="yes" class="pr-3 pointer"><input type="radio" id="yes" name="suggestion_demande" value="1" class="" onchange="show_suggestion(1)" required  @if($rendezvous->suggestion_demande==1) checked @endif  > <b>Oui</b></label>
+                            <label for="yes" class="pr-3 pointer"><input type="radio" id="yes" name="suggestion_demande" value="1" class="" onchange="show_suggestion(1)"  @if($rendezvous->suggestion_demande==1) checked @endif  > <b>Oui</b></label>
                             <label for="no" class="pl-3 pointer" ><input type="radio" id="no" name="suggestion_demande" value="2" class="" onchange="show_suggestion(0)" @if($rendezvous->suggestion_demande==2) checked @endif >  <b>Non</b></label>
                         </div>
                         <div class="col-md-4 col-sm-6" @if($rendezvous->suggestion_demande!=1) style="display:none" @endif id="suggestion-div">

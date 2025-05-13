@@ -60,14 +60,34 @@ if (Auth::check()) {
   }
 
   @media (min-width: 481px) and (max-width: 767px) {
-    .fas {
+    /*.fas {
       margin-left: -15px !important;
+    }*/
+    .nav-item .nav-link{
+      font-size:12px;
+      margin-bottom:10px;
+    }
+    .nav-item .nav-link span{
+      display: block;
+    }
+    .mb-2m{
+      margin-bottom:20px!important;
     }
   }
 
   @media (min-width: 320px) and (max-width: 480px) {
-    .fas {
+    /*.fas {
       margin-left: -15px !important;
+    }*/
+      .nav-item .nav-link{
+      font-size:12px;
+      margin-bottom:10px;
+    }
+      .nav-item .nav-link span{
+      display: block;
+    }
+      .mb-2m{
+      margin-bottom:20px!important;
     }
   }
 </style>
@@ -94,60 +114,59 @@ if (Auth::check()) {
       @else
         <a class="nav-link" href="{{route('dashboard')}}">
       @endif
-      <i class="fas fa-tachometer-alt"></i> Accueil
+      <i class="fas fa-tachometer-alt"></i> <span>Accueil</span>
       </a>
     </li>
 
   @if(auth()->user()->user_role < 5 || auth()->user()->user_role == 6 || auth()->user()->user_role == 7 || auth()->user()->user_role == 8 )
-    <li class="nav-item">
+    <li class="nav-item mb-2m">
       <a class="nav-link" href="{{route('home')}}">
-        <i class="fas fa-fw fa-chart-bar"></i>
-        <div class="hidemobile"> {{__('msg.My ')}} </div>{{__('msg.Statistics')}}
+        <i class="fas fa-fw fa-chart-bar"></i> <span  >{{__('msg.My ')}} {{__('msg.Statistics')}}</span>
       </a>
     </li>
     @if(auth()->user()->user_role==1 || auth()->user()->user_role==2 )
-    <li class="nav-item">
+    <li class="nav-item mb-2m">
       <a class="nav-link" href="{{route('recap')}}">
-        <i class="fas fa-fw fa-chart-pie"></i>Mon Récapitulatif
+        <i class="fas fa-fw fa-chart-pie"></i> <span>Mon Récapitulatif</span>
       </a>
     </li>
     @endif
     @endif
     <li class="nav-item">
       <a class="nav-link" href="{{route('search')}}">
-        <i class="fas fa-fw fa-search"></i> {{__('msg.Customers')}}
+        <i class="fas fa-fw fa-search"></i> <span>{{__('msg.Customers')}}</span>
       </a>
     </li>
     @if(auth()->user()->user_role != 5 )
     <li class="nav-item">
       <a class="nav-link" href="{{route('communications.index')}}">
-        <i class="fas fa-fw fa-envelope-open-text"></i>Communications
+        <i class="fas fa-fw fa-envelope-open-text"></i> <span>Communications</span>
       </a>
     </li>
     @endif
 
     @if(auth()->user()->user_role==7)
-    <li class="nav-item">
+    <li class="nav-item mb-2m">
       <a class="nav-link" href="{{route('mestaches')}}">
-        <i class="fas fa-fw fa-tasks"></i> {{__('msg.Activities of my customers')}}
+        <i class="fas fa-fw fa-tasks"></i> <span >{{__('msg.Activities of my customers')}}</span>
       </a>
     </li>
     @elseif($user->user_role==1 || $user->user_role== 2 || $user->user_role== 5 || $user->user_role== 6 || $user->user_role== 8 )
-    <li class="nav-item">
+    <li class="nav-item mb-2m">
       <a class="nav-link" href="{{route('taches.index')}}">
-        <i class="fas fa-fw fa-tasks"></i> {{__('msg.Activities tracking')}}
+        <i class="fas fa-fw fa-tasks"></i> <span >{{__('msg.Activities tracking')}}</span>
       </a>
     </li>
     @elseif($user->user_role!= 5)
-    <li class="nav-item">
+    <li class="nav-item mb-2m">
       <a class="nav-link" href="{{route('mestaches')}}">
-        <i class="fas fa-fw fa-tasks"></i> {{__('msg.Activities tracking')}}
+        <i class="fas fa-fw fa-tasks"></i> <span >{{__('msg.Activities tracking')}}</span>
       </a>
     </li>
     @endif
     <li class="nav-item">
       <a class="nav-link" href="{{route('retours.list')}}">
-        <i class="fas fa-fw fa-comment-alt"></i>{{__('msg.Complaints')}}
+        <i class="fas fa-fw fa-comment-alt"></i> <span>{{__('msg.Complaints')}}</span>
       </a>
     </li>
 
@@ -156,13 +175,13 @@ if (Auth::check()) {
     @if(auth()->user()->user_role != 5 )
     <li class="nav-item">
       <a class="nav-link" href="{{route('agenda')}}">
-        <i class="fas fa-calendar-alt"></i> {{__('msg.My')}} {{__('msg.Diary')}}
+        <i class="fas fa-calendar-alt"></i> <span>{{__('msg.My')}} {{__('msg.Diary')}}</span>
       </a>
     </li>
 
     <li class="nav-item">
       <a class="nav-link" href="{{route('rendezvous.create',['id'=>0])}}" >
-        <i class="fas fa-calendar-day"></i> {{__('msg.Appointments')}}
+        <i class="fas fa-calendar-day"></i> <span>{{__('msg.Appointments')}}</span>
       </a>
     </li>
     @endif
@@ -170,20 +189,20 @@ if (Auth::check()) {
     @if(auth()->user()->user_role==1 || auth()->user()->user_role==2 )
     <li class="nav-item">
       <a class="nav-link" href="{{route('map.parcours')}}">
-        <i class="fas fa-map-marker-alt"></i> Parcours
+        <i class="fas fa-map-marker-alt"></i> <span>Parcours</span>
       </a>
     </li>
     @endif
 
     <li class="nav-item">
       <a class="nav-link" href="{{route('help')}}">
-        <i class="fas fa-fw fa-book"></i> {{__('msg.Help')}}
+        <i class="fas fa-fw fa-book"></i> <span>{{__('msg.Help')}}</span>
       </a>
     </li>
 
     <li class="nav-item">
       <a class="nav-link" href="{{route('tickets.index')}}">
-        <i class="fas fa-fw fa-comments"></i> Support
+        <i class="fas fa-fw fa-comments"></i> <span>Support</span>
       </a>
     </li>
 
