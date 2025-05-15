@@ -648,4 +648,71 @@ return [
 	"Close"=>"Fermer",
 	"No results"=>"Aucun résultat",
 	"Resolution deadline has been exceeded!"=>"Date de résolution a été dépassée !",
+
+	"CompanyInformation" => "Information sur l'entreprise",
+    "Close" => "Fermer",
+    "NA" => "N/D",
+    "PrintInformation" => "Imprimer les informations",
+    
+    // Company Summary
+    "CompanySummary" => "Résumé de l'entreprise",
+    "BusinessName" => "Nom commercial",
+    "Country" => "Pays",
+    "RegistrationNumber" => "Numéro d'enregistrement",
+    "CompanyNumber" => "Numéro d'entreprise",
+    "Status" => "Statut",
+    "MainActivity" => "Activité principale",
+    "CreditRating" => "Notation de crédit",
+    "CreditLimit" => "Limite de crédit",
+    
+    // Company Details
+    "CompanyDetails" => "Détails de l'entreprise",
+    "RegisteredName" => "Nom enregistré",
+    "VATNumber" => "Numéro de TVA",
+    "LegalForm" => "Forme juridique",
+    "RegistrationDate" => "Date d'enregistrement",
+    "OfficeType" => "Type de bureau",
+    "Address" => "Adresse",
+    "Telephone" => "Téléphone",
+    
+    // Credit Evaluation
+    "CreditEvaluation" => "Évaluation de crédit",
+    "CurrentCreditRating" => "Notation de crédit actuelle",
+    "PreviousCreditRating" => "Notation de crédit précédente",
+    "ProviderRating" => "Notation du fournisseur",
+    "ProbabilityOfDefault" => "Probabilité de défaut",
+    "LastChangeDate" => "Date du dernier changement",
+    
+    // Financial Overview
+    "FinancialOverview" => "Aperçu financier",
+    "FinancialYear" => "Année fiscale",
+    "TotalAssets" => "Actifs totaux",
+    "TotalLiabilities" => "Passifs totaux",
+    "ShareholdersEquity" => "Capitaux propres",
+    "LatestShareholdersEquity" => "Derniers capitaux propres",
+    "LiquidityRatio" => "Ratio de liquidité",
+    "CurrentRatio" => "Ratio courant",
+    "NoDetailedFinancialStatements" => "Pas d'états financiers détaillés disponibles.",
+    
+    // Share Capital Structure
+    "ShareCapitalStructure" => "Structure du capital social",
+    "NominalShareCapital" => "Capital social nominal",
+    "Shareholder" => "Actionnaire",
+    "Type" => "Type",
+    "SharesPercent" => "Actions (%)",
+    "NoShareholderInformation" => "Aucune information sur les actionnaires disponible.",
+    
+    // Directors
+    "Directors" => "Directeurs",
+    "CurrentDirectors" => "Directeurs actuels",
+    "PreviousDirectors" => "Anciens directeurs",
+    "Name" => "Nom",
+    "Position" => "Poste",
+    "NoCurrentDirectorsInformation" => "Aucune information sur les directeurs actuels disponible.",
+    
+    // Contact Information
+    "ContactInformation" => "Coordonnées",
+    "MainAddress" => "Adresse principale",
+    "OtherAddresses" => "Autres adresses",
+    "NoContactInformation" => "Aucune information de contact disponible."
  ];

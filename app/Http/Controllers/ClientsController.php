@@ -11,6 +11,7 @@ use App\Models\RetourClient;
 use App\Models\Tache;
 use App\Models\Agence;
 use App\Services\PhoneService;
+use App\Services\CreditSafeService;
 use App\Services\GEDService;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -339,9 +340,15 @@ class ClientsController extends Controller
 			->orderBy('Started_at', 'desc')
 			->get();
 
+			$companyInfo=null;
+			if($client->siret!=''){
+				$credit = new creditSafeService();
+				$companyInfo = $credit->getCompanyInfoBySiret($client->siret);
+			}
+			
 			Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "Fiche Client $client->Nom -  $client->cl_ident"]);
 
-		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login', 'commentaires','ressenti','complet'));
+		return view('clients.fiche', compact('client', 'contacts', 'retours', 'Proch_rendezvous', 'Anc_rendezvous', 'taches', 'stats', 'commandes', 'agence_name', 'commercial', 'support', 'login', 'commentaires','ressenti','complet','companyInfo'));
 	}
 
 

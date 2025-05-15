@@ -643,4 +643,70 @@ return [
 	"No results"=>"No results",	
 	"Resolution deadline has been exceeded!"=>"Resolution deadline has been exceeded!",
 
+	"CompanyInformation" => "Company Information",
+    "Close" => "Close",
+    "NA" => "N/A",
+    "PrintInformation" => "Print Information",
+    
+    // Company Summary
+    "CompanySummary" => "Company Summary",
+    "BusinessName" => "Business Name",
+    "Country" => "Country",
+    "RegistrationNumber" => "Registration Number",
+    "CompanyNumber" => "Company Number",
+    "Status" => "Status",
+    "MainActivity" => "Main Activity",
+    "CreditRating" => "Credit Rating",
+    "CreditLimit" => "Credit Limit",
+    
+    // Company Details
+    "CompanyDetails" => "Company Details",
+    "RegisteredName" => "Registered Name",
+    "VATNumber" => "VAT Number",
+    "LegalForm" => "Legal Form",
+    "RegistrationDate" => "Registration Date",
+    "OfficeType" => "Office Type",
+    "Address" => "Address",
+    "Telephone" => "Telephone",
+    
+    // Credit Evaluation
+    "CreditEvaluation" => "Credit Evaluation",
+    "CurrentCreditRating" => "Current Credit Rating",
+    "PreviousCreditRating" => "Previous Credit Rating",
+    "ProviderRating" => "Provider rating",
+    "ProbabilityOfDefault" => "Probability of Default",
+    "LastChangeDate" => "Last Change Date",
+    
+    // Financial Overview
+    "FinancialOverview" => "Financial Overview",
+    "FinancialYear" => "Financial Year",
+    "TotalAssets" => "Total Assets",
+    "TotalLiabilities" => "Total Liabilities",
+    "ShareholdersEquity" => "Shareholders Equity",
+    "LatestShareholdersEquity" => "Latest Shareholders Equity",
+    "LiquidityRatio" => "Liquidity Ratio",
+    "CurrentRatio" => "Current Ratio",
+    "NoDetailedFinancialStatements" => "No detailed financial statements available.",
+    
+    // Share Capital Structure
+    "ShareCapitalStructure" => "Share Capital Structure",
+    "NominalShareCapital" => "Nominal Share Capital",
+    "Shareholder" => "Shareholder",
+    "Type" => "Type",
+    "SharesPercent" => "Shares (%)",
+    "NoShareholderInformation" => "No shareholder information available.",
+    
+    // Directors
+    "Directors" => "Directors",
+    "CurrentDirectors" => "Current Directors",
+    "PreviousDirectors" => "Previous Directors",
+    "Name" => "Name",
+    "Position" => "Position",
+    "NoCurrentDirectorsInformation" => "No current directors information available.",
+    
+    // Contact Information
+    "ContactInformation" => "Contact Information",
+    "MainAddress" => "Main Address",
+    "OtherAddresses" => "Other Addresses",
+    "NoContactInformation" => "No contact information available."
 ];

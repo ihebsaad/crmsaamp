@@ -771,44 +771,45 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 	});
  
-    function showTermsPopup() {
-        const popup = document.getElementById('termsPopup');
-        const content = document.getElementById('termsContent');
-        const acceptButton = document.getElementById('acceptTermsButton');
-        
-        // Afficher la popup et bloquer le scroll
-        popup.style.display = 'flex';
-        document.body.classList.add('terms-popup-open');
-
-        // Vérifier le scroll
-        content.addEventListener('scroll', function() {
-         /*   const isBottom = content.scrollHeight - content.scrollTop <= content.clientHeight + 5;
-            acceptButton.disabled = !isBottom;
-*/
-			const isBottom = termsContent.scrollHeight - termsContent.scrollTop === termsContent.clientHeight;
-            
-            if (isBottom) {
-                acceptButton.disabled = false;
-            }
-        });
-
-        // Gérer l'acceptation
-        acceptButton.addEventListener('click', function() {
-
-			$.ajax({
-                url: "{{ route('terms.accept') }}",
-                method: "POST",
-                data: {  _token: _token},
-                success: function (data) {
-					 
-					if (data==1) {
-                    popup.style.display = 'none';
-                    document.body.classList.remove('terms-popup-open');
-                	}
-				}
-			});
-        });
-    }
+  function showTermsPopup() {
+      const popup = document.getElementById('termsPopup');
+      const content = document.getElementById('termsContent');
+      const acceptButton = document.getElementById('acceptTermsButton');
+      
+      // Display popup and block scroll
+      popup.style.display = 'flex';
+      document.body.classList.add('terms-popup-open');
+      
+      // Initially disable the button
+      acceptButton.disabled = true;
+      
+      // Check scroll with a more reliable method
+      content.addEventListener('scroll', function() {
+          // More reliable cross-browser way to check if scrolled to bottom
+          // Add a small buffer (2px) to account for browser rounding differences
+          const scrolledToBottom = 
+              Math.abs((content.scrollHeight - content.scrollTop) - content.clientHeight) < 2;
+          
+          if (scrolledToBottom) {
+              acceptButton.disabled = false;
+          }
+      });
+      
+      // Handle acceptance
+      acceptButton.addEventListener('click', function() {
+          $.ajax({
+              url: "{{ route('terms.accept') }}",
+              method: "POST",
+              data: { _token: _token },
+              success: function(data) {
+                  if (data == 1) {
+                      popup.style.display = 'none';
+                      document.body.classList.remove('terms-popup-open');
+                  }
+              }
+          });
+      });
+  }
 });
 </script>
   

@@ -29,7 +29,7 @@ class SendOffersReminder extends Command
      */
     public function handle()
     {
-        $offres= Offre::whereDate('date_relance', '<=', now())->where('relance_envoye',0)->get();
+        $offres= Offre::whereDate('date_relance', '<=', now())->where('relance_envoye',0)->whereNull('valide_par')->get();
         //
         foreach($offres as  $offre){
             $user=User::find($offre->user_id);

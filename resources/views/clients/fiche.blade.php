@@ -67,9 +67,490 @@
     }
 </style>
 
+<style>
+#companyInfoModal .card{
+  min-height: 200px;
+}
+.bg-primary, .bg-primary h6,.text-white h6{
+  color:white!important;
+}
+/* Modal styling */
+.modal-lg {
+  max-width: 80%;
+}
+
+/* Card header styling */
+.card-header.bg-primary {
+  background-color: #4e73df !important;
+}
+
+/* Financial indicators styling */
+.financial-indicator {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.indicator-positive {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+}
+
+.indicator-neutral {
+  background-color: rgba(23, 162, 184, 0.15);
+  color: #17a2b8;
+}
+
+.indicator-negative {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+}
+
+/* Credit rating display */
+.credit-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.rating-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-right: 15px;
+}
+
+.rating-a {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+  border: 2px solid #28a745;
+}
+
+.rating-b {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  border: 2px solid #ffc107;
+}
+
+.rating-c {
+  background-color: rgba(255, 143, 0, 0.2);
+  color: #ff8f00;
+  border: 2px solid #ff8f00;
+}
+
+.rating-d {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border: 2px solid #dc3545;
+}
+
+.rating-info {
+  flex-grow: 1;
+}
+
+/* Shareholder visualization */
+.shareholder-bar {
+  height: 24px;
+  background-color: #e9ecef;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 15px 0;
+}
+
+.shareholder-segment {
+  height: 100%;
+  display: inline-block;
+  padding: 4px 0;
+  text-align: center;
+  color: white;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+/* Print styling */
+@media print {
+  .modal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    overflow: visible !important;
+  }
+  
+  .modal-dialog {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .modal-content {
+    border: none;
+    box-shadow: none;
+  }
+  
+  .modal-footer,
+  .modal-header .close {
+    display: none;
+  }
+  
+  .card {
+    page-break-inside: avoid;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  
+  .card-header {
+    background-color: #f8f9fa !important;
+    color: #000 !important;
+    border-bottom: 1px solid #ddd;
+  }
+}
+</style>
+
+<!-- Modal structure in Blade template -->
+<div class="modal fade" id="companyInfoModal" tabindex="-1" role="dialog" aria-labelledby="companyInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="companyInfoModalLabel">{{ $companyInfo['report']['companySummary']['businessName'] ?? __('msg.CompanyInformation') }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{__('msg.Close')}}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Company summary section -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">{{__('msg.CompanySummary')}}</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>{{__('msg.BusinessName')}}:</strong> {{ $companyInfo['report']['companySummary']['businessName'] ?? __('msg.NA') }}</p>
+                <p><strong>{{__('msg.Country')}}:</strong> {{ $companyInfo['report']['companySummary']['country'] ?? __('msg.NA') }}</p>
+                <p><strong>{{__('msg.RegistrationNumber')}}:</strong> {{ $companyInfo['report']['companySummary']['companyRegistrationNumber'] ?? __('msg.NA') }}</p>
+                <p><strong>{{__('msg.CompanyNumber')}}:</strong> {{ $companyInfo['report']['companySummary']['companyNumber'] ?? __('msg.NA') }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>{{__('msg.Status')}}:</strong> 
+                  <span class="badge badge-success">
+                    {{ $companyInfo['report']['companySummary']['companyStatus']['status'] ?? __('msg.NA') }}
+                  </span>
+                </p>
+                <p><strong>{{__('msg.MainActivity')}}:</strong> {{ $companyInfo['report']['companySummary']['mainActivity']['description'] ?? __('msg.NA') }}</p>
+                <p><strong>{{__('msg.CreditRating')}}:</strong> 
+                  <span class="badge badge-info">
+                    {{ $companyInfo['report']['companySummary']['creditRating']['commonValue'] ?? __('msg.NA') }} - 
+                    {{ $companyInfo['report']['companySummary']['creditRating']['commonDescription'] ?? __('msg.NA') }}
+                  </span>
+                </p>
+                <p><strong>{{__('msg.CreditLimit')}}:</strong> 
+                  {{ $companyInfo['report']['companySummary']['creditRating']['creditLimit']['currency'] ?? '' }}
+                  {{ number_format($companyInfo['report']['companySummary']['creditRating']['creditLimit']['value'] ?? 0) }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Company identification section -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">{{__('msg.CompanyDetails')}}</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>{{__('msg.RegisteredName')}}:</strong> {{ $companyInfo['report']['companyIdentification']['basicInformation']['registeredCompanyName'] ?? __('msg.NA') }}</p>
+                <p><strong>{{__('msg.VATNumber')}}:</strong> {{ $companyInfo['report']['companyIdentification']['basicInformation']['vatRegistrationNumber'] ?? __('msg.NA') }}</p>
+                <p><strong>{{__('msg.LegalForm')}}:</strong> {{ $companyInfo['report']['companyIdentification']['basicInformation']['legalForm']['description'] ?? __('msg.NA') }}</p>
+                <p><strong>{{__('msg.RegistrationDate')}}:</strong> {{ isset($companyInfo['report']['companyIdentification']['basicInformation']['companyRegistrationDate']) ? date('Y-m-d', strtotime($companyInfo['report']['companyIdentification']['basicInformation']['companyRegistrationDate'])) : __('msg.NA') }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>{{__('msg.OfficeType')}}:</strong> {{ $companyInfo['report']['companyIdentification']['basicInformation']['officeType'] ?? __('msg.NA') }}</p>
+                <p><strong>{{__('msg.Address')}}:</strong> {{ $companyInfo['report']['companyIdentification']['basicInformation']['contactAddress']['simpleValue'] ?? __('msg.NA') }}</p>
+                <p><strong>{{__('msg.Telephone')}}:</strong> {{ $companyInfo['report']['companyIdentification']['basicInformation']['contactAddress']['telephone'] ?? __('msg.NA') }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Credit score section -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">{{__('msg.CreditEvaluation')}}</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="text-muted">{{__('msg.CurrentCreditRating')}}</h6>
+                <div class="credit-rating">
+                  <div class="rating-circle rating-{{ strtolower($companyInfo['report']['creditScore']['currentCreditRating']['commonValue'] ?? 'c') }}">
+                    {{ $companyInfo['report']['creditScore']['currentCreditRating']['commonValue'] ?? __('msg.NA') }}
+                  </div>
+                  <div class="rating-info">
+                    <p class="mb-0"><strong>{{ $companyInfo['report']['creditScore']['currentCreditRating']['commonDescription'] ?? __('msg.NA') }}</strong></p>
+                    <p class="text-muted mb-0">{{__('msg.ProviderRating')}}: {{ $companyInfo['report']['creditScore']['currentCreditRating']['providerValue']['value'] ?? __('msg.NA') }}/{{ $companyInfo['report']['creditScore']['currentCreditRating']['providerValue']['maxValue'] ?? '100' }}</p>
+                  </div>
+                </div>
+                <p><strong>{{__('msg.CreditLimit')}}:</strong> {{ $companyInfo['report']['creditScore']['currentCreditRating']['creditLimit']['currency'] ?? '' }} {{ number_format($companyInfo['report']['creditScore']['currentCreditRating']['creditLimit']['value'] ?? 0) }}</p>
+                <p><strong>{{__('msg.ProbabilityOfDefault')}}:</strong> {{ number_format(($companyInfo['report']['creditScore']['currentCreditRating']['pod'] ?? 0) * 100, 4) }}%</p>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-muted">{{__('msg.PreviousCreditRating')}}</h6>
+                <div class="credit-rating">
+                  <div class="rating-circle rating-{{ strtolower($companyInfo['report']['creditScore']['previousCreditRating']['commonValue'] ?? 'c') }}">
+                    {{ $companyInfo['report']['creditScore']['previousCreditRating']['commonValue'] ?? __('msg.NA') }}
+                  </div>
+                  <div class="rating-info">
+                    <p class="mb-0"><strong>{{ $companyInfo['report']['creditScore']['previousCreditRating']['commonDescription'] ?? __('msg.NA') }}</strong></p>
+                    <p class="text-muted mb-0">{{__('msg.ProviderRating')}}: {{ $companyInfo['report']['creditScore']['previousCreditRating']['providerValue']['value'] ?? __('msg.NA') }}/{{ $companyInfo['report']['creditScore']['previousCreditRating']['providerValue']['maxValue'] ?? '100' }}</p>
+                  </div>
+                </div>
+                <p><strong>{{__('msg.CreditLimit')}}:</strong> {{ $companyInfo['report']['creditScore']['previousCreditRating']['creditLimit']['currency'] ?? '' }} {{ number_format($companyInfo['report']['creditScore']['previousCreditRating']['creditLimit']['value'] ?? 0) }}</p>
+                <p><strong>{{__('msg.LastChangeDate')}}:</strong> {{ isset($companyInfo['report']['creditScore']['latestRatingChangeDate']) ? date('Y-m-d', strtotime($companyInfo['report']['creditScore']['latestRatingChangeDate'])) : __('msg.NA') }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Financial overview section -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">{{__('msg.FinancialOverview')}}</h6>
+          </div>
+          <div class="card-body">
+            @if(isset($companyInfo['report']['financialStatements']) && count($companyInfo['report']['financialStatements']) > 0)
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>{{__('msg.FinancialYear')}}</th>
+                      <th>{{__('msg.TotalAssets')}}</th>
+                      <th>{{__('msg.TotalLiabilities')}}</th>
+                      <th>{{__('msg.ShareholdersEquity')}}</th>
+                      <th>{{__('msg.LiquidityRatio')}}</th>
+                      <th>{{__('msg.CurrentRatio')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($companyInfo['report']['financialStatements'] ?? [] as $statement)
+                      @if(isset($statement['yearEndDate']) && isset($statement['balanceSheet']))
+                        <tr>
+                          <td>{{ date('Y', strtotime($statement['yearEndDate'])) }}</td>
+                          <td>{{ isset($statement['balanceSheet']['totalAssets']) ? number_format($statement['balanceSheet']['totalAssets']) . ' ' . ($statement['currency'] ?? '') : __('msg.NA') }}</td>
+                          <td>{{ isset($statement['balanceSheet']['totalLiabilities']) ? number_format($statement['balanceSheet']['totalLiabilities']) . ' ' . ($statement['currency'] ?? '') : __('msg.NA') }}</td>
+                          <td>{{ isset($statement['balanceSheet']['totalShareholdersEquity']) ? number_format($statement['balanceSheet']['totalShareholdersEquity']) . ' ' . ($statement['currency'] ?? '') : __('msg.NA') }}</td>
+                          <td>{{ isset($statement['ratios']['liquidityRatioOrAcidTest']) ? number_format($statement['ratios']['liquidityRatioOrAcidTest'], 2) : __('msg.NA') }}</td>
+                          <td>{{ isset($statement['ratios']['currentRatio']) ? number_format($statement['ratios']['currentRatio'], 2) : __('msg.NA') }}</td>
+                        </tr>
+                      @endif
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            @else
+              <div class="alert alert-info">
+                <p>{{__('msg.LatestShareholdersEquity')}}: {{ $companyInfo['report']['companySummary']['latestShareholdersEquityFigure']['currency'] ?? '' }} {{ number_format($companyInfo['report']['companySummary']['latestShareholdersEquityFigure']['value'] ?? 0) }}</p>
+                <p>{{__('msg.NoDetailedFinancialStatements')}}</p>
+              </div>
+            @endif
+          </div>
+        </div>
+        
+        <!-- Share capital structure -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">{{__('msg.ShareCapitalStructure')}}</h6>
+          </div>
+          <div class="card-body">
+            <p><strong>{{__('msg.NominalShareCapital')}}:</strong> 
+              {{ $companyInfo['report']['shareCapitalStructure']['nominalShareCapital']['currency'] ?? '' }}
+              {{ number_format($companyInfo['report']['shareCapitalStructure']['nominalShareCapital']['value'] ?? 0) }}
+            </p>
+            
+            @if(isset($companyInfo['report']['shareCapitalStructure']['shareHolders']) && count($companyInfo['report']['shareCapitalStructure']['shareHolders']) > 0)
+              <div class="shareholder-bar">
+                @php
+                  $colors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'];
+                  $i = 0;
+                @endphp
+                @foreach($companyInfo['report']['shareCapitalStructure']['shareHolders'] as $shareholder)
+                  @php
+                    $color = $colors[$i % count($colors)];
+                    $i++;
+                  @endphp
+                  <div class="shareholder-segment" style="width: {{ $shareholder['percentSharesHeld'] ?? 0 }}%; background-color: {{ $color }};">
+                    {{ $shareholder['percentSharesHeld'] ?? 0 }}%
+                  </div>
+                @endforeach
+              </div>
+              
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>{{__('msg.Shareholder')}}</th>
+                      <th>{{__('msg.Type')}}</th>
+                      <th>{{__('msg.SharesPercent')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($companyInfo['report']['shareCapitalStructure']['shareHolders'] as $shareholder)
+                      <tr>
+                        <td>{{ $shareholder['name'] ?? __('msg.NA') }}</td>
+                        <td>{{ $shareholder['shareholderType'] ?? __('msg.NA') }}</td>
+                        <td>{{ $shareholder['percentSharesHeld'] ?? '0' }}%</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            @else
+              <div class="alert alert-info">{{__('msg.NoShareholderInformation')}}</div>
+            @endif
+          </div>
+        </div>
+        
+        <!-- Directors section -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">{{__('msg.Directors')}}</h6>
+          </div>
+          <div class="card-body">
+            @if(isset($companyInfo['report']['directors']['currentDirectors']) && count($companyInfo['report']['directors']['currentDirectors']) > 0)
+              <h6 class="text-muted">{{__('msg.CurrentDirectors')}}</h6>
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>{{__('msg.Name')}}</th>
+                      <th>{{__('msg.Type')}}</th>
+                      <th>{{__('msg.Position')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($companyInfo['report']['directors']['currentDirectors'] as $director)
+                      <tr>
+                        <td>{{ $director['name'] ?? __('msg.NA') }}</td>
+                        <td>{{ $director['directorType'] ?? __('msg.NA') }}</td>
+                        <td>
+                          @if(isset($director['positions']) && count($director['positions']) > 0)
+                            {{ implode(', ', array_column($director['positions'], 'positionName')) }}
+                          @else
+                            {{__('msg.NA')}}
+                          @endif
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+              
+              @if(isset($companyInfo['report']['directors']['previousDirectors']) && count($companyInfo['report']['directors']['previousDirectors']) > 0)
+                <h6 class="text-muted mt-4">{{__('msg.PreviousDirectors')}}</h6>
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th>{{__('msg.Name')}}</th>
+                        <th>{{__('msg.Type')}}</th>
+                        <th>{{__('msg.Position')}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach($companyInfo['report']['directors']['previousDirectors'] as $director)
+                        <tr>
+                          <td>{{ $director['name'] ?? __('msg.NA') }}</td>
+                          <td>{{ $director['directorType'] ?? __('msg.NA') }}</td>
+                          <td>
+                            @if(isset($director['positions']) && count($director['positions']) > 0)
+                              {{ implode(', ', array_column($director['positions'], 'positionName')) }}
+                            @else
+                              {{__('msg.NA')}}
+                            @endif
+                          </td>
+                        </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
+                </div>
+              @endif
+            @else
+              <div class="alert alert-info">{{__('msg.NoCurrentDirectorsInformation')}}</div>
+            @endif
+          </div>
+        </div>
+        
+        <!-- Contact information section -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">{{__('msg.ContactInformation')}}</h6>
+          </div>
+          <div class="card-body">
+            @if(isset($companyInfo['report']['contactInformation']))
+              <h6 class="text-muted">{{__('msg.MainAddress')}}</h6>
+              <p>{{ $companyInfo['report']['contactInformation']['mainAddress']['simpleValue'] ?? __('msg.NA') }}</p>
+              <p><strong>{{__('msg.Telephone')}}:</strong> {{ $companyInfo['report']['contactInformation']['mainAddress']['telephone'] ?? __('msg.NA') }}</p>
+              
+              @if(isset($companyInfo['report']['contactInformation']['otherAddresses']) && count($companyInfo['report']['contactInformation']['otherAddresses']) > 0)
+                <h6 class="text-muted mt-3">{{__('msg.OtherAddresses')}}</h6>
+                <ul class="list-group">
+                  @foreach($companyInfo['report']['contactInformation']['otherAddresses'] as $address)
+                    <li class="list-group-item">{{ $address['simpleValue'] ?? __('msg.NA') }}</li>
+                  @endforeach
+                </ul>
+              @endif
+            @else
+              <div class="alert alert-info">{{__('msg.NoContactInformation')}}</div>
+            @endif
+          </div>
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('msg.Close')}}</button>
+        <button type="button" class="btn btn-primary" onclick="printCompanyInfo()">{{__('msg.PrintInformation')}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to handle printing the modal content -->
+<script>
+  function printCompanyInfo() {
+    const printContents = document.getElementById('companyInfoModal').querySelector('.modal-body').innerHTML;
+    const originalContents = document.body.innerHTML;
+    
+    document.body.innerHTML = `
+      <div class="container pt-4">
+        <h2 class="mb-4 text-center">{{ $companyInfo['report']['companySummary']['businessName'] ?? 'Company Information' }}</h2>
+        ${printContents}
+      </div>
+    `;
+    
+    window.print();
+    document.body.innerHTML = originalContents;
+    
+    // Re-initialize any JavaScript components that might have been destroyed
+    $('#companyInfoModal').modal('show');
+  }
+</script>
+
 <div class="pt-2 pl-2 pr-2" style="background-color:#fef2d8">
     <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day hidemobile"></i> {{__('msg.Appointment')}}</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks hidemobile"></i> {{__('msg.Tasks')}}</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-sm  btn-primary mb-3  float-left"><i class="fas fa-gift hidemobile"></i> {{__('msg.Offers')}}</a>                 <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-comment-alt"></i> {{__('msg.Complaint')}}</a>
         @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-user-edit hidemobile"></i> {{__('msg.Edit')}}</a> @endif @if($client->cl_ident > 0 ) <a  href="#" data-toggle="modal" data-target="#ModalTrading" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-coins hidemobile"></i> Trading</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-sm  btn-primary mb-3 ml-3 float-left"><i class="fas fa-money-bill-wave hidemobile"></i> {{__('msg.Finances')}}</a> @if($client->cl_ident > 0)  @if($complet) <a  href="{{route('compte_client.folder',['id'=>$client->id])}}"  class="btn btn-sm btn-success ml-4"> ✅ Dossier Complet </a> @else <a href="{{route('compte_client.folder',['id'=>$client->id])}}"  class="btn btn-sm btn-secondary ml-4"> ❌ Dossier incomplet </a>   @endif   @endif
+        <button type="button" class="bg-primary btn btn-sm mb-2 float-right" data-toggle="modal" data-target="#companyInfoModal"><i class="fas fa-suitcase"></i> Infos Crédit Safe</button>
+
         @if(  $client->etat_id==1  )
             <a title="{{__('msg.Delete')}}"   onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('clients.destroy', $client->id )}}" class="btn btn-sm  btn-danger btn-sm btn-responsive ml-3 mr-2 float-left" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                 <span class="fa fa-fw fa-trash-alt hidemobile"></span> {{__('msg.Delete')}}

@@ -41,7 +41,25 @@
     table td:first-child {
         font-weight: bold;
     }
+    .tab-pane{
+        padding-top:25px;
+        padding-bottom:25px;
+        padding-left:15px;
+        padding-right:15px;
+    }
+    .nav-link{
+        color:#4e73df;width:250px;text-align:center;font-weight:bold;
+    }
+    #myTab1 .nav-link i, #myTab2 .nav-link i {
+        color: #4e73df !important;
+    }
+    .nav-link.active{
+        color:#4e73df!important;
+    }
 
+    .tab-pane i{
+        font-size:9px;
+    }
     /* Mobiles
 @media (max-width: 767px) {
     .table td{
@@ -101,46 +119,20 @@
         </input>
     </div>
 </div>
-
 <div class="row">
-
+    
     <div class="col-lg-6 col-sm-12  mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.By')}} {{__('msg.Job')}}</h6>
-            </div>
-            <div class="card-body">
-                <div class="table-container mn5">
-                    <table class="table table-bordered table-striped mb-40">
-                        <thead>
-                            <tr id="headtable">
-                                <th class="">{{__('msg.Job')}}</th>
-                                <th class="text-center">{{ date('Y'); }}</th>
-                                <th class=""></th>
-                                <th class="text-center">{{ date('Y')-1; }}</th>
-                                <th class=""></th>
-                                <th class="text-center">{{ date('Y')-2; }}</th>
-                                <th class=""></th>
-                                <th class="text-center">{{ date('Y')-3; }}</th>
-                            </tr>
-                        </thead>
-                        <tbody id="stats">
-
-                        </tbody>
-                    </table>
-                </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
-				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-6 col-sm-12 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.By')}} {{__('msg.Customer')}}</h6>
-            </div>
-            <div class="card-body">
+        <h3>Mes Statistiques</h3>
+        <ul class="nav nav-tabs card-header" id="myTab2" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="clients-tab" data-toggle="tab" href="#clients" role="tab" aria-controls="clients" aria-selected="true" style="">{{__('msg.By')}} Client</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="jobs-tab" data-toggle="tab" href="#jobs" role="tab" aria-controls="jobs" aria-selected="false" style="">{{__('msg.By')}} {{__('msg.Job')}}</a>
+			</li>
+		</ul>
+		<div class="tab-content" style=" ">
+    		<div class="tab-pane active" id="clients" role="tabpanel" aria-labelledby="clients-tab">
                 <div class="table-container mn5">
                     <table class="table table-bordered -table-striped mb-40">
                         <thead>
@@ -163,93 +155,10 @@
                 <div class="row" style="font-size:14px"><div class="col-md-4"><b style="background-color:#f6f13f;padding:3px 3px;">   </b> Commercial support uniquement</div><div class="col-md-4"><b style="background-color:#bef4fe;padding:3px 3px;">   </b> Partagé avec un autre commercial support</div><div class="col-md-4"><b style="border:1px solid black;padding:3px 3px;">   </b> Je suis le seul représentant</div></div>
                 <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
 				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
+
             </div>
-        </div>
-    </div>
 
-
-    <div class="col-lg-12 col-sm-12 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.12-month rolling customer statistics')}} </h6>
-            </div>
-            <div class="card-body">
-                @if( auth()->user()->role=="admin" ||  auth()->user()->role=="dirQUA" )
-                <a href="#" id="export-excel-btn" class="btn btn-success mb-1" style="background-color:#1cc88a">
-                    <i class="fa fa-file-excel"></i> Exporter en Excel
-                </a>
-                @endif
-                <div class="table-container mn5">
-                    <table class="table table-bordered table-striped mb-40">
-                        <thead>
-                            <tr id="headtable">
-                                <th class="">{{__('msg.Customer')}}</th>
-                                <?php
-                                $mois_francais = [
-                                    'Jan' => 'Janvier',
-                                    'Feb' => 'Février',
-                                    'Mar' => 'Mars',
-                                    'Apr' => 'Avril',
-                                    'May' => 'Mai',
-                                    'Jun' => 'Juin',
-                                    'Jul' => 'Juillet',
-                                    'Aug' => 'Août',
-                                    'Sep' => 'Septembre',
-                                    'Oct' => 'Octobre',
-                                    'Nov' => 'Novembre',
-                                    'Dec' => 'Décembre'
-                                ];
-
-                                for ($i = 0; $i <= 12; $i++) {
-                                    // Calculez la date en fonction du nombre de mois précédents
-                                    $month_date = strtotime("-$i months");
-
-                                    // Récupérez le mois (en format court) et l'année
-                                    $month = date('M', $month_date);
-                                    $year = date('Y', $month_date);
-
-                                    // Affichez le mois en français avec l'année correspondante
-                                    echo "<th class='text-center'>{$mois_francais[$month]} $year</th>";
-                                }
-                                ?>
-                                <th class="text-center">TOTAL</th>
-                        </thead>
-                        <tbody id="stats7">
-
-                        </tbody>
-                    </table>
-                </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
-				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-4">
-        @if(auth()->user()->user_role==1|| auth()->user()->user_role==2|| auth()->user()->user_role==3)
-        <span class=" mr-2">{{__('msg.Agency')}}:</span>
-        <select class="form-control mb-20" id="agence" onchange="update_stats();" style="max-width:300px">
-            <option></option>
-            @foreach ($agences as $agence)
-            <option @selected(auth()->user()->agence_ident==$agence->agence_ident) value="{{$agence->agence_ident}}">{{$agence->agence_lib}}    |  <small>{{$agence->adresse1}}</small></option>
-            @endforeach
-        </select>
-        @else
-            <input type="hidden" id="agence" value="{{ auth()->user()->agence_ident }}"/>
-        @endif
-    </div>
-</div>
-
-<div class="row">
-
-    <div class="col-lg-6 col-sm-12 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.By')}} {{__('msg.Job')}}</h6>
-            </div>
-            <div class="card-body">
+			<div class="tab-pane" id="jobs" role="tabpanel" aria-labelledby="jobs-tab">
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
@@ -264,23 +173,43 @@
                                 <th class="text-center">{{ date('Y')-3; }}</th>
                             </tr>
                         </thead>
-                        <tbody id="stats3">
+                        <tbody id="stats">
 
                         </tbody>
                     </table>
                 </div>
                 <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
 				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
+            
             </div>
-        </div>
+        </div> 
     </div>
 
-    <div class="col-lg-6 col-sm-12 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.By')}} {{__('msg.Customer')}}</h6>
-            </div>
-            <div class="card-body">
+     <div class="col-lg-6 col-sm-12  mb-4">
+        <h3>Statistiques des agences de rattachement</h3>
+        <ul class="nav nav-tabs card-header" id="myTab3" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="client-tab" data-toggle="tab" href="#client" role="tab" aria-controls="client" aria-selected="true"  style="width:150px">{{__('msg.By')}} Client</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="job-tab" data-toggle="tab" href="#job" role="tab" aria-controls="job" aria-selected="false" style="width:150px">{{__('msg.By')}} {{__('msg.Job')}}</a>
+			</li>
+            <li class="nav-item pl-4">
+                @if(auth()->user()->user_role==1|| auth()->user()->user_role==2|| auth()->user()->user_role==3)
+                <span class=" mr-2">{{__('msg.Agency')}}:</span>
+                <select class="form-control" id="agence" onchange="update_stats();" style="max-width:300px">
+                    <option></option>
+                    @foreach ($agences as $agence)
+                    <option @selected(auth()->user()->agence_ident==$agence->agence_ident) value="{{$agence->agence_ident}}">{{$agence->agence_lib}}    |  <small>{{$agence->adresse1}}</small></option>
+                    @endforeach
+                </select>
+                @else
+                    <input type="hidden" id="agence" value="{{ auth()->user()->agence_ident }}"/>
+                @endif
+            </li>
+		</ul>
+		<div class="tab-content" style=" ">
+    		<div class="tab-pane active" id="client" role="tabpanel" aria-labelledby="client-tab">
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
@@ -301,22 +230,16 @@
                     </table>
                 </div>
                 <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
-				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
+				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>            
+                
             </div>
-        </div>
-    </div>
 
-    <div class="col-lg-12 col-sm-12 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.All agencies')}}</h6>
-            </div>
-            <div class="card-body">
+			<div class="tab-pane" id="job" role="tabpanel" aria-labelledby="job-tab">
                 <div class="table-container mn5">
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
-                                <th class="">{{__('msg.Agency')}}</th>
+                                <th class="">{{__('msg.Job')}}</th>
                                 <th class="text-center">{{ date('Y'); }}</th>
                                 <th class=""></th>
                                 <th class="text-center">{{ date('Y')-1; }}</th>
@@ -326,50 +249,143 @@
                                 <th class="text-center">{{ date('Y')-3; }}</th>
                             </tr>
                         </thead>
-                        <tbody id="stats5">
+                        <tbody id="stats3">
 
                         </tbody>
                     </table>
                 </div>
                 <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
-				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
+				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>                
             </div>
-        </div>
+        </div> 
     </div>
+
+</div>
+
+<div class="row">
 
     <div class="col-lg-12 col-sm-12 mb-4">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{__('msg.Inactive customers')}}</h6>
+                <ul class="nav nav-tabs card-header" id="myTab1" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" id="rolling-tab" data-toggle="tab" href="#rolling" role="tab" aria-controls="rolling" aria-selected="true" style="width:300px">{{__('msg.12-month rolling customer statistics')}}</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="agencies-tab" data-toggle="tab" href="#agencies" role="tab" aria-controls="agencies" aria-selected="false" style="width:300px">{{__('msg.All agencies')}}</a>
+					</li>
+                    <li class="nav-item">
+						<a class="nav-link" id="inactive-tab" data-toggle="tab" href="#inactive" role="tab" aria-controls="inactive" aria-selected="false" style="width:300px">{{__('msg.Inactive customers')}}</a>
+					</li>
+				</ul>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <span class=" mr-2">{{__('msg.Inactive since')}} :</span><input type="number" class="form-control mb-20" id="nb_mois" onchange="update_stats();" style="max-width:70px" value="2" /> {{__('msg.Month')}}
+				<div class="tab-content" style=" ">
+					<div class="tab-pane active" id="rolling" role="tabpanel" aria-labelledby="rolling-tab">
+
+                        @if( auth()->user()->role=="admin" ||  auth()->user()->role=="dirQUA" )
+                        <a href="#" id="export-excel-btn" class="btn btn-success mb-1" style="background-color:#1cc88a">
+                            <i class="fa fa-file-excel"></i> Exporter en Excel
+                        </a>
+                        @endif
+                        <div class="table-container mn5">
+                            <table class="table table-bordered table-striped mb-40">
+                                <thead>
+                                    <tr id="headtable">
+                                        <th class="">{{__('msg.Customer')}}</th>
+                                        <?php
+                                        $mois_francais = [
+                                            'Jan' => 'Janvier',
+                                            'Feb' => 'Février',
+                                            'Mar' => 'Mars',
+                                            'Apr' => 'Avril',
+                                            'May' => 'Mai',
+                                            'Jun' => 'Juin',
+                                            'Jul' => 'Juillet',
+                                            'Aug' => 'Août',
+                                            'Sep' => 'Septembre',
+                                            'Oct' => 'Octobre',
+                                            'Nov' => 'Novembre',
+                                            'Dec' => 'Décembre'
+                                        ];
+
+                                        for ($i = 0; $i <= 12; $i++) {
+                                            // Calculez la date en fonction du nombre de mois précédents
+                                            $month_date = strtotime("-$i months");
+
+                                            // Récupérez le mois (en format court) et l'année
+                                            $month = date('M', $month_date);
+                                            $year = date('Y', $month_date);
+
+                                            // Affichez le mois en français avec l'année correspondante
+                                            echo "<th class='text-center'>{$mois_francais[$month]} $year</th>";
+                                        }
+                                        ?>
+                                        <th class="text-center">TOTAL</th>
+                                </thead>
+                                <tbody id="stats7">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+                        <i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
+ 
+                    </div>
+
+                    <div class="tab-pane " id="agencies" role="tabpanel" aria-labelledby="agencies-tab">
+                        <div class="table-container mn5">
+                                        <table class="table table-bordered table-striped mb-40">
+                                            <thead>
+                                                <tr id="headtable">
+                                                    <th class="">{{__('msg.Agency')}}</th>
+                                                    <th class="text-center">{{ date('Y'); }}</th>
+                                                    <th class=""></th>
+                                                    <th class="text-center">{{ date('Y')-1; }}</th>
+                                                    <th class=""></th>
+                                                    <th class="text-center">{{ date('Y')-2; }}</th>
+                                                    <th class=""></th>
+                                                    <th class="text-center">{{ date('Y')-3; }}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="stats5">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+                                    <i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
+
+                    </div>
+
+                    <div class="tab-pane " id="inactive" role="tabpanel" aria-labelledby="inactive-tab">
+                        <div class="table-container mn5">
+                            <table class="table table-bordered table-striped mb-40">
+                                <thead>
+                                    <tr id="headtable">
+                                        <th class="">{{__('msg.Customer')}}</th>
+                                        <th class="text-center">{{__('msg.Last invoice')}}</th>
+                                        <th class="text-center">{{ date('Y'); }}</th>
+                                        <th class="text-center">{{ date('Y')-1; }}</th>
+                                        <th class="text-center">{{ date('Y')-2; }}</th>
+                                        <th class="text-center">{{ date('Y')-3; }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stats6">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+                        <i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
+                    
                     </div>
                 </div>
-                <div class="table-container mn5">
-                    <table class="table table-bordered table-striped mb-40">
-                        <thead>
-                            <tr id="headtable">
-                                <th class="">{{__('msg.Customer')}}</th>
-                                <th class="text-center">{{__('msg.Last invoice')}}</th>
-                                <th class="text-center">{{ date('Y'); }}</th>
-                                <th class="text-center">{{ date('Y')-1; }}</th>
-                                <th class="text-center">{{ date('Y')-2; }}</th>
-                                <th class="text-center">{{ date('Y')-3; }}</th>
-                            </tr>
-                        </thead>
-                        <tbody id="stats6">
-
-                        </tbody>
-                    </table>
-                </div>
-                <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
-				<i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
             </div>
         </div>
     </div>
+
+
 </div>
 
 

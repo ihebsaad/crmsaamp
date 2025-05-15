@@ -716,8 +716,12 @@ class DashboardController extends Controller
 
 	function stats_spot($type)
 	{
- 		DB::select("SET @p0='$type' ;");
-		$result = DB::select("  CALL `sp_stats_spot_operations`(@p0); ");
+		// Récupérer les métaux sélectionnés depuis la requête
+		$metals = request()->get('metals', 'OR,ARGENT,PLATINE,PALLADIUM'); // Valeur par défaut si non spécifié
+		
+		DB::select("SET @p0='$type';");
+		DB::select("SET @p1='$metals';");
+		$result = DB::select("CALL `sp_stats_spot_operations_v2`(@p0, @p1);");
 		return $result;
 	}
 

@@ -21,6 +21,8 @@ use App\Http\Controllers\RecapController;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CreditSafeController;
+
 use App\Exports\UserLoginsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
@@ -283,3 +285,12 @@ Route::get('/update-ids', function () {
     return 'Job lancé pour mettre à jour les IDs';
 });
 */
+
+
+Route::get('/creditsafe/company-info/{id}', [CreditSafeController::class, 'getCompanyInfo'])->name('creditsafe.company.info');
+
+// Route pour télécharger le rapport
+Route::get('/creditsafe/download-report/{id}', [CreditSafeController::class, 'downloadCompanyReport'])->name('creditsafe.download.report');
+
+// Route pour le rendu de la vue popup
+Route::get('/creditsafe/info-popup', [CreditSafeController::class, 'showCompanyInfoPopup'])->name('creditsafe.info.popup');

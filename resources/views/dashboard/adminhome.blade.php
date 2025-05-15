@@ -323,10 +323,10 @@
 						</li>
 					</ul>
 
-					<div class="tab-content" style="padding-left:15px;padding-right:15px">
+					<div class="tab-content" style=" ">
 						<div class="tab-pane active" id="offers" role="tabpanel" aria-labelledby="offers-tab">
 
-							<div class="table-container">
+							<div class="table-container" style="height:420px;max-height:550px;">
 
 								<table id="" class="table table-striped" style="" >
 									<thead>
@@ -356,7 +356,7 @@
 						</div>
 
 						<div class="tab-pane" id="comps" role="tabpanel" aria-labelledby="comps-tab">
-							<div class="table-container" style=" ">
+							<div class="table-container" style="height:420px;max-height:550px;">
 								<table id="" class="table table-striped" style="">
 								<thead>
 									<tr style="background-color:#2e3e4e;color:white;" id="">
@@ -373,7 +373,14 @@
 									<tr>
 									<td><a href="{{route('retours.show',['id'=>$retour->id])}}">{{$retour->Name}}</a></td>
 									<td>{{date('d/m/Y', strtotime($retour->Date_ouverture))}}</td>
-									<td>{{$retour->Nom_du_compte}}</td>
+									<td>
+									@if($retour->idclient > 0)
+										@php $client=\App\Models\CompteClient::find($retour->idclient); @endphp
+										<a href="{{route('fiche',['id'=>$retour->idclient])}}">{{$client->cl_ident}} - {{$client->Nom}}</a>
+									@else
+										{{$retour->cl_id}} - {{$retour->Nom_du_compte}}
+									@endif
+									</td>
 									<td>{{$creator->name ?? '' }} {{$creator->lastname ?? '' }}</td>
 									<td>{{$retour->Motif_retour}}</td>
 									</tr>
@@ -462,24 +469,45 @@
 						</li>
 					</ul>
 
-					<div class="tab-content" style="padding-left:15px;padding-right:15px">
+					<div class="tab-content" style=" min-height:454px">
 						<div class="tab-pane active" id="stats" role="tabpanel" aria-labelledby="stats-tab">
-							<label>Type: </label>
-							<select class="form-control mb-1" id="type" onchange="update_stats()" style="width:150px">
-								<option value="jour" selected="selected">Jour</option>
-								<option value="mois">Mois</option>
-								<option value="client">Client</option>
-								<option value="metal">Métal</option>
-							</select>
+							<div class="row mb-3">
+								<div class="col-md-4">
+									<label>Type: </label>
+									<select class="form-control mb-1" id="type" onchange="update_stats()" style="width:120px">
+										<option value="jour" selected="selected">Jour</option>
+										<option value="mois">Mois</option>
+									</select>
+								</div>
+								<div class="col-md-8">
+									<label>Métaux: </label>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input metal-checkbox" type="checkbox" id="metal_or" value="OR" checked onchange="update_stats()">
+										<label class="form-check-label" for="metal_or">OR</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input metal-checkbox" type="checkbox" id="metal_argent" value="ARGENT" checked onchange="update_stats()">
+										<label class="form-check-label" for="metal_argent">ARGENT</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input metal-checkbox" type="checkbox" id="metal_platine" value="PLATINE" checked onchange="update_stats()">
+										<label class="form-check-label" for="metal_platine">PLATINE</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input metal-checkbox" type="checkbox" id="metal_palladium" value="PALLADIUM" checked onchange="update_stats()">
+										<label class="form-check-label" for="metal_palladium">PALLADIUM</label>
+									</div>
+								</div>
+							</div>
 							<div class="table-container" id="tabstats">
 								<table class="table table-striped" style="width:90%">
 									<thead style="color:white">
-										<tr><th>PERIODE</th><th>METAL</th><th>TYPE UTILISATEUR</th><th>CLIENT_ID</th><th>NB OPERATIONS SPOT </th><th>POIDS MOYEN</th></tr>
+										<tr><th>PERIODE</th><th>METAL</th><th>TYPE UTILISATEUR</th><th>SENS</th><th>NB OPERATIONS SPOT </th><th>POIDS TOTAL</th></tr>
 									</thead>
 									<tbody id="tab-stats">
 									@foreach($stats_spot as $s)
 									<tr>
-										<td>{{ $s->periode }}</td><td>{{$s->metal}}</td><td>{{$s->type_utilisateur}}</td><td>{{$s->client_id}}</td><td>{{$s->nb_operations_spot}}</td><td>{{$s->poids_moyen}} g</td></td>
+										<td>{{ $s->periode }}</td><td>{{$s->metal}}</td><td>{{$s->type_utilisateur}}</td><td>{{$s->sens}}</td><td>{{$s->nb_operations_spot}}</td><td>{{$s->poids_total}} g</td></td>
 									</tr>
 									@endforeach
 									</tbody>
@@ -521,11 +549,11 @@
 					</ul>
 
 
-					<div class="tab-content" style="padding-left:15px;padding-right:15px">
+					<div class="tab-content" style=" ">
 
 						<div class="tab-pane active" id="week" role="tabpanel" aria-labelledby="week-tab">
 							<div class="table-container" style="height:420px;max-height:550px;">
-								<table class="table table-striped" style="width:90%">
+								<table class="table table-striped" style="width:90%;margin-top:0px;">
 									<thead style="background-color:lightgray;color:white">
 										<tr><th>Agence</th><th>S0</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>S6</th><th>S7</th><th>S8</th><th>S9</th><th>S10</th><th>S11</th></tr>
 									</thead>
@@ -695,44 +723,45 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 	});
  
-    function showTermsPopup() {
-        const popup = document.getElementById('termsPopup');
-        const content = document.getElementById('termsContent');
-        const acceptButton = document.getElementById('acceptTermsButton');
-        
-        // Afficher la popup et bloquer le scroll
-        popup.style.display = 'flex';
-        document.body.classList.add('terms-popup-open');
-
-        // Vérifier le scroll
-        content.addEventListener('scroll', function() {
-         /*   const isBottom = content.scrollHeight - content.scrollTop <= content.clientHeight + 5;
-            acceptButton.disabled = !isBottom;
-*/
-			const isBottom = termsContent.scrollHeight - termsContent.scrollTop === termsContent.clientHeight;
-            
-            if (isBottom) {
-                acceptButton.disabled = false;
-            }
-        });
-
-        // Gérer l'acceptation
-        acceptButton.addEventListener('click', function() {
-
+	function showTermsPopup() {
+		const popup = document.getElementById('termsPopup');
+		const content = document.getElementById('termsContent');
+		const acceptButton = document.getElementById('acceptTermsButton');
+		
+		// Display popup and block scroll
+		popup.style.display = 'flex';
+		document.body.classList.add('terms-popup-open');
+		
+		// Initially disable the button
+		acceptButton.disabled = true;
+		
+		// Check scroll with a more reliable method
+		content.addEventListener('scroll', function() {
+			// More reliable cross-browser way to check if scrolled to bottom
+			// Add a small buffer (2px) to account for browser rounding differences
+			const scrolledToBottom = 
+				Math.abs((content.scrollHeight - content.scrollTop) - content.clientHeight) < 2;
+			
+			if (scrolledToBottom) {
+				acceptButton.disabled = false;
+			}
+		});
+		
+		// Handle acceptance
+		acceptButton.addEventListener('click', function() {
 			$.ajax({
-                url: "{{ route('terms.accept') }}",
-                method: "POST",
-                data: {  _token: _token},
-                success: function (data) {
-					 
-					if (data==1) {
-                    popup.style.display = 'none';
-                    document.body.classList.remove('terms-popup-open');
-                	}
+				url: "{{ route('terms.accept') }}",
+				method: "POST",
+				data: { _token: _token },
+				success: function(data) {
+					if (data == 1) {
+						popup.style.display = 'none';
+						document.body.classList.remove('terms-popup-open');
+					}
 				}
 			});
-        });
-    }
+		});
+	}
 });
 </script>
 
@@ -850,12 +879,28 @@ document.addEventListener('DOMContentLoaded', function() {
 			var _token = $('input[name="_token"]').val();
 			var type = $('#type').val();
 	
+			// Récupérer les métaux sélectionnés
+			var selectedMetals = [];
+			$('.metal-checkbox:checked').each(function() {
+				selectedMetals.push($(this).val());
+			});
+			
+			// Vérifier qu'au moins un métal est sélectionné
+			if (selectedMetals.length === 0) {
+				alert('Veuillez sélectionner au moins un métal');
+				return;
+			}
+			
+			// Convertir le tableau en chaîne séparée par des virgules
+			var metalsParam = selectedMetals.join(',');
+
 			$.ajax({
 				url: "https://crm.mysaamp.com/stats_spot/"+type,
 				method: "get",
 				data: {
 					_token: _token,
 					type: type,
+					metals: metalsParam
 				},
 				success: function(data) {
 					var html = '';
@@ -866,42 +911,14 @@ document.addEventListener('DOMContentLoaded', function() {
 							let  periode = item.periode ?? '' ;
 							let  metal = item.metal ?? '' ;
 							let  type_utilisateur = item.type_utilisateur ?? '' ;
-							let  client = item.client_id ?? '' ;
+							let  sens = item.sens ?? '' ;
 							
-							html += '<tr><td>' + periode + '</td><td>' + metal + '</td><td>' + type_utilisateur + '</td><td>' + client + '</td><td>' + item.nb_operations_spot + '</td><td>' + item.poids_moyen + ' g</td></tr>';
+							html += '<tr><td>' + periode + '</td><td>' + metal + '</td><td>' + type_utilisateur + '</td><td>' + sens + '</td><td>' + item.nb_operations_spot + '</td><td>' + item.poids_total + ' g</td></tr>';
 						}
 					});
 					$("#tab-stats").html(html);
-					updateColumnVisibility(type);
 				}
 			});
-		}
-
-		function updateColumnVisibility(type) {
-    		// Reset all columns to visible first
-			$('#tab-stats tr, table thead tr').find('th, td').show();
-			
-			switch(type) {
-				case 'mois':
-				case 'jour':
-					// Hide 4th column (client_id) for 'mois' and 'jour'
-					$('#tab-stats tr, table thead tr').find('th:nth-child(4), td:nth-child(4)').hide();
-					break;
-				
-				case 'client':
-					// Hide columns 1, 2, and 3 (periode, metal, type_utilisateur) for 'client'
-					$('#tab-stats tr, table thead tr').find('th:nth-child(1), td:nth-child(1), th:nth-child(2), td:nth-child(2), th:nth-child(3), td:nth-child(3)').hide();
-					break;
-				
-				case 'metal':
-					// Hide columns 1 and 4 (periode, client_id) for 'metal'
-					$('#tab-stats tr, table thead tr').find('th:nth-child(1), td:nth-child(1), th:nth-child(4), td:nth-child(4)').hide();
-					break;
-				
-				default:
-					// If no specific type, show all columns
-					break;
-			}
 		}
 
   </script>
