@@ -294,3 +294,36 @@ Route::get('/creditsafe/download-report/{id}', [CreditSafeController::class, 'do
 
 // Route pour le rendu de la vue popup
 Route::get('/creditsafe/info-popup', [CreditSafeController::class, 'showCompanyInfoPopup'])->name('creditsafe.info.popup');
+
+
+Route::prefix('export')->group(function () {
+    // Export commercial stats
+    Route::get('/commercial/client12', [StatsController::class, 'exportStatsExcel'])
+        ->name('export.commercial.client12');
+        
+    Route::get('/commercial/metier', [StatsController::class, 'exportCommercialMetier'])
+        ->name('export.commercial.metier');
+        
+    Route::get('/commercial/client', [StatsController::class, 'exportCommercialClient'])
+        ->name('export.commercial.client');
+    
+    // Export agency stats    
+    Route::get('/agence/metier', [StatsController::class, 'exportAgenceMetier'])
+        ->name('export.agence.metier');
+        
+    Route::get('/agence/client', [StatsController::class, 'exportAgenceClient'])
+        ->name('export.agence.client');
+    
+    // Export all agencies stats
+    Route::get('/agences', [StatsController::class, 'exportAgences'])
+        ->name('export.agences');
+    
+    // Export inactive clients stats
+    Route::get('/clients-inactifs', [StatsController::class, 'exportClientsInactifs'])
+        ->name('export.clients.inactifs');
+
+    //dashboard
+    Route::get('/stats/metal',[DashboardController::class, 'exportMetalStats'])->name('export.stats.metal');
+});
+
+ 

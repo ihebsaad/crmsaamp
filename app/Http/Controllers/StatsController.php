@@ -7,22 +7,17 @@ use App\Exports\StatsCommercialExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\User;
 use App\Models\Consultation;
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Services\StatsExportService;
 
 class StatsController extends Controller
 {
+    protected $exportService;
 
-	public function __construct()
-	{
-		$this->middleware(['auth']);
-	}
-
+    public function __construct(StatsExportService $exportService)
+    {
+        $this->middleware(['auth']);
+        $this->exportService = $exportService;
+    }
 
 
 public function stats_client(Request $request)
@@ -196,10 +191,6 @@ public function stats_client(Request $request)
         try {
             $debut = $request->get('debut') ;
             $fin = $request->get('fin')  ;
-            //d('debut '.$debut. '  Fin : '.$fin);
-
-            //DB::select("SET @p0=$debut;");
-            //DB::select("SET @p1=$fin;");
             $stats = DB::select("call `sp_stats_agences_activite_date`('$debut', '$fin');");
         } catch (\Exception $e) {
             dd('stats_actvivites_semaine '.$e->getMessage());
@@ -215,88 +206,8 @@ public function stats_client(Request $request)
         return DB::select('CALL sp_stats_commercial_client_12mois(@p0);');
     }
 
-    /*public function exportStatsExcel(Request $request)
-    {
-        $user_id = $request->get('user');
-
-        DB::select("SET @p0=$user_id;");
-        $stats = DB::select('call `sp_stats_commercial_client_12mois`(@p0);');
-        //dd($user_id);
-        return Excel::download(new StatsCommercialExport($stats), 'stats_commercial.xlsx');
-    }*/
-/*
-
-    public function exportStatsExcel(Request $request)
-    {
-        $userId = $request->query('user'); // Récupérer l'ID du commercial
-
-        $data = $this->getStatsData($userId);
-
-        // Convertir les objets en tableaux
-        $statsArray = json_decode(json_encode($data), true);
-
-        // Vérifier si les données existent
-        if (!empty($statsArray)) {
-            $headers = array_keys($statsArray[0]); // Récupérer les clés des données
-        } else {
-            $headers = []; // Pas de données
-        }
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        // Définir les styles pour l'en-tête
-        $headerStyle = [
-            'font' => ['bold' => true, 'size' => 12, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'D4AF37']], // Or
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ];
-
-        // Définir le style des cellules
-        $cellStyle = [
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]]
-        ];
-
-        // Ajouter les en-têtes
-        $headers = array_keys($statsArray[0]); // Récupérer les clés des données
-        $col = 'A';
-        foreach ($headers as $header) {
-            $sheet->setCellValue($col . '1', $header);
-            $sheet->getStyle($col . '1')->applyFromArray($headerStyle);
-            $sheet->getColumnDimension($col)->setAutoSize(true); // Ajuster la largeur des colonnes
-            $col++;
-        }
-
-        // Ajouter les données
-        $row = 2;
-        foreach ($statsArray as $rowData) {
-            $col = 'A';
-            foreach ($rowData as $value) {
-                $sheet->setCellValue($col . $row, $value);
-                $sheet->getStyle($col . $row)->applyFromArray($cellStyle);
-                $col++;
-            }
-            $row++;
-        }
-
-        // Centrer les cellules
-        $sheet->getStyle('A1:' . $col . ($row - 1))->applyFromArray($cellStyle);
-
-        // Générer le fichier Excel
-        $writer = new Xlsx($spreadsheet);
-        $fileName = 'Statistiques_Clients.xlsx';
-
-        return new StreamedResponse(function () use ($writer) {
-            $writer->save('php://output');
-        }, 200, [
-            "Content-Type" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "Content-Disposition" => "attachment; filename=\"$fileName\""
-        ]);
-    }
-    */
-
+ 
+    // clients sur 12 mois
     public function exportStatsExcel(Request $request)
     {
         $repId = $request->query('user');
@@ -309,4 +220,64 @@ public function stats_client(Request $request)
 
         return Excel::download(new StatsCommercialExport($stats, $user), ''.$user->name.'_'.$user->lastname.'_stats_commercial.xlsx');
     }
+
+    /**
+     * Export commercial statistics by profession
+     */
+    public function exportCommercialMetier(Request $request)
+    {
+        $repId = $request->query('user');
+        $mois = $request->query('mois') ?? 1;
+        return $this->exportService->exportCommercialMetier($repId, $mois);
+    }
+
+    /**
+     * Export commercial statistics by client
+     */
+    public function exportCommercialClient(Request $request)
+    {
+        $repId = $request->query('user');
+        $mois = $request->query('mois') ?? 1;
+        return $this->exportService->exportCommercialClient($repId, $mois);
+    }
+
+    /**
+     * Export agency statistics by profession
+     */
+    public function exportAgenceMetier(Request $request)
+    {
+        $agenceId = $request->query('agence');
+        $mois = $request->query('mois') ?? 1;
+        return $this->exportService->exportAgenceMetier($agenceId, $mois);
+    }
+
+    /**
+     * Export agency statistics by client
+     */
+    public function exportAgenceClient(Request $request)
+    {
+        $agenceId = $request->query('agence');
+        $mois = $request->query('mois') ?? 1;
+        return $this->exportService->exportAgenceClient($agenceId, $mois);
+    }
+
+    /**
+     * Export statistics for all agencies
+     */
+    public function exportAgences(Request $request)
+    {
+        $mois = $request->query('mois') ?? 1;
+        return $this->exportService->exportAgences($mois);
+    }
+
+    /**
+     * Export statistics for inactive clients
+     */
+    public function exportClientsInactifs(Request $request)
+    {
+        $repId = $request->query('user');
+        $nbMois = $request->query('mois') ?? 1;
+        return $this->exportService->exportClientsInactifs($repId, $nbMois);
+    }
+
 }

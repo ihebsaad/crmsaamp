@@ -961,7 +961,7 @@ class GEDService
 			$pass = env('AS400_pass');
 			$dsn = "Driver={IBM i Access ODBC Driver};System=$server;Uid=$user;Pwd=$pass";
 			//$dsn = "Driver={IBM i Access ODBC Driver};System=82.96.140.216;Uid=BOUREY;Pwd=BOUREY";
-			//$dsn = "DRIVER={iSeries Access ODBC Driver};SYSTEM=82.96.140.216;DBNAME=S65DD73D;UID=BOUREY;PWD=BOUREY;charset=utf8";
+			//$dsn = "DRIVER={iSeries Access ODBC Driver};SYSTEM=82.96.140.216;DBNAME=S06742CP;UID=BOUREY;PWD=BOUREY;charset=utf8";
 
 			$pdo = new \PDO("odbc:$dsn", $user, $pass);
 			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

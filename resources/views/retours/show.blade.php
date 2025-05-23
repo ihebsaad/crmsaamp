@@ -142,17 +142,12 @@
 
 
                         <div class="col-md-1 col-sm-12">
-                            @if(auth()->user()->user_type=='admin' || auth()->user()->email=='directeur.qualite@saamp.com' || auth()->user()->email=='stephane.hamel@saamp.com')
-
-
+                            @if(auth()->id()== $retour->user_id || auth()->user()->user_role==1 || auth()->user()->user_role==2 || auth()->user()->user_role==3 || auth()->user()->user_role== 5  )
                             <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('retours.destroy', $retour->id )}}" class="btn btn-danger btn-sm btn-responsive mr-2 float-right" role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
                                 <span class="fa fa-fw fa-trash-alt"></span> {{__('msg.Delete')}}
                             </a>
                             <div class="clearfix"></div>
-                            @if(auth()->id()== $retour->user_id || auth()->user()->user_role==1 || auth()->user()->user_role==3 || auth()->user()->user_role== 5  )
-                            <button type="submit" class="btn-primary btn btn-sm float-right mt-3 mr-2"><span class="fa fa-fw fa-pen"></span>  Modifier  </button>
-                            @endif
-
+                            <button type="submit" class="btn-primary btn btn-sm float-right mt-3 mr-2"><span class="fa fa-fw fa-save"></span>  Enregistrer  </button>
                             @endif
                         </div>
                     </div>
@@ -178,7 +173,11 @@
                             </div>
                         </div>
 
-
+                        <div class="col-md-4">
+                            <div class="mt-4">
+                            <label for="demande_infos"> <input type="checkbox" value="1" name="demande_infos" id="demande_infos" />  <i class="fa fa-envelope"></i>  Demander plus d'informations concernant cette réclamtion</label> 
+                            </div>
+                        </div>
                         <!-- here
                         <div class="col-md-3">
                             <div class="">

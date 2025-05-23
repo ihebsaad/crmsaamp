@@ -14,6 +14,7 @@ use App\Models\Tache;
 use App\Models\GoogleToken;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Services\StatsExportService;
 
 class DashboardController extends Controller
 {
@@ -36,7 +37,7 @@ class DashboardController extends Controller
 
 	public function adminhome()
 	{
-		if (auth()->user()->user_type == 'admin' || auth()->user()->role == 'admin' || auth()->user()->role == 'dirQUA') {
+		if (auth()->user()->user_role ==1 || auth()->user()->user_role == 2|| auth()->user()->user_role == 5) {
 
 			$stats_spot=self::stats_spot('jour');
 			$offres = Offre::where('statut', null)->get();
@@ -119,22 +120,11 @@ class DashboardController extends Controller
 
 
 
-			$totaux_clients = self::totaux_clients();
-
-			return view('dashboard.adminhome', compact(
-				'retours',
-				'rendezvous',
-				'taches',
-				'representants',
-				'offres',
-				'userToken',
-				'users',
-				'stats',
-				'stats_mois',
-				'prospects',
-				'totaux_clients',
-				'stats_spot'
-			));
+			$totaux_clients = self::totaux_clients();/*
+			if(auth()->id()==1) 
+				return view('dashboard.adminhome2', compact(	'retours','rendezvous','taches','representants','offres','userToken','users','stats','stats_mois','prospects','totaux_clients','stats_spot'));
+			else */
+				return view('dashboard.adminhome', compact(	'retours','rendezvous','taches','representants','offres','userToken','users','stats','stats_mois','prospects','totaux_clients','stats_spot'));
 		} else {
 			$rendezvous = RendezVous::where('Attribue_a', auth()->user()->name . ' ' . auth()->user()->lastname)
 				->orWhere('user_id', auth()->user()->id)
@@ -721,8 +711,18 @@ class DashboardController extends Controller
 		
 		DB::select("SET @p0='$type';");
 		DB::select("SET @p1='$metals';");
-		$result = DB::select("CALL `sp_stats_spot_operations_v2`(@p0, @p1);");
+		$result = DB::select("CALL `sp_stats_spot_operations_v3`(@p0, @p1);");
 		return $result;
 	}
 
+
+	public function exportMetalStats(Request $request)
+	{
+		// Récupérer les paramètres
+		$type = $request->get('type', 'jour');
+		$metals = $request->get('metals', []);
+		
+		// Utilisez votre service d'exportation
+		return app(StatsExportService::class)->exportMetalStats($type, $metals);
+	}
 } // end class

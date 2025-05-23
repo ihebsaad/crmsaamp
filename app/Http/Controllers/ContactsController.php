@@ -238,12 +238,12 @@ class ContactsController extends Controller
 
 
 			// Vérifier si l'email existe déjà pour cet ID client
-			$stmt = $pdo->prepare("SELECT CLIMAI FROM S65DD73D.GESCOMF.CLIMAIP1 WHERE CLINUM = ? AND CLIMAI = ?");
+			$stmt = $pdo->prepare("SELECT CLIMAI FROM S06742CP.GESCOMF.CLIMAIP1 WHERE CLINUM = ? AND CLIMAI = ?");
 			$stmt->execute([$data['id_client'], $data['email']]);
 
 			if ($stmt->rowCount() > 0) {
 				// Mettre à jour l'entrée existante
-				$stmt = $pdo->prepare("UPDATE S65DD73D.GESCOMF.CLIMAIP1
+				$stmt = $pdo->prepare("UPDATE S06742CP.GESCOMF.CLIMAIP1
 												   SET CLINOC = ?, CLIPRT = ?
 												   WHERE CLINUM = ? AND CLIMAI = ?");
 				$nom_complet = $data['nom'] . ' ' . $data['prenom'];
@@ -252,7 +252,7 @@ class ContactsController extends Controller
 				\Log::info(" Contact as400 updated  ");
 			} else {
 				// Ajouter un nouveau contact
-				$stmt = $pdo->prepare("INSERT INTO S65DD73D.GESCOMF.CLIMAIP1 (CLINUM, CLIMAI, CLINOC, CLIPRT, CLISTE, CLIRUB)
+				$stmt = $pdo->prepare("INSERT INTO S06742CP.GESCOMF.CLIMAIP1 (CLINUM, CLIMAI, CLINOC, CLIPRT, CLISTE, CLIRUB)
 												   VALUES (?, ?, ?, ?, ?, ?)");
 				$nom_complet = $data['nom'] . ' ' . $data['prenom'];
 				$stmt->execute([$data['id_client'], $data['email'], $nom_complet, $data['tel'], 'I', 'DEF']);
@@ -281,7 +281,7 @@ class ContactsController extends Controller
 			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
 			try {
-				$stmt = $pdo->prepare("UPDATE S65DD73D.GESCOMF.CLIMAIP1
+				$stmt = $pdo->prepare("UPDATE S06742CP.GESCOMF.CLIMAIP1
 									   SET CLINOC = ?, CLIPRT = ?
 									   WHERE CLINUM = ? AND CLIMAI = ?");
 				$nom_complet = $data['nom'] . ' ' . $data['prenom'];
@@ -317,7 +317,7 @@ class ContactsController extends Controller
 
 			// Supprimer un contact
 			$email = htmlspecialchars(trim($data['email']));
-			$stmt = $pdo->prepare("DELETE FROM S65DD73D.GESCOMF.CLIMAIP1 WHERE CLINUM = ? AND CLIMAI = ?");
+			$stmt = $pdo->prepare("DELETE FROM S06742CP.GESCOMF.CLIMAIP1 WHERE CLINUM = ? AND CLIMAI = ?");
 			if ($stmt->execute([$data['id_client'], $email])) {
 				$message = "Contact avec l'email $email supprimé avec succès.";
 				\Log::info($message);

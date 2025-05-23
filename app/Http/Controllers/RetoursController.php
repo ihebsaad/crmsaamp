@@ -74,7 +74,7 @@ class RetoursController extends Controller
 		if($retour==null)
 		return redirect('/dashboard');
 		$class = '';
-		$types=array(''=>'',1=>'Affinage',2=>'Condition de prix',3=>'Produits',4=>'Reard de livraison');
+		$types=array(''=>'',1=>'Affinage',2=>'Condition de prix',3=>'Produits',4=>'Retard de livraison');
 		$natures=array(''=>'',1=>'Titrage',2=>'Lot haute teneure sur des cendres',3=>'Autres');
 
 		switch ($retour->Type_retour) {
@@ -248,7 +248,7 @@ class RetoursController extends Controller
          ]);
 */
 		$retour = RetourClient::find($id);
-		$agence_lib = $retour->Responsable_de_resolution;
+		//$agence_lib = $retour->Responsable_de_resolution;
 		//$retour->update($request->all());
 		$reponse=$retour->Une_reponse_a_ete_apportee_au_client;
 
@@ -327,6 +327,13 @@ class RetoursController extends Controller
 			self::send_mail($retour, env('Email_qualite'),$status);
 			}
 
+		$demande = $request->demande_infos ? '1' : '0';
+		if($demande){
+			self::send_mail_infos($retour);
+			return redirect()->route('retours.show', $id)
+			->with('success', '📧 Demande envoyée !');
+		}
+
 		return redirect()->route('retours.show', $id)
 			->with('success', 'Réclamation modifiée');
 	}
@@ -334,7 +341,7 @@ class RetoursController extends Controller
 	public static function send_mail($retour, $email,$status)
 	{
 		$creator =  User::find($retour->user_id);
-		$types=array(1=>'Affinage',2=>'Condition de prix',3=>'Produits',4=>'Reard de livraison');
+		$types=array(1=>'Affinage',2=>'Condition de prix',3=>'Produits',4=>'Retard de livraison');
 		$delais=array(1=>8 , 2=>15 , 3=>5); //delais ici
 		$client=CompteClient::find($retour->idclient);
 		// envoi de mail
@@ -385,6 +392,31 @@ class RetoursController extends Controller
 		return back()->with('success', ' Supprimé avec succès');
 	}
 */
+
+
+
+	public static function send_mail_infos($retour)
+	{
+		$creator =  User::find($retour->user_id);
+		$types=array(1=>'Affinage',2=>'Condition de prix',3=>'Produits',4=>'Retard de livraison');
+		$client=CompteClient::find($retour->idclient);
+		// envoi de mail
+		$sujet = 'Demande d\'infos pour la réclamation : ' . $retour->id . ' - ' . $retour->Name;
+		$contenu = 'Bonjour,<br><br>l\'utilisateur '. auth()->user()->name.' '.auth()->user()->lastname .' demande plus d\'infos concernant <a href="https://crm.mysaamp.com/retours/show/' . $retour->id . '" target="_blank"> la réclamtion '    . $retour->Name . '</a> <br><br>
+		<b>Client:</b> ' . $client->cl_ident . '  -  ' . $client->Nom . '<br>
+		<b>Type de retour:</b> ' . $retour->Type_retour . '<br>
+		<b>Type de demande:</b> ' . $types[$retour->Type_Demande] . '<br>
+		<b>Date d\'ouverture:</b> ' . $retour->Date_ouverture . '<br>
+		<b>Motif de retour:</b> ' . $retour->Motif_retour . '<br>
+		<b>Division:</b> ' . $retour->Division . '<br>
+		<b>Détails des causes:</b> ' . $retour->Details_des_causes . '<br>';
+ 
+ 
+		$contenu.='<br><i>Cordialement</i><br>
+		<i><b>CRM SAAMP</b></i>';
+
+		SendMail::send($creator->email, $sujet, $contenu);
+	}
 	public function destroy($id)
 	{
 		$retour = RetourClient::find($id);

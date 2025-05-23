@@ -90,52 +90,57 @@ class CreditSafeController extends Controller
             $client = CompteClient::findOrFail($clientId);
             
             if (!$client->siret) {
+
+                Log::error('Le SIRET n\'est pas disponible pour ce client');
+                return back()->withErrors(['msg' =>'Le SIRET n\'est pas disponible pour ce client']);
+                /*
                 return response()->json([
                     'success' => false,
                     'message' => 'Le SIRET n\'est pas disponible pour ce client'
-                ], 404);
+                ], 404);*/
             }
             
             // Obtenir l'ID de l'entreprise
             $companyId = $this->creditSafeService->getCompanyIdBySiret($client->siret);
             
             if (!$companyId) {
+                Log::error('Aucune entreprise trouvée pour ce SIRET');
+                return back()->withErrors(['msg' => 'Aucune entreprise trouvée pour ce SIRET']);
+
+                /*
                 return response()->json([
                     'success' => false,
                     'message' => 'Aucune entreprise trouvée pour ce SIRET'
-                ], 404);
+                ], 404);*/
             }
             
             // Générer le rapport
             $report = $this->creditSafeService->generateCompanyReport($companyId);
-            
-            if (!isset($report['pdf'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Impossible de générer le rapport PDF'
-                ], 500);
+            //dd($report);
+            /*
+            if (!isset($report['pdfReportStream'])) {
+                return back()->withErrors(['msg' => 'Impossible de générer le rapport PDF']);
             }
             
             // Décoder le contenu PDF (généralement encodé en base64)
-            $pdfContent = base64_decode($report['pdf']);
-            
+            $pdfContent = base64_decode($report['pdfReportStream']);
+            */
             // Nom du fichier
-            $companyName = $client->nom ?? 'entreprise';
+            $companyName = trim($client->Nom) ?? $client->Nom;
             $filename = 'rapport_creditsafe_' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '_', $companyName)) . '.pdf';
             
             // Renvoyer le PDF comme réponse de téléchargement
-            return response($pdfContent)
+            return response($report)
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
         } catch (Exception $e) {
+
             Log::error('Erreur lors de la génération du rapport', [
                 'message' => $e->getMessage()
             ]);
             
-            return response()->json([
-                'success' => false,
-                'message' => 'Une erreur est survenue lors de la génération du rapport: ' . $e->getMessage()
-            ], 500);
+            return back()->withErrors(['msg' =>'Erreur lors de la génération du rapport']); ;
+
         }
     }
 

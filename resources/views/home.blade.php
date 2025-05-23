@@ -1,5 +1,14 @@
 @extends('layouts.back')
 <style>
+    .exports,.export-buttons .btn {
+        float:right;
+        background-color: #1cc88a;
+        padding:8px 8px 8px 8px;
+        margin-bottom:10px;
+    }
+    .export-buttons i{
+        font-size: 16px!important;
+    }
 	.card-body i{
 		font-size:10px;
 	}
@@ -85,8 +94,8 @@
 <div class="row">
     <input type="hidden" id="user_id" value="{{ auth()->user()->id }}" />
 
-        @if( auth()->user()->user_role > 0 && auth()->user()->user_role < 5 || auth()->user()->id==10  &&  auth()->id() != 334 )
-        <div class="col-lg-3">
+        @if( auth()->user()->user_role > 0 && auth()->user()->user_role < 5 || auth()->user()->user_role==8 || auth()->user()->id==10  /*&&  auth()->id() != 334*/ )
+        <div class="col-lg-2">
             <span class=" mr-2">{{__('msg.Type')}}:</span>
             <select class="form-control mb-20" id="type">
                 <option value="Commercial terrain">Commercial terrain</option>
@@ -94,7 +103,7 @@
                 <option value="Collecteur Externe">Collecteur Externe</option>
             </select>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <span class=" mr-2">{{__('msg.Commercial')}}:</span>
             <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">
                 @foreach ($representants as $rp)
@@ -103,7 +112,7 @@
             </select>
         </div>
 
-        @elseif(auth()->id() == 334)
+        @elseif( false /*auth()->id() == 334*/ )
         <span class=" mt-4 mr-2">{{__('msg.Commercial')}}:</span>
             <select class="form-control mb-20 mt-3" id="commercial" onchange="update_stats();" style="max-width:300px">
                 <option  value="334" data-id="400"  data-type="Commercial terrain" >Stéphane Devès</option>
@@ -113,8 +122,8 @@
             <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}">
         @endif
 
-    <div class="col-lg-4 mt-4">
-        <input id="mois" type="checkbox" value="1" onchange="update_stats();">
+    <div class="col-lg-3 mt-4">
+        <input id="mois" type="checkbox" value="1" onchange="update_checkbox('mois','mois_alt');">
         <label class="mt-2" for="mois">{{__('msg.Show full years')}}</label>
         </input>
     </div>
@@ -133,7 +142,14 @@
 		</ul>
 		<div class="tab-content" style=" ">
     		<div class="tab-pane active" id="clients" role="tabpanel" aria-labelledby="clients-tab">
-                <div class="table-container mn5">
+                <div class="table-container mn5" id="stats2-container">
+                    @if( auth()->user()->user_role== 1 ||  auth()->user()->user_role== 2 || auth()->user()->user_role==5)
+                        <div class="export-buttons">
+                            <a href="#" id="export2-btn" class="btn btn-success exports btn-sm">
+                                <i class="fa fa-file-excel"></i> Exporter en Excel
+                            </a>
+                        </div>
+                    @endif
                     <table class="table table-bordered -table-striped mb-40">
                         <thead>
                             <tr id="headtable">
@@ -159,7 +175,14 @@
             </div>
 
 			<div class="tab-pane" id="jobs" role="tabpanel" aria-labelledby="jobs-tab">
-                <div class="table-container mn5">
+                <div class="table-container mn5" id="stats-container">
+                    @if( auth()->user()->user_role== 1 ||  auth()->user()->user_role== 2 || auth()->user()->user_role==5)
+                    <div class="export-buttons">
+                        <a href="#" id="export-btn" class="btn btn-success exports btn-sm">
+                            <i class="fa fa-file-excel"></i> Exporter en Excel
+                        </a>
+                    </div>
+                    @endif
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
@@ -195,7 +218,7 @@
 				<a class="nav-link" id="job-tab" data-toggle="tab" href="#job" role="tab" aria-controls="job" aria-selected="false" style="width:150px">{{__('msg.By')}} {{__('msg.Job')}}</a>
 			</li>
             <li class="nav-item pl-4">
-                @if(auth()->user()->user_role==1|| auth()->user()->user_role==2|| auth()->user()->user_role==3)
+                @if(auth()->user()->user_role==1|| auth()->user()->user_role==2 || auth()->user()->user_role==3 || auth()->user()->user_role==8 )
                 <span class=" mr-2">{{__('msg.Agency')}}:</span>
                 <select class="form-control" id="agence" onchange="update_stats();" style="max-width:300px">
                     <option></option>
@@ -210,7 +233,14 @@
 		</ul>
 		<div class="tab-content" style=" ">
     		<div class="tab-pane active" id="client" role="tabpanel" aria-labelledby="client-tab">
-                <div class="table-container mn5">
+                <div class="table-container mn5" id="stats4-container">      
+                    @if( auth()->user()->user_role== 1 ||  auth()->user()->user_role== 2 || auth()->user()->user_role==5)              
+                    <div class="export-buttons">
+                        <a href="#" id="export4-btn" class="btn btn-success exports btn-sm">
+                            <i class="fa fa-file-excel"></i> Exporter en Excel
+                        </a>
+                    </div>   
+                    @endif                 
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
@@ -235,7 +265,14 @@
             </div>
 
 			<div class="tab-pane" id="job" role="tabpanel" aria-labelledby="job-tab">
-                <div class="table-container mn5">
+                <div class="table-container mn5" id="stats3-container">
+                    <div class="export-buttons">
+                        @if( auth()->user()->user_role== 1 ||  auth()->user()->user_role== 2 || auth()->user()->user_role==5)
+                        <a href="#" id="export3-btn" class="btn btn-success  exports btn-sm">
+                            <i class="fa fa-file-excel"></i> Exporter en Excel
+                        </a>
+                        @endif
+                    </div>
                     <table class="table table-bordered table-striped mb-40">
                         <thead>
                             <tr id="headtable">
@@ -277,18 +314,25 @@
                     <li class="nav-item">
 						<a class="nav-link" id="inactive-tab" data-toggle="tab" href="#inactive" role="tab" aria-controls="inactive" aria-selected="false" style="width:300px">{{__('msg.Inactive customers')}}</a>
 					</li>
+                    <li class="pl-3">
+                        <input id="mois_alt" type="checkbox" value="1" onchange="update_checkbox('mois_alt','mois')">
+                            <label class="mt-2" for="mois_alt">{{__('msg.Show full years')}}</label>
+                        </input>
+                    </li>
 				</ul>
             </div>
             <div class="card-body">
 				<div class="tab-content" style=" ">
 					<div class="tab-pane active" id="rolling" role="tabpanel" aria-labelledby="rolling-tab">
 
-                        @if( auth()->user()->role=="admin" ||  auth()->user()->role=="dirQUA" )
-                        <a href="#" id="export-excel-btn" class="btn btn-success mb-1" style="background-color:#1cc88a">
-                            <i class="fa fa-file-excel"></i> Exporter en Excel
-                        </a>
+                        @if( auth()->user()->user_role== 1 ||  auth()->user()->user_role== 2 || auth()->user()->user_role==5)
+                        <div class="export-buttons">
+                            <a href="#" id="export7-btn" class="btn btn-success exports mb-1" >
+                                <i class="fa fa-file-excel"></i> Exporter en Excel
+                            </a>
+                        </div>
                         @endif
-                        <div class="table-container mn5">
+                        <div class="table-container mn5" id="stats7-container">
                             <table class="table table-bordered table-striped mb-40">
                                 <thead>
                                     <tr id="headtable">
@@ -335,31 +379,43 @@
 
                     <div class="tab-pane " id="agencies" role="tabpanel" aria-labelledby="agencies-tab">
                         <div class="table-container mn5">
-                                        <table class="table table-bordered table-striped mb-40">
-                                            <thead>
-                                                <tr id="headtable">
-                                                    <th class="">{{__('msg.Agency')}}</th>
-                                                    <th class="text-center">{{ date('Y'); }}</th>
-                                                    <th class=""></th>
-                                                    <th class="text-center">{{ date('Y')-1; }}</th>
-                                                    <th class=""></th>
-                                                    <th class="text-center">{{ date('Y')-2; }}</th>
-                                                    <th class=""></th>
-                                                    <th class="text-center">{{ date('Y')-3; }}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="stats5">
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
-                                    <i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
-
+                            @if( auth()->user()->user_role== 1 ||  auth()->user()->user_role== 2 || auth()->user()->user_role==5)
+                            <div class="export-buttons">
+                                <a href="#" id="export5-btn" class="btn btn-success exports btn-sm">
+                                    <i class="fa fa-file-excel"></i> Exporter en Excel
+                                </a>
+                            </div>
+                            @endif
+                            <table class="table table-bordered table-striped mb-40">
+                                <thead>
+                                    <tr id="headtable">
+                                        <th class="">{{__('msg.Agency')}}</th>
+                                        <th class="text-center">{{ date('Y'); }}</th>
+                                        <th class=""></th>
+                                        <th class="text-center">{{ date('Y')-1; }}</th>
+                                        <th class=""></th>
+                                        <th class="text-center">{{ date('Y')-2; }}</th>
+                                        <th class=""></th>
+                                        <th class="text-center">{{ date('Y')-3; }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stats5">
+                                </tbody>
+                            </table>
+                        </div>
+                        <i>*Les données fournies dans ce document sont basées sur des estimations et restent sujettes à modification jusqu'à leur approbation finale par la direction.</i><br>
+                        <i>Les données prennent en compte la double fonction de commercial et de commercial support, contrairement à l'AS400(source de données) qui ne comptabilise qu'un seul statut.</i>
                     </div>
 
                     <div class="tab-pane " id="inactive" role="tabpanel" aria-labelledby="inactive-tab">
-                        <div class="table-container mn5">
+                        <div class="table-container mn5" id="stats6-container">
+                            @if( auth()->user()->user_role== 1 ||  auth()->user()->user_role== 2 || auth()->user()->user_role==5)
+                            <div class="export-buttons">
+                                <a href="#" id="export6-btn" class="btn btn-success  exports btn-sm">
+                                    <i class="fa fa-file-excel"></i> Exporter en Excel
+                                </a>
+                            </div>
+                            @endif
                             <table class="table table-bordered table-striped mb-40">
                                 <thead>
                                     <tr id="headtable">
@@ -388,11 +444,12 @@
 
 </div>
 
-
-<script>
-
+    <script>
     $(document).ready(function() {
-        $('#export-excel-btn').click(function(e) {
+
+        setupExportButtons();
+
+        $('#export7-btn').click(function(e) {
             e.preventDefault(); // Empêcher la navigation immédiate
 
             var representant = ($('#commercial').find(':selected').data('id'));
@@ -447,7 +504,14 @@
         }
     });
 
-
+    function update_checkbox(checkbox,target){
+        if ($('#'+checkbox).is(':checked')) {
+            $('#'+target).prop('checked',true);
+        }else{
+            $('#'+target).prop('checked',false);
+        }
+        update_stats();
+    }
 
     function update_stats() {
         var _token = $('input[name="_token"]').val();
@@ -671,6 +735,78 @@
 
     }
 
-    //update_stats();
+    function setupExportButtons() {
+        // Commercial par métier
+        $('#export-btn').click(function(e) {
+            e.preventDefault();
+            
+            var representant = $('#commercial').find(':selected').data('id') || $('#commercial').val();
+            var mois = $('#mois').is(':checked') ? 0 : 1;
+            
+            let exportUrl = "{{ route('export.commercial.metier') }}?user=" + representant + "&mois=" + mois;
+            window.location.href = exportUrl;
+        });
+        
+        $('#export2-btn').click(function(e) {
+            e.preventDefault();
+            
+            var representant = $('#commercial').find(':selected').data('id') || $('#commercial').val();
+            var mois = $('#mois').is(':checked') ? 0 : 1;
+            
+            let exportUrl = "{{ route('export.commercial.client') }}?user=" + representant + "&mois=" + mois;
+            window.location.href = exportUrl;
+        });
+/*
+        $('#export-commercial-client12-btn').click(function(e) {
+            e.preventDefault();
+            
+            var representant = $('#commercial').find(':selected').data('id') || $('#commercial').val();
+            var mois = $('#mois').is(':checked') ? 0 : 1;
+            
+            let exportUrl = "{{ route('export.commercial.client12') }}?user=" + representant + "&mois=" + mois;
+            window.location.href = exportUrl;
+        });
+*/
+         $('#export3-btn').click(function(e) {
+            e.preventDefault();
+            
+            var agence = $('#agence').val();
+            var mois = $('#mois').is(':checked') ? 0 : 1;
+            
+            let exportUrl = "{{ route('export.agence.metier') }}?agence=" + agence + "&mois=" + mois;
+            window.location.href = exportUrl;
+        });
+     
+        $('#export4-btn').click(function(e) {
+            e.preventDefault();
+            
+            var agence = $('#agence').val();
+            var mois = $('#mois').is(':checked') ? 0 : 1;
+            
+            let exportUrl = "{{ route('export.agence.client') }}?agence=" + agence + "&mois=" + mois;
+            window.location.href = exportUrl;
+        });
+
+        $('#export5-btn').click(function(e) {
+            e.preventDefault();
+            
+            var representant = $('#commercial').find(':selected').data('id') || $('#commercial').val();
+            var mois = $('#mois').is(':checked') ? 0 : 1;
+            
+            let exportUrl = "{{ route('export.agences') }}?user=" + representant + "&mois=" + mois;
+            window.location.href = exportUrl;
+        });
+     
+        $('#export6-btn').click(function(e) {
+            e.preventDefault();
+            
+            var representant = $('#commercial').find(':selected').data('id') || $('#commercial').val();
+            var mois = $('#mois').is(':checked') ? 0 : 1;
+            
+            let exportUrl = "{{ route('export.clients.inactifs') }}?user=" + representant + "&mois=" + mois;
+            window.location.href = exportUrl;
+        });
+ 
+    }
 </script>
 @endsection
