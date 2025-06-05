@@ -209,7 +209,7 @@
     </div>
 
      <div class="col-lg-6 col-sm-12  mb-4">
-        <h3>Statistiques des agences de rattachement</h3>
+        <h3>Statistiques de mes agences de rattachement</h3>
         <ul class="nav nav-tabs card-header" id="myTab3" role="tablist">
 			<li class="nav-item">
 				<a class="nav-link active" id="client-tab" data-toggle="tab" href="#client" role="tab" aria-controls="client" aria-selected="true"  style="width:150px">{{__('msg.By')}} Client</a>
@@ -227,7 +227,23 @@
                     @endforeach
                 </select>
                 @else
-                    <input type="hidden" id="agence" value="{{ auth()->user()->agence_ident }}"/>
+                    @php 
+                        $agences_id= \DB::table('representant')->where('users_id',auth()->id())->value('agence');
+                        $agences_array = explode(',', $agences_id);
+
+                        //dd($agences_id);
+                    @endphp
+                        @if(count($agences_array)>1)
+                            @php $agences= \App\Models\Agence::whereIn('agence_ident',$agences_array)->get(); @endphp
+                            <select class="form-control" id="agence" onchange="update_stats();" style="max-width:300px">
+                            @foreach ($agences as $agence)
+                            <option @selected(auth()->user()->agence_ident==$agence->agence_ident) value="{{$agence->agence_ident}}"><small>{{$agence->agence_ident}}</small> | {{$agence->agence_lib}}  | <small>{{$agence->adresse1}}</small></option>
+                            @endforeach
+                            </select>
+                        @else
+                            <input type="hidden" id="agence" value="{{ auth()->user()->agence_ident }}"/>
+                        @endif                    
+                    
                 @endif
             </li>
 		</ul>

@@ -1,15 +1,7 @@
 @extends('layouts.back')
 
 @section('content')
-
-<?php
-
-?>
-
-<style>
-
-
-</style>
+ 
 <div class="row">
 
     <div class="col-lg-12 col-sm-12 mb-4">
@@ -35,7 +27,11 @@
                             <th>{{__('msg.Name')}}</th>
                             <th>{{__('msg.Account')}}</th>
                             <th>{{__('msg.Type')}}</th>
-                            <th>{{__('msg.Status')}}</th><!--
+                            <th>{{__('msg.Created by')}}</th>                        
+                            <th>{{__('msg.Agency')}}</th>                        
+                            <th>{{__('msg.Status')}}</th>
+                            <th>Validation</th>
+                            <!--
                             <th>Validée</th>
                             <th>Création</th>
                             <th>Clôture</th>-->
@@ -43,13 +39,23 @@
                     </thead>
                     <tbody>
                         @foreach ($offres as $offre)
-                            @php $class= $offre->statut=='OK' ? 'text-success' : 'text-danger'; @endphp
+                            @php $class= $offre->statut=='OK' ? 'text-success' : 'text-danger';  
+                            $user= \App\Models\User::find($offre->user_id);        
+                            $user_valid= \App\Models\User::find($offre->valide_par);        
+                            $client= \App\Models\CompteClient::find($offre->mycl_id);
+                            if(isset($client)) 
+                                $agence= \App\Models\Agence::find($client->agence_ident); 
+                            @endphp
                             <tr>
                                 <td>{{ $offre->id }}</td>
                                 <td><a href="{{route('offres.show',['id'=>$offre->id])}}">{{ $offre->Nom_offre }}</a></td>
                                 <td>{{ $offre->nom_compte }}</td>
                                 <td>{{ $offre->type }}</td>
-                                <td class="{{$class}}">{{ $offre->statut }}</td><!--
+                                <td>{{ $user->name ?? ''  }} {{ $user->lastname ?? ''  }}</td>
+                                <td>{{ $agence->agence_lib ?? ''  }}</td>                                
+                                <td class="{{$class}}">{{ $offre->statut }}</td>
+                                <td>{{ $user_valid->name ?? ''  }} {{ $user_valid->lastname ?? ''  }}<br>{{ $offre->date_valide }}</td>                                
+                                <!--
                                 <td>{{ $offre->Offre_validee ? 'Oui' : 'Non' }}</td>
                                 <td>{{ date('d/m/Y', strtotime($offre->Date_creation)) }}</td>
                                 <td>@if($offre->Date_cloture!=''){{ date('d/m/Y', strtotime($offre->Date_cloture)) }}@endif</td>-->

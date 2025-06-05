@@ -151,6 +151,10 @@
                   <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                   Activity Log
                 </a> -->
+        <a class="dropdown-item" href="https://mysaamp.com/" target="_blank" >
+          <i class="fas fa-shopping-cart fa-sm fa-fw mr-2 text-gray-400"></i>
+          MySaamp
+        </a>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
           <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
           {{__('msg.Logout')}}

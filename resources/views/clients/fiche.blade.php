@@ -316,7 +316,7 @@
                     <p class="text-muted mb-0">{{__('msg.ProviderRating')}}: {{ $companyInfo['report']['creditScore']['previousCreditRating']['providerValue']['value'] ?? __('msg.NA') }}/{{ $companyInfo['report']['creditScore']['previousCreditRating']['providerValue']['maxValue'] ?? '100' }}</p>
                   </div>
                 </div>
-                <p><strong>{{__('msg.CreditLimit')}}:</strong> {{ $companyInfo['report']['creditScore']['previousCreditRating']['creditLimit']['currency'] ?? '' }} {{ number_format($companyInfo['report']['creditScore']['previousCreditRating']['creditLimit']['value'] ?? 0) }}</p>
+                <p><strong>{{__('msg.CreditLimit')}}:</strong> {{ $companyInfo['report']['creditScore']['previousCreditRating']['creditLimit']['currency'] ?? '' }}  {{number_format( floatval($companyInfo['report']['creditScore']['previousCreditRating']['creditLimit']['value']) ?? 0) }} </p>
                 <p><strong>{{__('msg.LastChangeDate')}}:</strong> {{ isset($companyInfo['report']['creditScore']['latestRatingChangeDate']) ? date('Y-m-d', strtotime($companyInfo['report']['creditScore']['latestRatingChangeDate'])) : __('msg.NA') }}</p>
               </div>
             </div>
@@ -550,7 +550,7 @@
     <a href="{{route('rendezvous.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 mr-3 float-left"><i class="fas fa-calendar-day hidemobile"></i> {{__('msg.Appointment')}}</a><a href="{{route('taches.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 mr-3 float-left"><i class="fas fa-tasks hidemobile"></i> {{__('msg.Tasks')}}</a> <a href="{{route('offres.client_list',['id'=>$client->id])}}" class="btn btn-sm  btn-primary mb-3  float-left"><i class="fas fa-gift hidemobile"></i> {{__('msg.Offers')}}</a>                 <a href="{{route('retours.create',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-comment-alt"></i> {{__('msg.Complaint')}}</a>
         @if($client->etat_id==1) <a href="{{route('compte_client.show',['id'=>$client->id])}}" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-user-edit hidemobile"></i> {{__('msg.Edit')}}</a> @endif @if($client->cl_ident > 0 ) <a  href="#" data-toggle="modal" data-target="#ModalTrading" class="btn btn-sm btn-primary mb-3 ml-3 float-left"><i class="fas fa-coins hidemobile"></i> Trading</a> @endif <a href="{{route('finances',['id'=>$client->id])}}" class="btn btn-sm  btn-primary mb-3 ml-3 float-left"><i class="fas fa-money-bill-wave hidemobile"></i> {{__('msg.Finances')}}</a> @if($client->cl_ident > 0)  @if($complet) <a  href="{{route('compte_client.folder',['id'=>$client->id])}}"  class="btn btn-sm btn-success ml-4"> ✅ Dossier Complet </a> @else <a href="{{route('compte_client.folder',['id'=>$client->id])}}"  class="btn btn-sm btn-secondary ml-4 mb-3"> ❌ Dossier incomplet </a>   @endif   @endif
         
-        <a  href="{{ route('creditsafe.download.report',['id'=>$client->id]) }}" class="bg-primary btn btn-sm mb-2 float-right" ><i class="fas fa-file-pdf"></i>  Rpport PDF</a>
+        <a  href="{{ route('creditsafe.download.report',['id'=>$client->id]) }}" class="bg-primary btn btn-sm mb-2 float-right" ><i class="fas fa-file-pdf"></i>  Rapport PDF</a>
         <button type="button" class="bg-primary btn btn-sm mb-2 mr-2 float-right" data-toggle="modal" data-target="#companyInfoModal"><i class="fas fa-suitcase"></i>  Infos Crédit Safe</button>
         
         @if(  $client->etat_id==1  )
@@ -1047,10 +1047,10 @@
         <div class="card shadow mb-1">
             <ul class="nav nav-tabs card-header" id="myTab2" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="hist-tab" data-toggle="tab" href="#hist" role="tab" aria-controls="hist" aria-selected="true" style="color:#4e73df;width:250px;text-align:center"><i class="fas fa-clock "></i>  Historique des interactions</a>
+                    <a class="nav-link active" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false" style="color:#4e73df;width:250px;text-align:center"><i class="fas fa-calendar "></i>  {{__('msg.Events')}}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false" style="color:#4e73df;width:250px;text-align:center"><i class="fas fa-calendar "></i>  {{__('msg.Events')}}</a>
+                    <a class="nav-link" id="hist-tab" data-toggle="tab" href="#hist" role="tab" aria-controls="hist" aria-selected="true" style="color:#4e73df;width:250px;text-align:center"><i class="fas fa-clock "></i>  Historique des interactions</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="retours-tab" data-toggle="tab" href="#retours" role="tab" aria-controls="retours" aria-selected="false" style="color:#4e73df;width:250px;text-align:center"><i class="fas fa-comment "></i>  {{__('msg.Complaints')}}</a>
@@ -1058,7 +1058,72 @@
             </ul>
 
             <div class="tab-content" style="padding-left:15px;padding-right:15px">
-                <div class="tab-pane active" id="hist" role="tabpanel" aria-labelledby="hist-tab">
+				<div class="tab-pane active" id="events" role="tabpanel" aria-labelledby="events-tab">
+                    <div class="table-container">
+                        <h6 style="width:100%;cursor:pointer" class="black" onclick="$('#prochain').toggle();" >{{__('msg.Coming appointments')}}</h6>
+                        <div id="prochain" style="width:100%">
+                            <table class="table table-bordered table-striped mb-40" style="min-height:120px">
+                                <thead>
+                                    <tr id="headtable">
+                                        <th>Date</th>
+                                        <th>{{__('msg.Title')}}</th>
+                                        @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                        <th>{{__('msg.Del')}}</th>
+                                        @endif
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($Proch_rendezvous as $rv)
+                                    <tr>
+                                        <td>{{date('d/m/Y', strtotime($rv->Started_at))}} {{$rv->heure_debut}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
+                                        @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                            <td>
+                                                <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                                    <span class="fa fa-fw fa-trash-alt"></span>
+                                                </a>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                    @endforeach
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h6  style="width:100%;cursor:pointer" class="black"  onclick="$('#ancien').toggle();" >{{__('msg.Old appointments')}}</h6>
+                        <div id="ancien"  >
+                            <table class="table table-bordered table-striped mb-40" >
+                                <thead>
+                                    <tr id="headtable">
+                                        <th>Date</th>
+                                        <th>{{__('msg.Title')}}</th>
+                                        @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                        <th>{{__('msg.Del')}}</th>
+                                        @endif
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($Anc_rendezvous as $rv)
+                                    <tr>
+                                        <td>{{date('d/m/Y', strtotime($rv->Started_at))}} {{$rv->heure_debut}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
+                                            @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
+                                                <td>
+                                                    <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
+                                                        <span class="fa fa-fw fa-trash-alt"></span>
+                                                    </a>
+                                                </td>
+                                            @endif
+                                    </tr>
+                                    @endforeach
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="hist" role="tabpanel" aria-labelledby="hist-tab">
                     <a class="btn btn-sm btn-primary float-right" target="_blank" href="{{ route('taches.index') }}">Voir plus</a>
                     <div class="table-container">
                         <table class="table table-bordered table-striped mb-40">
@@ -1168,70 +1233,6 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
-                </div>
-                <div class="tab-pane" id="events" role="tabpanel" aria-labelledby="events-tab">
-                    <div class="table-container">
-                        <h6 style="width:100%;cursor:pointer" class="black" onclick="$('#prochain').toggle();" >{{__('msg.Coming appointments')}}</h6>
-                        <div id="prochain" style="width:100%">
-                            <table class="table table-bordered table-striped mb-40" style="min-height:120px">
-                                <thead>
-                                    <tr id="headtable">
-                                        <th>Date</th>
-                                        <th>{{__('msg.Title')}}</th>
-                                        @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                        <th>{{__('msg.Del')}}</th>
-                                        @endif
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($Proch_rendezvous as $rv)
-                                    <tr>
-                                        <td>{{date('d/m/Y', strtotime($rv->Started_at))}} {{$rv->heure_debut}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
-                                        @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                            <td>
-                                                <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
-                                                    <span class="fa fa-fw fa-trash-alt"></span>
-                                                </a>
-                                            </td>
-                                        @endif
-                                    </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <h6  style="width:100%;cursor:pointer" class="black"  onclick="$('#ancien').toggle();" >{{__('msg.Old appointments')}}</h6>
-                        <div id="ancien"  >
-                            <table class="table table-bordered table-striped mb-40" >
-                                <thead>
-                                    <tr id="headtable">
-                                        <th>Date</th>
-                                        <th>{{__('msg.Title')}}</th>
-                                        @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                        <th>{{__('msg.Del')}}</th>
-                                        @endif
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($Anc_rendezvous as $rv)
-                                    <tr>
-                                        <td>{{date('d/m/Y', strtotime($rv->Started_at))}} {{$rv->heure_debut}}</td><td><a href="{{route('rendezvous.show',['id'=>$rv->id])}}">{{$rv->Subject}}</a></td>
-                                            @if(auth()->user()->user_type=='admin' || auth()->user()->user_type=='adv')
-                                                <td>
-                                                    <a title="{{__('msg.Delete')}}" onclick="return confirm('Êtes-vous sûrs ?')" href="{{route('rendezvous.destroy', $rv->id )}}" class="btn btn-danger btn-sm btn-responsive " role="button" data-toggle="tooltip" data-tooltip="tooltip" data-placement="bottom" data-original-title="Supprimer">
-                                                        <span class="fa fa-fw fa-trash-alt"></span>
-                                                    </a>
-                                                </td>
-                                            @endif
-                                    </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-                        </div>
-
                     </div>
                 </div>
                 <div class="tab-pane" id="retours" role="tabpanel" aria-labelledby="retours-tab">

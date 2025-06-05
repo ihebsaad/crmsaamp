@@ -137,7 +137,7 @@ if (Auth::check()) {
         <i class="fas fa-fw fa-search"></i> <span>{{__('msg.Customers')}}</span>
       </a>
     </li>
-    @if(auth()->user()->user_role != 5 )
+    @if(auth()->user()->user_role == 1 )
     <li class="nav-item">
       <a class="nav-link" href="{{route('communications.index')}}">
         <i class="fas fa-fw fa-envelope-open-text"></i> <span>Communications</span>

@@ -16,9 +16,12 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^4.2",
         "maatwebsite/excel": "^3.1",
-        "phpoffice/phpspreadsheet": "1.29.9",
+        "phpoffice/phpspreadsheet": "^1.29.9",
         "phpseclib/bcmath_compat": "^2.0",
-        "spatie/laravel-analytics": "^5.0"
+        "spatie/laravel-analytics": "^5.0",
+        "spatie/laravel-google-calendar": "^3.8",
+        "symfony/mailer": "^6.4",
+        "yajra/laravel-datatables-oracle": "^10.11"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^2.0",
