@@ -385,6 +385,15 @@ class ClientsController extends Controller
 		$clients_ids = DB::table('client')->where('cl_ident','<>','')->pluck('cl_ident');
 		$clients_ids=$clients_ids->unique();
 
+
+		if ($request->has('contact_name') && $request->contact_name) {
+            $query->whereHas('contacts', function ($q)  {
+                $q->where('contact.Nom', 'like', '%' . request('contact_name') . '%')
+				  ->orWhere('contact.Prenom', 'like', '%' . request('contact_name') . '%');
+            });
+		}
+
+
 		if ($request->has('client_id') && $request->client_id) {
 			$query->where('cl_ident', 'like', '%' . $request->client_id . '%');
 		}
@@ -655,7 +664,7 @@ class ClientsController extends Controller
 		
 		// Get tasks from Tache within the last 15 days
 		$tasks = Tache::where('mycl_id', $client_id)
-			->where('DateTache', '>=', $currentDate->subDays(7)) // Filter for the last 15 days
+			->where('DateTache', '>=', $currentDate->subDays(14)) // Filter for the last 15 days
 			->get();
 
 			// Déterminer la date limite selon $last_24
@@ -663,7 +672,7 @@ class ClientsController extends Controller
 				$dateLimit = $currentDate->copy()->subDay()->format('Y-m-d'); // Hier
 				$today = $currentDate->copy()->format('Y-m-d'); // Aujourd'hui
 			} else {
-				$dateLimit = $currentDate->copy()->subDays(7)->format('Y-m-d');
+				$dateLimit = $currentDate->copy()->subDays(14)->format('Y-m-d');
 			}
 		
 			$prisesQuery = DB::table('prise_contact_as400')

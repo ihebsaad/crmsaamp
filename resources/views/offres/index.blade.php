@@ -44,7 +44,7 @@
                             $user_valid= \App\Models\User::find($offre->valide_par);        
                             $client= \App\Models\CompteClient::find($offre->mycl_id);
                             if(isset($client)) 
-                                $agence= \App\Models\Agence::find($client->agence_ident); 
+                                $agence= \App\Models\Agence::find($client->agence_ident);                               
                             @endphp
                             <tr>
                                 <td>{{ $offre->id }}</td>
@@ -54,7 +54,7 @@
                                 <td>{{ $user->name ?? ''  }} {{ $user->lastname ?? ''  }}</td>
                                 <td>{{ $agence->agence_lib ?? ''  }}</td>                                
                                 <td class="{{$class}}">{{ $offre->statut }}</td>
-                                <td>{{ $user_valid->name ?? ''  }} {{ $user_valid->lastname ?? ''  }}<br>{{ $offre->date_valide }}</td>                                
+                                <td>@if(isset($user_valid)) Par {{ $user_valid->name ?? ''  }} {{ $user_valid->lastname ?? ''  }}<br>  @endif </td>                                
                                 <!--
                                 <td>{{ $offre->Offre_validee ? 'Oui' : 'Non' }}</td>
                                 <td>{{ date('d/m/Y', strtotime($offre->Date_creation)) }}</td>

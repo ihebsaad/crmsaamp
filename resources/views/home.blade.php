@@ -57,7 +57,7 @@
         padding-right:15px;
     }
     .nav-link{
-        color:#4e73df;width:250px;text-align:center;font-weight:bold;
+        color:#4e73df;width:125px;text-align:center;font-weight:bold;
     }
     #myTab1 .nav-link i, #myTab2 .nav-link i {
         color: #4e73df !important;
@@ -94,35 +94,7 @@
 <div class="row">
     <input type="hidden" id="user_id" value="{{ auth()->user()->id }}" />
 
-        @if( auth()->user()->user_role > 0 && auth()->user()->user_role < 5 || auth()->user()->user_role==8 || auth()->user()->id==10  /*&&  auth()->id() != 334*/ )
-        <div class="col-lg-2">
-            <span class=" mr-2">{{__('msg.Type')}}:</span>
-            <select class="form-control mb-20" id="type">
-                <option value="Commercial terrain">Commercial terrain</option>
-                <option value="Contact client siège">Contact client siège</option>
-                <option value="Collecteur Externe">Collecteur Externe</option>
-            </select>
-        </div>
-        <div class="col-lg-2">
-            <span class=" mr-2">{{__('msg.Commercial')}}:</span>
-            <select class="form-control mb-20" id="commercial" onchange="update_stats();" style="max-width:300px">
-                @foreach ($representants as $rp)
-                <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}" data-type="{{$rp->type}}" >{{$rp->nom}}  {{$rp->prenom}}</option>
-                @endforeach
-            </select>
-        </div>
-
-        @elseif( false /*auth()->id() == 334*/ )
-        <span class=" mt-4 mr-2">{{__('msg.Commercial')}}:</span>
-            <select class="form-control mb-20 mt-3" id="commercial" onchange="update_stats();" style="max-width:300px">
-                <option  value="334" data-id="400"  data-type="Commercial terrain" >Stéphane Devès</option>
-				<option   value="141" data-id="40"  data-type="Commercial terrain" >Patricia Delmas</option>
-            </select>
-        @else
-            <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}">
-        @endif
-
-    <div class="col-lg-3 mt-4">
+    <div class="col-lg-12 mt-4 text-right">
         <input id="mois" type="checkbox" value="1" onchange="update_checkbox('mois','mois_alt');">
         <label class="mt-2" for="mois">{{__('msg.Show full years')}}</label>
         </input>
@@ -139,6 +111,35 @@
 			<li class="nav-item">
 				<a class="nav-link" id="jobs-tab" data-toggle="tab" href="#jobs" role="tab" aria-controls="jobs" aria-selected="false" style="">{{__('msg.By')}} {{__('msg.Job')}}</a>
 			</li>
+        @if( auth()->user()->user_role > 0 && auth()->user()->user_role < 5 || auth()->user()->user_role==8 || auth()->user()->id==10  /*&&  auth()->id() != 334*/ )
+        <li class="nav-item">
+            <span class="ml-2 mr-2">{{__('msg.Type')}}:</span>
+            <select class="form-control" id="type" style="max-width:160px">
+                <option value="Commercial terrain">Commercial terrain</option>
+                <option value="Contact client siège">Contact client siège</option>
+                <option value="Collecteur Externe">Collecteur Externe</option>
+            </select>
+        </li>
+        <li class="nav-item">
+            <span class="ml-2 mr-2">{{__('msg.Commercial')}}:</span>
+            <select class="form-control" id="commercial" onchange="update_stats();" style="max-width:160px">
+                @foreach ($representants as $rp)
+                <option @selected(auth()->user()->id==$rp->id) value="{{$rp->users_id}}" data-id="{{$rp->id}}" data-type="{{$rp->type}}" >{{$rp->nom}}  {{$rp->prenom}}</option>
+                @endforeach
+            </select>
+        </li>
+
+        @elseif( false /*auth()->id() == 334*/ )
+        <span class=" mt-4 ml-2 mr-2">{{__('msg.Commercial')}}:</span>
+            <select class="form-control" id="commercial" onchange="update_stats();" style="max-width:150px">
+                <option  value="334" data-id="400"  data-type="Commercial terrain" >Stéphane Devès</option>
+				<option   value="141" data-id="40"  data-type="Commercial terrain" >Patricia Delmas</option>
+            </select>
+        @else
+            <input type="hidden" id="commercial" value="{{ \DB::table('representant')->where('users_id',auth()->user()->id)->first()->id ?? 0 }}">
+        @endif
+
+
 		</ul>
 		<div class="tab-content" style=" ">
     		<div class="tab-pane active" id="clients" role="tabpanel" aria-labelledby="clients-tab">
@@ -432,6 +433,9 @@
                                 </a>
                             </div>
                             @endif
+                            <div class="col-lg-4">
+                                <span class=" mr-2">{{__('msg.Inactive since')}} :</span><input type="number" class="form-control mb-20" id="nb_mois" onchange="update_stats();" style="max-width:70px" value="2" /> {{__('msg.Month')}}
+                            </div>
                             <table class="table table-bordered table-striped mb-40">
                                 <thead>
                                     <tr id="headtable">

@@ -174,6 +174,8 @@ Route::put('/offres/{id}', [OffresController::class, 'update'])->name('offres.up
 Route::get('/offres/create/{id}', [OffresController::class, 'create'])->name('offres.create');
 Route::get('/offres/clientlist/{id}', [OffresController::class, 'client_list'])->name('offres.client_list');
 Route::get('/offres/list', [OffresController::class, 'index'])->name('offres.index');
+Route::get('/offres/liste', [OffresController::class, 'liste'])->name('offres.liste');
+Route::get('/offres/getdata', [OffresController::class, 'getData'])->name('offres.getdata');
 Route::get('/offres/edit_file/{item}/{id}/{name}', 'App\Http\Controllers\OffresController@edit_file');
 Route::post('/offres/editFile', 'App\Http\Controllers\OffresController@editFile')->name('offres.editFile');
 Route::get('/offres/destroy/{id}',[OffresController::class,'destroy'])->name('offres.destroy');

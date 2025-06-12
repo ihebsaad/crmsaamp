@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 #use DB;
 use App\Models\Client;
 use App\Models\CompteClient;
-use App\Models\RetourClient;
+use App\Models\Agence;
 use App\Models\Contact;
 use App\Models\Offre;
 use App\Models\User;
@@ -16,6 +16,7 @@ use App\Services\GEDService;
 use App\Services\SendMail;
 use App\Models\File;
 use App\Models\Consultation;
+use Yajra\DataTables\Facades\DataTables;
 
 
 class OffresController extends Controller
@@ -44,6 +45,142 @@ class OffresController extends Controller
         Consultation::create(['user' => auth()->id(),'app' => 2,'page' => "liste des offres"]);
 		return view('offres.index',compact('offres'));
 	}
+
+
+	
+	    public function getData(Request $request)
+    {
+        if ($request->ajax()) {
+
+			
+            $query = Offre::with(['user', 'validator', 'client.agence'])
+                ->select('CRM_OffrePrix.*');
+			
+			// Responsable d'agence
+			if(auth()->user()->user_role == 4){
+                $query->whereHas('client', function ($q)  {
+                    $q->where('agence_ident', auth()->user()->agence_ident);
+                });
+			}
+			// ADV
+			if(auth()->user()->user_role == 6){
+                $query->whereHas('client', function ($q)  {
+                    $q->where('agence_ident', auth()->user()->agence_ident)
+					->orWhere('ADV', trim(auth()->user()->name.' '.auth()->user()->lastname));
+                });
+			}
+
+
+			// Commercial
+			if(auth()->user()->user_role == 7){
+
+				$Rep = DB::table('representant')->where('users_id',auth()->id())->first();
+				// créé par lui
+				$query->where('user_id', auth()->id());
+				// et pour ses clients
+                $query->whereHas('client', function ($q) use ($Rep) {
+                    $q->where('commercial', $Rep->id)
+					->orWhere('commercial_support', $Rep->id);
+                });
+			}
+			
+
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('nom_offre', function ($offre) {
+                    return '<a href="' . route('offres.show', ['id' => $offre->id]) . '" class="text-primary font-weight-bold">' . $offre->Nom_offre . '</a>';
+                })
+                ->addColumn('created_by', function ($offre) {
+                    return $offre->user ? $offre->user->name . ' ' . $offre->user->lastname : '';
+                })
+                ->addColumn('agence', function ($offre) {
+                    return $offre->client && $offre->client->agence ? $offre->client->agence->agence_lib : '';
+                })
+                ->addColumn('status', function ($offre) {
+                    $class = $offre->statut == 'OK' ? 'badge-success' : 'badge-danger';
+                    return '<span class="badge ' . $class . '">' . $offre->statut . '</span>';
+                })
+			->addColumn('validation', function ($offre) {
+				$validatorName = '';
+				if ($offre->validator) {
+					$validatorName = $offre->validator->name . ' ' . $offre->validator->lastname;
+				}
+				
+				$result = e($validatorName);
+				if ($offre->date_valide) {
+					$result .= '<br><small class="text-muted">' . e($offre->date_valide) . '</small>';
+				}
+				
+				return $result;
+			})
+                ->addColumn('is_validated', function ($offre) {
+                    return $offre->Offre_validee ? 'Oui' : 'Non';
+                })
+                ->addColumn('commentaire', function ($offre) {
+                    return $offre->commentaire ;
+                })			
+				/*
+                ->addColumn('actions', function ($offre) {
+                    return '<div class="btn-group" role="group">
+                        <a href="' . route('offres.show', $offre->id) . '" class="btn btn-sm btn-outline-primary" title="Voir">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="' . route('offres.edit', $offre->id) . '" class="btn btn-sm btn-outline-warning" title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </div>';
+                })*/
+                ->filter(function ($query) use ($request) {
+                    // Filtre par validation
+                    if ($request->has('validation_filter') && $request->validation_filter != '') {
+                        if ($request->validation_filter == 'validated') {
+                            $query->where('date_valide','<>','');
+                        } elseif ($request->validation_filter == 'not_validated') {
+                            $query->whereNull('date_valide');
+                        }
+                    }
+
+                    // Filtre par agence
+                    if ($request->has('agence_filter') && $request->agence_filter != '') {
+                        $query->whereHas('client', function ($q) use ($request) {
+                            $q->where('agence_ident', $request->agence_filter);
+                        });
+                    }
+
+                    // Filtre par créateur
+                    if ($request->has('user_filter') && $request->user_filter != '') {
+                        $query->where('user_id', $request->user_filter);
+                    }
+
+                    // Filtre par statut
+                    if ($request->has('status_filter')  && $request->status_filter != '' ) {
+						if($request->status_filter=='vide')
+                        	$query->whereNull('statut');
+						else
+                        	$query->where('statut', $request->status_filter);
+                    }
+                })
+                ->rawColumns(['nom_offre', 'status', 'validation', 'actions'])
+                ->make(true);
+			
+			}
+    }
+	    public function liste()
+    {
+		$user=auth()->user();
+        // Données pour les filtres
+        $agences = Agence::orderBy('agence_lib')->get();
+        $users = User::where('email','like','%@saamp.com')->orderBy('name')->get();
+        $statuts = Offre::distinct()->pluck('statut')->filter();
+
+        Consultation::create([
+            'user' => auth()->id(),
+            'app' => 2,
+            'page' => "liste des offres"
+        ]);
+
+        return view('offres.liste', compact('agences', 'users', 'statuts','user'));
+    }
 
 	public function test()
 	{
@@ -221,7 +358,7 @@ class OffresController extends Controller
 			$offre->statut= $request->get('statut');
 			if($offre->statut=='OK'){
 				$offre->valide_par=auth()->user()->id;
-				$offre->date_valide=date('d/m/Y').' à '.date('H:i');
+				$offre->date_valide=date('d/m/Y').' - '.date('H:i');
 			}
 			$offre->save();
 

@@ -44,7 +44,14 @@ class DashboardController extends Controller
 			$now = Carbon::now();
 			$representants = DB::table("representant")->get();
 			$users = DB::table("users")->where('username', 'like', '%@saamp.com')->orderBy('lastname', 'asc')->get();
+			$user_list = DB::table("users")
+				//->where('username', 'like', '%@saamp.com')
+				->pluck(DB::raw("CONCAT(name, ' ', lastname)"), 'id')
+				->toArray();
+			$metals=array('1'=>'Or','2'=>'Argent','3'=>'Platine','4'=>'Palladium','5'=>'Rhodium','6'=>'Autres');
 			$prospects = CompteClient::where('agence_ident', auth()->user()->agence_ident)->where('etat_id', 1)->get();
+			$transactions = DB::table("trading_operation_web")->orderBy('trading_op_id_n', 'desc')->where('cl_ident','<>',15267)->limit(200)->get();
+			$types = DB::table("trading_type_operation")->pluck('lib_court_ope', 'type_ope_id');
 
 			$rendezvous = RendezVous::where('Started_at', '>=', $now)
 				->orderBy('Started_at', 'asc')
@@ -124,7 +131,7 @@ class DashboardController extends Controller
 			if(auth()->id()==1) 
 				return view('dashboard.adminhome2', compact(	'retours','rendezvous','taches','representants','offres','userToken','users','stats','stats_mois','prospects','totaux_clients','stats_spot'));
 			else */
-				return view('dashboard.adminhome', compact(	'retours','rendezvous','taches','representants','offres','userToken','users','stats','stats_mois','prospects','totaux_clients','stats_spot'));
+				return view('dashboard.adminhome', compact(	'retours','rendezvous','taches','representants','offres','userToken','users','stats','stats_mois','prospects','totaux_clients','stats_spot','transactions','user_list','metals','types'));
 		} else {
 			$rendezvous = RendezVous::where('Attribue_a', auth()->user()->name . ' ' . auth()->user()->lastname)
 				->orWhere('user_id', auth()->user()->id)

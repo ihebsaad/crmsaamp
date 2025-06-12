@@ -23,4 +23,9 @@ class Contact extends Model
             Contact::where('id', null)->limit(1)->update(['id' => $i]);
         }
     }
+
+        public function client()
+    {
+        return $this->belongsTo(CompteClient::class, 'mycl_ident');
+    }
 }

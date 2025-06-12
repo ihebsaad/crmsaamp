@@ -24,4 +24,19 @@ class CompteClient extends Model
             CompteClient::where('id', null)->limit(1)->update(['id' => $i]);
         }
     }
+    
+    public function agence()
+    {
+        return $this->belongsTo(Agence::class, 'agence_ident');
+    }
+
+    public function offres()
+    {
+        return $this->hasMany(Offre::class, 'mycl_id');
+    }
+
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class, 'mycl_ident');
+    }
 }

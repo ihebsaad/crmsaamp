@@ -316,8 +316,12 @@
                     <p class="text-muted mb-0">{{__('msg.ProviderRating')}}: {{ $companyInfo['report']['creditScore']['previousCreditRating']['providerValue']['value'] ?? __('msg.NA') }}/{{ $companyInfo['report']['creditScore']['previousCreditRating']['providerValue']['maxValue'] ?? '100' }}</p>
                   </div>
                 </div>
+                @if(isset($companyInfo['report']['creditScore']['previousCreditRating']['creditLimit']))
                 <p><strong>{{__('msg.CreditLimit')}}:</strong> {{ $companyInfo['report']['creditScore']['previousCreditRating']['creditLimit']['currency'] ?? '' }}  {{number_format( floatval($companyInfo['report']['creditScore']['previousCreditRating']['creditLimit']['value']) ?? 0) }} </p>
+                @endif
+                @if(isset($companyInfo['report']['creditScore']['latestRatingChangeDate']))
                 <p><strong>{{__('msg.LastChangeDate')}}:</strong> {{ isset($companyInfo['report']['creditScore']['latestRatingChangeDate']) ? date('Y-m-d', strtotime($companyInfo['report']['creditScore']['latestRatingChangeDate'])) : __('msg.NA') }}</p>
+                @endif
               </div>
             </div>
           </div>

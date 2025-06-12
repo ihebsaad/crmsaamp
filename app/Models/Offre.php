@@ -25,6 +25,30 @@ class Offre extends Model
         }
     }
 
+    protected $casts = [
+        'Offre_validee' => 'boolean',
+        'Date_creation' => 'datetime',
+        'Date_cloture' => 'datetime',
+        //'date_valide' => 'datetime'
+    ];
+
+    // Relation avec l'utilisateur créateur
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Relation avec l'utilisateur validateur
+    public function validator()
+    {
+        return $this->belongsTo(User::class, 'valide_par');
+    }
+
+    // Relation avec le client
+    public function client()
+    {
+        return $this->belongsTo(CompteClient::class, 'mycl_id');
+    }
 
 }
 

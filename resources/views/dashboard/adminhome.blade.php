@@ -12,6 +12,9 @@
 			user-select: none;
 			cursor: default;
 		}
+		.bold{
+			font-weight: bold!important;
+		}
 		.head1{background-color:transparent!important;border:none;}
 		.head2 th{
 			color:white;
@@ -144,7 +147,7 @@
 			padding-right:15px;
 		}
 		.nav-link{
-			color:#4e73df;width:250px;text-align:center;font-weight:bold;
+			color:#4e73df;width:225px;text-align:center;font-weight:bold;
 		}
 		#myTab1 .nav-link i {
 			color: #ed1b24 !important;
@@ -420,6 +423,9 @@
 											<a class="nav-link active" id="stats-tab" data-toggle="tab" href="#stats" role="tab" aria-controls="stats" aria-selected="true" style="">{{__('msg.Statistics')}} SPOT MySaamp</a>
 										</li>
 										<li class="nav-item">
+											<a class="nav-link" id="trans-tab" data-toggle="tab" href="#trans" role="tab" aria-controls="trans" aria-selected="false" style="">Dernières transactions</a>
+										</li>										
+										<li class="nav-item">
 											<a class="nav-link" id="roles-tab" data-toggle="tab" href="#roles" role="tab" aria-controls="roles" aria-selected="false" style="">Gestion des rôles</a>
 										</li>
 									</ul>
@@ -475,6 +481,31 @@
 														<td class="periode">{{ $s->periode }}</td><td>{{$s->nb_achat_client}}</td><td>{{$s->poids_achat_client}}</td><td>{{$s->nb_vente_client}}</td><td>{{$s->poids_vente_client}}</td><td class="interne">{{$s->nb_achat_interne}}</td><td>{{$s->poids_achat_interne}}</td><td>{{$s->nb_vente_interne}}</td><td>{{$s->poids_vente_interne}}</td></td>
 													</tr>
 													@endforeach
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="tab-pane " id="trans" role="tabpanel" aria-labelledby="trans-tab">
+											<div class="table-container" style="height:420px;max-height:550px;">
+												<table class="table table-striped" style="width:100%!important;">
+													<thead style="background-color:lightgray;color:white">
+														<tr><th>Client</th><th>Type</th><th>Sens</th><th>Métal</th><th>Date</th><th>Poids</th><th>Cours</th><th>ExID</th><th>Par</th></tr>
+													</thead>
+													<tbody>
+														@foreach($transactions as $trans)
+														@php $sens=ucfirst($trans->sensclient); @endphp
+															<tr>
+																<td>{{$trans->cl_ident}}</td>
+																<td>{{$types[$trans->type_ope]}}</td>
+																<td @if($sens=='Achat') class="bold" @endif>{{$sens}}</td>
+																<td>{{$metals[$trans->metal_id] ?? ''}}</td>
+																<td>{{date('d/m/Y H:i', strtotime($trans->date_ordre))}}</td>
+																<td>{{$trans->poids}} g</td>
+																<td>{{$trans->cours}}</td>
+																<td><small>{{$trans->EXID}}</small></td>
+																<td><small>{{$user_list[$trans->user_id] ?? \App\Models\User::find($trans->user_id)->email }}</small></td>
+															</tr>
+															@endforeach
 													</tbody>
 												</table>
 											</div>

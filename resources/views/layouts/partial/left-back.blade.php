@@ -165,6 +165,11 @@ if (Auth::check()) {
     </li>
     @endif
     <li class="nav-item">
+      <a class="nav-link" href="{{route('offres.liste')}}">
+        <i class="fas fa-fw fa-gift"></i> <span>{{__('msg.Offers')}}</span>
+      </a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" href="{{route('retours.list')}}">
         <i class="fas fa-fw fa-comment-alt"></i> <span>{{__('msg.Complaints')}}</span>
       </a>

@@ -39,10 +39,12 @@ class UserLoginController extends Controller
 
     public function pages($id)
     {
+        $currentDate = now();
+        $date  = $currentDate->copy()->subDays(14)->format('Y-m-d');
         $user=User::find($id);
         $pages = Activity::where('causer_id', $id)
             ->orderBy('id','desc')
-            ->limit(1000)
+            ->where('created_at','>=',$date)
             ->get();
 
         return view('activities.pages', compact('pages','user'));
@@ -50,7 +52,10 @@ class UserLoginController extends Controller
 
     public function consultations()
     {
-        $consultations = Consultation::where('app',2)->orderBy('id', 'desc')->limit(2000)->get();
+        $currentDate = now();
+        $date  = $currentDate->copy()->subDays(14)->format('Y-m-d');
+ 
+        $consultations = Consultation::where('app',2)->orderBy('id', 'desc')->where('created_at','>=',$date)->get();
         return view('activities.consultations', compact('consultations'));
     }
 
