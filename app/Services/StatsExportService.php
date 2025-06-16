@@ -10,6 +10,7 @@ use App\Exports\StatsAgenceClientExport;
 use App\Exports\StatsAgencesExport;
 use App\Exports\StatsClientsInactifsExport;
 use App\Exports\StatsMetalExport;
+use App\Exports\TransactionsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StatsExportService
@@ -181,6 +182,19 @@ class StatsExportService
             'statistiques_metaux_' . $type . '_' . date('Y-m-d') . '.xlsx'
         );
     }
+
+
+        public function exportTransactions( )
+    {
+ 
+ 		$result = DB::table("trading_operation_web")->orderBy('trading_op_id_n', 'desc')->where('cl_ident','<>',15267)->limit(1000)->get()->toArray();
+
+        return Excel::download(
+            new TransactionsExport($result),
+            'transactions_' . date('Y-m-d') . '.xlsx'
+        );
+    }
+
 /*
     public function exportMetalStats($type, $metals = [])
     {

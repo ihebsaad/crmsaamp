@@ -88,7 +88,11 @@ class OffresController extends Controller
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('nom_offre', function ($offre) {
-                    return '<a href="' . route('offres.show', ['id' => $offre->id]) . '" class="text-primary font-weight-bold">' . $offre->Nom_offre . '</a>';
+					$fichiers = File::where('parent', 'offres')->where('parent_id', $offre->id)->count();
+					if(  $offre->fichier!= null){
+						$fichiers++;
+					}
+                    return '<a href="' . route('offres.show', ['id' => $offre->id]) . '" class="text-primary font-weight-bold">' . $offre->Nom_offre . '('.$fichiers.')</a>';
                 })
                 ->addColumn('created_by', function ($offre) {
                     return $offre->user ? $offre->user->name . ' ' . $offre->user->lastname : '';
@@ -275,37 +279,25 @@ class OffresController extends Controller
 		$client=Client::find($offre->mycl_id);
 		$user=User::find($offre->user_id);
 		$agence=DB::table('agence')->where('agence_ident',$client->agence_ident)->first();
-		$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est créée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+		//$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est créée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+		
+		self::sendOfferMail($user, $client, $agence, $offre,'creation');
 
+		// validation auto TG
 		if($offre->type=='TG' || auth()->id()==35)
 		{
+
+			$offre->statut='OK';
+			$offre->save();
+			/*
 			SendMail::send($user->email,'Offre Créée',$contenu);
 			if(isset($agence))
 				SendMail::send(trim($agence->mail),'Offre Créée',$contenu);
 
-			$offre->statut='OK';
-			$offre->save();
+				*/
 		}
-
-		if($offre->type=='Hors TG - Affinage')		//user_id 10
-		{
-			SendMail::send(env('Email_sebastien'),"Demande de validation de l'offre ",$contenu);
-			SendMail::send(env('Email_said'),"Demande de validation de l'offre ",$contenu);
-			SendMail::send(env('Email_elisabeth'),"Demande de validation de l'offre ",$contenu);
-
-			//$offre->statut='OK';
-			//$offre->save();
-		}
-
-		if($offre->type=='Hors TG - Apprêts/Bij/DP')		//user_id 39
-		{
-			SendMail::send(env('Email_christelle'),"Demande de validation de l'offre",$contenu);
-			SendMail::send(env('Email_said'),"Demande de validation de l'offre ",$contenu);
-			SendMail::send(env('Email_elisabeth'),"Demande de validation de l'offre ",$contenu);
-
-			//$offre->statut='OK';
-			//$offre->save();
-		}
+ 
+	
 
 		if($request->input('cl_id') > 0)//{
 			$result=GEDService::OffreDocs($request->input('cl_id'),$offre->id,$request->input('mycl_id'));
@@ -335,6 +327,84 @@ class OffresController extends Controller
 
 
 
+	public function sendOfferMail($user, $client, $agence, $offre ,$mail)
+	{
+		if($mail=='creation')
+ 		{ 
+			$contenu="Bonjour,<br><br>Une nouvelle offre de prix est créée<br><br>";
+			$objet="Une nouvelle offre de prix est créée";
+		}
+		elseif($mail=='validation')
+		{
+			$contenu="Bonjour,<br><br>L'offre de prix N° $offre->id est validée<br><br>";
+			$objet="L'offre de prix N° $offre->id est validée";
+		}
+			elseif($mail=='refaire')
+		{
+			$contenu="Bonjour,<br><br>L'offre de prix N° $offre->id est à refaire<br><br>";
+			$objet="L'offre de prix N° $offre->id est à refaire";
+		}
+		$contenu.="<b>Nom:</b> $offre->Nom_offre <br>";
+		$contenu.="<b>Par:</b> $user->name $user->lastname <br>";		
+		$contenu.="<b>Type:</b> $offre->type <br>";		
+		$contenu.="<b>Client:</b> $offre->nom_compte <br>";
+		$contenu.="<b>Description:</b> $offre->Description <br>";
+
+		if($offre->commentaire!='')
+			$contenu.="<b>Commentaire:</b> $offre->commentaire <br>";
+ 
+		if($offre->type=='Hors TG - Affinage' && $mail=='creation')
+			$contenu.="L'offre est en attente de validation par Mr Sébastien Canesson<br>";
+		elseif($offre->type=='Hors TG - Apprêts/Bij/DP'  && $mail=='creation')
+			$contenu.="L'offre est en attente de validation par Mme Christelle Correia<br>";
+
+		$contenu.="Vous pouvez accéder à l'offre en cliquant sur le lien suivant :<br>";
+		$contenu.="<a href='https://crm.mysaamp.com/offres/show/$offre->id' target='_blank'>Voir l'offre </a>";		
+		$contenu.="<br><br><i>Cordialement<br>";
+		$contenu.="L'équipe CRM SAAMP</i>";
+
+ 		//Cet e-mail est envoyé à la personne qui a créé l'offre, au responsable d'agence du client, à la direction (Jean-Luc Escard, Elisabeth Escard, Said El Marouani), à nous les administrateurs, ainsi qu'au commercial principal de ce client s'il est différent de celui qui a créé l'offre, et bien sûr à la personne qui doit valider l'offre (Sébastien ou Christelle).
+		
+		// direction
+		SendMail::send(env('Email_jean'),$objet,$contenu);
+		SendMail::send(env('Email_elisabeth'),$objet,$contenu);
+		SendMail::send(env('Email_said'),$objet,$contenu);
+		// admins
+		SendMail::send(env('Admin_iheb'),$objet,$contenu);
+		SendMail::send(env('Admin_remy'),$objet,$contenu);
+		SendMail::send(env('Admin_reyad'),$objet,$contenu);
+
+		if($offre->type=='Hors TG - Affinage')		//user_id 10 sebastien
+		{
+			SendMail::send(env('Email_sebastien'),$objet,$contenu);
+		}
+
+		if($offre->type=='Hors TG - Apprêts/Bij/DP')		//user_id 39 christelle
+		{
+			SendMail::send(env('Email_christelle'),$objet,$contenu);
+		}	
+
+		// agence responsable
+		if(isset($agence) && isset($agence->email_responsable) && $agence->email_responsable!='' && $agence->email_responsable!=env('Email_sebastien') && $agence->email_responsable!=env('Email_said')) 
+		{
+			SendMail::send(trim($agence->email_responsable),$objet,$contenu);
+		}
+
+		//commercial
+		$rep  = DB::table('representant')->find($client->commercial);
+		$user_comm =  User::find($rep->users_id);
+
+		// si cerateur != commercial
+		if($offre->user_id!=$user_comm->id)
+		{
+			SendMail::send(trim($user_comm->email),$objet,$contenu);
+		}
+
+		//ceateur
+		SendMail::send(trim($user->email),$objet,$contenu);
+
+	}
+
 	public function update(Request $request, $id)
     {
 		/*
@@ -351,6 +421,9 @@ class OffresController extends Controller
 		if($offre->user_id > 0)
 			$user=User::find($offre->user_id);
 
+		$offre->date_relance=$request->date_relance;
+		$offre->commentaire=$request->commentaire;
+		$offre->save();
 
 		if($offre->type=='Hors TG - Affinage' && auth()->user()->id==10)
 		{
@@ -363,17 +436,22 @@ class OffresController extends Controller
 			$offre->save();
 
 			if($request->statut=='OK'){
-				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est validée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				/*$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est validée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
 				SendMail::send($user->email,'Offre validée',$contenu);
 				if(isset($agence))
 					SendMail::send(trim($agence->mail),'Offre validée',$contenu);
+*/
+				self::sendOfferMail($user, $client, $agence, $offre,'validation');
 
 			}
 			elseif($request->statut=='KO'){
-				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est à refaire.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
+				/*$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est à refaire.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
 				SendMail::send($user->email,'Offre à refaire',$contenu);
 				if(isset($agence))
 					SendMail::send(trim($agence->mail),'Offre à refaire',$contenu);
+					*/
+				self::sendOfferMail($user, $client, $agence, $offre,'refaire');
+
 			}
 
 		}
@@ -387,18 +465,25 @@ class OffresController extends Controller
 			}
 			$offre->save();
 
-			if($request->statut=='OK'){
+			if($request->statut=='OK'){/*
 				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est validée.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
 				SendMail::send($user->email,'Offre validée',$contenu);
 				if(isset($agence))
 					SendMail::send(trim($agence->mail),'Offre validée',$contenu);
+				*/
+				self::sendOfferMail($user, $client, $agence, $offre,'validation');
+
 
 			}
 			elseif($request->statut=='KO'){
+				/*
 				$contenu="Bonjour,<br><br> l'offre N° $offre->id de type $offre->type est à refaire.<br><br><b>Client:</b> $offre->nom_compte <br><b>Nom:</b> $offre->Nom_offre<br><b>Description:</b> $offre->Description   <br><br><i>l'équipe SAAMP</i>";
 				SendMail::send($user->email,'Offre à refaire',$contenu);
 				if(isset($agence))
 					SendMail::send(trim($agence->mail),'Offre à refaire',$contenu);
+*/
+				self::sendOfferMail($user, $client, $agence, $offre,'refaire');
+
 			}
 
 		}
@@ -412,9 +497,6 @@ class OffresController extends Controller
 			$offre->save();
 		}
 
-		$offre->date_relance=$request->date_relance;
-		$offre->commentaire=$request->commentaire;
-		$offre->save();
 
 		//$offre->update($request->all());
 
@@ -558,4 +640,25 @@ class OffresController extends Controller
 		return 1;
 	}
 
+/*
+	public static function countOfrresGed(){
+		$apiUrl = "https://ged.maileva.com/api/folder/name/DOCUMENTS%20OFFRES%20DE%20PRIX";
+
+		$response = GEDService::curlExecute($apiUrl);
+
+		$headers = array(
+			'Content-Type: application/json',
+			'Auth-Token: ' . GEDService::getToken()
+		);
+		// Décodage de la réponse JSON
+		$data = json_decode($response, true);
+
+		if ($data !== null && $data['success'] === true) {
+			return 1;
+		}else
+		{
+			return 0;
+		}
+	}
+*/
 } // end class

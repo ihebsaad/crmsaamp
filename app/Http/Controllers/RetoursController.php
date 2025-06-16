@@ -316,7 +316,7 @@ class RetoursController extends Controller
 
 			self::send_mail($retour, env('Admin_iheb'),$status);
 
-			self::send_mail($retour, env('Admin_Email'),$status);
+			self::send_mail($retour, env('Admin_Remy'),$status);
 			self::send_mail($retour, env('Admin_reyad'),$status);
 
 			// Direction

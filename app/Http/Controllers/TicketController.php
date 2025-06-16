@@ -100,7 +100,7 @@ class TicketController extends Controller
 			}
 		}
         $contenu="Bonjour,<br><br>Nouvelle demande d'assistance:<br> <a href='https://crm.mysaamp.com/tickets/$ticket->id' target='_blank'>N° $ticket->id </a><br><br><b>Sujet:</b><br><br> $ticket->subject <br><b>Description:</b><br><br> $ticket->description  .<br><br><b>Par:</b><br> $user_name <br><br><i>CRM SAAMP</i>";
-        SendMail::send(env('Admin_Email'),"Demande d'assistance",$contenu);
+        SendMail::send(env('Admin_Remy'),"Demande d'assistance",$contenu);
         SendMail::send(env('Admin_iheb'),"Demande d'assistance",$contenu);
         SendMail::send(env('Admin_reyad'),"Demande d'assistance",$contenu);
 
@@ -155,7 +155,7 @@ class TicketController extends Controller
         if($status1 != $status2){
             $contenu="La demande d'assistance <a href='https://crm.mysaamp.com/tickets/$ticket->id' target='_blank'>N° $ticket->id</a> est passée à :   $ticket->status   par ".auth()->user()->name." ". auth()->user()->lastname .".<br><br><i>CRM SAAMP</i>" ;
 
-            SendMail::send(env('Admin_Email'),"Demande d'assistance $ticket->id => $ticket->status ",$contenu);
+            SendMail::send(env('Admin_Remy'),"Demande d'assistance $ticket->id => $ticket->status ",$contenu);
             SendMail::send(env('Admin_iheb'),"Demande d'assistance $ticket->id => $ticket->status ",$contenu);
             SendMail::send(env('Admin_reyad'),"Demande d'assistance $ticket->id => $ticket->status ",$contenu);
 

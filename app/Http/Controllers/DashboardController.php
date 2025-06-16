@@ -732,4 +732,11 @@ class DashboardController extends Controller
 		// Utilisez votre service d'exportation
 		return app(StatsExportService::class)->exportMetalStats($type, $metals);
 	}
+
+	
+	public function exportTransactions(Request $request)
+	{
+ 		// Utilisez votre service d'exportation
+		return app(StatsExportService::class)->exportTransactions();
+	}
 } // end class

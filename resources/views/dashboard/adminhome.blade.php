@@ -459,13 +459,11 @@
 														<label class="form-check-label" for="metal_palladium">PALLADIUM</label>
 													</div>
 												</div>
-												@if(auth()->id() == 1)
 												<div class="col-md-4 text-right">
 													<a href="#" id="export-stats-btn" class="btn btn-success btn-sm" style="background-color:#1cc88a" >
 														<i class="fa fa-file-excel"></i> Exporter en Excel
 													</a>
 												</div>
-												@endif
 											</div>
 											<div class="table-container" id="tabstats" style="max-height:360px;">
 												<table class="table table-striped" style="width:90%">
@@ -486,6 +484,11 @@
 											</div>
 										</div>
 										<div class="tab-pane " id="trans" role="tabpanel" aria-labelledby="trans-tab">
+											<div class="col-md-12 text-right">
+												<a href="#" id="export-transactions-btn" class="btn btn-success btn-sm" style="background-color:#1cc88a;" >
+													<i class="fa fa-file-excel"></i> Exporter en Excel
+												</a>
+											</div>
 											<div class="table-container" style="height:420px;max-height:550px;">
 												<table class="table table-striped" style="width:100%!important;">
 													<thead style="background-color:lightgray;color:white">
@@ -922,6 +925,16 @@
 				// Joindre tous les métaux en une seule chaîne séparée par des virgules
 				exportUrl += "&metals=" + metals.join(',');
 			}
+
+			// Rediriger vers l'URL d'exportation
+			window.location.href = exportUrl;
+		});
+
+		$('#export-transactions-btn').click(function(e) {
+			e.preventDefault();
+
+ 			// Construire l'URL d'exportation
+			let exportUrl = "{{ route('export.transactions') }}";
 
 			// Rediriger vers l'URL d'exportation
 			window.location.href = exportUrl;

@@ -51,7 +51,7 @@ class CommentController extends Controller
                 SendMail::send($user->email, "Réponse sur le ticket :   " . $ticket->id . "  -  " . $ticket->subject, $request->comment . "  <br>Par: " . $user_name . " <br><br><i>CRM SAAMP</i>");
         } else {
             // envoyé l'email aux users
-            SendMail::send(env('Admin_Email'), "Réponse sur le ticket :   " . $ticket->id . "  -  " . $ticket->subject, $request->comment . "  <br>Par: " . $user_name . " <br><br><i>CRM SAAMP</i>");
+            SendMail::send(env('Admin_Remy'), "Réponse sur le ticket :   " . $ticket->id . "  -  " . $ticket->subject, $request->comment . "  <br>Par: " . $user_name . " <br><br><i>CRM SAAMP</i>");
             SendMail::send(env('Admin_iheb'), "Réponse sur le ticket :   " . $ticket->id . "  -  " . $ticket->subject, $request->comment . "  <br>Par: " . $user_name . " <br><br><i>CRM SAAMP</i>");
             SendMail::send(env('Admin_reyad'), "Réponse sur le ticket :   " . $ticket->id . "  -  " . $ticket->subject, $request->comment . "  <br>Par: " . $user_name . " <br><br><i>CRM SAAMP</i>");
         }

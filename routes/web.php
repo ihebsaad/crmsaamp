@@ -326,6 +326,8 @@ Route::prefix('export')->group(function () {
 
     //dashboard
     Route::get('/stats/metal',[DashboardController::class, 'exportMetalStats'])->name('export.stats.metal');
+
+    Route::get('/transactions',[DashboardController::class, 'exportTransactions'])->name('export.transactions');
 });
 
  

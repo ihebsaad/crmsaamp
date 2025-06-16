@@ -29,7 +29,6 @@ class StatsMetalExport implements FromArray, WithHeadings, WithStyles
  
     public function array(): array
     {
-        $data = [];
 
         foreach ($this->stats as $stat) {
             $row = [
