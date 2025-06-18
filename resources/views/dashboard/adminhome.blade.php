@@ -148,6 +148,10 @@
 		}
 		.nav-link{
 			color:#4e73df;width:225px;text-align:center;font-weight:bold;
+			font-size:  13px!important;
+		}
+		.nav > li > a{
+			font-size: 13px!important;
 		}
 		#myTab1 .nav-link i {
 			color: #ed1b24 !important;
@@ -747,6 +751,11 @@
 									<div class="tab-content" style=" ">
 
 										<div class="tab-pane active" id="week" role="tabpanel" aria-labelledby="week-tab">
+											<div class="col-md-12 text-right">
+												<a href="#" id="export-week-btn" class="btn btn-success btn-sm" style="background-color:#1cc88a" >
+													<i class="fa fa-file-excel"></i> Exporter en Excel
+												</a>
+											</div>
 											<div class="table-container" style="height:420px;max-height:550px;">
 												<table class="table table-striped" style="width:90%;margin-top:0px;">
 													<thead style="background-color:lightgray;color:white">
@@ -762,6 +771,11 @@
 										</div>
 
 										<div class="tab-pane" id="month" role="tabpanel" aria-labelledby="month-tab">
+											<div class="col-md-12 text-right">
+												<a href="#" id="export-month-btn mb-2" class="btn btn-success btn-sm" style="background-color:#1cc88a" >
+													<i class="fa fa-file-excel"></i> Exporter en Excel
+												</a>
+											</div>
 											<div class="table-container" style="height:420px;max-height:550px;">
 												<table class="table table-striped" style="width:90%">
 													<thead style="background-color:lightgray;color:white">
@@ -935,6 +949,26 @@
 
  			// Construire l'URL d'exportation
 			let exportUrl = "{{ route('export.transactions') }}";
+
+			// Rediriger vers l'URL d'exportation
+			window.location.href = exportUrl;
+		});
+
+		$('#export-week-btn').click(function(e) {
+			e.preventDefault();
+
+ 			// Construire l'URL d'exportation
+			let exportUrl = "{{ route('export.stats_reception') }}";
+
+			// Rediriger vers l'URL d'exportation
+			window.location.href = exportUrl;
+		});
+
+		$('#export-month-btn').click(function(e) {
+			e.preventDefault();
+
+ 			// Construire l'URL d'exportation
+			let exportUrl = "{{ route('export.stats_reception_month') }}";
 
 			// Rediriger vers l'URL d'exportation
 			window.location.href = exportUrl;

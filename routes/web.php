@@ -328,6 +328,9 @@ Route::prefix('export')->group(function () {
     Route::get('/stats/metal',[DashboardController::class, 'exportMetalStats'])->name('export.stats.metal');
 
     Route::get('/transactions',[DashboardController::class, 'exportTransactions'])->name('export.transactions');
+
+    Route::get('/stats_reception',[DashboardController::class, 'stats_reception'])->name('export.stats_reception');
+    Route::get('/stats_reception_month',[DashboardController::class, 'stats_reception_month'])->name('export.stats_reception_month');
 });
 
  

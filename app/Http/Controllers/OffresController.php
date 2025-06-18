@@ -245,7 +245,7 @@ class OffresController extends Controller
 		return view('offres.show',compact('offre','folders','files','folderContent','fichiers','historiques'));
 	}
 
-
+/*
 	public function store(Request $request)
     {
         $request->validate([
@@ -289,12 +289,7 @@ class OffresController extends Controller
 
 			$offre->statut='OK';
 			$offre->save();
-			/*
-			SendMail::send($user->email,'Offre Créée',$contenu);
-			if(isset($agence))
-				SendMail::send(trim($agence->mail),'Offre Créée',$contenu);
-
-				*/
+ 
 		}
  
 	
@@ -324,7 +319,116 @@ class OffresController extends Controller
 		return redirect()->route('offres.client_list', $client->id)
 		->with('success','Offre ajoutée');
 	}
+*/
 
+	
+	public function store(Request $request) 
+	{
+		// Validation renforcée
+		$request->validate([
+			'Nom_offre' => 'required|string|max:255',
+			'Date_creation' => 'required|date',
+			'type' => 'required|string',
+			'files' => 'required|array|min:1', // Au moins un fichier
+			'files.*' => 'required|file|mimes:pdf|max:26624', // 26 Mo = 26624 KB
+		]);
+
+		// Vérification supplémentaire des fichiers
+		if (!$request->hasFile('files') || empty($request->file('files'))) {
+			return back()->withErrors(['files' => 'Au moins un fichier PDF est requis.'])->withInput();
+		}
+
+		try {
+			// Utilisation d'une transaction pour éviter les données incohérentes
+			DB::beginTransaction();
+
+			// Préparation des données
+			$Date1 = date('Y-m-d');
+			$date_relance = $request->input('date_relance') ?: date('Y-m-d', strtotime($Date1 . " + 15 days"));
+
+			// Création de l'offre
+			$offre = Offre::create([
+				'cl_id' => $request->input('cl_id') ?? 0,
+				'mycl_id' => $request->input('mycl_id') ?? 0,
+				'Nom_offre' => $request->input('Nom_offre'),
+				'Date_creation' => $request->input('Date_creation'),
+				'Description' => $request->input('Description'),
+				'user_id' => $request->input('user_id'),
+				'nom_compte' => $request->input('nom_compte', ''),
+				'type' => $request->input('type'),
+				'date_relance' => $date_relance,
+			]);
+
+			// Récupération des informations nécessaires
+			$client = Client::find($offre->mycl_id);
+			$user = User::findOrFail($offre->user_id);
+			$agence = DB::table('agence')->where('agence_ident', $client->agence_ident)->first();
+
+			// Traitement des fichiers
+			$filesProcessed = 0;
+			
+			if ($request->input('cl_id') > 0) {
+				// Traitement via GED
+				$result = GEDService::OffreDocs($request->input('cl_id'), $offre->id, $request->input('mycl_id'));
+				$filesProcessed = 1; // Supposons que GED traite les fichiers
+			}
+			
+			// Traitement des fichiers uploadés
+			if ($request->hasFile('files')) {
+				$fichiers = $request->file('files');
+				
+				foreach ($fichiers as $fichier) {
+					if ($fichier->isValid()) {
+						$name = time() . '_' . $fichier->getClientOriginalName(); // Nom unique
+						$path = public_path("fichiers/offres");
+						
+						// Créer le dossier s'il n'existe pas
+						if (!file_exists($path)) {
+							mkdir($path, 0755, true);
+						}
+						
+						$fichier->move($path, $name);
+
+						// Enregistrer le fichier en base
+						File::create([
+							'name' => $name,
+							'parent_id' => $offre->id,
+							'parent' => 'offres'
+						]);
+						
+						$filesProcessed++;
+					}
+				}
+			}
+
+			// Vérification qu'au moins un fichier a été traité
+			if ($filesProcessed === 0) {
+				throw new \Exception('Aucun fichier n\'a pu être traité.');
+			}
+
+			// Envoi de l'email
+			self::sendOfferMail($user, $client, $agence, $offre, 'creation');
+
+			// Validation automatique pour TG
+			if ($offre->type == 'TG' || auth()->id() == 35) {
+				$offre->statut = 'OK';
+				$offre->save();
+			}
+
+			DB::commit();
+
+			return redirect()->route('offres.client_list', $client->id)
+				->with('success', 'Offre ajoutée avec succès');
+
+		} catch (\Exception $e) {
+			DB::rollback();
+			
+			// Log de l'erreur
+			\Log::error('Erreur lors de la création de l\'offre: ' . $e->getMessage());
+			
+			return back()->withErrors(['error' => 'Une erreur est survenue lors de la création de l\'offre: ' . $e->getMessage()])->withInput();
+		}
+	}
 
 
 	public function sendOfferMail($user, $client, $agence, $offre ,$mail)
@@ -354,9 +458,9 @@ class OffresController extends Controller
 			$contenu.="<b>Commentaire:</b> $offre->commentaire <br>";
  
 		if($offre->type=='Hors TG - Affinage' && $mail=='creation')
-			$contenu.="L'offre est en attente de validation par Mr Sébastien Canesson<br>";
+			$contenu.="<br>L'offre est en attente de validation par Mr Sébastien Canesson<br><br>";
 		elseif($offre->type=='Hors TG - Apprêts/Bij/DP'  && $mail=='creation')
-			$contenu.="L'offre est en attente de validation par Mme Christelle Correia<br>";
+			$contenu.="<br>L'offre est en attente de validation par Mme Christelle Correia<br><br>";
 
 		$contenu.="Vous pouvez accéder à l'offre en cliquant sur le lien suivant :<br>";
 		$contenu.="<a href='https://crm.mysaamp.com/offres/show/$offre->id' target='_blank'>Voir l'offre </a>";		
@@ -392,12 +496,14 @@ class OffresController extends Controller
 
 		//commercial
 		$rep  = DB::table('representant')->find($client->commercial);
-		$user_comm =  User::find($rep->users_id);
+		if(isset($rep)){ 
+			$user_comm =  User::find($rep->users_id);
 
-		// si cerateur != commercial
-		if($offre->user_id!=$user_comm->id)
-		{
-			SendMail::send(trim($user_comm->email),$objet,$contenu);
+			// si cerateur != commercial
+			if(isset($user_comm) && $offre->user_id!=$user_comm->id  )
+			{
+				SendMail::send(trim($user_comm->email),$objet,$contenu);
+			}
 		}
 
 		//ceateur

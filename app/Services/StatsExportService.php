@@ -11,6 +11,8 @@ use App\Exports\StatsAgencesExport;
 use App\Exports\StatsClientsInactifsExport;
 use App\Exports\StatsMetalExport;
 use App\Exports\TransactionsExport;
+use App\Exports\ReceptionExport;
+use App\Exports\ReceptionExportMonth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StatsExportService
@@ -195,6 +197,25 @@ class StatsExportService
         );
     }
 
+
+    public function stats_reception( $month=null)
+    {
+        if($month==0){
+            $stats = DB::select('call `sp_stats_agence_reception_poids`();');
+            return Excel::download(
+                new ReceptionExport($stats),
+                'Réception des lots d\'or hautes teneurs par agence (semaine)' . date('Y-m-d') . '.xlsx'
+            );
+        }
+        else{
+		    $stats = DB::select('call `sp_stats_agence_reception_mois`();');
+
+            return Excel::download(
+            new ReceptionExportMonth($stats),
+            'Réception des lots d\'or hautes teneurs par agence (mois)' . date('Y-m-d') . '.xlsx'
+            );
+        }
+    }
 /*
     public function exportMetalStats($type, $metals = [])
     {

@@ -510,7 +510,8 @@
   @endif
 
 
-  @if(auth()->user()->user_role < 5) <div class="col-md-4 col-lg-4 col-sm-12 mb-5">
+  @if(auth()->user()->user_role < 5) 
+  <div class="col-md-4 col-lg-4 col-sm-12 mb-5">
     <h4 class="text-center">Prospects</h4><br>
     <div class="table-container">
       <table id="" class="table table-striped" style="width:100%!important">

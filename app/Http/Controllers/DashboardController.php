@@ -739,4 +739,18 @@ class DashboardController extends Controller
  		// Utilisez votre service d'exportation
 		return app(StatsExportService::class)->exportTransactions();
 	}
+
+	
+	public function stats_reception(Request $request)
+	{
+ 		// Utilisez votre service d'exportation
+		return app(StatsExportService::class)->stats_reception(0);
+	}
+
+	
+	public function stats_reception_month(Request $request)
+	{
+ 		// Utilisez votre service d'exportation
+		return app(StatsExportService::class)->stats_reception(1);
+	}
 } // end class
