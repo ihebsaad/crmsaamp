@@ -228,7 +228,7 @@ class RetoursController extends Controller
 			// Dir qualité
 			self::send_mail($retour, env('Email_qualite'),$status);
 
-			self::send_mail($retour, env('Email_lea'),$status);
+			self::send_mail($retour, env('Email_nathalie'),$status);
 			self::send_mail($retour, env('Email_patrick'),$status);
 		}
 

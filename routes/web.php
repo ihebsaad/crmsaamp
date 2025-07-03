@@ -331,6 +331,9 @@ Route::prefix('export')->group(function () {
 
     Route::get('/stats_reception',[DashboardController::class, 'stats_reception'])->name('export.stats_reception');
     Route::get('/stats_reception_month',[DashboardController::class, 'stats_reception_month'])->name('export.stats_reception_month');
+
+    Route::post('/prospects/print', [ClientsController::class, 'printSorted'])->name('prospects.print');
+
 });
 
  

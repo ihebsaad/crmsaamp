@@ -511,34 +511,62 @@
 
 
   @if(auth()->user()->user_role < 5) 
-  <div class="col-md-4 col-lg-4 col-sm-12 mb-5">
-    <h4 class="text-center">Prospects</h4><br>
-    <div class="table-container">
-      <table id="" class="table table-striped" style="width:100%!important">
-        <thead>
-          <tr style="background-color:#2e3e4e;color:white;" id="">
-            <th>{{__('msg.Name')}}</th>
-            <th>{{__('msg.City')}}</th>
-            <th>{{__('msg.Postal code')}}</th>
-            <th>{{__('msg.Address')}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach($prospects as $prospect)
-          <tr>
-            <td><a href="{{route('fiche',['id'=>$prospect->id])}}">{{$prospect->Nom}}</a></td>
-            <td>{{ $prospect->ville }}</td>
-            <td>{{ $prospect->zip }}</td>
-            <td>{{ $prospect->adresse1 }}</td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+    <div class="col-md-4 col-lg-4 col-sm-12 mb-5">
+      <h4 class="text-center">Prospects</h4><br>
+      <div class="table-container">
+        <table id="prospects-table" class="table table-striped" style="width:100%!important">
+          <thead>
+            <tr style="background-color:#2e3e4e;color:white;" id="">
+              <th data-field="Nom">{{__('msg.Name')}} <span class="sort-indicator"></span></th>
+              <th data-field="ville">{{__('msg.City')}} <span class="sort-indicator"></span></th>
+              <th data-field="zip">{{__('msg.Postal code')}} <span class="sort-indicator"></span></th>
+              <th data-field="adresse1">{{__('msg.Address')}} <span class="sort-indicator"></span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($prospects as $prospect)
+            <tr>
+              <td><a href="{{route('fiche',['id'=>$prospect->id])}}">{{$prospect->Nom}}</a></td>
+              <td>{{ $prospect->ville }}</td>
+              <td>{{ $prospect->zip }}</td>
+              <td>{{ $prospect->adresse1 }}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+      <a href="{{route('prospects')}}" target="_blank" class="btn btn-info mr-2 mt-5 float-right" id="print-prospects-btn">
+        <i class="fa fa-print"></i> {{__('msg.Print')}}
+      </a>
     </div>
-    <a href="{{route('prospects')}}" target="_blank" class="btn btn-info mr-2 mt-5 float-right"><i class="fa fa-print"></i> {{__('msg.Print')}}</a>
+  @endif
 
-</div>
-@endif
+  <style>
+    th {
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+    
+    th:hover {
+      background-color: rgba(255,255,255,0.1) !important;
+    }
+    
+    th.asc .sort-indicator:after {
+      content: ' ↑';
+      color: #17a2b8;
+    }
+    
+    th.desc .sort-indicator:after {
+      content: ' ↓';
+      color: #17a2b8;
+    }
+    
+    .sort-indicator {
+      float: right;
+      margin-left: 5px;
+    }
+  </style>
 @if(count($rendezvous_passes)>0 && auth()->user()->user_role==7 )
 <div class="col-md-6 col-lg-6 col-sm-12">
   <h4 class="text-center">Rendez vous planifiés, mais passés</h4>
@@ -859,76 +887,117 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
   $(document).ready(function() {
-    /*setTimeout(function() {
-      $('#maintenance').modal('show');
-    }, 5000); // 5000 milliseconds = 5 seconds
-*/
-    // Function to detect and parse dates in various common formats, including dd/mm/yyyy
-    function parseDate(dateString) {
-      const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
-      if (datePattern.test(dateString)) {
-        // Parse dd/mm/yyyy format
-        const [day, month, year] = dateString.split('/');
-        return new Date(year, month - 1, day); // JavaScript months are 0-based
-      } else {
-        // Fallback: try parsing with Date constructor if another format is detected
-        const parsedDate = new Date(dateString);
-        return isNaN(parsedDate) ? null : parsedDate;
-      }
+  // Variables pour stocker l'état du tri
+  let currentSortColumn = null;
+  let currentSortOrder = null;
+
+  // Function to detect and parse dates in various common formats, including dd/mm/yyyy
+  function parseDate(dateString) {
+    const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (datePattern.test(dateString)) {
+      // Parse dd/mm/yyyy format
+      const [day, month, year] = dateString.split('/');
+      return new Date(year, month - 1, day); // JavaScript months are 0-based
+    } else {
+      // Fallback: try parsing with Date constructor if another format is detected
+      const parsedDate = new Date(dateString);
+      return isNaN(parsedDate) ? null : parsedDate;
     }
+  }
 
-    // Sorting function for tables
-    $('th').on('click', function() {
-      const $header = $(this);
-      const $table = $header.closest('table');
-      const $tbody = $table.find('tbody');
-      const rows = $tbody.find('tr').toArray();
-      const columnIndex = $header.index();
-      const order = $header.hasClass('asc') ? 'desc' : 'asc';
+  // Fonction pour mettre à jour l'URL d'impression avec les paramètres de tri
+  function updatePrintUrl() {
+    const printButton = $('.btn-info[href*="prospects"]');
+    if (printButton.length && currentSortColumn !== null && currentSortOrder !== null) {
+      const baseUrl = printButton.attr('href').split('?')[0];
+      const newUrl = `${baseUrl}?sort_column=${currentSortColumn}&sort_order=${currentSortOrder}`;
+      printButton.attr('href', newUrl);
+    }
+  }
 
-      // Remove sorting classes from other headers in the same table
-      $header.siblings().removeClass('asc desc');
-      $header.addClass(order);
+  // Fonction pour mapper l'index de colonne au nom de champ
+  function getColumnFieldName(columnIndex) {
+    const fieldMapping = {
+      0: 'Nom',        // Nom
+      1: 'ville',      // City
+      2: 'zip',        // Postal code
+      3: 'adresse1'    // Address
+    };
+    return fieldMapping[columnIndex] || null;
+  }
 
-      // Sort rows with enhanced date handling
-      rows.sort(function(rowA, rowB) {
-        const cellA = $(rowA).find('td').eq(columnIndex).text().trim();
-        const cellB = $(rowB).find('td').eq(columnIndex).text().trim();
+  // Sorting function for tables
+  $('th').on('click', function() {
+    const $header = $(this);
+    const $table = $header.closest('table');
+    const $tbody = $table.find('tbody');
+    const rows = $tbody.find('tr').toArray();
+    const columnIndex = $header.index();
+    const order = $header.hasClass('asc') ? 'desc' : 'asc';
 
-        // Detect if both cells contain valid dates
-        const dateA = parseDate(cellA);
-        const dateB = parseDate(cellB);
+    // Stocker l'état du tri
+    currentSortColumn = getColumnFieldName(columnIndex);
+    currentSortOrder = order;
 
-        let valA, valB;
+    // Remove sorting classes from other headers in the same table
+    $header.siblings().removeClass('asc desc');
+    $header.addClass(order);
 
-        if (dateA && dateB) {
-          // Both are dates, compare them
-          valA = dateA;
-          valB = dateB;
-        } else if ($.isNumeric(cellA) && $.isNumeric(cellB)) {
-          // Parse and compare numeric values
-          valA = parseFloat(cellA);
-          valB = parseFloat(cellB);
-        } else {
-          // Compare as strings alphabetically
-          valA = cellA.toLowerCase();
-          valB = cellB.toLowerCase();
-        }
+    // Sort rows with enhanced date handling
+    rows.sort(function(rowA, rowB) {
+      const cellA = $(rowA).find('td').eq(columnIndex).text().trim();
+      const cellB = $(rowB).find('td').eq(columnIndex).text().trim();
 
-        if (order === 'asc') {
-          return valA > valB ? 1 : -1;
-        } else {
-          return valA < valB ? 1 : -1;
-        }
-      });
+      // Detect if both cells contain valid dates
+      const dateA = parseDate(cellA);
+      const dateB = parseDate(cellB);
 
-      // Append sorted rows to the table
-      $.each(rows, function(index, row) {
-        $tbody.append(row);
-      });
+      let valA, valB;
+
+      if (dateA && dateB) {
+        // Both are dates, compare them
+        valA = dateA;
+        valB = dateB;
+      } else if ($.isNumeric(cellA) && $.isNumeric(cellB)) {
+        // Parse and compare numeric values
+        valA = parseFloat(cellA);
+        valB = parseFloat(cellB);
+      } else {
+        // Compare as strings alphabetically
+        valA = cellA.toLowerCase();
+        valB = cellB.toLowerCase();
+      }
+
+      if (order === 'asc') {
+        return valA > valB ? 1 : -1;
+      } else {
+        return valA < valB ? 1 : -1;
+      }
     });
-  });
-</script>
 
+    // Append sorted rows to the table
+    $.each(rows, function(index, row) {
+      $tbody.append(row);
+    });
+
+    // Mettre à jour l'URL d'impression
+    updatePrintUrl();
+  });
+
+  // Ajouter un indicateur visuel de tri dans les en-têtes
+  $('th').css('cursor', 'pointer').append(' <span class="sort-indicator"></span>');
+  
+  // Styles CSS pour les indicateurs de tri
+  $('<style>')
+    .prop('type', 'text/css')
+    .html(`
+      th.asc .sort-indicator:after { content: ' ↑'; }
+      th.desc .sort-indicator:after { content: ' ↓'; }
+      th:hover { background-color: rgba(255,255,255,0.1); }
+    `)
+    .appendTo('head');
+});
+
+</script>
 
 @endsection

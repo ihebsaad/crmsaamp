@@ -578,13 +578,39 @@ class ClientsController extends Controller
 
 			return view('clients.search', compact('clients', 'request', 'agences', 'representants','clients_ids'));
 	}
-
+/*
 	public function prospects(Request $request)
 	{
 		$clients = CompteClient::where('agence_ident', auth()->user()->agence_ident)->where('etat_id', 1)->get();
 		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
 		return view('clients.print', compact('clients', 'request', 'agences'));
 	}
+*/
+	public function prospects(Request $request) 
+	{
+		$query = CompteClient::where('agence_ident', auth()->user()->agence_ident)
+							->where('etat_id', 1);
+		
+		// Appliquer le tri si les paramètres sont présents
+		if ($request->has('sort_column') && $request->has('sort_order')) {
+			$sortColumn = $request->get('sort_column');
+			$sortOrder = $request->get('sort_order');
+			
+			// Valider les colonnes autorisées pour éviter les injections SQL
+			$allowedColumns = ['Nom', 'ville', 'zip', 'adresse1'];
+			$allowedOrders = ['asc', 'desc'];
+			
+			if (in_array($sortColumn, $allowedColumns) && in_array($sortOrder, $allowedOrders)) {
+				$query->orderBy($sortColumn, $sortOrder);
+			}
+		}
+		
+		$clients = $query->get();
+		$agences = Agence::pluck('agence_lib', 'agence_ident')->toArray();
+		
+		return view('clients.print', compact('clients', 'request', 'agences'));
+	}
+ 
 
 	public function ouverture(Request $request)
 	{

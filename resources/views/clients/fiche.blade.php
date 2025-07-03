@@ -255,7 +255,7 @@
                 </p>
                 <p><strong>{{__('msg.CreditLimit')}}:</strong> 
                   {{ $companyInfo['report']['companySummary']['creditRating']['creditLimit']['currency'] ?? '' }}
-                  {{ number_format($companyInfo['report']['companySummary']['creditRating']['creditLimit']['value'] ?? 0) }}
+                  {{ number_format((float)($companyInfo['report']['companySummary']['creditRating']['creditLimit']['value'] ?? 0)) }}
                 </p>
               </div>
             </div>
@@ -302,8 +302,10 @@
                     <p class="text-muted mb-0">{{__('msg.ProviderRating')}}: {{ $companyInfo['report']['creditScore']['currentCreditRating']['providerValue']['value'] ?? __('msg.NA') }}/{{ $companyInfo['report']['creditScore']['currentCreditRating']['providerValue']['maxValue'] ?? '100' }}</p>
                   </div>
                 </div>
-                <p><strong>{{__('msg.CreditLimit')}}:</strong> {{ $companyInfo['report']['creditScore']['currentCreditRating']['creditLimit']['currency'] ?? '' }} {{ number_format($companyInfo['report']['creditScore']['currentCreditRating']['creditLimit']['value'] ?? 0) }}</p>
-                <p><strong>{{__('msg.ProbabilityOfDefault')}}:</strong> {{ number_format(($companyInfo['report']['creditScore']['currentCreditRating']['pod'] ?? 0) * 100, 4) }}%</p>
+                @if(isset($companyInfo['report']['creditScore']['currentCreditRating']['creditLimit']))
+                <p><strong>{{__('msg.CreditLimit')}}:</strong> {{ $companyInfo['report']['creditScore']['currentCreditRating']['creditLimit']['currency'] ?? '' }} {{ number_format((float)$companyInfo['report']['creditScore']['currentCreditRating']['creditLimit']['value'] ?? 0) }}</p>
+                <p><strong>{{__('msg.ProbabilityOfDefault')}}:</strong> {{ number_format((float)($companyInfo['report']['creditScore']['currentCreditRating']['pod'] ?? 0) * 100, 4) }}%</p>
+                @endif
               </div>
               <div class="col-md-6">
                 <h6 class="text-muted">{{__('msg.PreviousCreditRating')}}</h6>
@@ -351,11 +353,11 @@
                       @if(isset($statement['yearEndDate']) && isset($statement['balanceSheet']))
                         <tr>
                           <td>{{ date('Y', strtotime($statement['yearEndDate'])) }}</td>
-                          <td>{{ isset($statement['balanceSheet']['totalAssets']) ? number_format($statement['balanceSheet']['totalAssets']) . ' ' . ($statement['currency'] ?? '') : __('msg.NA') }}</td>
-                          <td>{{ isset($statement['balanceSheet']['totalLiabilities']) ? number_format($statement['balanceSheet']['totalLiabilities']) . ' ' . ($statement['currency'] ?? '') : __('msg.NA') }}</td>
-                          <td>{{ isset($statement['balanceSheet']['totalShareholdersEquity']) ? number_format($statement['balanceSheet']['totalShareholdersEquity']) . ' ' . ($statement['currency'] ?? '') : __('msg.NA') }}</td>
-                          <td>{{ isset($statement['ratios']['liquidityRatioOrAcidTest']) ? number_format($statement['ratios']['liquidityRatioOrAcidTest'], 2) : __('msg.NA') }}</td>
-                          <td>{{ isset($statement['ratios']['currentRatio']) ? number_format($statement['ratios']['currentRatio'], 2) : __('msg.NA') }}</td>
+                          <td>{{ isset($statement['balanceSheet']['totalAssets']) ? number_format((float)$statement['balanceSheet']['totalAssets']) . ' ' . ($statement['currency'] ?? '') : __('msg.NA') }}</td>
+                          <td>{{ isset($statement['balanceSheet']['totalLiabilities']) ? number_format((float)$statement['balanceSheet']['totalLiabilities']) . ' ' . ($statement['currency'] ?? '') : __('msg.NA') }}</td>
+                          <td>{{ isset($statement['balanceSheet']['totalShareholdersEquity']) ? number_format((float)$statement['balanceSheet']['totalShareholdersEquity']) . ' ' . ($statement['currency'] ?? '') : __('msg.NA') }}</td>
+                          <td>{{ isset($statement['ratios']['liquidityRatioOrAcidTest']) ? number_format((float)$statement['ratios']['liquidityRatioOrAcidTest'], 2) : __('msg.NA') }}</td>
+                          <td>{{ isset($statement['ratios']['currentRatio']) ? number_format((float)$statement['ratios']['currentRatio'], 2) : __('msg.NA') }}</td>
                         </tr>
                       @endif
                     @endforeach
@@ -363,10 +365,12 @@
                 </table>
               </div>
             @else
+              @if(isset( $companyInfo['report']['companySummary']['latestShareholdersEquityFigure']))
               <div class="alert alert-info">
-                <p>{{__('msg.LatestShareholdersEquity')}}: {{ $companyInfo['report']['companySummary']['latestShareholdersEquityFigure']['currency'] ?? '' }} {{ number_format($companyInfo['report']['companySummary']['latestShareholdersEquityFigure']['value'] ?? 0) }}</p>
+                <p>{{__('msg.LatestShareholdersEquity')}}: {{ $companyInfo['report']['companySummary']['latestShareholdersEquityFigure']['currency'] ?? '' }} {{ number_format((float)$companyInfo['report']['companySummary']['latestShareholdersEquityFigure']['value'] ?? 0) }}</p>                
                 <p>{{__('msg.NoDetailedFinancialStatements')}}</p>
               </div>
+              @endif
             @endif
           </div>
         </div>
@@ -378,8 +382,10 @@
           </div>
           <div class="card-body">
             <p><strong>{{__('msg.NominalShareCapital')}}:</strong> 
+              @if(isset($companyInfo['report']['shareCapitalStructure']['nominalShareCapital']))
               {{ $companyInfo['report']['shareCapitalStructure']['nominalShareCapital']['currency'] ?? '' }}
-              {{ number_format($companyInfo['report']['shareCapitalStructure']['nominalShareCapital']['value'] ?? 0) }}
+              {{ number_format((float)$companyInfo['report']['shareCapitalStructure']['nominalShareCapital']['value'] ?? 0) }}
+              @endif
             </p>
             
             @if(isset($companyInfo['report']['shareCapitalStructure']['shareHolders']) && count($companyInfo['report']['shareCapitalStructure']['shareHolders']) > 0)
