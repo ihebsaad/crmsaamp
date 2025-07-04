@@ -364,7 +364,6 @@ class ClientsController extends Controller
 	public function phone($id)
 	{
 		$client = CompteClient::find($id);
-		//$token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1NTk4ODM2IiwiYXVkIjoiKiIsImlzcyI6InR2eCIsImlhdCI6MTcxNjU0NjU5MCwianRpIjoiMTg5OTQ0NjYifQ.4_0fCiH0KqsKHbtI3xnp1VkrRamENo_qf7Uecs_0b4WhczutEMUJZlHzhm4HZqHgKBbCxxyv3E8mX5nl-JQm4Q';
 		$token = $client->token_phone;
 		$callData = PhoneService::data($token);
 		return view('clients.phone', compact('client', 'callData', 'token'));
