@@ -61,7 +61,7 @@ class MapController extends Controller
 
             // Appel API OpenRouteService si plus d'une coordonnée
             if (count($coordinates) > 1) {
-                $apiKey = '5b3ce3597851110001cf62487ef05d4cd4804a4e807aceb13a557d0d';
+                $apiKey = env('LEAF_MAP_KEY');
                 $response = Http::withHeaders(['Content-Type' => 'application/json'])
                     ->post("https://api.openrouteservice.org/v2/directions/driving-car?api_key={$apiKey}", [
                         'coordinates' => $coordinates,
